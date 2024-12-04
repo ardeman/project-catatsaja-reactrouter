@@ -127,5 +127,3 @@ export default function Index() {
     </div>
   )
 }
-
-export { meta, links } from '~/constants'

@@ -34,7 +34,7 @@ module.exports = {
         patterns: [
           '~/components/*/*',
           '~/apis/*',
-          '~/config/*',
+          '~/configs/*',
           '~/constants/*',
           '~/context/*',
           '~/hooks/*',
