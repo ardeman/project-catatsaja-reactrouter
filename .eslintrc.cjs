@@ -4,14 +4,14 @@
  * and should modify this configuration to best suit your team's needs.
  */
 
-const { rules } = require("eslint-plugin-react");
+const { rules } = require('eslint-plugin-react')
 
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
   parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
+    ecmaVersion: 'latest',
+    sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
     },
@@ -21,112 +21,102 @@ module.exports = {
     commonjs: true,
     es6: true,
   },
-  ignorePatterns: ["!**/.server", "!**/.client"],
+  ignorePatterns: ['!**/.server', '!**/.client'],
 
   // Base config
-  plugins: ["unused-imports"],
-  extends: ["eslint:recommended", "plugin:unicorn/recommended", "prettier"],
+  plugins: [],
+  extends: ['eslint:recommended', 'plugin:unicorn/recommended', 'prettier'],
   rules: {
-    "no-console": "error",
-    "no-restricted-imports": [
-      "error",
+    'no-console': 'error',
+    'no-restricted-imports': [
+      'error',
       {
         patterns: [
-          "~/components/*/*",
-          "~/apis/*",
-          "~/config/*",
-          "~/constants/*",
-          "~/context/*",
-          "~/hooks/*",
-          "~/lib/*",
-          "~/types/*",
-          "~/utils/*",
-          "~/validations/*",
-          "../*",
+          '~/components/*/*',
+          '~/apis/*',
+          '~/config/*',
+          '~/constants/*',
+          '~/context/*',
+          '~/hooks/*',
+          '~/lib/*',
+          '~/types/*',
+          '~/utils/*',
+          '~/validations/*',
+          '../*',
         ],
         paths: [],
       },
     ],
-    "linebreak-style": ["error", "unix"],
-    "import/order": [
-      "error",
+    'linebreak-style': ['error', 'unix'],
+    'import/order': [
+      'error',
       {
         groups: [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index",
-          "object",
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+          'object',
         ],
-        "newlines-between": "always",
-        alphabetize: { order: "asc", caseInsensitive: true },
+        'newlines-between': 'always',
+        alphabetize: { order: 'asc', caseInsensitive: true },
       },
     ],
-    "import/default": "off",
-    "import/no-named-as-default-member": "off",
-    "import/no-named-as-default": "off",
-    "unused-imports/no-unused-imports": "error",
-    "unused-imports/no-unused-vars": [
-      "error",
+    'import/default': 'off',
+    'import/no-named-as-default-member': 'off',
+    'import/no-named-as-default': 'off',
+    'unicorn/prevent-abbreviations': 'off',
+    'unicorn/filename-case': [
+      'error',
       {
-        vars: "all",
-        varsIgnorePattern: "^_",
-        args: "after-used",
-        argsIgnorePattern: "^_",
+        case: 'kebabCase',
+        ignore: ['App'],
       },
     ],
-    "unicorn/prevent-abbreviations": "off",
-    "unicorn/filename-case": [
-      "error",
-      {
-        case: "kebabCase",
-        ignore: ["App"],
-      },
-    ],
-    "unicorn/no-null": "off",
+    'unicorn/no-null': 'off',
   },
 
   overrides: [
     // React
     {
-      files: ["**/*.{js,jsx,ts,tsx}"],
-      plugins: ["react", "jsx-a11y"],
+      files: ['**/*.{js,jsx,ts,tsx}'],
+      plugins: ['react', 'jsx-a11y'],
       extends: [
-        "plugin:react/recommended",
-        "plugin:react/jsx-runtime",
-        "plugin:react-hooks/recommended",
-        "plugin:jsx-a11y/recommended",
+        'plugin:react/recommended',
+        'plugin:react/jsx-runtime',
+        'plugin:react-hooks/recommended',
+        'plugin:jsx-a11y/recommended',
       ],
       settings: {
         react: {
-          version: "detect",
+          version: 'detect',
         },
-        formComponents: ["Form"],
+        formComponents: ['Form'],
         linkComponents: [
-          { name: "Link", linkAttribute: "to" },
-          { name: "NavLink", linkAttribute: "to" },
+          { name: 'Link', linkAttribute: 'to' },
+          { name: 'NavLink', linkAttribute: 'to' },
         ],
-        "import/resolver": {
+        'import/resolver': {
           typescript: {},
         },
       },
       rules: {
-        "react/no-danger": "error",
+        'react/no-danger': 'error',
       },
     },
 
     // Typescript
     {
-      files: ["**/*.{ts,tsx}"],
-      plugins: ["@typescript-eslint", "import"],
-      parser: "@typescript-eslint/parser",
+      files: ['**/*.{ts,tsx}'],
+      plugins: ['@typescript-eslint', 'import', 'unused-imports'],
+      parser: '@typescript-eslint/parser',
       settings: {
-        "import/internal-regex": "^~/",
-        "import/resolver": {
+        'import/internal-regex': '^~/',
+        'import/resolver': {
           node: {
-            extensions: [".ts", ".tsx"],
+            extensions: ['.ts', '.tsx'],
           },
           typescript: {
             alwaysTryTypes: true,
@@ -134,22 +124,32 @@ module.exports = {
         },
       },
       extends: [
-        "plugin:@typescript-eslint/recommended",
-        "plugin:import/recommended",
-        "plugin:import/typescript",
+        'plugin:@typescript-eslint/recommended',
+        'plugin:import/recommended',
+        'plugin:import/typescript',
       ],
       rules: {
-        "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-explicit-any": "off",
+        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        'unused-imports/no-unused-imports': 'error',
+        'unused-imports/no-unused-vars': [
+          'error',
+          {
+            vars: 'all',
+            varsIgnorePattern: '^_',
+            args: 'after-used',
+            argsIgnorePattern: '^_',
+          },
+        ],
       },
     },
 
     // Node
     {
-      files: [".eslintrc.cjs"],
+      files: ['.eslintrc.cjs'],
       env: {
         node: true,
       },
     },
   ],
-};
+}
