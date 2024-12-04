@@ -1,0 +1,31 @@
+{
+  "todohighlight.keywords": [
+    {
+      "text": "WARNING:",
+      "backgroundColor": "#e74c3c",
+      "color": "#fff"
+    }
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "css.lint.unknownAtRules": "ignore",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.tabSize": 2,
+  "editor.renderWhitespace": "all",
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "class:list",
+    "containerClassName",
+    "inputClassName",
+    "labelClassName",
+    "buttonClassName",
+    "leftNodeClassName",
+    "rightNodeClassName"
+  ],
+  "cSpell.words": ["firestore"]
+}

@@ -4,6 +4,8 @@
  * and should modify this configuration to best suit your team's needs.
  */
 
+const { rules } = require("eslint-plugin-react");
+
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
@@ -22,7 +24,69 @@ module.exports = {
   ignorePatterns: ["!**/.server", "!**/.client"],
 
   // Base config
-  extends: ["eslint:recommended"],
+  plugins: ["unused-imports"],
+  extends: ["eslint:recommended", "plugin:unicorn/recommended", "prettier"],
+  rules: {
+    "no-console": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          "~/components/*/*",
+          "~/apis/*",
+          "~/config/*",
+          "~/constants/*",
+          "~/context/*",
+          "~/hooks/*",
+          "~/lib/*",
+          "~/types/*",
+          "~/utils/*",
+          "~/validations/*",
+          "../*",
+        ],
+        paths: [],
+      },
+    ],
+    "linebreak-style": ["error", "unix"],
+    "import/order": [
+      "error",
+      {
+        groups: [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+        ],
+        "newlines-between": "always",
+        alphabetize: { order: "asc", caseInsensitive: true },
+      },
+    ],
+    "import/default": "off",
+    "import/no-named-as-default-member": "off",
+    "import/no-named-as-default": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "error",
+      {
+        vars: "all",
+        varsIgnorePattern: "^_",
+        args: "after-used",
+        argsIgnorePattern: "^_",
+      },
+    ],
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/filename-case": [
+      "error",
+      {
+        case: "kebabCase",
+        ignore: ["App"],
+      },
+    ],
+    "unicorn/no-null": "off",
+  },
 
   overrides: [
     // React
@@ -48,6 +112,9 @@ module.exports = {
           typescript: {},
         },
       },
+      rules: {
+        "react/no-danger": "error",
+      },
     },
 
     // Typescript
@@ -71,6 +138,10 @@ module.exports = {
         "plugin:import/recommended",
         "plugin:import/typescript",
       ],
+      rules: {
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+      },
     },
 
     // Node

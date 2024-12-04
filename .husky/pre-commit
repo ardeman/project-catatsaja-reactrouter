@@ -1,0 +1,18 @@
+export NVM_DIR="$HOME/.nvm"
+if [ -f .nvmrc ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+  . "$NVM_DIR/nvm.sh"
+  nvm use
+fi
+
+if [ -f bun.lockb ]; then
+  bun lint-staged
+elif [ -f pnpm-lock.yaml ]; then
+  pnpm lint-staged
+elif [ -f yarn.lock ]; then
+  yarn lint-staged
+elif [ -f package-lock.json ]; then
+  npm run lint-staged
+else
+  echo "No lockfile found. Please run 'bun install', 'pnpm install', 'yarn install' or 'npm install' to generate a lockfile."
+  exit 1
+fi
