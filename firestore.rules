@@ -1,0 +1,52 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Define a common rule for authenticated users
+    function isAuthenticated() {
+      return request.auth.uid != null && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    // Define a function to check if a user is the document owner
+    function isOwner() {
+      return resource.data.owner == request.auth.uid;
+    }
+
+    // Users collection rules
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if request.auth.uid == userId;
+    }
+
+    // Groups collection rules
+    match /groups/{groupId} {
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
+    }
+
+    // Notes collection rules
+    match /notes/{noteId} {
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
+    }
+    
+    // To-Dos collection rules
+    match /to-dos/{todoId} {
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
+    }
+    
+    // Reminders collection rules
+    match /reminders/{reminderId} {
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
+    }
+    
+    // Money Log collection rules
+    match /money-logs/{moneyLogId} {
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
+    }
+  }
+}

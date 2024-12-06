@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@remix-run/react'
 import { Eye, EyeClosed } from 'lucide-react'
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { Button, Input, ModeToggle } from '~/components/base'
@@ -17,7 +17,7 @@ import {
 import { TSignUpRequest } from '~/lib/types'
 import { signUpSchema } from '~/lib/validations'
 
-export const SignUpPage: FC = () => {
+export const SignUpPage = () => {
   const isRegisterPending = false
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')

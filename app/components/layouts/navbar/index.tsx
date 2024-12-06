@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from '@remix-run/react'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useUser } from 'reactfire'
 
 import { Input } from '~/components/base'
 import {
@@ -17,6 +16,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '~/components/ui'
+import { useUser } from '~/lib/contexts'
 import { toast, useLogout } from '~/lib/hooks'
 import { TSearchRequest } from '~/lib/types'
 import { cn } from '~/lib/utils'
@@ -29,7 +29,7 @@ import { TProps } from './type'
 export const Navbar = (props: TProps) => {
   const { className } = props
   const navigate = useNavigate()
-  const { data: user } = useUser()
+  const { user } = useUser()
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(searchSchema),
     defaultValues: {

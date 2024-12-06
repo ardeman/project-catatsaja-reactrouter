@@ -1,7 +1,7 @@
-import { LoadingSpinner } from '~/components/base'
+import { GeneralSettingsPage } from '~/components/pages'
 
 const GeneralSettings = () => {
-  return <LoadingSpinner classname="min-h-fit flex-1" />
+  return <GeneralSettingsPage />
 }
 
 export default GeneralSettings
