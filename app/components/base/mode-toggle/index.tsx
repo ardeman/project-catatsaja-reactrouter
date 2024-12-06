@@ -12,10 +12,16 @@ import {
 import { useTheme } from '~/contexts'
 
 export const ModeToggle = () => {
-  const [theme, setTheme] = useTheme()
+  const [theme, setTheme, metadata] = useTheme()
+  const value = metadata.definedBy === 'SYSTEM' ? 'system' : (theme as string)
 
-  const handleSetTheme = (value: Theme) => {
-    setTheme(value)
+  const handleSetTheme = (value: string) => {
+    if (value === 'system') {
+      setTheme(null)
+      globalThis.localStorage.removeItem('theme')
+      return
+    }
+    setTheme(value as Theme)
     globalThis.localStorage.setItem('theme', value)
   }
 
@@ -33,11 +39,12 @@ export const ModeToggle = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuRadioGroup
-          value={theme || undefined}
-          onValueChange={(value) => handleSetTheme(value as Theme)}
+          value={value}
+          onValueChange={handleSetTheme}
         >
           <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="system">System</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

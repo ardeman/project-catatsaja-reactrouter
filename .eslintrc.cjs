@@ -4,8 +4,6 @@
  * and should modify this configuration to best suit your team's needs.
  */
 
-const { rules } = require('eslint-plugin-react')
-
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
@@ -105,6 +103,7 @@ module.exports = {
       rules: {
         'react/no-danger': 'error',
         'react/prop-types': 'off',
+        'jsx-a11y/no-autofocus': 'off',
       },
     },
 
