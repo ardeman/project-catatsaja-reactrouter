@@ -2,12 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   @apply bg-white dark:bg-gray-950;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-rotate {
+    animation: 3s rotate infinite;
+  }
+}
+
+/* Custom keyframe animation */
+@keyframes rotate {
+  0% {
+    transform: rotate(90deg); /* Start from the right, rotating up */
+    opacity: 0;
+  }
+  35% {
+    transform: rotate(0deg); /* Fully visible, facing upward */
+    opacity: 1;
+  }
+  65% {
+    transform: rotate(0deg); /* Pause in the center */
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(-90deg); /* Rotate down to the left */
+    opacity: 0;
   }
 }
 

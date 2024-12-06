@@ -10,7 +10,6 @@ import { PropsWithChildren, useEffect } from 'react'
 import { useUser } from 'reactfire'
 
 import { useTheme } from '~/contexts'
-import { middleware } from '~/utils'
 
 export const Rootlayout = (props: PropsWithChildren) => {
   const { children } = props
@@ -20,7 +19,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
 
   useEffect(() => {
     if (status !== 'loading') {
-      middleware({ pathname, user })
+      // middleware({ pathname, user })
     }
   }, [user, status, pathname])
 
