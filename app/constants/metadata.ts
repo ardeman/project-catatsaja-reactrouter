@@ -1,7 +1,9 @@
 import { LinksFunction, MetaFunction } from '@remix-run/node'
 
+export const appName = 'Circle Sync'
+
 export const meta: MetaFunction = () => [
-  { title: 'Circle Sync' },
+  { title: appName },
   {
     name: 'description',
     content:
@@ -10,7 +12,7 @@ export const meta: MetaFunction = () => [
 ]
 
 export const links: LinksFunction = () => [
-  { rel: 'icon', href: '/icon/favicon.ico' },
+  { rel: 'icon', href: '/favicon.ico' },
   { rel: 'shortcut icon', href: '/icon/android-chrome-512x512.png' },
   { rel: 'apple-touch-icon', href: '/icon/apple-touch-icon.png' },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

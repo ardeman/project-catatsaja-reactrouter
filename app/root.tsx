@@ -1,49 +1,26 @@
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLocation,
-} from '@remix-run/react'
-import { useEffect } from 'react'
-import { useUser } from 'reactfire'
+import { Outlet } from '@remix-run/react'
+import { FirebaseAppProvider } from 'reactfire'
+import { Theme } from 'remix-themes'
+
+import { Rootlayout } from '~/components/layouts'
+import { firebaseConfig } from '~/configs'
+import { FirebaseProvider, ThemeProvider } from '~/contexts'
 
 import '~/styles/globals.css'
-import { middleware } from './utils'
-
-export const Layout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
-  )
-}
 
 const App = () => {
-  const { status, data: user } = useUser()
-  const { pathname } = useLocation()
-
-  useEffect(() => {
-    if (status !== 'loading') {
-      middleware({ pathname, user })
-    }
-  }, [user, status, pathname])
-
-  return <Outlet />
+  const theme = globalThis.localStorage.getItem('theme')
+  return (
+    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+      <FirebaseProvider>
+        <ThemeProvider specifiedTheme={theme as Theme}>
+          <Rootlayout>
+            <Outlet />
+          </Rootlayout>
+        </ThemeProvider>
+      </FirebaseProvider>
+    </FirebaseAppProvider>
+  )
 }
 
 export { meta, links } from '~/constants'

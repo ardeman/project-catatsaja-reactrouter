@@ -7,3 +7,12 @@ export const extractPathSegment = (path: string) => {
 
   return desiredSegment
 }
+
+export const getRandomIndex = (arrayLength: number, currentIndex: number) => {
+  let randomIndex = Math.floor(Math.random() * arrayLength)
+  // Ensure the random index is not the same as the current one
+  while (randomIndex === currentIndex) {
+    randomIndex = Math.floor(Math.random() * arrayLength)
+  }
+  return randomIndex
+}
