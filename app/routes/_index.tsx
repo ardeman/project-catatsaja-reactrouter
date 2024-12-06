@@ -1,5 +1,5 @@
-import { HomePage } from '~/components/pages'
+import { LoadingSpinner } from '~/components/base'
 
-const Home = () => <HomePage />
+const Home = () => <LoadingSpinner />
 
 export default Home

@@ -1,7 +1,7 @@
 import { LoadingSpinner } from '~/components/base'
 
-const Dashboard = () => {
+const MoneyLog = () => {
   return <LoadingSpinner classname="min-h-fit flex-1" />
 }
 
-export default Dashboard
+export default MoneyLog

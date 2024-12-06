@@ -5,7 +5,7 @@ export const userMenus = [
   },
   {
     name: 'Support',
-    href: 'https://github.com/ardeman/project-remix-circlesync/issues',
+    href: 'https://github.com/ardeman/project-remix-catatsaja/issues',
   },
 ]
 

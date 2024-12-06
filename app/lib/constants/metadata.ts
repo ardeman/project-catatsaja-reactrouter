@@ -1,6 +1,6 @@
 import { LinksFunction, MetaFunction } from '@remix-run/node'
 
-export const appName = 'Circle Sync'
+export const appName = 'Catat Saja'
 export const appleIcon = '/icon/apple-touch-icon.png'
 
 export const meta: MetaFunction = () => [

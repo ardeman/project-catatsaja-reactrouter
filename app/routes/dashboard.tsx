@@ -4,7 +4,7 @@ import { Navbar } from '~/components/layouts'
 
 const Dashboard = () => {
   return (
-    <main className="flex min-h-screen w-full flex-col">
+    <main className="flex min-h-dvh w-full flex-col">
       <Navbar />
       <Outlet />
     </main>

@@ -41,7 +41,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
         <Links />
       </head>
       <body>
-        {status === 'loading' ? <LoadingSpinner classname="flex" /> : children}
+        {status === 'loading' ? <LoadingSpinner /> : children}
         <Toaster />
         <ScrollRestoration />
         <Scripts />
