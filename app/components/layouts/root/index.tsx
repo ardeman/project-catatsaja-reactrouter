@@ -10,6 +10,7 @@ import { PropsWithChildren, useEffect } from 'react'
 import { useUser } from 'reactfire'
 
 import { useTheme } from '~/contexts'
+import { middleware } from '~/utils'
 
 export const Rootlayout = (props: PropsWithChildren) => {
   const { children } = props
@@ -19,7 +20,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
 
   useEffect(() => {
     if (status !== 'loading') {
-      // middleware({ pathname, user })
+      middleware({ pathname, user })
     }
   }, [user, status, pathname])
 
@@ -38,9 +39,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
         <Links />
       </head>
       <body>
-        <div className="bg-background text-foreground">
-          <div className="block">{children}</div>
-        </div>
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>

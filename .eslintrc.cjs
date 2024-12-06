@@ -104,6 +104,7 @@ module.exports = {
       },
       rules: {
         'react/no-danger': 'error',
+        'react/prop-types': 'off',
       },
     },
 
