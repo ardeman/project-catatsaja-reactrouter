@@ -5,22 +5,25 @@ import {
   useCallback,
   useMemo,
   useContext,
+  Dispatch,
+  SetStateAction,
 } from 'react'
-import { Theme, themes } from 'remix-themes'
+import { Theme, themes, ThemeMetadata } from 'remix-themes'
 import { ThemeProviderProps } from 'remix-themes/build/theme-provider'
 import { useBroadcastChannel } from 'remix-themes/build/useBroadcastChannel'
 import { useCorrectCssTransition } from 'remix-themes/build/useCorrectCssTransition'
 
-const ThemeContext = createContext<
-  | [
-      Theme | null,
-      (
-        value: Theme | ((prevTheme: Theme | null) => Theme | null) | null,
-      ) => void,
-      { definedBy: string },
-    ]
-  | undefined
->(undefined)
+type TProps = Omit<ThemeProviderProps, 'themeAction'> & {
+  themeAction?: string
+}
+type ThemeContextType = [
+  Theme | null,
+  Dispatch<SetStateAction<Theme | null>>,
+  ThemeMetadata,
+]
+type TDefinedBy = 'USER' | 'SYSTEM'
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 ThemeContext.displayName = 'ThemeContext'
 
 const prefersLightMQ = '(prefers-color-scheme: light)'
@@ -30,10 +33,6 @@ const mediaQuery =
   typeof globalThis === 'object' && globalThis?.matchMedia
     ? globalThis.matchMedia(prefersLightMQ)
     : null
-
-type TProps = Omit<ThemeProviderProps, 'themeAction'> & {
-  themeAction?: string
-}
 
 export function ThemeProvider({
   children,
@@ -51,12 +50,12 @@ export function ThemeProvider({
     if (typeof globalThis !== 'object') return null
     return getPreferredTheme()
   })
-  const [themeDefinedBy, setThemeDefinedBy] = useState<string>(
+  const [themeDefinedBy, setThemeDefinedBy] = useState<TDefinedBy>(
     specifiedTheme ? 'USER' : 'SYSTEM',
   )
   const broadcastThemeChange = useBroadcastChannel<{
     theme: Theme
-    definedBy: string
+    definedBy: TDefinedBy
   }>('remix-themes', (e) => {
     ensureCorrectTransition(() => {
       setTheme(e.data.theme)
@@ -112,13 +111,11 @@ export function ThemeProvider({
 
   const value = useMemo(
     () =>
-      [theme, handleThemeChange, { definedBy: themeDefinedBy }] as [
-        Theme | null,
-        (
-          value: Theme | ((prevTheme: Theme | null) => Theme | null) | null,
-        ) => void,
-        { definedBy: string },
-      ],
+      [
+        theme,
+        handleThemeChange,
+        { definedBy: themeDefinedBy },
+      ] as ThemeContextType,
     [theme, handleThemeChange, themeDefinedBy],
   )
 
@@ -185,11 +182,7 @@ export function PreventFlashOnWrongTheme({
   )
 }
 
-export function useTheme(): [
-  Theme | null,
-  (value: Theme | ((prevTheme: Theme | null) => Theme | null) | null) => void,
-  { definedBy: string },
-] {
+export function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext)
   if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider')
