@@ -4,7 +4,7 @@ import { CircleUser, Menu, Search } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useUser } from 'reactfire'
 
-import { Input, ModeToggle } from '~/components/base'
+import { Input } from '~/components/base'
 import {
   Button,
   DropdownMenu,
@@ -77,18 +77,18 @@ export const Navbar = (props: TProps) => {
         <FormProvider {...formMethods}>
           <form
             onSubmit={onSubmit}
-            className="ml-auto"
+            className="ml-auto flex-1"
           >
             <Input
               name="query"
               type="search"
               placeholder="Search"
-              inputClassName="sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              inputClassName="w-full"
               leftNode={({ className }) => <Search className={className} />}
             />
           </form>
         </FormProvider>
-        <ModeToggle />
+        {/* <ModeToggle /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

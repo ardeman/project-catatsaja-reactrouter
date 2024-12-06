@@ -1,5 +1,3 @@
-'use client'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@remix-run/react'
 import { Eye, EyeClosed } from 'lucide-react'
