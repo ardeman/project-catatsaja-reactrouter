@@ -13,6 +13,10 @@ service cloud.firestore {
       return resource.data.owner == request.auth.uid;
     }
 
+    match /app/1 {
+      allow read, write: if true;
+    }
+
     // Users collection rules
     match /users/{userId} {
       allow read: if isAuthenticated();

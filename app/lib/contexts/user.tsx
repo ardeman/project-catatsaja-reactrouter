@@ -23,12 +23,14 @@ const UserProvider = (props: PropsWithChildren) => {
     throw new Error('Firebase Firestore is not initialized.')
   }
 
-  const userRef = authData?.uid ? doc(firestore, 'users', authData.uid) : null
+  const userRef = authData?.uid
+    ? doc(firestore, 'users', authData.uid)
+    : doc(firestore, 'app', '1')
   const {
     data: firestoreData,
     status: firestoreStatus,
     error: firestoreError,
-  } = useFirestoreDocData(userRef || doc(firestore, 'users', 'dummy'), {
+  } = useFirestoreDocData(userRef, {
     idField: 'uid',
   })
 
