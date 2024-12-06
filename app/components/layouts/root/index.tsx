@@ -9,6 +9,8 @@ import clsx from 'clsx'
 import { PropsWithChildren, useEffect } from 'react'
 import { useUser } from 'reactfire'
 
+import { LoadingSpinner } from '~/components/base'
+import { Toaster } from '~/components/ui'
 import { useTheme } from '~/contexts'
 import { middleware } from '~/utils'
 
@@ -39,7 +41,8 @@ export const Rootlayout = (props: PropsWithChildren) => {
         <Links />
       </head>
       <body>
-        {children}
+        {status === 'loading' ? <LoadingSpinner classname="flex" /> : children}
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
       </body>

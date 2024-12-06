@@ -1,4 +1,5 @@
 import { Outlet } from '@remix-run/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { FirebaseAppProvider } from 'reactfire'
 import { Theme } from 'remix-themes'
 
@@ -8,16 +9,21 @@ import { FirebaseProvider, ThemeProvider } from '~/contexts'
 
 import '~/styles/globals.css'
 
+const queryClient = new QueryClient()
+
 const App = () => {
   const theme = globalThis.localStorage.getItem('theme')
+
   return (
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
       <FirebaseProvider>
-        <ThemeProvider specifiedTheme={theme as Theme}>
-          <Rootlayout>
-            <Outlet />
-          </Rootlayout>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider specifiedTheme={theme as Theme}>
+            <Rootlayout>
+              <Outlet />
+            </Rootlayout>
+          </ThemeProvider>
+        </QueryClientProvider>
       </FirebaseProvider>
     </FirebaseAppProvider>
   )

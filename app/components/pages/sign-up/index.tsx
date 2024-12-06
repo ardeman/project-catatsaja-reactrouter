@@ -14,6 +14,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  Card,
 } from '~/components/ui'
 import { TSignUpRequest } from '~/types'
 import { signUpSchema } from '~/validations'
@@ -42,7 +43,7 @@ export const SignUpPage: FC = () => {
   }
 
   return (
-    <>
+    <Card className="min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="grid">
@@ -136,6 +137,6 @@ export const SignUpPage: FC = () => {
           </UIButton>
         </div>
       </CardFooter>
-    </>
+    </Card>
   )
 }

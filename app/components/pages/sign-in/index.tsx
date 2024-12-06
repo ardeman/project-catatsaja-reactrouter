@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@remix-run/react'
 import { Eye, EyeClosed } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
 
@@ -13,14 +13,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  Card,
 } from '~/components/ui'
 import { appName } from '~/constants'
+import { useLogin, useLoginGoogle, useToast } from '~/hooks'
 import { TSignInRequest } from '~/types'
 import { signInSchema } from '~/validations'
 
 export const SignInPage = () => {
-  const isLoginGooglePending = false
-  const isLoginPending = false
+  const { toast } = useToast()
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const formMethods = useForm<TSignInRequest>({
@@ -33,20 +34,37 @@ export const SignInPage = () => {
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    console.log('data', data) // eslint-disable-line no-console
-    // mutateLogin(data)
+    mutateLogin(data)
   })
   const togglePassword = () => {
     setPasswordType((prev) => (prev === 'password' ? 'text' : 'password'))
   }
 
+  const {
+    mutate: mutateLogin,
+    isPending: isLoginPending,
+    isError: isLoginError,
+  } = useLogin()
+
+  const {
+    mutate: mutateLoginGoogle,
+    isPending: isLoginGooglePending,
+    isError: isLoginGoogleError,
+  } = useLoginGoogle()
+
   const handleLoginGoogle = () => {
-    // mutateLoginGoogle()
+    mutateLoginGoogle()
     setDisabled(true)
   }
 
+  useEffect(() => {
+    if (isLoginError || isLoginGoogleError) {
+      setDisabled(false)
+    }
+  }, [isLoginError, isLoginGoogleError])
+
   return (
-    <>
+    <Card className="min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="grid">
@@ -54,6 +72,9 @@ export const SignInPage = () => {
             <CardDescription>to continue to {appName}</CardDescription>
           </div>
           <ModeToggle />
+          <button onClick={() => toast({ description: 'This is a toast' })}>
+            Render my toast
+          </button>
         </div>
       </CardHeader>
       <CardContent>
@@ -129,6 +150,6 @@ export const SignInPage = () => {
           </UIButton>
         </div>
       </CardFooter>
-    </>
+    </Card>
   )
 }
