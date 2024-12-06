@@ -1,4 +1,4 @@
-export default function Dashboard() {
+const Dashboard = () => {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="flex flex-col items-center gap-16">
@@ -23,3 +23,5 @@ export default function Dashboard() {
     </div>
   )
 }
+
+export default Dashboard

@@ -34,12 +34,13 @@ const mediaQuery =
     ? globalThis.matchMedia(prefersLightMQ)
     : null
 
-export function ThemeProvider({
-  children,
-  specifiedTheme,
-  themeAction,
-  disableTransitionOnThemeChange = false,
-}: TProps) {
+export function ThemeProvider(props: TProps) {
+  const {
+    children,
+    specifiedTheme,
+    themeAction,
+    disableTransitionOnThemeChange,
+  } = props
   const ensureCorrectTransition = useCorrectCssTransition({
     disableTransitions: disableTransitionOnThemeChange,
   })

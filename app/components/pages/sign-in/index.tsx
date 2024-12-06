@@ -8,7 +8,6 @@ import { FcGoogle } from 'react-icons/fc'
 import { Button, Input, ModeToggle } from '~/components/base'
 import {
   Button as UIButton,
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -47,91 +46,89 @@ export const SignInPage = () => {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-muted/40">
-      <Card className="min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="grid">
-              <CardTitle className="text-2xl">Sign in</CardTitle>
-              <CardDescription>to continue to {appName}</CardDescription>
-            </div>
-            <ModeToggle />
+    <>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="grid">
+            <CardTitle className="text-2xl">Sign in</CardTitle>
+            <CardDescription>to continue to {appName}</CardDescription>
           </div>
-        </CardHeader>
-        <CardContent>
-          <FormProvider {...formMethods}>
-            <form
-              onSubmit={onSubmit}
-              className="space-y-6"
-            >
-              <Input
-                label="Email"
-                name="email"
-                placeholder="you@example.com"
-                autoFocus
-                required
-                disabled={disabled}
-              />
-              <Input
-                label="Password"
-                name="password"
-                type={passwordType}
-                hint={
-                  <Link
-                    to="/auth/forgot-password"
-                    className="block text-right hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                }
-                required
-                disabled={disabled}
-                rightNode={({ className }) =>
-                  passwordType === 'password' ? (
-                    <EyeClosed
-                      className={className}
-                      onClick={togglePassword}
-                    />
-                  ) : (
-                    <Eye
-                      className={className}
-                      onClick={togglePassword}
-                    />
-                  )
-                }
-              />
-              <Button
-                disabled={disabled}
-                isLoading={isLoginPending}
-                type="submit"
-              >
-                Continue
-              </Button>
-            </form>
-          </FormProvider>
-        </CardContent>
-        <CardFooter className="grid space-y-4">
-          <Button
-            containerClassName="w-full"
-            variant="outline"
-            onClick={handleLoginGoogle}
-            disabled={disabled}
-            isLoading={isLoginGooglePending}
+          <ModeToggle />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <FormProvider {...formMethods}>
+          <form
+            onSubmit={onSubmit}
+            className="space-y-6"
           >
-            <FcGoogle className="text-xl" />
-            Continue with Google
-          </Button>
-          <div className="text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <UIButton
-              variant="link"
-              asChild
+            <Input
+              label="Email"
+              name="email"
+              placeholder="you@example.com"
+              autoFocus
+              required
+              disabled={disabled}
+            />
+            <Input
+              label="Password"
+              name="password"
+              type={passwordType}
+              hint={
+                <Link
+                  to="/auth/forgot-password"
+                  className="block text-right hover:underline"
+                >
+                  Forgot your password?
+                </Link>
+              }
+              required
+              disabled={disabled}
+              rightNode={({ className }) =>
+                passwordType === 'password' ? (
+                  <EyeClosed
+                    className={className}
+                    onClick={togglePassword}
+                  />
+                ) : (
+                  <Eye
+                    className={className}
+                    onClick={togglePassword}
+                  />
+                )
+              }
+            />
+            <Button
+              disabled={disabled}
+              isLoading={isLoginPending}
+              type="submit"
             >
-              <Link to="/auth/sign-up">Sign up</Link>
-            </UIButton>
-          </div>
-        </CardFooter>
-      </Card>
-    </div>
+              Continue
+            </Button>
+          </form>
+        </FormProvider>
+      </CardContent>
+      <CardFooter className="grid space-y-4">
+        <Button
+          containerClassName="w-full"
+          variant="outline"
+          onClick={handleLoginGoogle}
+          disabled={disabled}
+          isLoading={isLoginGooglePending}
+        >
+          <FcGoogle className="text-xl" />
+          Continue with Google
+        </Button>
+        <div className="text-center text-sm">
+          Don&apos;t have an account?{' '}
+          <UIButton
+            variant="link"
+            asChild
+          >
+            <Link to="/auth/sign-up">Sign up</Link>
+          </UIButton>
+        </div>
+      </CardFooter>
+    </>
   )
 }
