@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { useAuth, useFirestore } from 'reactfire'
 
 import { authError } from '~/lib/constants'
@@ -28,15 +28,6 @@ export const useLogin = () => {
         const ref = doc(firestore, 'users', user.uid)
         const snap = await getDoc(ref)
         const userData = snap.data()
-
-        if (!userData) {
-          await setDoc(doc(firestore, 'users', user.uid), {
-            uid: user.uid,
-            displayName: user.displayName,
-            email: user.email,
-            createdAt: new Date(),
-          })
-        }
 
         // Update the email in Firestore if it's different
         if (userData && user.email && userData.email !== user.email) {
