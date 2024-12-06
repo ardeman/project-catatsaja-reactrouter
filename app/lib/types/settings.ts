@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { generalSettingSchema } from '~/validations'
+import { generalSettingSchema } from '~/lib/validations'
 
 export type TUpdateProfileRequest = z.infer<typeof generalSettingSchema>
 

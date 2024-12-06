@@ -9,7 +9,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '~/components/ui'
-import { useTheme } from '~/contexts'
+import { useTheme } from '~/lib/contexts'
 
 export const ModeToggle = () => {
   const [theme, setTheme, metadata] = useTheme()

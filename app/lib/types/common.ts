@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { shareSchema } from '~/validations'
+import { shareSchema } from '~/lib/validations'
 
 export type TTime = {
   seconds: number

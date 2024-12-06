@@ -16,8 +16,8 @@ import {
   CardTitle,
   Card,
 } from '~/components/ui'
-import { TSignUpRequest } from '~/types'
-import { signUpSchema } from '~/validations'
+import { TSignUpRequest } from '~/lib/types'
+import { signUpSchema } from '~/lib/validations'
 
 export const SignUpPage: FC = () => {
   const isRegisterPending = false

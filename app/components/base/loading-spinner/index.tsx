@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { appName } from '~/constants'
-import { cn, getRandomIndex } from '~/utils'
+import { appName } from '~/lib/constants'
+import { cn, getRandomIndex } from '~/lib/utils'
 
 import { IconComponent, icons } from './data'
 import { TProps } from './type'

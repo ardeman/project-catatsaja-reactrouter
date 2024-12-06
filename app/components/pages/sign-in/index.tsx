@@ -15,13 +15,12 @@ import {
   CardTitle,
   Card,
 } from '~/components/ui'
-import { appName } from '~/constants'
-import { useLogin, useLoginGoogle, useToast } from '~/hooks'
-import { TSignInRequest } from '~/types'
-import { signInSchema } from '~/validations'
+import { appName } from '~/lib/constants'
+import { useLogin, useLoginGoogle } from '~/lib/hooks'
+import { TSignInRequest } from '~/lib/types'
+import { signInSchema } from '~/lib/validations'
 
 export const SignInPage = () => {
-  const { toast } = useToast()
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const formMethods = useForm<TSignInRequest>({
@@ -72,9 +71,6 @@ export const SignInPage = () => {
             <CardDescription>to continue to {appName}</CardDescription>
           </div>
           <ModeToggle />
-          <button onClick={() => toast({ description: 'This is a toast' })}>
-            Render my toast
-          </button>
         </div>
       </CardHeader>
       <CardContent>

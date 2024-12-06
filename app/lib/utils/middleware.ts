@@ -1,7 +1,7 @@
 import { User } from 'firebase/auth'
 
-import { authPages, protectedPages } from '~/configs'
-import { extractPathSegment } from '~/utils'
+import { authPages, protectedPages } from '~/lib/configs'
+import { extractPathSegment } from '~/lib/utils'
 
 type TProps = {
   pathname: string

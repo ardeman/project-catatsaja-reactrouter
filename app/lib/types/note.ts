@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { noteSchema } from '~/validations'
+import { noteSchema } from '~/lib/validations'
 
 import { TTime } from './common'
 

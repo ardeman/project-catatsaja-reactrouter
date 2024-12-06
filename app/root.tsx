@@ -4,8 +4,8 @@ import { FirebaseAppProvider } from 'reactfire'
 import { Theme } from 'remix-themes'
 
 import { Rootlayout } from '~/components/layouts'
-import { firebaseConfig } from '~/configs'
-import { FirebaseProvider, ThemeProvider } from '~/contexts'
+import { firebaseConfig } from '~/lib/configs'
+import { FirebaseProvider, ThemeProvider } from '~/lib/contexts'
 
 import '~/styles/globals.css'
 
@@ -29,6 +29,6 @@ const App = () => {
   )
 }
 
-export { meta, links } from '~/constants'
+export { meta, links } from '~/lib/constants'
 
 export default App

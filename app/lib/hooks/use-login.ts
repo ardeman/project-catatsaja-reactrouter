@@ -1,40 +1,39 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { useAuth, useFirestore } from 'reactfire'
 
-import { authError } from '~/constants'
-import { useToast } from '~/hooks'
+import { authError } from '~/lib/constants'
+import { useToast } from '~/lib/hooks'
+import { TSignInRequest } from '~/lib/types'
 
-export const useLoginGoogle = () => {
+export const useLogin = () => {
   const { toast } = useToast()
-  const provider = new GoogleAuthProvider()
   const firestore = useFirestore()
   const auth = useAuth()
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (data: TSignInRequest) => {
       if (!auth || !firestore) {
         throw new Error('Firebase is not initialized.')
       }
+      const { email, password } = data
 
-      // Sign in with Google
-      const result = await signInWithPopup(auth, provider)
+      // Sign in with email and password
+      const result = await signInWithEmailAndPassword(auth, email, password)
       const user = result.user
 
       if (user) {
         // Check if user exists in Firestore
         const ref = doc(firestore, 'users', user.uid)
         const snap = await getDoc(ref)
+        const userData = snap.data()
 
-        // If user data doesn't exist, store it
-        if (!snap.exists()) {
-          await setDoc(ref, {
-            uid: user.uid,
-            displayName: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL || '',
-            createdAt: new Date(),
+        // Update the email in Firestore if it's different
+        if (userData && user.email && userData.email !== user.email) {
+          return await updateDoc(ref, {
+            email,
+            updatedAt: new Date(),
           })
         }
       }

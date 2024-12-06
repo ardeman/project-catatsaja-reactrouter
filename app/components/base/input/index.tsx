@@ -10,7 +10,7 @@ import {
   FormMessage,
   Input as UIInput,
 } from '~/components/ui'
-import { cn } from '~/utils'
+import { cn } from '~/lib/utils'
 
 import { TProps } from './type'
 

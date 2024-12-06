@@ -11,8 +11,8 @@ import { useUser } from 'reactfire'
 
 import { LoadingSpinner } from '~/components/base'
 import { Toaster } from '~/components/ui'
-import { useTheme } from '~/contexts'
-import { middleware } from '~/utils'
+import { useTheme } from '~/lib/contexts'
+import { middleware } from '~/lib/utils'
 
 export const Rootlayout = (props: PropsWithChildren) => {
   const { children } = props

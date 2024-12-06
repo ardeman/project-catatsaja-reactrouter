@@ -1,7 +1,7 @@
 import { Loader2 } from 'lucide-react'
 
 import { Button as UIButton } from '~/components/ui'
-import { cn } from '~/utils'
+import { cn } from '~/lib/utils'
 
 import { TButtonProps } from './type'
 
