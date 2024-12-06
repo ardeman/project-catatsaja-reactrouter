@@ -5,7 +5,11 @@ service cloud.firestore {
 
     // Define a common rule for authenticated users
     function isAuthenticated() {
-      return request.auth.uid != null && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+      return request.auth.uid != null;
+    }
+
+    function isRegistered() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
     }
 
     // Define a function to check if a user is the document owner
@@ -13,44 +17,48 @@ service cloud.firestore {
       return resource.data.owner == request.auth.uid;
     }
 
+    match /users { 
+      allow read, write: if isAuthenticated();
+    }
+
     match /app/catat-saja {
-      allow read, write: if true;
+      allow read: if true;
     }
 
     // Users collection rules
     match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow write: if request.auth.uid == userId;
+      allow read, write: if isAuthenticated();
+      allow update: if isRegistered();
     }
 
     // Groups collection rules
     match /groups/{groupId} {
       allow delete: if isOwner();
-      allow create, read, write: if isAuthenticated();
+      allow create, read, write: if isRegistered();
     }
 
     // Notes collection rules
     match /notes/{noteId} {
       allow delete: if isOwner();
-      allow create, read, write: if isAuthenticated();
+      allow create, read, write: if isRegistered();
     }
     
     // To-Dos collection rules
     match /to-dos/{todoId} {
       allow delete: if isOwner();
-      allow create, read, write: if isAuthenticated();
+      allow create, read, write: if isRegistered();
     }
     
     // Reminders collection rules
     match /reminders/{reminderId} {
       allow delete: if isOwner();
-      allow create, read, write: if isAuthenticated();
+      allow create, read, write: if isRegistered();
     }
     
     // Money Log collection rules
     match /money-logs/{moneyLogId} {
       allow delete: if isOwner();
-      allow create, read, write: if isAuthenticated();
+      allow create, read, write: if isRegistered();
     }
   }
 }

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@remix-run/react'
 import { Eye, EyeClosed } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { Button, Input, ModeToggle } from '~/components/base'
@@ -14,11 +14,11 @@ import {
   CardTitle,
   Card,
 } from '~/components/ui'
+import { useRegister } from '~/lib/hooks'
 import { TSignUpRequest } from '~/lib/types'
 import { signUpSchema } from '~/lib/validations'
 
 export const SignUpPage = () => {
-  const isRegisterPending = false
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const formMethods = useForm<TSignUpRequest>({
@@ -33,12 +33,23 @@ export const SignUpPage = () => {
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    console.log('data', data) // eslint-disable-line no-console
-    // mutateRegister(data)
+    mutateRegister(data)
   })
   const togglePassword = () => {
     setPasswordType((prev) => (prev === 'password' ? 'text' : 'password'))
   }
+
+  const {
+    mutate: mutateRegister,
+    isPending: isRegisterPending,
+    isError: isRegisterError,
+  } = useRegister()
+
+  useEffect(() => {
+    if (isRegisterError) {
+      setDisabled(false)
+    }
+  }, [isRegisterError])
 
   return (
     <Card className="min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
