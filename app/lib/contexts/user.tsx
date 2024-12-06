@@ -25,7 +25,7 @@ const UserProvider = (props: PropsWithChildren) => {
 
   const userRef = authData?.uid
     ? doc(firestore, 'users', authData.uid)
-    : doc(firestore, 'app', '1')
+    : doc(firestore, 'app', 'catat-saja')
   const {
     data: firestoreData,
     status: firestoreStatus,

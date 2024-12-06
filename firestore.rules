@@ -13,7 +13,7 @@ service cloud.firestore {
       return resource.data.owner == request.auth.uid;
     }
 
-    match /app/1 {
+    match /app/catat-saja {
       allow read, write: if true;
     }
 
