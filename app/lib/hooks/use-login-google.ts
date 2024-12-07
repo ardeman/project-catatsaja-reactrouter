@@ -23,7 +23,7 @@ export const useLoginGoogle = () => {
       const user = result.user
 
       if (user) {
-        // Check if user exists in Firestore
+        // Check if user exists in Auth
         const ref = doc(firestore, 'users', user.uid)
         const snap = await getDoc(ref)
 

@@ -1,45 +1,29 @@
 import { User } from 'firebase/auth'
-import { doc } from 'firebase/firestore'
-import { createContext, PropsWithChildren, useContext } from 'react'
 import {
-  useFirestore,
-  useFirestoreDocData,
-  useUser as useUserAuth,
-} from 'reactfire'
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react'
 
 type UserContextValue = {
-  user: User | null
-  loading: boolean
-  error: Error | undefined
+  user: User | undefined
+  setUser: Dispatch<SetStateAction<User | undefined>>
 }
 
 const UserContext = createContext<UserContextValue | undefined>(undefined)
 
 const UserProvider = (props: PropsWithChildren) => {
   const { children } = props
-  const firestore = useFirestore()
-  const { data: authData, status: authStatus, error: authError } = useUserAuth()
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-
-  const userRef = authData?.uid
-    ? doc(firestore, 'users', authData.uid)
-    : doc(firestore, 'app', 'catat-saja')
-  const {
-    data: firestoreData,
-    status: firestoreStatus,
-    error: firestoreError,
-  } = useFirestoreDocData(userRef, {
-    idField: 'uid',
-  })
+  const [user, setUser] = useState<User | undefined>()
 
   return (
     <UserContext.Provider
       value={{
-        user: authData?.uid ? (firestoreData as User) : null,
-        loading: firestoreStatus === 'loading' || authStatus === 'loading',
-        error: firestoreError || authError,
+        user,
+        setUser,
       }}
     >
       {children}

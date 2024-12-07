@@ -7,23 +7,23 @@ import {
 } from '@remix-run/react'
 import clsx from 'clsx'
 import { PropsWithChildren, useEffect } from 'react'
+import { useUser } from 'reactfire'
 
 import { LoadingSpinner } from '~/components/base'
 import { Toaster } from '~/components/ui'
-import { useTheme, useUser } from '~/lib/contexts'
+import { useTheme } from '~/lib/contexts'
 import { middleware } from '~/lib/utils'
 
 export const Rootlayout = (props: PropsWithChildren) => {
   const { children } = props
-  const { loading, user } = useUser()
+  const { data: user, status } = useUser()
   const { pathname } = useLocation()
   const [theme] = useTheme()
 
   useEffect(() => {
-    if (!loading) {
-      middleware({ pathname, user })
-    }
-  }, [user, loading, pathname])
+    if (status === 'loading') return
+    middleware({ pathname, user })
+  }, [user, status, pathname])
 
   return (
     <html
@@ -40,7 +40,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
         <Links />
       </head>
       <body>
-        {loading ? <LoadingSpinner /> : children}
+        {status === 'loading' ? <LoadingSpinner /> : children}
         <Toaster />
         <ScrollRestoration />
         <Scripts />
