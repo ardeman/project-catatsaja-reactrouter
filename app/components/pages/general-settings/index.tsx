@@ -13,14 +13,14 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui'
-import { useUser } from '~/lib/contexts'
+import { useApp } from '~/lib/contexts'
 import { useUpdateProfile } from '~/lib/hooks'
 import { TUpdateProfileRequest } from '~/lib/types'
 import { generalSettingSchema } from '~/lib/validations'
 
 export const GeneralSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
-  const { user } = useUser()
+  const { user } = useApp()
   const formMethods = useForm<TUpdateProfileRequest>({
     resolver: zodResolver(generalSettingSchema),
     values: {

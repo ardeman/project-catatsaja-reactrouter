@@ -2,63 +2,44 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Define a common rule for authenticated users
-    function isAuthenticated() {
-      return request.auth.uid != null;
-    }
-
-    function isRegistered() {
-      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-    }
-
-    // Define a function to check if a user is the document owner
-    function isOwner() {
-      return resource.data.owner == request.auth.uid;
-    }
-
-    match /users { 
-      allow read, write: if isAuthenticated();
-    }
-
-    match /app/catat-saja {
-      allow read: if true;
-    }
-
     // Users collection rules
     match /users/{userId} {
-      allow read, write: if isAuthenticated();
-      allow update: if isRegistered();
+      allow read: if request.auth != null;
+      allow write: if request.auth.uid == userId;
     }
 
     // Groups collection rules
     match /groups/{groupId} {
-      allow delete: if isOwner();
-      allow create, read, write: if isRegistered();
+      allow read, create: if request.auth != null;
+      allow write: if resource.data.owner == request.auth.uid;
     }
 
     // Notes collection rules
     match /notes/{noteId} {
-      allow delete: if isOwner();
-      allow create, read, write: if isRegistered();
+      allow read: if resource.data.spectator.hasAny(request.auth.id);
+      allow write, read: if resource.data.owner == request.auth.uid || resource.data.collaborator.hasAny(request.auth.id);
+      allow create: if request.auth != null;
     }
-    
+
     // To-Dos collection rules
     match /to-dos/{todoId} {
-      allow delete: if isOwner();
-      allow create, read, write: if isRegistered();
+      allow read: if resource.data.spectator.hasAny(request.auth.id);
+      allow write, read: if resource.data.owner == request.auth.uid || resource.data.collaborator.hasAny(request.auth.id);
+      allow create: if request.auth != null;
     }
-    
+
     // Reminders collection rules
     match /reminders/{reminderId} {
-      allow delete: if isOwner();
-      allow create, read, write: if isRegistered();
+      allow read: if resource.data.spectator.hasAny(request.auth.id);
+      allow write, read: if resource.data.owner == request.auth.uid || resource.data.collaborator.hasAny(request.auth.id);
+      allow create: if request.auth != null;
     }
-    
+
     // Money Log collection rules
     match /money-logs/{moneyLogId} {
-      allow delete: if isOwner();
-      allow create, read, write: if isRegistered();
+      allow read: if resource.data.spectator.hasAny(request.auth.id);
+      allow write, read: if resource.data.owner == request.auth.uid || resource.data.collaborator.hasAny(request.auth.id);
+      allow create: if request.auth != null;
     }
   }
 }

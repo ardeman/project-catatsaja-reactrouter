@@ -20,7 +20,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '~/components/ui'
-import { useUser as useUserContext } from '~/lib/contexts'
+import { useApp } from '~/lib/contexts'
 import { toast, useLogout } from '~/lib/hooks'
 import { TSearchRequest } from '~/lib/types'
 import { cn } from '~/lib/utils'
@@ -41,7 +41,7 @@ export const Navbar = (props: TProps) => {
     authData?.uid || 'catat-saja',
   )
   const { data: firestoreData } = useFirestoreDocData(userRef)
-  const { user, setUser } = useUserContext()
+  const { user, setUser } = useApp()
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(searchSchema),
     defaultValues: {

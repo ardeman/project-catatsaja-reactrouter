@@ -5,7 +5,7 @@ import { Theme } from 'remix-themes'
 
 import { Rootlayout } from '~/components/layouts'
 import { firebaseConfig } from '~/lib/configs'
-import { FirebaseProvider, ThemeProvider } from '~/lib/contexts'
+import { AppProvider, FirebaseProvider, ThemeProvider } from '~/lib/contexts'
 
 import '~/styles/globals.css'
 
@@ -15,17 +15,19 @@ const App = () => {
   const theme = globalThis.localStorage.getItem('theme')
 
   return (
-    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <FirebaseProvider>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider specifiedTheme={theme as Theme}>
-            <Rootlayout>
-              <Outlet />
-            </Rootlayout>
-          </ThemeProvider>
-        </QueryClientProvider>
-      </FirebaseProvider>
-    </FirebaseAppProvider>
+    <AppProvider>
+      <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+        <FirebaseProvider>
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider specifiedTheme={theme as Theme}>
+              <Rootlayout>
+                <Outlet />
+              </Rootlayout>
+            </ThemeProvider>
+          </QueryClientProvider>
+        </FirebaseProvider>
+      </FirebaseAppProvider>
+    </AppProvider>
   )
 }
 
