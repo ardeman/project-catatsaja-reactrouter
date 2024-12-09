@@ -1,45 +1,64 @@
 rules_version = '2';
 
 service cloud.firestore {
+  function isOwner(owner) {
+    return owner == request.auth.uid;
+  }
+
+  function isAuthenticated() {
+    return request.auth != null;
+  }
+
+  function isRegistered() {
+    return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+  }
+
+  function isCollaborator(collaborators) {
+    return collaborators.hasAny(request.auth.uid)
+  }
+
+  function isSpectator(spectators) {
+    return spectators.hasAny(request.auth.uid)
+  }
+
   match /databases/{database}/documents {
-    // Users collection rules
     match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth.uid == userId;
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
     }
 
-    // Groups collection rules
     match /groups/{groupId} {
-      allow read, create: if request.auth != null;
-      allow write: if resource.data.owner == request.auth.uid;
+      allow delete: if isOwner(resource.data.owner);
+      allow create, read: if isRegistered();
+      allow write: if isCollaborator(resource.data.collaborators);
     }
 
-    // Notes collection rules
     match /notes/{noteId} {
-      allow read: if resource.data.spectator.hasAny(request.auth.id);
-      allow write, read: if resource.data.owner == request.auth.uid || resource.data.collaborator.hasAny(request.auth.id);
-      allow create: if request.auth != null;
+      allow delete: if isOwner(resource.data.owner);
+      allow create: if isRegistered();
+      allow read: if isSpectator(resource.data.spectators) || isCollaborator(resource.data.collaborators) || isOwner(resource.data.owner);
+      allow write: if isCollaborator(resource.data.collaborators) || isOwner(resource.data.owner);
     }
 
-    // To-Dos collection rules
     match /to-dos/{todoId} {
-      allow read: if resource.data.spectator.hasAny(request.auth.id);
-      allow write, read: if resource.data.owner == request.auth.uid || resource.data.collaborator.hasAny(request.auth.id);
-      allow create: if request.auth != null;
+      allow delete: if isOwner(resource.data.owner);
+      allow create: if isRegistered();
+      allow read: if isSpectator(resource.data.spectators) || isCollaborator(resource.data.collaborators) || isOwner(resource.data.owner);
+      allow write: if isCollaborator(resource.data.collaborators) || isOwner(resource.data.owner);
     }
 
-    // Reminders collection rules
     match /reminders/{reminderId} {
-      allow read: if resource.data.spectator.hasAny(request.auth.id);
-      allow write, read: if resource.data.owner == request.auth.uid || resource.data.collaborator.hasAny(request.auth.id);
-      allow create: if request.auth != null;
+      allow delete: if isOwner(resource.data.owner);
+      allow create: if isRegistered();
+      allow read: if isSpectator(resource.data.spectators) || isCollaborator(resource.data.collaborators) || isOwner(resource.data.owner);
+      allow write: if isCollaborator(resource.data.collaborators) || isOwner(resource.data.owner);
     }
 
-    // Money Log collection rules
     match /money-logs/{moneyLogId} {
-      allow read: if resource.data.spectator.hasAny(request.auth.id);
-      allow write, read: if resource.data.owner == request.auth.uid || resource.data.collaborator.hasAny(request.auth.id);
-      allow create: if request.auth != null;
+      allow delete: if isOwner(resource.data.owner);
+      allow create: if isRegistered();
+      allow read: if isSpectator(resource.data.spectators) || isCollaborator(resource.data.collaborators) || isOwner(resource.data.owner);
+      allow write: if isCollaborator(resource.data.collaborators) || isOwner(resource.data.owner);
     }
   }
 }
