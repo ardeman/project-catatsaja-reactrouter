@@ -1,27 +1,27 @@
 rules_version = '2';
 
 service cloud.firestore {
-  function isOwner(owner) {
-    return owner == request.auth.uid;
-  }
-
-  function isAuthenticated() {
-    return request.auth != null;
-  }
-
-  function isRegistered() {
-    return exists(/databases/$(database)/documents/users/$(request.auth.uid));
-  }
-
-  function isCollaborator(collaborators) {
-    return collaborators.hasAny(request.auth.uid)
-  }
-
-  function isSpectator(spectators) {
-    return spectators.hasAny(request.auth.uid)
-  }
-
   match /databases/{database}/documents {
+    function isOwner(owner) {
+      return owner == request.auth.uid;
+    }
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isRegistered() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isCollaborator(collaborators) {
+      return collaborators.hasAny(request.auth.uid)
+    }
+
+    function isSpectator(spectators) {
+      return spectators.hasAny(request.auth.uid)
+    }
+
     match /users/{userId} {
       allow read: if isAuthenticated();
       allow write: if isOwner(userId);
