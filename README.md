@@ -1,40 +1,80 @@
-# Welcome to Remix!
+<h1 align="center">
+  project-remix-catatsaja
+</h1>
 
-- 📖 [Remix docs](https://remix.run/docs)
+<p align="center">
+  <a href="https://github.com/ardeman/project-remix-catatsaja/actions/workflows/firebase-remix.yml" target="_blank">
+    <img src="https://github.com/ardeman/project-remix-catatsaja/actions/workflows/firebase-remix.yml/badge.svg?branch=main" alt="Deployment Status" />
+  </a>
+</p>
 
-## Development
+## 🍴 Forking This Repo
 
-Run the dev server:
+Feel free to fork this repository. If you do, please give proper credit by linking back to [ardeman.com](https://ardeman.com/). Thank you!
 
-```shellscript
-npm run dev
-```
+## 🎛️ Installation & Setup
 
-## Deployment
+### Prerequisites
 
-First, build your app for production:
+- Node.js v22.11.0
+- pnpm v9.14.4
 
-```sh
-npm run build
-```
+### Steps
 
-Then run the app in production mode:
+1. Clone the repository:
 
-```sh
-npm start
-```
+   ```bash
+   git clone https://github.com/ardeman/project-remix-catatsaja.git
+   ```
 
-Now you'll need to pick a host to deploy it to.
+2. Navigate to the project directory:
 
-### DIY
+   ```bash
+   cd project-remix-catatsaja
+   ```
 
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
+3. Install dependencies:
 
-Make sure to deploy the output of `npm run build`
+   ```bash
+   pnpm install
+   ```
 
-- `build/server`
-- `build/client`
+4. Start the development server:
 
-## Styling
+   ```bash
+   pnpm dev
+   ```
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+   Then, open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+
+### Additional Commands
+
+- **Install Husky Git Hooks**:
+
+  ```bash
+  pnpm prepare
+  ```
+
+- **Lint the code**:
+
+  ```bash
+  pnpm lint
+  ```
+
+- **Format the code**:
+
+  ```bash
+  pnpm format
+  ```
+
+- **Build for production**:
+
+  ```bash
+  pnpm build
+  ```
+
+- **Start the production server**:
+
+  ```bash
+  pnpm start
+  ```
