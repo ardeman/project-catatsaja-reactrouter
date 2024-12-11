@@ -18,63 +18,73 @@ Feel free to fork this repository. If you do, please give proper credit by linki
 
 - Node.js v22.11.0
 - pnpm v9.14.4
+- firebase-tools v13.12.0
 
 ### Steps
 
 1. Clone the repository:
 
-   ```bash
+   ```shell
    git clone https://github.com/ardeman/project-remix-catatsaja.git
    ```
 
 2. Navigate to the project directory:
 
-   ```bash
+   ```shell
    cd project-remix-catatsaja
    ```
 
 3. Install dependencies:
 
-   ```bash
+   ```shell
    pnpm install
    ```
 
-4. Start the development server:
+4. Create `.env` file based on `.env.example`, and put firebase configuration there.
 
-   ```bash
+5. Set up firebase tools:
+
+   ```shell
+   firebase login
+   firebase deploy --only firestore
+   ```
+
+6. Start the development server:
+
+   ```shell
    pnpm dev
    ```
 
-   Then, open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+   Then, open [http://localhost:5173](http://localhost:5173) in your browser to view the app.
 
 ### Additional Commands
 
 - **Install Husky Git Hooks**:
 
-  ```bash
+  ```shell
   pnpm prepare
   ```
 
 - **Lint the code**:
 
-  ```bash
+  ```shell
   pnpm lint
   ```
 
 - **Format the code**:
 
-  ```bash
+  ```shell
   pnpm format
   ```
 
 - **Build for production**:
 
-  ```bash
+  ```shell
   pnpm build
   ```
 
 - **Start the production server**:
 
-  ```bash
+  ```shell
   pnpm start
   ```
