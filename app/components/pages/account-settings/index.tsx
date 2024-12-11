@@ -1,5 +1,3 @@
-'use client'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRevalidator } from '@remix-run/react'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
