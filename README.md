@@ -83,8 +83,8 @@ Feel free to fork this repository. If you do, please give proper credit by linki
   pnpm build
   ```
 
-- **Start the production server**:
+- **Preview the production server**:
 
   ```shell
-  pnpm start
+  pnpm preview
   ```

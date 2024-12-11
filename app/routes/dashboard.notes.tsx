@@ -1,7 +1,7 @@
-import { LoadingSpinner } from '~/components/base'
+import { NotesPage } from '~/components/pages'
 
 const Notes = () => {
-  return <LoadingSpinner classname="min-h-fit flex-1" />
+  return <NotesPage />
 }
 
 export default Notes
