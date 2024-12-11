@@ -17,7 +17,7 @@ export const Card = (props: TCardProps) => {
   const { handleEditNote } = useNote()
   const { data: userData } = useUserData()
   const isPinned = note.isPinned
-  const canWrite = note.permissions?.write?.includes(userData?.uid)
+  const canWrite = note.permissions?.write?.includes(userData?.uid || '')
   const isOwner = note.owner === userData?.uid
   const isEditable = isOwner || canWrite
   const dateLabel = getDateLabel(note.updatedAt?.seconds)

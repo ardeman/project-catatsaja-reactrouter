@@ -13,6 +13,7 @@ import {
   TSignInRequest,
   TSignUpRequest,
   TUpdateProfileRequest,
+  TUserResponse,
 } from '~/lib/types'
 
 // Function to fetch user data from Firestore
@@ -35,7 +36,11 @@ export const fetchUserData = async () => {
     throw new Error('User data not found in Firestore.')
   }
 
-  return snap.data()
+  const data = snap.data()
+  return {
+    ...data,
+    uid: snap.id,
+  } as TUserResponse
 }
 
 export const updateProfile = async (userData: TUpdateProfileRequest) => {
