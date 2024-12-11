@@ -4,33 +4,29 @@ import {
   Scripts,
   ScrollRestoration,
   useLocation,
+  useNavigate,
 } from '@remix-run/react'
 import clsx from 'clsx'
 import { PropsWithChildren, useEffect } from 'react'
-import { useSigninCheck } from 'reactfire'
 
 import { LoadingSpinner } from '~/components/base'
 import { Toaster } from '~/components/ui'
-import { useApp, useTheme } from '~/lib/contexts'
+import { useFirebase, useTheme } from '~/lib/contexts'
+import { useAuthUser } from '~/lib/hooks'
 import { middleware } from '~/lib/utils'
 
 export const Rootlayout = (props: PropsWithChildren) => {
   const { children } = props
-  const { loading, setLoading } = useApp()
   const { pathname } = useLocation()
+  const { isLoading } = useFirebase()
+  const { data: user, isLoading: userIsLoading } = useAuthUser()
   const [theme] = useTheme()
-  const { status, data: signinResult } = useSigninCheck()
-  const { signedIn, user } = signinResult
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (loading) return
-    middleware({ pathname, signedIn })
-  }, [user, loading, pathname, signedIn])
-
-  useEffect(() => {
-    setLoading(status === 'loading')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+    if (userIsLoading) return
+    middleware({ user, navigate, pathname })
+  }, [user, userIsLoading, navigate, pathname])
 
   return (
     <html
@@ -47,7 +43,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
         <Links />
       </head>
       <body>
-        {loading ? <LoadingSpinner /> : children}
+        {isLoading || userIsLoading ? <LoadingSpinner /> : children}
         <Toaster />
         <ScrollRestoration />
         <Scripts />

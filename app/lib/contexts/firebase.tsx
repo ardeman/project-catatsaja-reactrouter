@@ -1,38 +1,43 @@
-import { getAuth } from 'firebase/auth'
 import {
-  enableIndexedDbPersistence,
-  initializeFirestore,
-} from 'firebase/firestore'
-import { PropsWithChildren, useEffect } from 'react'
-import {
-  AuthProvider,
-  FirestoreProvider,
-  useFirebaseApp,
-  useInitFirestore,
-} from 'reactfire'
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react'
 
-import { useApp } from '~/lib/contexts'
+type TFirebaseContextValue = {
+  isLoading: boolean
+  setIsLoading: Dispatch<SetStateAction<boolean>>
+}
 
-export const FirebaseProvider = (props: PropsWithChildren) => {
+const FirebaseContext = createContext<TFirebaseContextValue | undefined>(
+  undefined,
+)
+
+const FirebaseProvider = (props: PropsWithChildren) => {
   const { children } = props
-  const app = useFirebaseApp()
-  const { setLoading } = useApp()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const authInstance = getAuth(app)
-  const { status, data: firestoreInstance } = useInitFirestore(async (app) => {
-    const db = initializeFirestore(app, {})
-    await enableIndexedDbPersistence(db)
-    return db
-  })
-
-  useEffect(() => {
-    setLoading(status === 'loading')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+  const value = {
+    isLoading,
+    setIsLoading,
+  }
 
   return (
-    <AuthProvider sdk={authInstance}>
-      <FirestoreProvider sdk={firestoreInstance}>{children}</FirestoreProvider>
-    </AuthProvider>
+    <FirebaseContext.Provider value={value}>
+      {children}
+    </FirebaseContext.Provider>
   )
 }
+
+const useFirebase = () => {
+  const context = useContext(FirebaseContext)
+  if (context === undefined) {
+    throw new Error('useFirebase must be used within a FirebaseProvider')
+  }
+  return context
+}
+
+export { FirebaseProvider, useFirebase }

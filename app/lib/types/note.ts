@@ -1,8 +1,7 @@
 import { z } from 'zod'
 
+import { TPermissions, TTime } from '~/lib/types'
 import { noteSchema } from '~/lib/validations'
-
-import { TTime } from './common'
 
 export type TNoteForm = z.infer<typeof noteSchema>
 
@@ -21,6 +20,5 @@ export type TNoteResponse = {
   createdAt: TTime
   updatedAt: TTime
   owner: string
-  spectators?: string[]
-  collaborators?: string[]
+  permissions?: TPermissions
 }

@@ -68,9 +68,6 @@ importers:
       react-icons:
         specifier: ^5.4.0
         version: 5.4.0(react@18.3.1)
-      reactfire:
-        specifier: ^4.2.3
-        version: 4.2.3(firebase@11.0.2)(react@18.3.1)
       remix-themes:
         specifier: ^1.5.1
         version: 1.5.1(@remix-run/react@2.15.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2))(@remix-run/server-runtime@2.15.0(typescript@5.7.2))
@@ -3883,13 +3880,6 @@ packages:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
 
-  reactfire@4.2.3:
-    resolution: {integrity: sha512-FG75b586r8dId7EGIyVi/nKokth++BIvdRO1BRIBkM7BGe2v753olcNpUHBLGdBPap7t67vq2FA0P22Pu8rT3Q==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      firebase: ^9.0.0
-      react: '>=16 || experimental'
-
   read-cache@1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
 
@@ -4010,15 +4000,6 @@ packages:
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
-
-  rxfire@6.0.5:
-    resolution: {integrity: sha512-ycBsANGbya3GNtOBKzZVATLEV+0S9gUrlTfwnN15TCXtgG8OgIMAuv2k9+kMeVaevp/DRp1KT+vYf6Wkop6gvw==}
-    peerDependencies:
-      firebase: ^9.0.0 || ^10.0.0
-      rxjs: ^6.0.0 || ^7.0.0
-
-  rxjs@7.8.1:
-    resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
 
   sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
@@ -8907,13 +8888,6 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
 
-  reactfire@4.2.3(firebase@11.0.2)(react@18.3.1):
-    dependencies:
-      firebase: 11.0.2
-      react: 18.3.1
-      rxfire: 6.0.5(firebase@11.0.2)(rxjs@7.8.1)
-      rxjs: 7.8.1
-
   read-cache@1.0.0:
     dependencies:
       pify: 2.3.0
@@ -9086,15 +9060,6 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
-
-  rxfire@6.0.5(firebase@11.0.2)(rxjs@7.8.1):
-    dependencies:
-      firebase: 11.0.2
-      rxjs: 7.8.1
-
-  rxjs@7.8.1:
-    dependencies:
-      tslib: 2.8.1
 
   sade@1.8.1:
     dependencies:

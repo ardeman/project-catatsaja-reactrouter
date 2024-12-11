@@ -1,22 +1,25 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
-import { signOut } from 'firebase/auth'
+import { verifyBeforeUpdateEmail } from 'firebase/auth'
 
 import { auth } from '~/lib/configs'
 import { authError } from '~/lib/constants'
-import { useQueryActions, toast } from '~/lib/hooks'
+import { toast } from '~/lib/hooks'
+import { TEmailRequest } from '~/lib/types'
 
-export const useLogout = () => {
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
+export const useUpdateEmail = () => {
   return useMutation({
-    mutationFn: async () => {
-      if (!auth) {
-        throw new Error('Firebase Auth is not initialized.')
+    mutationFn: async (data: TEmailRequest) => {
+      if (!auth?.currentUser) {
+        throw new Error('No user is currently signed in.')
       }
-      await signOut(auth)
+
+      await verifyBeforeUpdateEmail(auth.currentUser, data.email)
     },
     onSuccess: () => {
-      invalidateUser()
+      toast({
+        description: 'Please check your email to verify the new email address.',
+      })
     },
     onError: (error: unknown) => {
       let message = String(error)

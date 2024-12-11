@@ -1,11 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from '@remix-run/react'
-import { User } from 'firebase/auth'
-import { doc } from 'firebase/firestore'
 import { CircleUser, Menu, Search } from 'lucide-react'
-import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
 
 import { Input } from '~/components/base'
 import {
@@ -20,8 +16,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '~/components/ui'
-import { useApp } from '~/lib/contexts'
-import { toast, useLogout } from '~/lib/hooks'
+import { toast, useLogout, useUserData } from '~/lib/hooks'
 import { TSearchRequest } from '~/lib/types'
 import { cn } from '~/lib/utils'
 import { searchSchema } from '~/lib/validations'
@@ -33,15 +28,7 @@ import { TProps } from './type'
 export const Navbar = (props: TProps) => {
   const { className } = props
   const navigate = useNavigate()
-  const { data: authData } = useUser()
-  const firestore = useFirestore()
-  const userRef = doc(
-    firestore,
-    authData?.uid ? 'users' : 'app',
-    authData?.uid || 'catat-saja',
-  )
-  const { data: firestoreData } = useFirestoreDocData(userRef)
-  const { user, setUser } = useApp()
+  const { data: userData } = useUserData()
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
@@ -56,18 +43,11 @@ export const Navbar = (props: TProps) => {
     })
   })
   const handleLogout = () => {
-    navigate('/')
     mutateLogout()
+    navigate('/')
   }
 
   const { mutate: mutateLogout } = useLogout()
-
-  useEffect(() => {
-    if (firestoreData) {
-      setUser(firestoreData as User)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firestoreData])
 
   return (
     <header
@@ -115,10 +95,10 @@ export const Navbar = (props: TProps) => {
               size="icon"
               className="rounded-full"
             >
-              {user?.photoURL ? (
+              {userData?.photoURL ? (
                 <img
-                  src={user.photoURL}
-                  alt={user.displayName || ''}
+                  src={userData.photoURL}
+                  alt={userData.displayName || ''}
                   width={40}
                   height={40}
                   className="select-none rounded-full"
@@ -131,7 +111,7 @@ export const Navbar = (props: TProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
-              {user?.displayName || user?.email}
+              {userData?.displayName || userData?.email}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {userMenus.map((menu, index) => (

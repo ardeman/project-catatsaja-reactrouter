@@ -1,16 +1,25 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
+import { GoogleAuthProvider, linkWithPopup } from 'firebase/auth'
 
+import { auth } from '~/lib/configs'
 import { authError } from '~/lib/constants'
-import { login } from '~/lib/firestore'
 import { useQueryActions, toast } from '~/lib/hooks'
-import { TSignInRequest } from '~/lib/types'
 
-export const useLogin = () => {
+export const useLinkGoogle = () => {
+  const provider = new GoogleAuthProvider()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   return useMutation({
-    mutationFn: (data: TSignInRequest) => login(data),
+    mutationFn: () => {
+      if (!auth?.currentUser) {
+        throw new Error('No user is currently signed in.')
+      }
+      return linkWithPopup(auth.currentUser, provider)
+    },
     onSuccess: () => {
+      toast({
+        description: 'Your Google account has been linked successfully.',
+      })
       invalidateUser()
     },
     onError: (error: unknown) => {

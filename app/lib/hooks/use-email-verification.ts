@@ -1,17 +1,23 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
+import { sendEmailVerification } from 'firebase/auth'
 
+import { auth } from '~/lib/configs'
 import { authError } from '~/lib/constants'
-import { login } from '~/lib/firestore'
-import { useQueryActions, toast } from '~/lib/hooks'
-import { TSignInRequest } from '~/lib/types'
+import { toast } from '~/lib/hooks'
 
-export const useLogin = () => {
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
+export const useEmailVerification = () => {
   return useMutation({
-    mutationFn: (data: TSignInRequest) => login(data),
+    mutationFn: () => {
+      if (!auth?.currentUser) {
+        throw new Error('No user is currently signed in.')
+      }
+      return sendEmailVerification(auth.currentUser)
+    },
     onSuccess: () => {
-      invalidateUser()
+      toast({
+        description: 'Verification email has been sent successfully.',
+      })
     },
     onError: (error: unknown) => {
       let message = String(error)

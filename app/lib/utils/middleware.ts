@@ -1,20 +1,26 @@
+import { NavigateFunction } from '@remix-run/react'
+import { User } from 'firebase/auth'
+
 import { authPages, protectedPages } from '~/lib/configs'
 import { extractPathSegment } from '~/lib/utils'
 
 type TProps = {
+  navigate: NavigateFunction
   pathname: string
-  signedIn: boolean
+  user?: User | null
 }
 
-export const middleware = (props: TProps): void => {
-  const { pathname, signedIn } = props
-  const extractPath = extractPathSegment(pathname)
+export const middleware = (props: TProps) => {
+  const { navigate, pathname, user } = props
+  const extractedPath = extractPathSegment(pathname)
 
-  if (protectedPages.has(extractPath) && !signedIn) {
-    globalThis.location.href = '/auth/sign-in'
+  if (protectedPages.has(extractedPath) && !user) {
+    const url = '/auth/sign-in'
+    return navigate(url)
   }
 
-  if (authPages.has(extractPath) && signedIn) {
-    globalThis.location.href = '/dashboard'
+  if (authPages.has(extractedPath) && user) {
+    const url = '/dashboard'
+    return navigate(url)
   }
 }

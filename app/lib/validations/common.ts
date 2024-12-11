@@ -1,5 +1,5 @@
 import * as z from 'zod'
 export const shareSchema = z.object({
-  collaborators: z.array(z.string()),
-  spectators: z.array(z.string()),
+  writers: z.array(z.string()),
+  readers: z.array(z.string()),
 })

@@ -8,3 +8,8 @@ export type TTime = {
 }
 
 export type TShareForm = z.infer<typeof shareSchema>
+
+export type TPermissions = {
+  read: string[]
+  write: string[]
+}
