@@ -2,7 +2,49 @@
   "auth": {
     "signIn": {
       "title": "Sign In",
-      "description": "to continue to {{appName}}"
+      "description": "to continue to {{appName}}",
+      "form": {
+        "switch": {
+          "label": "Don't have an account?",
+          "link": "Sign Up"
+        }
+      }
+    },
+    "signUp": {
+      "title": "Sign Up",
+      "description": "Enter your information to create an account",
+      "form": {
+        "switch": {
+          "label": "Already have an account?",
+          "link": "Sign In"
+        }
+      }
+    },
+    "form": {
+      "displayName": {
+        "label": "Display Name",
+        "placeholder": "Enter your display name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@me.com"
+      },
+      "password": {
+        "label": "Password"
+      },
+      "confirmPassword": {
+        "label": "Confirm Password"
+      },
+      "forgotPassword": {
+        "label": "Forgot password?"
+      },
+      "submit": {
+        "label": "Continue",
+        "withGoogle": "Continue with Google"
+      }
     }
+  },
+  "language": {
+    "selector": "Change Language"
   }
 }

@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 
-import { Button, Input, ModeToggle } from '~/components/base'
+import { Button, Input, LanguageSelector, ModeToggle } from '~/components/base'
 import {
   Button as UIButton,
   CardContent,
@@ -74,25 +74,28 @@ export const SignInPage = () => {
               {t('auth.signIn.description', { appName })}
             </CardDescription>
           </div>
-          <ModeToggle />
+          <div className="flex space-x-2">
+            <LanguageSelector />
+            <ModeToggle />
+          </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pb-4">
         <FormProvider {...formMethods}>
           <form
             onSubmit={onSubmit}
             className="space-y-6"
           >
             <Input
-              label="Email"
+              label={t('auth.form.email.label')}
               name="email"
-              placeholder="you@example.com"
+              placeholder="you@me.com"
               autoFocus
               required
               disabled={disabled}
             />
             <Input
-              label="Password"
+              label={t('auth.form.password.label')}
               name="password"
               type={passwordType}
               hint={
@@ -100,7 +103,7 @@ export const SignInPage = () => {
                   to="/auth/forgot-password"
                   className="block text-right hover:underline"
                 >
-                  Forgot your password?
+                  {t('auth.form.forgotPassword.label')}
                 </Link>
               }
               required
@@ -124,7 +127,7 @@ export const SignInPage = () => {
               isLoading={isLoginPending}
               type="submit"
             >
-              Continue
+              {t('auth.form.submit.label')}
             </Button>
           </form>
         </FormProvider>
@@ -138,15 +141,15 @@ export const SignInPage = () => {
           isLoading={isLoginGooglePending}
         >
           <FcGoogle className="text-xl" />
-          Continue with Google
+          {t('auth.form.submit.withGoogle')}
         </Button>
         <div className="text-center text-sm">
-          Don&apos;t have an account?{' '}
+          {t('auth.signIn.form.switch.label')}{' '}
           <UIButton
             variant="link"
             asChild
           >
-            <Link to="/auth/sign-up">Sign up</Link>
+            <Link to="/auth/sign-up">{t('auth.signIn.form.switch.link')}</Link>
           </UIButton>
         </div>
       </CardFooter>

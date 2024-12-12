@@ -2,7 +2,49 @@
   "auth": {
     "signIn": {
       "title": "Masuk",
-      "description": "untuk melanjutkan ke {{appName}}"
+      "description": "untuk melanjutkan ke {{appName}}",
+      "form": {
+        "switch": {
+          "label": "Belum punya akun?",
+          "link": "Daftar"
+        }
+      }
+    },
+    "signUp": {
+      "title": "Daftar",
+      "description": "Masukkan informasi Anda untuk membuat akun",
+      "form": {
+        "switch": {
+          "label": "Sudah punya akun?",
+          "link": "Masuk"
+        }
+      }
+    },
+    "form": {
+      "displayName": {
+        "label": "Nama Tampilan",
+        "placeholder": "Masukkan nama tampilan Anda"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "kamu@aku.com"
+      },
+      "password": {
+        "label": "Kata Sandi"
+      },
+      "confirmPassword": {
+        "label": "Konfirmasi Kata Sandi"
+      },
+      "forgotPassword": {
+        "label": "Lupa kata sandi?"
+      },
+      "submit": {
+        "label": "Lanjutkan",
+        "withGoogle": "Lanjutkan dengan Google"
+      }
     }
+  },
+  "language": {
+    "selector": "Ganti Bahasa"
   }
 }
