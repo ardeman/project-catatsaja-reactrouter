@@ -5,7 +5,6 @@ import Backend from 'i18next-http-backend'
 import { startTransition, StrictMode } from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
-import { getInitialNamespaces } from 'remix-i18next/client'
 
 import i18n from './localization/i18n'
 import { resources } from './localization/resource'
@@ -16,8 +15,6 @@ async function hydrate() {
     .use(Backend) // Setup your backend
     .init({
       ...i18n, // spread the configuration
-      // This function detects the namespaces your routes rendered while SSR use
-      ns: getInitialNamespaces(),
       resources,
       detection: {
         // Here only enable htmlTag detection, we'll detect the language only
