@@ -3,6 +3,7 @@ import { Link } from '@remix-run/react'
 import { Eye, EyeClosed } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 
 import { Button, Input, ModeToggle } from '~/components/base'
@@ -21,6 +22,7 @@ import { TSignInRequest } from '~/lib/types'
 import { signInSchema } from '~/lib/validations'
 
 export const SignInPage = () => {
+  const { t } = useTranslation()
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const formMethods = useForm<TSignInRequest>({
@@ -67,8 +69,10 @@ export const SignInPage = () => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="grid">
-            <CardTitle className="text-2xl">Sign in</CardTitle>
-            <CardDescription>to continue to {appName}</CardDescription>
+            <CardTitle className="text-2xl">{t('auth.signIn.title')}</CardTitle>
+            <CardDescription>
+              {t('auth.signIn.description', { appName })}
+            </CardDescription>
           </div>
           <ModeToggle />
         </div>

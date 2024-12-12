@@ -8,6 +8,7 @@ import {
 } from '@remix-run/react'
 import clsx from 'clsx'
 import { PropsWithChildren, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { LoadingSpinner } from '~/components/base'
 import { Toaster } from '~/components/ui'
@@ -22,6 +23,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
   const { data: user, isLoading: userIsLoading } = useAuthUser()
   const [theme] = useTheme()
   const navigate = useNavigate()
+  const { i18n } = useTranslation()
 
   useEffect(() => {
     if (userIsLoading) return
@@ -32,6 +34,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
     <html
       lang="en"
       className={clsx(theme)}
+      dir={i18n.dir()}
     >
       <head>
         <meta charSet="utf-8" />

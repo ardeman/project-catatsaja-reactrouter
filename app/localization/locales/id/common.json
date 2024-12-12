@@ -1,0 +1,8 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "Masuk",
+      "description": "untuk melanjutkan ke {{appName}}"
+    }
+  }
+}

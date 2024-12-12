@@ -9,6 +9,10 @@ import '~/styles/globals.css'
 
 const queryClient = new QueryClient()
 
+export const handle = {
+  i18n: 'common',
+}
+
 const App = () => {
   const theme = globalThis.localStorage.getItem('theme')
 

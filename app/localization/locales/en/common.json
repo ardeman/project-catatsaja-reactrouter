@@ -1,0 +1,8 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "description": "to continue to {{appName}}"
+    }
+  }
+}
