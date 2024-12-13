@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import { Textarea } from '~/components/base'
 import {
@@ -10,7 +11,7 @@ import {
   useUserData,
 } from '~/lib/hooks'
 import { TNoteForm } from '~/lib/types'
-import { formatDate, getDateLabel } from '~/lib/utils'
+import { getDateLabel } from '~/lib/utils'
 import { noteSchema } from '~/lib/validations'
 
 import { Action } from './action'
@@ -19,15 +20,20 @@ import { TFormProps } from './type'
 
 export const Form = forwardRef((props: TFormProps, ref) => {
   const { notes } = props
+  const { t, i18n } = useTranslation()
   const { selectedNote } = useNote()
   const note = notes?.find((n) => n.id === selectedNote?.id)
-  const dateLabel = note ? getDateLabel(note.updatedAt?.seconds) : ''
-  const date = note
-    ? formatDate(note.updatedAt?.seconds || note.createdAt.seconds)
+  const dateLabel = note
+    ? getDateLabel({
+        updatedAt: note.updatedAt?.seconds,
+        createdAt: note.createdAt.seconds,
+        t,
+        locale: i18n.language,
+      })
     : ''
   const { data: userData } = useUserData()
   const isPinned = note?.isPinned
-  const canWrite = note?.permissions?.write.includes(userData?.uid)
+  const canWrite = note?.permissions?.write.includes(userData?.uid || '')
   const isOwner = note?.owner === userData?.uid
   const isEditable = isOwner || canWrite
   const { mutate: mutateCreateNote } = useCreateNote()
@@ -103,7 +109,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
         />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
-        {dateLabel} {date}
+        {dateLabel}
       </span>
     </FormProvider>
   )
