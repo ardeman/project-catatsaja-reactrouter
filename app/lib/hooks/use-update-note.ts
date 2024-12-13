@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { updateNote } from '~/lib/firestore'
+import { updateNote } from '~/apis/firestore'
 import { useQueryActions, toast } from '~/lib/hooks'
 import { TUpdateNoteRequest } from '~/lib/types'
 

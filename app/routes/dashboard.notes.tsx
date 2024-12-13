@@ -1,7 +1,5 @@
 import { NotesPage } from '~/components/pages'
 
-const Notes = () => {
-  return <NotesPage />
-}
+const Notes = () => <NotesPage />
 
 export default Notes

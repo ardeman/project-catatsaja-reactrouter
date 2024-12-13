@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 
+import { deleteNote } from '~/apis/firestore'
 import { ToastAction } from '~/components/ui'
-import { deleteNote } from '~/lib/firestore'
 import { useCreateNote, useQueryActions, toast } from '~/lib/hooks'
 import { TNoteResponse } from '~/lib/types'
 

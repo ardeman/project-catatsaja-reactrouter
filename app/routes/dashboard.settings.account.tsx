@@ -1,7 +1,5 @@
 import { AccountSettingsPage } from '~/components/pages'
 
-const AccountSettings = () => {
-  return <AccountSettingsPage />
-}
+const AccountSettings = () => <AccountSettingsPage />
 
 export default AccountSettings

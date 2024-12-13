@@ -12,10 +12,20 @@
     },
     "signUp": {
       "title": "Sign Up",
-      "description": "Enter your information to create an account",
+      "description": "Create an account",
       "form": {
         "switch": {
           "label": "Already have an account?",
+          "link": "Sign In"
+        }
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "description": "Enter your email to reset password",
+      "form": {
+        "switch": {
+          "label": "Back to",
           "link": "Sign In"
         }
       }

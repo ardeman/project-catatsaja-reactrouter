@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from '@remix-run/react'
+import CryptoJS from 'crypto-js'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -29,6 +30,7 @@ export const Navbar = (props: TProps) => {
   const { className } = props
   const navigate = useNavigate()
   const { data: userData } = useUserData()
+  const hashedEmail = CryptoJS.SHA256(userData?.email.toLowerCase() || '')
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
@@ -102,6 +104,9 @@ export const Navbar = (props: TProps) => {
                   width={40}
                   height={40}
                   className="select-none rounded-full"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://gravatar.com/avatar/${hashedEmail}`
+                  }}
                 />
               ) : (
                 <CircleUser className="h-5 w-5" />

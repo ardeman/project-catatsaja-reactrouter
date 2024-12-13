@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 
+import { loginWithGoogle } from '~/apis/firestore'
 import { authError } from '~/lib/constants'
-import { loginWithGoogle } from '~/lib/firestore'
 import { useQueryActions, toast } from '~/lib/hooks'
 
 export const useLoginGoogle = () => {

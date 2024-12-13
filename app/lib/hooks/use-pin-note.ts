@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { pinNote } from '~/lib/firestore'
+import { pinNote } from '~/apis/firestore'
 import { useQueryActions, toast } from '~/lib/hooks'
 import { TPinNoteRequest } from '~/lib/types'
 

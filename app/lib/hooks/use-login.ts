@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 
+import { login } from '~/apis/firestore'
 import { authError } from '~/lib/constants'
-import { login } from '~/lib/firestore'
 import { useQueryActions, toast } from '~/lib/hooks'
 import { TSignInRequest } from '~/lib/types'
 

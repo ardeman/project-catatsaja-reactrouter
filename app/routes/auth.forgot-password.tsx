@@ -1,7 +1,5 @@
-import { LoadingSpinner } from '~/components/base'
+import { ForgotPasswordPage } from '~/components/pages'
 
-const ForgotPassword = () => {
-  return <LoadingSpinner classname="min-h-fit flex-1" />
-}
+const ForgotPassword = () => <ForgotPasswordPage />
 
 export default ForgotPassword

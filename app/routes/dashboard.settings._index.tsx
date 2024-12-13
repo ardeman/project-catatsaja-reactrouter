@@ -1,7 +1,5 @@
 import { GeneralSettingsPage } from '~/components/pages'
 
-const GeneralSettings = () => {
-  return <GeneralSettingsPage />
-}
+const GeneralSettings = () => <GeneralSettingsPage />
 
 export default GeneralSettings

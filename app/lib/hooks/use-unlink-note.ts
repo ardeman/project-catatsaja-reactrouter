@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { unlinkNote } from '~/lib/firestore'
+import { unlinkNote } from '~/apis/firestore'
 import { useQueryActions, toast } from '~/lib/hooks'
 import { TNoteResponse } from '~/lib/types'
 

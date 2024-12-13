@@ -2,8 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@remix-run/react'
 import { FC, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
-import { Button, Input, ModeToggle } from '~/components/base'
+import { Button, Input, LanguageSelector, ModeToggle } from '~/components/base'
 import {
   Button as UIButton,
   Card,
@@ -18,10 +19,11 @@ import { TEmailRequest } from '~/lib/types'
 import { emailSchema } from '~/lib/validations'
 
 export const ForgotPasswordPage: FC = () => {
+  const { t } = useTranslation(['common', 'zod'])
   const [disabled, setDisabled] = useState(false)
   const [timerForgotPassword, setTimerForgotPassword] = useState<number>()
   const formMethods = useForm<TEmailRequest>({
-    resolver: zodResolver(emailSchema),
+    resolver: zodResolver(emailSchema(t)),
     defaultValues: {
       email: '',
     },
@@ -60,55 +62,60 @@ export const ForgotPasswordPage: FC = () => {
   }, [timerForgotPassword])
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-muted/40">
-      <Card className="min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="grid">
-              <CardTitle>Forgot password</CardTitle>
-              <CardDescription>
-                Enter your email address to reset your password
-              </CardDescription>
-            </div>
+    <Card className="min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="grid">
+            <CardTitle className="text-2xl">
+              {t('auth.forgotPassword.title')}
+            </CardTitle>
+            <CardDescription>
+              {t('auth.forgotPassword.description')}
+            </CardDescription>
+          </div>
+          <div className="flex space-x-2">
+            <LanguageSelector />
             <ModeToggle />
           </div>
-        </CardHeader>
-        <CardContent>
-          <FormProvider {...formMethods}>
-            <form
-              onSubmit={onSubmit}
-              className="space-y-6"
+        </div>
+      </CardHeader>
+      <CardContent className="pb-4">
+        <FormProvider {...formMethods}>
+          <form
+            onSubmit={onSubmit}
+            className="space-y-6"
+          >
+            <Input
+              label={t('auth.form.email.label')}
+              name="email"
+              placeholder="you@me.com"
+              required
+              disabled={disabled}
+            />
+            <Button
+              disabled={disabled || !!timerForgotPassword}
+              isLoading={isForgotPasswordPending}
+              type="submit"
             >
-              <Input
-                label="Email"
-                name="email"
-                placeholder="you@example.com"
-                required
-                disabled={disabled}
-              />
-              <Button
-                disabled={disabled || !!timerForgotPassword}
-                isLoading={isForgotPasswordPending}
-                type="submit"
-              >
-                Continue {timerForgotPassword && `(${timerForgotPassword})`}
-              </Button>
-            </form>
-          </FormProvider>
-        </CardContent>
-        <CardFooter className="grid space-y-4">
-          <div className="text-center text-sm">
-            Back to{' '}
-            <UIButton
-              variant="link"
-              className="p-0"
-              asChild
-            >
-              <Link to="/auth/sign-in">Sign in</Link>
-            </UIButton>
-          </div>
-        </CardFooter>
-      </Card>
-    </div>
+              {t('auth.form.submit.label')}{' '}
+              {timerForgotPassword && `(${timerForgotPassword})`}
+            </Button>
+          </form>
+        </FormProvider>
+      </CardContent>
+      <CardFooter className="grid space-y-4">
+        <div className="text-center text-sm">
+          {t('auth.forgotPassword.form.switch.label')}{' '}
+          <UIButton
+            variant="link"
+            asChild
+          >
+            <Link to="/auth/sign-in">
+              {t('auth.forgotPassword.form.switch.link')}
+            </Link>
+          </UIButton>
+        </div>
+      </CardFooter>
+    </Card>
   )
 }

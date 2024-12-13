@@ -12,10 +12,20 @@
     },
     "signUp": {
       "title": "Daftar",
-      "description": "Masukkan informasi Anda untuk membuat akun",
+      "description": "Buat akun",
       "form": {
         "switch": {
           "label": "Sudah punya akun?",
+          "link": "Masuk"
+        }
+      }
+    },
+    "forgotPassword": {
+      "title": "Lupa Kata Sandi",
+      "description": "Masukkan email Anda untuk reset kata sandi",
+      "form": {
+        "switch": {
+          "label": "Kembali ke",
           "link": "Masuk"
         }
       }

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { createNote } from '~/lib/firestore'
+import { createNote } from '~/apis/firestore'
 import { useQueryActions, toast } from '~/lib/hooks'
 import { TCreateNoteRequest } from '~/lib/types'
 
