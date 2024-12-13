@@ -17,7 +17,6 @@ const i18next = new RemixI18Next({
       return langFromCookie ?? i18n.fallbackLng
     },
   },
-
   i18next: {
     ...i18n,
   },
