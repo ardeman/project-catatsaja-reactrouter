@@ -1,7 +1,4 @@
 {
-  "language": {
-    "selector": "Ganti Bahasa"
-  },
   "time": {
     "created": "Dibuat {{time}}",
     "edited": "Diedit {{time}}"
@@ -97,6 +94,20 @@
     "profile": {
       "title": "Profil",
       "description": "Perbarui informasi profil Anda."
+    },
+    "appearance": {
+      "title": "Tampilan",
+      "description": "Atur tampilan {{appName}}.",
+      "form": {
+        "language": {
+          "selector": "Ganti Bahasa"
+        },
+        "theme": {
+          "dark": "Gelap",
+          "light": "Terang",
+          "system": "Sistem"
+        }
+      }
     },
     "email": {
       "title": "Perbarui alamat email",

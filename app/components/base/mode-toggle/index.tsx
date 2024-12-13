@@ -1,4 +1,5 @@
 import { Moon, Sun } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Theme } from 'remix-themes'
 
 import {
@@ -13,6 +14,7 @@ import { useTheme } from '~/lib/contexts'
 
 export const ModeToggle = () => {
   const [theme, setTheme, metadata] = useTheme()
+  const { t } = useTranslation()
   const value = metadata.definedBy === 'SYSTEM' ? 'system' : (theme as string)
 
   const handleSetTheme = (value: string) => {
@@ -42,9 +44,15 @@ export const ModeToggle = () => {
           value={value}
           onValueChange={handleSetTheme}
         >
-          <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="system">System</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="light">
+            {t('settings.appearance.form.theme.light')}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="dark">
+            {t('settings.appearance.form.theme.dark')}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="system">
+            {t('settings.appearance.form.theme.system')}
+          </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

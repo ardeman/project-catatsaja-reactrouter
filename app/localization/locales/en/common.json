@@ -1,7 +1,4 @@
 {
-  "language": {
-    "selector": "Change Language"
-  },
   "time": {
     "created": "Created {{time}}",
     "edited": "Edited {{time}}"
@@ -97,6 +94,20 @@
     "profile": {
       "title": "Profile",
       "description": "Update your profile information."
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Customize the appearance of {{appName}}.",
+      "form": {
+        "language": {
+          "selector": "Change Language"
+        },
+        "theme": {
+          "dark": "Dark",
+          "light": "Light",
+          "system": "System"
+        }
+      }
     },
     "email": {
       "title": "Change email address",

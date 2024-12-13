@@ -25,7 +25,9 @@ export const LanguageSelector = () => {
           size="icon"
         >
           <Languages className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">{t('language.selector')}</span>
+          <span className="sr-only">
+            {t('settings.appearance.form.language.selector')}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
