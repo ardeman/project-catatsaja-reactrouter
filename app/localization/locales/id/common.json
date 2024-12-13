@@ -33,7 +33,10 @@
         "label": "Kata Sandi"
       },
       "confirmPassword": {
-        "label": "Konfirmasi Kata Sandi"
+        "label": "Konfirmasi Kata Sandi",
+        "errors": {
+          "passwordMismatch": "Kata sandi tidak cocok"
+        }
       },
       "forgotPassword": {
         "label": "Lupa kata sandi?"

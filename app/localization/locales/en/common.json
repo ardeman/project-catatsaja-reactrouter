@@ -33,7 +33,10 @@
         "label": "Password"
       },
       "confirmPassword": {
-        "label": "Confirm Password"
+        "label": "Confirm Password",
+        "errors": {
+          "passwordMismatch": "Passwords do not match"
+        }
       },
       "forgotPassword": {
         "label": "Forgot password?"

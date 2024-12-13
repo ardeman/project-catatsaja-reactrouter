@@ -1,20 +1,25 @@
-import english from './locales/en/common.json'
-import indonesian from './locales/id/common.json'
+import enCommon from './locales/en/common.json'
+import enZod from './locales/en/zod.json'
+import idCommon from './locales/id/common.json'
+import idZod from './locales/id/zod.json'
 
 const languages = ['en', 'id'] as const
 export const supportedLanguages = [...languages]
 export type Language = (typeof languages)[number]
 
 export type Resource = {
-  common: typeof english
+  common: typeof enCommon
+  zod: typeof enZod
 }
 
 export const resources: Record<Language, Resource> = {
   en: {
-    common: english,
+    common: enCommon,
+    zod: enZod,
   },
   id: {
-    common: indonesian,
+    common: idCommon,
+    zod: idZod,
   },
 }
 

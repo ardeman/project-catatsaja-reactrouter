@@ -20,11 +20,11 @@ import { TSignUpRequest } from '~/lib/types'
 import { signUpSchema } from '~/lib/validations'
 
 export const SignUpPage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'zod'])
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const formMethods = useForm<TSignUpRequest>({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(signUpSchema(t)),
     defaultValues: {
       displayName: '',
       email: '',
