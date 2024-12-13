@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import { Button, Input } from '~/components/base'
 import {
@@ -16,6 +17,7 @@ import { TUpdateProfileRequest } from '~/lib/types'
 import { generalSettingSchema } from '~/lib/validations'
 
 export const GeneralSettingsPage = () => {
+  const { t } = useTranslation()
   const [disabled, setDisabled] = useState(false)
   const { data: userData } = useUserData()
   const formMethods = useForm<TUpdateProfileRequest>({
@@ -47,17 +49,17 @@ export const GeneralSettingsPage = () => {
     <div className="grid gap-6">
       <Card>
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
-          <CardDescription>Update your profile information.</CardDescription>
+          <CardTitle>{t('settings.profile.title')}</CardTitle>
+          <CardDescription>{t('settings.profile.description')}</CardDescription>
         </CardHeader>
         <FormProvider {...formMethods}>
           <form onSubmit={onSubmit}>
             <CardContent>
               <Input
-                label="Display Name"
+                label={t('auth.form.displayName.label')}
                 name="displayName"
                 disabled={disabled}
-                placeholder="Display Name"
+                placeholder={t('auth.form.displayName.placeholder')}
               />
             </CardContent>
             <CardFooter className="border-t px-6 py-4">
@@ -66,7 +68,7 @@ export const GeneralSettingsPage = () => {
                 isLoading={isUpdateProfilePending}
                 type="submit"
               >
-                Save
+                {t('form.save')}
               </Button>
             </CardFooter>
           </form>

@@ -100,12 +100,23 @@
     },
     "email": {
       "title": "Perbarui alamat email",
-      "description": "Perbarui alamat email Anda."
+      "description": "Perbarui alamat email Anda.",
+      "tooltip": {
+        "verified": "Email terverifikasi",
+        "unverified": "Email belum terverifikasi"
+      },
+      "button": {
+        "verify": "Verifikasi Email",
+        "setPassword": "Atur Kata Sandi"
+      }
     },
     "google": {
       "title": "Hubungkan akun Google",
       "description": "Setelah menghubungkan akun Google, Anda dapat masuk ke {{appName}} dengan akun Google, sebagai tambahan dari email dan kata sandi Anda.",
-      "button": "Hubungkan akun Google Anda"
+      "button": {
+        "link": "Hubungkan akun Google anda",
+        "linked": "Terhubung ke {{email}}"
+      }
     }
   }
 }

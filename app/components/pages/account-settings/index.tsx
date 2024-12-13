@@ -3,6 +3,7 @@ import { useRevalidator } from '@remix-run/react'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 
 import { Button, Input } from '~/components/base'
@@ -31,6 +32,7 @@ import { cn } from '~/lib/utils'
 import { emailSchema } from '~/lib/validations'
 
 export const AccountSettingsPage = () => {
+  const { t } = useTranslation()
   const [disabled, setDisabled] = useState(false)
   const [timerEmailVerify, setTimerEmailVerify] = useState<number>()
   const [timerUpdateEmail, setTimerUpdateEmail] = useState<number>()
@@ -44,7 +46,7 @@ export const AccountSettingsPage = () => {
     (provider) => provider.providerId === 'password',
   )
   const formMethods = useForm<TEmailRequest>({
-    resolver: zodResolver(emailSchema),
+    resolver: zodResolver(emailSchema(t)),
     values: {
       email: authData?.email || '',
     },
@@ -170,19 +172,19 @@ export const AccountSettingsPage = () => {
     <div className="grid gap-6">
       <Card x-chunk="dashboard-04-chunk-1">
         <CardHeader>
-          <CardTitle>Change email address</CardTitle>
-          <CardDescription>Update your email address.</CardDescription>
+          <CardTitle>{t('settings.email.title')}</CardTitle>
+          <CardDescription>{t('settings.email.description')}</CardDescription>
         </CardHeader>
         <FormProvider {...formMethods}>
           <form onSubmit={onSubmit}>
             <CardContent className="flex items-end space-x-4">
               <Input
-                label="Email"
+                label={t('auth.form.email.label')}
                 name="email"
                 disabled={
                   disabled || !authData?.emailVerified || !userPasswordProvider
                 }
-                placeholder="Display Name"
+                placeholder={t('auth.form.email.placeholder')}
                 className="w-full"
                 rightNode={({ className }) =>
                   watchEmail === authData?.email && (
@@ -207,8 +209,8 @@ export const AccountSettingsPage = () => {
                         </TooltipTrigger>
                         <TooltipContent>
                           {authData?.emailVerified
-                            ? 'Email verified'
-                            : 'Email not verified'}
+                            ? t('settings.email.tooltip.verified')
+                            : t('settings.email.tooltip.unverified')}
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -223,7 +225,8 @@ export const AccountSettingsPage = () => {
                   isLoading={isSendEmailVerificationPending}
                   onClick={handleSendEmailVerification}
                 >
-                  Verify Email {timerEmailVerify && `(${timerEmailVerify})`}
+                  {t('settings.email.button.verify')}{' '}
+                  {timerEmailVerify && `(${timerEmailVerify})`}
                 </Button>
               )}
               {!userPasswordProvider && (
@@ -234,7 +237,8 @@ export const AccountSettingsPage = () => {
                   isLoading={isSetPasswordPending}
                   onClick={() => mutateSetPassword()}
                 >
-                  Set Password {timerSetPassword && `(${timerSetPassword})`}
+                  {t('settings.email.button.setPassword')}{' '}
+                  {timerSetPassword && `(${timerSetPassword})`}
                 </Button>
               )}
             </CardContent>
@@ -250,7 +254,7 @@ export const AccountSettingsPage = () => {
                 isLoading={isUpdateEmailPending}
                 type="submit"
               >
-                Save {timerUpdateEmail && `(${timerUpdateEmail})`}
+                {t('form.save')} {timerUpdateEmail && `(${timerUpdateEmail})`}
               </Button>
             </CardFooter>
           </form>
@@ -259,11 +263,10 @@ export const AccountSettingsPage = () => {
       <Card x-chunk="dashboard-04-chunk-2">
         <CardHeader>
           <CardTitle className="flex items-center space-x-1">
-            <span>Link Google account</span>
+            {t('settings.google.title')}
           </CardTitle>
           <CardDescription>
-            After linking your Google account, you can sign in to {appName} with
-            your Google account, in addition to using your email and password.
+            {t('settings.google.description', { appName })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -276,8 +279,10 @@ export const AccountSettingsPage = () => {
           >
             <FcGoogle className="text-xl" />
             {userGoogleProvider
-              ? `Linked to ${userGoogleProvider.email}`
-              : 'Link your Google account'}
+              ? t('settings.google.button.linked', {
+                  email: userGoogleProvider.email,
+                })
+              : t('settings.google.button.link')}
           </Button>
         </CardContent>
       </Card>
