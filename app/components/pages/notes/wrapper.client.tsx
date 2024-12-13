@@ -1,5 +1,6 @@
 import Masonry from 'masonry-layout'
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { Button, Modal } from '~/components/base'
 import { useGetNotes } from '~/lib/hooks'
@@ -10,6 +11,7 @@ import { Form } from './form'
 import { Share } from './share'
 
 export const Wrapper = () => {
+  const { t } = useTranslation()
   const {
     openForm,
     setOpenForm,
@@ -56,7 +58,7 @@ export const Wrapper = () => {
         className="w-full max-w-md"
         onClick={handleCreateNote}
       >
-        Add Note
+        {t('notes.add')}
       </Button>
       <div className="flex justify-center">
         <div

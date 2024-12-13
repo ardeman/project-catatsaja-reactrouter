@@ -2,6 +2,10 @@
   "language": {
     "selector": "Ganti Bahasa"
   },
+  "time": {
+    "created": "Dibuat {{time}}",
+    "edited": "Diedit {{time}}"
+  },
   "navigation": {
     "dashboard": "Dasbor",
     "notes": "Catatan",
@@ -71,5 +75,8 @@
         "withGoogle": "Lanjutkan dengan Google"
       }
     }
+  },
+  "notes": {
+    "add": "Tambah Catatan"
   }
 }

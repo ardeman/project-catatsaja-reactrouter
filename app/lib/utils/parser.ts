@@ -1,3 +1,5 @@
+import { TFunction } from 'i18next'
+
 export const extractPathSegment = (path: string) => {
   // Split the path into segments
   const segments = path.split('/').filter(Boolean)
@@ -17,11 +19,34 @@ export const getRandomIndex = (arrayLength: number, currentIndex: number) => {
   return randomIndex
 }
 
-export const getDateLabel = (updatedAt: number) =>
-  updatedAt ? 'Edited' : 'Created'
+export const getDateLabel = ({
+  updatedAt,
+  createdAt,
+  t,
+  locale,
+}: {
+  updatedAt?: number
+  createdAt: number
+  t: TFunction
+  locale: string
+}) => {
+  const date = updatedAt || createdAt
+  const label = updatedAt ? 'edited' : 'created'
+  const dateLabel = t(`time.${label}`, {
+    time: formatDate({ timestamp: date, locale }),
+  })
 
-export const formatDate = (timestamp: number) =>
-  new Date(timestamp * 1000).toLocaleDateString('en-US', {
+  return dateLabel
+}
+
+export const formatDate = ({
+  timestamp,
+  locale,
+}: {
+  timestamp: number
+  locale: string
+}) =>
+  new Date(timestamp * 1000).toLocaleDateString(locale, {
     month: 'short',
     day: '2-digit',
     year: 'numeric',

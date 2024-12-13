@@ -2,6 +2,10 @@
   "language": {
     "selector": "Change Language"
   },
+  "time": {
+    "created": "Created {{time}}",
+    "edited": "Edited {{time}}"
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "notes": "Notes",
