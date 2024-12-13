@@ -1,10 +1,12 @@
-export const settings = [
+import { TFunction } from 'i18next'
+
+export const settings = (t: TFunction) => [
   {
-    name: 'General',
+    name: t('navigation.general'),
     href: '/dashboard/settings',
   },
   {
-    name: 'Account',
+    name: t('navigation.account'),
     href: '/dashboard/settings/account',
   },
 ]

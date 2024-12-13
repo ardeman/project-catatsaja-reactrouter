@@ -12,16 +12,22 @@
     "tasks": "Tasks",
     "moneyLog": "Money Log",
     "settings": "Settings",
+    "general": "General",
+    "account": "Account",
     "reportIssues": "Report Issues",
     "signOut": "Sign Out",
     "search": {
       "placeholder": "Search"
     }
   },
+  "form": {
+    "save": "Save",
+    "cancel": "Cancel"
+  },
   "auth": {
     "signIn": {
       "title": "Sign In",
-      "description": "to continue to {{appName}}",
+      "description": "to continue to {{appName}}.",
       "form": {
         "switch": {
           "label": "Don't have an account?",
@@ -31,7 +37,7 @@
     },
     "signUp": {
       "title": "Sign Up",
-      "description": "Create an account",
+      "description": "Create an account.",
       "form": {
         "switch": {
           "label": "Already have an account?",
@@ -41,7 +47,7 @@
     },
     "forgotPassword": {
       "title": "Forgot Password",
-      "description": "Enter your email to reset password",
+      "description": "Enter your email to reset password.",
       "form": {
         "switch": {
           "label": "Back to",
@@ -85,6 +91,21 @@
       "content": {
         "label": "Content"
       }
+    }
+  },
+  "settings": {
+    "profile": {
+      "title": "Profile",
+      "description": "Update your profile information."
+    },
+    "email": {
+      "title": "Change email address",
+      "description": "Update your email address."
+    },
+    "google": {
+      "title": "Link Google account",
+      "description": "After linking your Google account, you can sign in to {{appName}} with your Google account, in addition to your email and password.",
+      "button": "Link your Google account"
     }
   }
 }

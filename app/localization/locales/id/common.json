@@ -12,11 +12,17 @@
     "tasks": "Tugas",
     "moneyLog": "Catatan Keuangan",
     "settings": "Pengaturan",
+    "general": "Umum",
+    "account": "Akun",
     "reportIssues": "Laporkan Masalah",
     "signOut": "Keluar",
     "search": {
       "placeholder": "Cari"
     }
+  },
+  "form": {
+    "save": "Simpan",
+    "cancel": "Batal"
   },
   "auth": {
     "signIn": {
@@ -85,6 +91,21 @@
       "content": {
         "label": "Konten"
       }
+    }
+  },
+  "settings": {
+    "profile": {
+      "title": "Profil",
+      "description": "Perbarui informasi profil Anda."
+    },
+    "email": {
+      "title": "Perbarui alamat email",
+      "description": "Perbarui alamat email Anda."
+    },
+    "google": {
+      "title": "Hubungkan akun Google",
+      "description": "Setelah menghubungkan akun Google, Anda dapat masuk ke {{appName}} dengan akun Google, sebagai tambahan dari email dan kata sandi Anda.",
+      "button": "Hubungkan akun Google Anda"
     }
   }
 }
