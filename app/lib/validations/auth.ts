@@ -1,20 +1,27 @@
 import { TFunction } from 'i18next'
 import { z } from 'zod'
 
+// Reusable validation rules
+const emailValidation = (t: TFunction) =>
+  z.string().email({
+    message: t('errors.invalid_string.email', {
+      ns: 'zod',
+      validation: t('zod:validations.email'),
+    }),
+  })
+
+const passwordValidation = (t: TFunction) =>
+  z.string().min(6, {
+    message: t('errors.too_small.string.inclusive', {
+      ns: 'zod',
+      minimum: 6,
+    }),
+  })
+
 export const signInSchema = (t: TFunction) =>
   z.object({
-    email: z.string().email({
-      message: t('errors.invalid_string.email', {
-        ns: 'zod',
-        validation: t('zod:validations.email'),
-      }),
-    }),
-    password: z.string().min(6, {
-      message: t('errors.too_small.string.inclusive', {
-        ns: 'zod',
-        minimum: 6,
-      }),
-    }),
+    email: emailValidation(t),
+    password: passwordValidation(t),
   })
 
 export const signUpSchema = (t: TFunction) =>
@@ -23,24 +30,9 @@ export const signUpSchema = (t: TFunction) =>
       displayName: z.string().min(1, {
         message: t('errors.invalid_type_received_null', { ns: 'zod' }),
       }),
-      email: z.string().email({
-        message: t('errors.invalid_string.email', {
-          ns: 'zod',
-          validation: t('zod:validations.email'),
-        }),
-      }),
-      password: z.string().min(6, {
-        message: t('errors.too_small.string.inclusive', {
-          ns: 'zod',
-          minimum: 6,
-        }),
-      }),
-      confirmPassword: z.string().min(6, {
-        message: t('errors.too_small.string.inclusive', {
-          ns: 'zod',
-          minimum: 6,
-        }),
-      }),
+      email: emailValidation(t),
+      password: passwordValidation(t),
+      confirmPassword: passwordValidation(t),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: t('auth.form.confirmPassword.errors.passwordMismatch'),
@@ -49,10 +41,5 @@ export const signUpSchema = (t: TFunction) =>
 
 export const emailSchema = (t: TFunction) =>
   z.object({
-    email: z.string().email({
-      message: t('errors.invalid_string.email', {
-        ns: 'zod',
-        validation: t('zod:validations.email'),
-      }),
-    }),
+    email: emailValidation(t),
   })
