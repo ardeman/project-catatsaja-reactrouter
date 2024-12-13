@@ -77,6 +77,14 @@
     }
   },
   "notes": {
-    "add": "Tambah Catatan"
+    "add": "Tambah Catatan",
+    "form": {
+      "title": {
+        "label": "Judul"
+      },
+      "content": {
+        "label": "Konten"
+      }
+    }
   }
 }

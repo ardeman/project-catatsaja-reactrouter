@@ -75,5 +75,16 @@
         "withGoogle": "Continue with Google"
       }
     }
+  },
+  "notes": {
+    "add": "Add Note",
+    "form": {
+      "title": {
+        "label": "Title"
+      },
+      "content": {
+        "label": "Content"
+      }
+    }
   }
 }

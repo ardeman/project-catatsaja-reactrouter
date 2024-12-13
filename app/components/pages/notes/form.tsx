@@ -91,7 +91,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
         )}
         <Textarea
           name="title"
-          placeholder="Title"
+          placeholder={t('notes.form.title.label')}
           inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-0"
           autoFocus
           rows={1}
@@ -104,7 +104,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
         />
         <Textarea
           name="content"
-          placeholder="Content"
+          placeholder={t('notes.form.content.label')}
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
         />
       </form>
