@@ -4,16 +4,14 @@ import { z } from 'zod'
 // Reusable validation rules
 const emailValidation = (t: TFunction) =>
   z.string().email({
-    message: t('errors.invalid_string.email', {
-      ns: 'zod',
+    message: t('zod:errors.invalid_string.email', {
       validation: t('zod:validations.email'),
     }),
   })
 
 const passwordValidation = (t: TFunction) =>
   z.string().min(6, {
-    message: t('errors.too_small.string.inclusive', {
-      ns: 'zod',
+    message: t('zod:errors.too_small.string.inclusive', {
       minimum: 6,
     }),
   })
@@ -28,7 +26,7 @@ export const signUpSchema = (t: TFunction) =>
   z
     .object({
       displayName: z.string().min(1, {
-        message: t('errors.invalid_type_received_null', { ns: 'zod' }),
+        message: t('zod:errors.invalid_type_received_null'),
       }),
       email: emailValidation(t),
       password: passwordValidation(t),
