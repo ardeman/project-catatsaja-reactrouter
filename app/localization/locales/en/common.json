@@ -1,4 +1,19 @@
 {
+  "language": {
+    "selector": "Change Language"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "notes": "Notes",
+    "tasks": "Tasks",
+    "moneyLog": "Money Log",
+    "settings": "Settings",
+    "reportIssues": "Report Issues",
+    "signOut": "Sign Out",
+    "search": {
+      "placeholder": "Search"
+    }
+  },
   "auth": {
     "signIn": {
       "title": "Sign In",
@@ -56,8 +71,5 @@
         "withGoogle": "Continue with Google"
       }
     }
-  },
-  "language": {
-    "selector": "Change Language"
   }
 }

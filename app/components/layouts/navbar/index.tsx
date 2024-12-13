@@ -3,6 +3,7 @@ import { Link, useNavigate } from '@remix-run/react'
 import CryptoJS from 'crypto-js'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import { Input } from '~/components/base'
 import {
@@ -29,6 +30,7 @@ import { TProps } from './type'
 export const Navbar = (props: TProps) => {
   const { className } = props
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { data: userData } = useUserData()
   const hashedEmail = CryptoJS.SHA256(userData?.email.toLowerCase() || '')
   const formMethods = useForm<TSearchRequest>({
@@ -83,7 +85,7 @@ export const Navbar = (props: TProps) => {
             <Input
               name="query"
               type="search"
-              placeholder="Search"
+              placeholder={t('navigation.search.placeholder')}
               inputClassName="w-full"
               leftNode={({ className }) => <Search className={className} />}
             />
@@ -119,7 +121,7 @@ export const Navbar = (props: TProps) => {
               {userData?.displayName || userData?.email}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {userMenus.map((menu, index) => (
+            {userMenus(t).map((menu, index) => (
               <Link
                 key={index}
                 to={menu.href}

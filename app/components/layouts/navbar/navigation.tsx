@@ -1,4 +1,5 @@
 import { Link, useLocation } from '@remix-run/react'
+import { useTranslation } from 'react-i18next'
 
 import { appleIcon, appName } from '~/lib/constants'
 import { cn } from '~/lib/utils'
@@ -9,6 +10,8 @@ import { TProps } from './type'
 export const Navigation = (props: TProps) => {
   const { className } = props
   const { pathname } = useLocation()
+  const { t } = useTranslation()
+
   return (
     <nav className={cn('gap-6 text-lg font-medium', className)}>
       <Link
@@ -27,7 +30,7 @@ export const Navigation = (props: TProps) => {
         </div>
         <span className="sr-only">{appName}</span>
       </Link>
-      {navs.map((nav, index) => (
+      {navs(t).map((nav, index) => (
         <Link
           key={index}
           to={nav.href}

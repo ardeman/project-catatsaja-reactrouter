@@ -1,29 +1,31 @@
-export const userMenus = [
+import { TFunction } from 'i18next'
+
+export const userMenus = (t: TFunction) => [
   {
-    name: 'Settings',
+    name: t('navigation.settings'),
     href: '/dashboard/settings',
   },
   {
-    name: 'Support',
+    name: t('navigation.reportIssues'),
     href: 'https://github.com/ardeman/project-remix-catatsaja/issues',
   },
 ]
 
-export const navs = [
+export const navs = (t: TFunction) => [
   {
-    name: 'Dashboard',
+    name: t('navigation.dashboard'),
     href: '/dashboard',
   },
   {
-    name: 'Notes',
+    name: t('navigation.notes'),
     href: '/dashboard/notes',
   },
   {
-    name: 'Tasks',
+    name: t('navigation.tasks'),
     href: '/dashboard/tasks',
   },
   {
-    name: 'Money Log',
+    name: t('navigation.moneyLog'),
     href: '/dashboard/money-log',
   },
 ]

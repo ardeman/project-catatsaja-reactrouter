@@ -1,4 +1,19 @@
 {
+  "language": {
+    "selector": "Ganti Bahasa"
+  },
+  "navigation": {
+    "dashboard": "Dasbor",
+    "notes": "Catatan",
+    "tasks": "Tugas",
+    "moneyLog": "Catatan Keuangan",
+    "settings": "Pengaturan",
+    "reportIssues": "Laporkan Masalah",
+    "signOut": "Keluar",
+    "search": {
+      "placeholder": "Cari"
+    }
+  },
   "auth": {
     "signIn": {
       "title": "Masuk",
@@ -56,8 +71,5 @@
         "withGoogle": "Lanjutkan dengan Google"
       }
     }
-  },
-  "language": {
-    "selector": "Ganti Bahasa"
   }
 }
