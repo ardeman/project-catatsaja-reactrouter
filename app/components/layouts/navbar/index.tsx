@@ -132,11 +132,16 @@ export const Navbar = (props: TProps) => {
                 }
                 target={menu.href.startsWith('http') ? '_blank' : undefined}
               >
-                <DropdownMenuItem>{menu.name}</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  {menu.name}
+                </DropdownMenuItem>
               </Link>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="cursor-pointer"
+            >
               {t('navigation.signOut')}
             </DropdownMenuItem>
           </DropdownMenuContent>

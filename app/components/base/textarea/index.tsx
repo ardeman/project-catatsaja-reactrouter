@@ -53,7 +53,7 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
           )}
           <div className={cn('relative flex items-center', containerClassName)}>
             {LeftNode && (
-              <LeftNode className="absolute left-3.5 h-4 w-4 text-muted-foreground hover:cursor-pointer" />
+              <LeftNode className="absolute left-3.5 h-4 w-4 cursor-pointer text-muted-foreground" />
             )}
             <FormControl>
               <UITextarea
@@ -80,7 +80,7 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
               />
             </FormControl>
             {RightNode && (
-              <RightNode className="absolute right-3.5 h-4 w-4 text-muted-foreground hover:cursor-pointer" />
+              <RightNode className="absolute right-3.5 h-4 w-4 cursor-pointer text-muted-foreground" />
             )}
           </div>
           {hint && <FormDescription>{hint}</FormDescription>}
