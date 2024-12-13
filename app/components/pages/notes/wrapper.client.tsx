@@ -26,6 +26,8 @@ export const Wrapper = () => {
   const { data: notesData } = useGetNotes()
   const masonryRefPinned = useRef(null)
   const masonryRefRegular = useRef(null)
+  const pinnedNotes = notesData?.filter((note) => note.isPinned)
+  const regularNotes = notesData?.filter((note) => !note.isPinned)
 
   useEffect(() => {
     if (masonryRefPinned?.current) {
@@ -59,10 +61,9 @@ export const Wrapper = () => {
       <div className="flex justify-center">
         <div
           ref={masonryRefPinned}
-          className="masonry-grid mx-auto max-w-screen-2xl" // Sets max width to control masonry width
+          className="masonry-grid mx-auto max-w-screen-2xl"
         >
-          {notesData
-            ?.filter((note) => note.isPinned)
+          {pinnedNotes
             ?.sort(
               (a, b) =>
                 (b.updatedAt?.seconds || b.createdAt?.seconds) -
@@ -72,6 +73,7 @@ export const Wrapper = () => {
               <Card
                 note={note}
                 key={note.id}
+                className="masonry-item-pinned"
               />
             ))}
         </div>
@@ -79,10 +81,9 @@ export const Wrapper = () => {
       <div className="flex justify-center">
         <div
           ref={masonryRefRegular}
-          className="masonry-grid mx-auto max-w-screen-2xl" // Sets max width to control masonry width
+          className="masonry-grid mx-auto max-w-screen-2xl"
         >
-          {notesData
-            ?.filter((note) => !note.isPinned)
+          {regularNotes
             ?.sort(
               (a, b) =>
                 (b.updatedAt?.seconds || b.createdAt?.seconds) -
@@ -92,6 +93,7 @@ export const Wrapper = () => {
               <Card
                 note={note}
                 key={note.id}
+                className="masonry-item-regular"
               />
             ))}
         </div>

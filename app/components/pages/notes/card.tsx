@@ -13,7 +13,7 @@ import { useNote } from './context'
 import { TCardProps } from './type'
 
 export const Card = (props: TCardProps) => {
-  const { note } = props
+  const { note, className } = props
   const { handleEditNote } = useNote()
   const { data: userData } = useUserData()
   const isPinned = note.isPinned
@@ -25,10 +25,7 @@ export const Card = (props: TCardProps) => {
 
   return (
     <UICard
-      className={cn(
-        isPinned ? 'masonry-item-pinned' : 'masonry-item-regular',
-        'group/card relative mb-4 w-full sm:max-w-xs',
-      )}
+      className={cn(className, 'group/card relative mb-4 w-full sm:max-w-xs')}
       onClick={() => isEditable && handleEditNote(note)}
     >
       <Action

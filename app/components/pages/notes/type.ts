@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { HTMLAttributes, MouseEvent } from 'react'
 
 import { TNoteResponse } from '~/lib/types'
 
@@ -17,6 +17,7 @@ export type THandlePinNote = {
 
 export type TCardProps = {
   note: TNoteResponse
+  className?: HTMLAttributes<HTMLDivElement>['className']
 }
 
 export type TNoteConfirmation = {
@@ -29,5 +30,5 @@ export type TActionProps = {
   isEditable?: boolean
   isPinned?: boolean
   note: TNoteResponse
-  className?: string
+  className?: HTMLAttributes<HTMLDivElement>['className']
 }
