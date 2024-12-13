@@ -12,8 +12,8 @@ export default {
 }
 
 const languageLabel = {
-  en: 'English',
   id: 'Bahasa Indonesia',
+  en: 'English',
 }
 
 export const languageOptions = supportedLanguages.map((lang) => ({

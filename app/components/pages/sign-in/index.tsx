@@ -80,7 +80,7 @@ export const SignInPage = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pb-4">
+      <CardContent className="pb-2">
         <FormProvider {...formMethods}>
           <form
             onSubmit={onSubmit}

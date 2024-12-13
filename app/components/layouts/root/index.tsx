@@ -32,7 +32,7 @@ export const Rootlayout = (props: PropsWithChildren) => {
 
   return (
     <html
-      lang="en"
+      lang={i18n.language}
       className={clsx(theme)}
       dir={i18n.dir()}
     >
