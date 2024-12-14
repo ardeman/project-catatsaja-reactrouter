@@ -80,7 +80,7 @@ export const Wrapper = () => {
             ))}
         </div>
       </div>
-      <div className="flex justify-center pb-9">
+      <div className="flex justify-center pb-9 md:pb-0">
         <div
           ref={masonryRefRegular}
           className="masonry-grid mx-auto max-w-screen-2xl"
