@@ -50,9 +50,15 @@ const Radio = (params: TParams) => {
               className="flex items-center space-x-3 space-y-0"
             >
               <Slot>
-                <RadioGroupItem value={option.value} />
+                <RadioGroupItem
+                  value={option.value}
+                  id={option.value}
+                />
               </Slot>
-              <Label className="font-normal text-muted-foreground">
+              <Label
+                className="font-normal text-muted-foreground"
+                htmlFor={option.value}
+              >
                 {option.label}
               </Label>
             </div>
