@@ -100,10 +100,10 @@
       "description": "Customize the appearance of {{appName}}.",
       "form": {
         "language": {
-          "selector": "Change Language"
+          "selector": "Language"
         },
         "theme": {
-          "selector": "Change Theme",
+          "selector": "Theme",
           "dark": "Dark",
           "light": "Light",
           "system": "System"

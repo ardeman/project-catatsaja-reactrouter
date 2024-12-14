@@ -100,10 +100,10 @@
       "description": "Atur tampilan {{appName}}.",
       "form": {
         "language": {
-          "selector": "Ganti Bahasa"
+          "selector": "Bahasa"
         },
         "theme": {
-          "selector": "Ganti Tema",
+          "selector": "Tema",
           "dark": "Gelap",
           "light": "Terang",
           "system": "Sistem"
