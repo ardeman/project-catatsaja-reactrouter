@@ -1,6 +1,13 @@
 import { useTranslation } from 'react-i18next'
 
-import { Card, CardDescription, CardHeader, CardTitle } from '~/components/ui'
+import { LanguageSelector, ModeToggle } from '~/components/base'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '~/components/ui'
 import { appName } from '~/lib/constants'
 
 export const Appearance = () => {
@@ -14,6 +21,12 @@ export const Appearance = () => {
           {t('settings.appearance.description', { appName })}
         </CardDescription>
       </CardHeader>
+      <CardContent>
+        <div className="grid space-y-6">
+          <LanguageSelector />
+          <ModeToggle />
+        </div>
+      </CardContent>
     </Card>
   )
 }

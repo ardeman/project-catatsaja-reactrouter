@@ -12,9 +12,11 @@ import {
 } from '~/components/ui'
 import { useTheme } from '~/lib/contexts'
 
-export const ModeToggle = () => {
+import { TParams, TProps } from './type'
+
+export const ModeToggle = (props: TProps) => {
+  const { type = 'dropdown' } = props
   const [theme, setTheme, metadata] = useTheme()
-  const { t } = useTranslation()
   const value = metadata.definedBy === 'SYSTEM' ? 'system' : (theme as string)
 
   const handleSetTheme = (value: string) => {
@@ -26,6 +28,27 @@ export const ModeToggle = () => {
     setTheme(value as Theme)
     globalThis.localStorage.setItem('theme', value)
   }
+
+  if (type === 'radio') {
+    return (
+      <Dropdown
+        value={value}
+        handleSetTheme={handleSetTheme}
+      />
+    )
+  }
+
+  return (
+    <Dropdown
+      value={value}
+      handleSetTheme={handleSetTheme}
+    />
+  )
+}
+
+const Dropdown = (params: TParams) => {
+  const { value, handleSetTheme } = params
+  const { t } = useTranslation()
 
   return (
     <DropdownMenu>

@@ -13,3 +13,7 @@ export type TProps = {
   handleConfirm?: () => void
   variant?: VariantProps<typeof buttonVariants>['variant']
 }
+
+export type TParams = {
+  handleClose: () => void
+} & TProps

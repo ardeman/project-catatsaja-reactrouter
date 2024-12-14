@@ -2,13 +2,13 @@ import { useMediaQuery } from 'usehooks-ts'
 
 import { Button } from '~/components/base'
 import {
-  Dialog,
+  Dialog as UIDialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  Drawer,
+  Drawer as UIDrawer,
   DrawerClose,
   DrawerContent,
   DrawerDescription,
@@ -18,7 +18,7 @@ import {
 } from '~/components/ui'
 import { cn } from '~/lib/utils'
 
-import { TProps } from './type'
+import { TParams, TProps } from './type'
 
 export const Modal = (props: TProps) => {
   const {
@@ -44,36 +44,88 @@ export const Modal = (props: TProps) => {
     return (
       <Dialog
         open={open}
-        onOpenChange={(isOpen) => {
-          setOpen(isOpen)
-          if (!isOpen) handleClose() // Trigger handleClose when closing
-        }}
+        setOpen={setOpen}
+        title={title}
+        description={description}
+        handleClose={handleClose}
+        handleConfirm={handleConfirm}
+        variant={variant}
       >
-        <DialogContent className="max-h-dvh max-w-md overflow-y-auto rounded-lg">
-          <DialogHeader className={title || description ? '' : 'hidden'}>
-            <DialogTitle className={title ? '' : 'hidden'}>{title}</DialogTitle>
-            <DialogDescription className={description ? '' : 'hidden'}>
-              {description}
-            </DialogDescription>
-          </DialogHeader>
-          {children}
-          {handleConfirm && (
-            <DialogFooter>
-              <Button
-                variant={variant}
-                onClick={handleConfirm}
-              >
-                Confirm
-              </Button>
-            </DialogFooter>
-          )}
-        </DialogContent>
+        {children}
       </Dialog>
     )
   }
 
   return (
     <Drawer
+      open={open}
+      setOpen={setOpen}
+      title={title}
+      description={description}
+      handleClose={handleClose}
+      handleConfirm={handleConfirm}
+      variant={variant}
+    >
+      {children}
+    </Drawer>
+  )
+}
+
+const Dialog = (params: TParams) => {
+  const {
+    open,
+    setOpen,
+    children,
+    title,
+    description,
+    handleClose,
+    handleConfirm,
+    variant,
+  } = params
+  return (
+    <UIDialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen)
+        if (!isOpen) handleClose() // Trigger handleClose when closing
+      }}
+    >
+      <DialogContent className="max-h-dvh max-w-md overflow-y-auto rounded-lg">
+        <DialogHeader className={title || description ? '' : 'hidden'}>
+          <DialogTitle className={title ? '' : 'hidden'}>{title}</DialogTitle>
+          <DialogDescription className={description ? '' : 'hidden'}>
+            {description}
+          </DialogDescription>
+        </DialogHeader>
+        {children}
+        {handleConfirm && (
+          <DialogFooter>
+            <Button
+              variant={variant}
+              onClick={handleConfirm}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        )}
+      </DialogContent>
+    </UIDialog>
+  )
+}
+
+const Drawer = (params: TParams) => {
+  const {
+    open,
+    setOpen,
+    children,
+    title,
+    description,
+    handleClose,
+    handleConfirm,
+    variant,
+  } = params
+  return (
+    <UIDrawer
       repositionInputs={false}
       open={open}
       onOpenChange={(isOpen) => {
@@ -107,6 +159,6 @@ export const Modal = (props: TProps) => {
           </DrawerFooter>
         </div>
       </DrawerContent>
-    </Drawer>
+    </UIDrawer>
   )
 }

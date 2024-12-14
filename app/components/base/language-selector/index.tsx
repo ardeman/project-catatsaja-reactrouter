@@ -11,11 +11,25 @@ import {
 } from '~/components/ui'
 import { languageOptions } from '~/localization/i18n'
 
-export const LanguageSelector = () => {
-  const { i18n, t } = useTranslation()
+import { TParams, TProps } from './type'
+
+export const LanguageSelector = (props: TProps) => {
+  const { type = 'dropdown' } = props
+  const { i18n } = useTranslation()
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng)
   }
+
+  if (type === 'radio') {
+    return <Dropdown changeLanguage={changeLanguage} />
+  }
+
+  return <Dropdown changeLanguage={changeLanguage} />
+}
+
+const Dropdown = (params: TParams) => {
+  const { changeLanguage } = params
+  const { t, i18n } = useTranslation()
 
   return (
     <DropdownMenu>
