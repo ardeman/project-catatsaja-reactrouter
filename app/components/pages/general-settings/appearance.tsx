@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 
 import { LanguageSelector, ModeToggle } from '~/components/base'
 import {
@@ -18,7 +18,11 @@ export const Appearance = () => {
       <CardHeader>
         <CardTitle>{t('settings.appearance.title')}</CardTitle>
         <CardDescription>
-          {t('settings.appearance.description', { appName })}
+          <Trans
+            i18nKey="settings.appearance.description"
+            values={{ appName }}
+            components={{ span: <span className="text-primary" /> }}
+          />
         </CardDescription>
       </CardHeader>
       <CardContent>

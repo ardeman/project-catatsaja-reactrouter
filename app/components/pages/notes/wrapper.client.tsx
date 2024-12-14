@@ -1,6 +1,6 @@
 import Masonry from 'masonry-layout'
 import { useEffect, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 
 import { Button, Modal } from '~/components/base'
 import { useGetNotes } from '~/lib/hooks'
@@ -118,7 +118,13 @@ export const Wrapper = () => {
         handleConfirm={handleConfirm}
         variant="destructive"
       >
-        <strong>{selectedConfirmation?.kind} this note?</strong>
+        <strong>
+          <Trans
+            i18nKey={`form.${selectedConfirmation?.kind}`}
+            values={{ item: t('navigation.notes') }}
+            components={{ span: <span className="text-primary" /> }}
+          />
+        </strong>
         {selectedConfirmation?.detail.title && (
           <p className="text-xl">{selectedConfirmation.detail.title}</p>
         )}

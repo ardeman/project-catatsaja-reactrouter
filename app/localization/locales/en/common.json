@@ -19,12 +19,21 @@
   },
   "form": {
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "delete": "Delete this <span>{{item}}</span>",
+    "unlink": "Unlink this <span>{{item}}</span>",
+    "confirm": "Confirm",
+    "share": "Share",
+    "permissions": {
+      "readOnly": "Read only",
+      "write": "Read and write",
+      "shared": "Shared"
+    }
   },
   "auth": {
     "signIn": {
       "title": "Sign In",
-      "description": "to continue to {{appName}}.",
+      "description": "to continue to <span>{{appName}}</span>.",
       "form": {
         "switch": {
           "label": "Don't have an account?",
@@ -97,7 +106,7 @@
     },
     "appearance": {
       "title": "Appearance",
-      "description": "Customize the appearance of {{appName}}.",
+      "description": "Customize the appearance of <span>{{appName}}</span>.",
       "form": {
         "language": {
           "selector": "Language"
@@ -124,10 +133,10 @@
     },
     "google": {
       "title": "Link Google account",
-      "description": "After linking your Google account, you can sign in to {{appName}} with your Google account, in addition to your email and password.",
+      "description": "After linking your Google account, you can sign in to <span>{{appName}}</span> with your Google account, in addition to your email and password.",
       "button": {
         "link": "Link your Google account",
-        "linked": "Linked to <email>{{email}}</email>"
+        "linked": "Linked to <strong>{{email}}</strong>"
       }
     }
   }

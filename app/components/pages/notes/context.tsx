@@ -75,10 +75,10 @@ const NoteProvider = (props: PropsWithChildren) => {
     setOpenConfirmation(false)
     setOpenForm(false)
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
-    if (selectedConfirmation?.kind === 'Delete') {
+    if (selectedConfirmation?.kind === 'delete') {
       mutateDeleteNote(selectedConfirmation.detail)
     }
-    if (selectedConfirmation?.kind === 'Unlink') {
+    if (selectedConfirmation?.kind === 'unlink') {
       mutateUnlinkNote(selectedConfirmation.detail)
     }
   }
@@ -88,7 +88,7 @@ const NoteProvider = (props: PropsWithChildren) => {
     event.stopPropagation() // Prevents the Card's onClick from triggering
     setOpenConfirmation(true)
     setSelectedConfirmation({
-      kind: 'Delete',
+      kind: 'delete',
       detail: note,
     })
   }
@@ -98,7 +98,7 @@ const NoteProvider = (props: PropsWithChildren) => {
     event.stopPropagation() // Prevents the Card's onClick from triggering
     setOpenConfirmation(true)
     setSelectedConfirmation({
-      kind: 'Unlink',
+      kind: 'unlink',
       detail: note,
     })
   }

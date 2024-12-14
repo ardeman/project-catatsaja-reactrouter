@@ -49,7 +49,11 @@ export const Google = (props: TProps) => {
           {t('settings.google.title')}
         </CardTitle>
         <CardDescription>
-          {t('settings.google.description', { appName })}
+          <Trans
+            i18nKey="settings.google.description"
+            values={{ appName }}
+            components={{ span: <span className="text-primary" /> }}
+          />
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -65,7 +69,7 @@ export const Google = (props: TProps) => {
             <Trans
               i18nKey="settings.google.button.linked"
               values={{ email: userGoogleProvider.email }}
-              components={{ email: <strong className="text-primary" /> }}
+              components={{ strong: <strong className="text-primary" /> }}
             />
           ) : (
             t('settings.google.button.link')

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useMediaQuery } from 'usehooks-ts'
 
 import { Button } from '~/components/base'
@@ -82,6 +83,7 @@ const Dialog = (params: TParams) => {
     handleConfirm,
     variant,
   } = params
+  const { t } = useTranslation()
   return (
     <UIDialog
       open={open}
@@ -104,7 +106,7 @@ const Dialog = (params: TParams) => {
               variant={variant}
               onClick={handleConfirm}
             >
-              Confirm
+              {t('form.confirm')}
             </Button>
           </DialogFooter>
         )}

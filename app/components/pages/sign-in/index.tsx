@@ -3,7 +3,7 @@ import { Link } from '@remix-run/react'
 import { Eye, EyeClosed } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 
 import { Button, Input, LanguageSelector, ModeToggle } from '~/components/base'
@@ -71,7 +71,11 @@ export const SignInPage = () => {
           <div className="grid">
             <CardTitle className="text-2xl">{t('auth.signIn.title')}</CardTitle>
             <CardDescription>
-              {t('auth.signIn.description', { appName })}
+              <Trans
+                i18nKey="auth.signIn.description"
+                values={{ appName }}
+                components={{ span: <strong className="text-primary" /> }}
+              />
             </CardDescription>
           </div>
           <div className="flex space-x-2">

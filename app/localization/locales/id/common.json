@@ -19,12 +19,21 @@
   },
   "form": {
     "save": "Simpan",
-    "cancel": "Batal"
+    "cancel": "Batal",
+    "delete": "Hapus <span>{{item}}</span> ini",
+    "unlink": "Putuskan hubungan <span>{{item}}</span> ini",
+    "confirm": "Iya",
+    "share": "Bagikan",
+    "permissions": {
+      "readOnly": "Hanya baca",
+      "write": "Baca dan tulis",
+      "shared": "Dibagikan"
+    }
   },
   "auth": {
     "signIn": {
       "title": "Masuk",
-      "description": "untuk melanjutkan ke {{appName}}",
+      "description": "untuk melanjutkan ke <span>{{appName}}</span>.",
       "form": {
         "switch": {
           "label": "Belum punya akun?",
@@ -97,7 +106,7 @@
     },
     "appearance": {
       "title": "Tampilan",
-      "description": "Atur tampilan {{appName}}.",
+      "description": "Atur tampilan <span>{{appName}}</span>.",
       "form": {
         "language": {
           "selector": "Bahasa"
@@ -124,10 +133,10 @@
     },
     "google": {
       "title": "Hubungkan akun Google",
-      "description": "Setelah menghubungkan akun Google, Anda dapat masuk ke {{appName}} dengan akun Google, sebagai tambahan dari email dan kata sandi Anda.",
+      "description": "Setelah menghubungkan akun Google, Anda dapat masuk ke <span>{{appName}}</span> dengan akun Google, sebagai tambahan dari email dan kata sandi Anda.",
       "button": {
         "link": "Hubungkan akun Google anda",
-        "linked": "Terhubung ke <email>{{email}}</email>"
+        "linked": "Terhubung ke <strong>{{email}}</strong>"
       }
     }
   }

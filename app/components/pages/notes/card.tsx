@@ -45,7 +45,11 @@ export const Card = (props: TCardProps) => {
       <CardHeader className="pb-4">
         <CardDescription className="flex justify-between text-xs">
           <span>{dateLabel}</span>
-          <span>{isEditable ? !isOwner && 'Shared' : 'Read-only'}</span>
+          <span>
+            {isEditable
+              ? !isOwner && t('form.permissions.shared')
+              : t('form.permissions.readOnly')}
+          </span>
         </CardDescription>
         {note.title && <CardTitle className="text-xl">{note.title}</CardTitle>}
       </CardHeader>
