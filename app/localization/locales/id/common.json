@@ -127,7 +127,7 @@
       "description": "Setelah menghubungkan akun Google, Anda dapat masuk ke {{appName}} dengan akun Google, sebagai tambahan dari email dan kata sandi Anda.",
       "button": {
         "link": "Hubungkan akun Google anda",
-        "linked": "Terhubung ke {{email}}"
+        "linked": "Terhubung ke <email>{{email}}</email>"
       }
     }
   }

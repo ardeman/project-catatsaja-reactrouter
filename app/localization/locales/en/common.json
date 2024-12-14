@@ -127,7 +127,7 @@
       "description": "After linking your Google account, you can sign in to {{appName}} with your Google account, in addition to your email and password.",
       "button": {
         "link": "Link your Google account",
-        "linked": "Linked to {{email}}"
+        "linked": "Linked to <email>{{email}}</email>"
       }
     }
   }

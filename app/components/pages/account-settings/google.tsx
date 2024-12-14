@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 
 import { Button } from '~/components/base'
@@ -61,11 +61,15 @@ export const Google = (props: TProps) => {
           isLoading={isLinkGooglePending}
         >
           <FcGoogle className="text-xl" />
-          {userGoogleProvider
-            ? t('settings.google.button.linked', {
-                email: userGoogleProvider.email,
-              })
-            : t('settings.google.button.link')}
+          {userGoogleProvider ? (
+            <Trans
+              i18nKey="settings.google.button.linked"
+              values={{ email: userGoogleProvider.email }}
+              components={{ email: <strong className="text-primary" /> }}
+            />
+          ) : (
+            t('settings.google.button.link')
+          )}
         </Button>
       </CardContent>
     </Card>

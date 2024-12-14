@@ -7,7 +7,7 @@ export const Sidebar = () => {
   const { pathname } = useLocation()
   const { t } = useTranslation()
   return (
-    <nav className="grid gap-4 text-sm text-muted-foreground">
+    <nav className="flex gap-4 text-sm text-muted-foreground md:grid">
       {settings(t).map((setting) => (
         <Link
           key={setting.name}
