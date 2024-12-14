@@ -103,6 +103,7 @@
           "selector": "Change Language"
         },
         "theme": {
+          "selector": "Change Theme",
           "dark": "Dark",
           "light": "Light",
           "system": "System"

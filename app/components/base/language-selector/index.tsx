@@ -1,3 +1,4 @@
+import { Slot } from '@radix-ui/react-slot'
 import { Languages } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -8,6 +9,9 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
+  Label,
+  RadioGroup,
+  RadioGroupItem,
 } from '~/components/ui'
 import { languageOptions } from '~/localization/i18n'
 
@@ -21,10 +25,42 @@ export const LanguageSelector = (props: TProps) => {
   }
 
   if (type === 'radio') {
-    return <Dropdown changeLanguage={changeLanguage} />
+    return <Radio changeLanguage={changeLanguage} />
   }
 
   return <Dropdown changeLanguage={changeLanguage} />
+}
+
+const Radio = (params: TParams) => {
+  const { changeLanguage } = params
+  const { t, i18n } = useTranslation()
+
+  return (
+    <div className="space-y-1">
+      <Label>{t('settings.appearance.form.language.selector')}</Label>
+      <Slot>
+        <RadioGroup
+          onValueChange={changeLanguage}
+          value={i18n.language}
+          className="flex flex-col"
+        >
+          {languageOptions.map((option) => (
+            <div
+              key={option.value}
+              className="flex items-center space-x-3 space-y-0"
+            >
+              <Slot>
+                <RadioGroupItem value={option.value} />
+              </Slot>
+              <Label className="font-normal text-muted-foreground">
+                {option.label}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </Slot>
+    </div>
+  )
 }
 
 const Dropdown = (params: TParams) => {

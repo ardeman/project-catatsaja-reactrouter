@@ -23,8 +23,8 @@ export const Appearance = () => {
       </CardHeader>
       <CardContent>
         <div className="grid space-y-6">
-          <LanguageSelector />
-          <ModeToggle />
+          <LanguageSelector type="radio" />
+          <ModeToggle type="radio" />
         </div>
       </CardContent>
     </Card>

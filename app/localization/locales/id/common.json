@@ -103,6 +103,7 @@
           "selector": "Ganti Bahasa"
         },
         "theme": {
+          "selector": "Ganti Tema",
           "dark": "Gelap",
           "light": "Terang",
           "system": "Sistem"

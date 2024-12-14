@@ -1,3 +1,4 @@
+import { Slot } from '@radix-ui/react-slot'
 import { Moon, Sun } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Theme } from 'remix-themes'
@@ -9,9 +10,13 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
+  Label,
+  RadioGroup,
+  RadioGroupItem,
 } from '~/components/ui'
 import { useTheme } from '~/lib/contexts'
 
+import { themeOptions } from './data'
 import { TParams, TProps } from './type'
 
 export const ModeToggle = (props: TProps) => {
@@ -31,7 +36,7 @@ export const ModeToggle = (props: TProps) => {
 
   if (type === 'radio') {
     return (
-      <Dropdown
+      <Radio
         value={value}
         handleSetTheme={handleSetTheme}
       />
@@ -43,6 +48,38 @@ export const ModeToggle = (props: TProps) => {
       value={value}
       handleSetTheme={handleSetTheme}
     />
+  )
+}
+
+const Radio = (params: TParams) => {
+  const { value, handleSetTheme } = params
+  const { t } = useTranslation()
+
+  return (
+    <div className="space-y-1">
+      <Label>{t('settings.appearance.form.theme.selector')}</Label>
+      <Slot>
+        <RadioGroup
+          onValueChange={handleSetTheme}
+          value={value}
+          className="flex flex-col"
+        >
+          {themeOptions(t).map((option) => (
+            <div
+              key={option.value}
+              className="flex items-center space-x-3 space-y-0"
+            >
+              <Slot>
+                <RadioGroupItem value={option.value} />
+              </Slot>
+              <Label className="font-normal text-muted-foreground">
+                {option.label}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </Slot>
+    </div>
   )
 }
 
@@ -59,7 +96,9 @@ const Dropdown = (params: TParams) => {
         >
           <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
+          <span className="sr-only">
+            {t('settings.appearance.form.theme.selector')}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
