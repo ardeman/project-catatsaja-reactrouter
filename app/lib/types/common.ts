@@ -7,7 +7,7 @@ export type TTime = {
   nanoseconds: number
 }
 
-export type TShareForm = z.infer<typeof shareSchema>
+export type TShareForm = z.infer<ReturnType<typeof shareSchema>>
 
 export type TPermissions = {
   read: string[]

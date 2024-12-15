@@ -2,7 +2,7 @@ import { TFunction } from 'i18next'
 import { z } from 'zod'
 
 // Reusable validation rules
-const emailValidation = (t: TFunction) =>
+export const emailValidation = (t: TFunction) =>
   z.string().email({
     message: t('zod:errors.invalid_string.email', {
       validation: t('zod:validations.email'),
