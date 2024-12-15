@@ -7,7 +7,7 @@ export type TProps = {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   children: ReactNode
-  title?: string
+  title?: ReactNode
   description?: string
   onClose?: () => void
   handleConfirm?: () => void

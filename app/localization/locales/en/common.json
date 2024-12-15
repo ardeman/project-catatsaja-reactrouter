@@ -20,10 +20,10 @@
   "form": {
     "save": "Save",
     "cancel": "Cancel",
-    "delete": "Delete this <span>{{item}}</span>",
-    "unlink": "Unlink this <span>{{item}}</span>",
+    "delete": "Delete this <span>{{item}}</span>?",
+    "unlink": "Unlink this <span>{{item}}</span>?",
+    "share": "Share this <span>{{item}}</span>",
     "confirm": "Confirm",
-    "share": "Share",
     "permissions": {
       "readOnly": "Read only",
       "write": "Read and write",

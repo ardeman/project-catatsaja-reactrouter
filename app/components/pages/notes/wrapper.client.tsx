@@ -117,14 +117,14 @@ export const Wrapper = () => {
         setOpen={setOpenConfirmation}
         handleConfirm={handleConfirm}
         variant="destructive"
-      >
-        <strong>
+        title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}
             values={{ item: t('navigation.notes') }}
             components={{ span: <span className="text-primary" /> }}
           />
-        </strong>
+        }
+      >
         {selectedConfirmation?.detail.title && (
           <p className="text-xl">{selectedConfirmation.detail.title}</p>
         )}
@@ -136,6 +136,13 @@ export const Wrapper = () => {
       <Modal
         open={openShare}
         setOpen={setOpenShare}
+        title={
+          <Trans
+            i18nKey="form.share"
+            values={{ item: t('navigation.notes') }}
+            components={{ span: <span className="text-primary" /> }}
+          />
+        }
       >
         <Share />
       </Modal>

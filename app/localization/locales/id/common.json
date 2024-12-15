@@ -20,10 +20,10 @@
   "form": {
     "save": "Simpan",
     "cancel": "Batal",
-    "delete": "Hapus <span>{{item}}</span> ini",
-    "unlink": "Putuskan hubungan <span>{{item}}</span> ini",
+    "delete": "Hapus <span>{{item}}</span> ini?",
+    "unlink": "Putuskan hubungan <span>{{item}}</span> ini?",
+    "share": "Bagikan <span>{{item}}</span> ini",
     "confirm": "Iya",
-    "share": "Bagikan",
     "permissions": {
       "readOnly": "Hanya baca",
       "write": "Baca dan tulis",
