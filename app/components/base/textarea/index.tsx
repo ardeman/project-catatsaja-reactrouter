@@ -29,13 +29,11 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
     inputClassName,
     labelClassName,
     required,
-    leftNode,
-    rightNode,
+    leftNode: LeftNode,
+    rightNode: RightNode,
     ...rest
   } = props
   const { control } = useFormContext()
-  const LeftNode = leftNode
-  const RightNode = rightNode
 
   return (
     <FormField

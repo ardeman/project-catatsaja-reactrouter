@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { BookUser } from 'lucide-react'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -38,6 +39,7 @@ export const Share = () => {
           placeholder={'Email address or group name'}
           required
           disabled={disabled}
+          rightNode={({ className }) => <BookUser className={className} />}
         />
       </form>
     </FormProvider>
