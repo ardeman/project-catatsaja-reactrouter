@@ -36,7 +36,7 @@ export const Share = () => {
       >
         <Input
           name="user"
-          placeholder={'Email address or group name'}
+          placeholder={t('form.user.placeholder')}
           required
           disabled={disabled}
           rightNode={({ className }) => <BookUser className={className} />}

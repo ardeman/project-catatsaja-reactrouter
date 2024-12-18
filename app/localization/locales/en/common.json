@@ -28,6 +28,9 @@
       "readOnly": "Read only",
       "write": "Read and write",
       "shared": "Shared"
+    },
+    "user": {
+      "placeholder": "Enter user email"
     }
   },
   "auth": {

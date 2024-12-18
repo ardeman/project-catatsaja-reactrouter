@@ -28,6 +28,9 @@
       "readOnly": "Hanya baca",
       "write": "Baca dan tulis",
       "shared": "Dibagikan"
+    },
+    "user": {
+      "placeholder": "Masukkan email pengguna"
     }
   },
   "auth": {
