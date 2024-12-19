@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendPasswordResetEmail } from 'firebase/auth'
+import { useTranslation } from 'react-i18next'
 
 import { auth } from '~/lib/configs'
 import { authError } from '~/lib/constants'
@@ -8,6 +9,8 @@ import { toast } from '~/lib/hooks'
 import { TEmailRequest } from '~/lib/types'
 
 export const useForgotPassword = () => {
+  const { t } = useTranslation()
+
   return useMutation({
     mutationFn: async (data: TEmailRequest) => {
       if (!auth) {
@@ -17,7 +20,7 @@ export const useForgotPassword = () => {
     },
     onSuccess: () => {
       toast({
-        description: 'Password reset email has been sent.',
+        description: t('auth.toast.resetPassword'),
       })
     },
     onError: (error: unknown) => {

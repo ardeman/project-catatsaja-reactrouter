@@ -24,6 +24,7 @@
     "unlink": "Unlink this <span>{{item}}</span>?",
     "share": "Share this <span>{{item}}</span>",
     "confirm": "Confirm",
+    "undo": "Undo",
     "permissions": {
       "readOnly": "Read only",
       "write": "Read and write",
@@ -89,6 +90,14 @@
         "label": "Continue",
         "withGoogle": "Continue with Google"
       }
+    },
+    "toast": {
+      "verificationSent": "Verification email has been sent successfully.",
+      "resetPassword": "Password reset email has been sent.",
+      "linkGoogle": "Your Google account has been linked successfully.",
+      "emailVerify": "Please check your email to verify your account.",
+      "updateEmail": "Please check your email to verify the new email address.",
+      "profileUpdated": "Your profile has been updated successfully."
     }
   },
   "notes": {
@@ -100,6 +109,9 @@
       "content": {
         "label": "Content"
       }
+    },
+    "toast": {
+      "deleted": "Note deleted successfully"
     }
   },
   "settings": {

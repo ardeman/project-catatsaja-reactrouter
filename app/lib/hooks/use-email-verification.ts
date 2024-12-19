@@ -1,12 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendEmailVerification } from 'firebase/auth'
+import { useTranslation } from 'react-i18next'
 
 import { auth } from '~/lib/configs'
 import { authError } from '~/lib/constants'
 import { toast } from '~/lib/hooks'
 
 export const useEmailVerification = () => {
+  const { t } = useTranslation()
+
   return useMutation({
     mutationFn: () => {
       if (!auth?.currentUser) {
@@ -16,7 +19,7 @@ export const useEmailVerification = () => {
     },
     onSuccess: () => {
       toast({
-        description: 'Verification email has been sent successfully.',
+        description: t('auth.toast.verificationSent'),
       })
     },
     onError: (error: unknown) => {

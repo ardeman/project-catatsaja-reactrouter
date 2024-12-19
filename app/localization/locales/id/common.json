@@ -24,6 +24,7 @@
     "unlink": "Putuskan hubungan <span>{{item}}</span> ini?",
     "share": "Bagikan <span>{{item}}</span> ini",
     "confirm": "Iya",
+    "undo": "Batal",
     "permissions": {
       "readOnly": "Hanya baca",
       "write": "Baca dan tulis",
@@ -89,6 +90,14 @@
         "label": "Lanjutkan",
         "withGoogle": "Lanjutkan dengan Google"
       }
+    },
+    "toast": {
+      "verificationSent": "Email verifikasi telah dikirim.",
+      "resetPassword": "Email reset kata sandi telah dikirim.",
+      "linkGoogle": "Akun Google Anda telah terhubung.",
+      "emailVerify": "Silakan cek email Anda untuk verifikasi akun.",
+      "updateEmail": "Silakan cek email Anda untuk verifikasi alamat email baru.",
+      "profileUpdated": "Profil Anda telah diperbarui."
     }
   },
   "notes": {
@@ -100,6 +109,9 @@
       "content": {
         "label": "Konten"
       }
+    },
+    "toast": {
+      "deleted": "Catatan berhasil dihapus"
     }
   },
   "settings": {

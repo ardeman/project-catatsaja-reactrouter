@@ -1,12 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from '@remix-run/react'
-import CryptoJS from 'crypto-js'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Input } from '~/components/base'
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +34,6 @@ export const Navbar = (props: TProps) => {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { data: userData } = useUserData()
-  const hashedEmail = CryptoJS.SHA256(userData?.email.toLowerCase() || '')
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
@@ -91,28 +92,19 @@ export const Navbar = (props: TProps) => {
             />
           </form>
         </FormProvider>
-        {/* <ModeToggle /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="secondary"
               size="icon"
-              className="rounded-full"
+              className="rounded-full [&_svg]:size-6"
             >
-              {userData?.photoURL ? (
-                <img
-                  src={userData.photoURL}
-                  alt={userData.displayName || ''}
-                  width={40}
-                  height={40}
-                  className="select-none rounded-full"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://gravatar.com/avatar/${hashedEmail}`
-                  }}
-                />
-              ) : (
-                <CircleUser className="h-5 w-5" />
-              )}
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={userData?.photoURL || ''} />
+                <AvatarFallback>
+                  <CircleUser />
+                </AvatarFallback>
+              </Avatar>
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>

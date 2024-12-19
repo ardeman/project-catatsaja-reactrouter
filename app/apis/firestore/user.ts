@@ -6,7 +6,16 @@ import {
   signInWithPopup,
   updateProfile as updateProfileAuth,
 } from 'firebase/auth'
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs' // Assuming your Firestore is configured here
 import {
@@ -41,6 +50,31 @@ export const fetchUserData = async () => {
     ...data,
     uid: snap.id,
   } as TUserResponse
+}
+
+export const fetchUsersByEmail = async (email: string) => {
+  if (!auth) {
+    throw new Error('Firebase Auth is not initialized.')
+  }
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+
+  const usersRef = collection(firestore, 'users')
+  const usersQuery = query(
+    usersRef,
+    where('email', '==', email),
+    where('email', '!=', auth.currentUser?.email),
+  )
+  const snap = await getDocs(usersQuery)
+
+  return snap.docs.map((doc) => {
+    const data = doc.data()
+    return {
+      ...data,
+      uid: doc.id,
+    } as TUserResponse
+  })
 }
 
 export const updateProfile = async (userData: TUpdateProfileRequest) => {

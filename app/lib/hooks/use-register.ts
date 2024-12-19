@@ -1,6 +1,7 @@
 import { useRevalidator } from '@remix-run/react'
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
+import { useTranslation } from 'react-i18next'
 
 import { register } from '~/apis/firestore'
 import { authError } from '~/lib/constants'
@@ -10,12 +11,14 @@ import { TSignUpRequest } from '~/lib/types'
 export const useRegister = () => {
   const { revalidate } = useRevalidator()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
+  const { t } = useTranslation()
+
   return useMutation({
     mutationFn: (data: TSignUpRequest) => register(data),
     onSuccess: () => {
       invalidateUser()
       toast({
-        description: 'Please check your email to verify your account.',
+        description: t('auth.toast.emailVerify'),
       })
       revalidate()
     },

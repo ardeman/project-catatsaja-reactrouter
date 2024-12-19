@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
+import { useTranslation } from 'react-i18next'
 
 import { updateProfile } from '~/apis/firestore'
 import { authError } from '~/lib/constants'
@@ -10,11 +11,13 @@ export const useUpdateProfile = () => {
   const { invalidateQueries: invalidateCurrentUser } = useQueryActions([
     'current-user',
   ])
+  const { t } = useTranslation()
+
   return useMutation({
     mutationFn: (data: TUpdateProfileRequest) => updateProfile(data),
     onSuccess: () => {
       toast({
-        description: 'Your profile has been updated successfully.',
+        description: t('auth.toast.profileUpdated'),
       })
       invalidateCurrentUser()
     },

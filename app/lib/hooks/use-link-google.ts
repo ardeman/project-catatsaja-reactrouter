@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { GoogleAuthProvider, linkWithPopup } from 'firebase/auth'
+import { useTranslation } from 'react-i18next'
 
 import { auth } from '~/lib/configs'
 import { authError } from '~/lib/constants'
@@ -9,6 +10,8 @@ import { useQueryActions, toast } from '~/lib/hooks'
 export const useLinkGoogle = () => {
   const provider = new GoogleAuthProvider()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
+  const { t } = useTranslation()
+
   return useMutation({
     mutationFn: () => {
       if (!auth?.currentUser) {
@@ -18,7 +21,7 @@ export const useLinkGoogle = () => {
     },
     onSuccess: () => {
       toast({
-        description: 'Your Google account has been linked successfully.',
+        description: t('auth.toast.linkGoogle'),
       })
       invalidateUser()
     },
