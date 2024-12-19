@@ -93,7 +93,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
           name="title"
           placeholder={t('notes.form.title.label')}
           inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-0"
-          autoFocus
+          autoFocus={!selectedNote}
           rows={1}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
