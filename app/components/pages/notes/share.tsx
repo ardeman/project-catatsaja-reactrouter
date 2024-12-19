@@ -5,7 +5,16 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Input } from '~/components/base'
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '~/components/ui'
 import { useSearchUsers } from '~/lib/hooks'
 import { TShareForm } from '~/lib/types'
 import { shareSchema } from '~/lib/validations'
@@ -53,14 +62,28 @@ export const Share = () => {
         />
 
         {searchResults?.map((user) => (
-          <div key={user.uid}>
-            <Avatar>
-              <AvatarImage src={user.photoURL || ''} />
-              <AvatarFallback>
-                <CircleUser className="h-6 w-6" />
-              </AvatarFallback>
-            </Avatar>
-            {user.email}
+          <div
+            key={user.uid}
+            className="flex items-center justify-between gap-x-2"
+          >
+            <div className="flex items-center gap-x-2">
+              <Avatar>
+                <AvatarImage src={user.photoURL || ''} />
+                <AvatarFallback>
+                  <CircleUser className="h-6 w-6" />
+                </AvatarFallback>
+              </Avatar>
+              <span>{user.displayName}</span>
+            </div>
+            <Select>
+              <SelectTrigger className="w-fit gap-2">
+                <SelectValue placeholder="Choose permission" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="read">Read</SelectItem>
+                <SelectItem value="write">Write</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         ))}
       </form>
