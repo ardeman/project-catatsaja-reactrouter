@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react'
 import { z } from 'zod'
 
 import { TUserResponse } from '~/lib/types'
@@ -15,9 +16,13 @@ export type TPermissions = {
   write: string[]
 }
 
-export type THandlePermission = {
+export type THandleSetPermission = {
   newValue: string
   uid: string
+}
+
+export type THandleDeletePermission = {
+  event: MouseEvent
 }
 
 export type TParamsPermission = Pick<TPermissions, 'write'> &

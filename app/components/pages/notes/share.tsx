@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BookUser, CircleUser } from 'lucide-react'
+import { BookUser, CircleUser, Trash } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -19,7 +19,8 @@ import {
 import { auth } from '~/lib/configs'
 import { useSearchUsers, useGetUsers } from '~/lib/hooks'
 import {
-  THandlePermission,
+  THandleDeletePermission,
+  THandleSetPermission,
   TParamsPermission,
   TPermissions,
   TShareForm,
@@ -117,9 +118,14 @@ export const Share = (props: TPermissions) => {
   )
 }
 
-const handlePermission = (params: THandlePermission) => {
+const handleSetPermission = (params: THandleSetPermission) => {
   const { newValue, uid } = params
   console.log('handlePermission', newValue, uid) // eslint-disable-line no-console
+}
+
+const handleDeletePermission = (params: THandleDeletePermission) => {
+  const { event } = params
+  console.log(event, 'event') // eslint-disable-line no-console
 }
 
 const Permission = (params: TParamsPermission) => {
@@ -137,20 +143,31 @@ const Permission = (params: TParamsPermission) => {
         </Avatar>
         <span>{displayName}</span>
       </div>
-      <Select
-        onValueChange={(newValue) => handlePermission({ newValue, uid })}
-        defaultValue={
-          write.length > 0 ? (write.includes(uid) ? 'write' : 'read') : ''
-        }
-      >
-        <SelectTrigger className="w-fit gap-2">
-          <SelectValue placeholder={t('form.permissions.select')} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="read">{t('form.permissions.readOnly')}</SelectItem>
-          <SelectItem value="write">{t('form.permissions.write')}</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="flex items-center gap-x-2">
+        <Select
+          onValueChange={(newValue) => handleSetPermission({ newValue, uid })}
+          defaultValue={
+            write.length > 0 ? (write.includes(uid) ? 'write' : 'read') : ''
+          }
+        >
+          <SelectTrigger className="w-fit gap-2">
+            <SelectValue placeholder={t('form.permissions.select')} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="read">
+              {t('form.permissions.readOnly')}
+            </SelectItem>
+            <SelectItem value="write">{t('form.permissions.write')}</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={(event) => handleDeletePermission({ event })}
+        >
+          <Trash className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   )
 }
