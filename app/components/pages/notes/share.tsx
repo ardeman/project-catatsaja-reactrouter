@@ -9,6 +9,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
+  Button,
   Select,
   SelectContent,
   SelectItem,
@@ -58,7 +59,17 @@ export const Share = () => {
           placeholder={t('form.user.placeholder')}
           required
           disabled={disabled}
-          rightNode={({ className }) => <BookUser className={className} />}
+          rightNode={({ className }) => (
+            <Button
+              type="submit"
+              disabled={disabled}
+              variant="ghost"
+              size="icon"
+              className={className}
+            >
+              <BookUser />
+            </Button>
+          )}
         />
 
         {searchResults?.map((user) => (
@@ -67,7 +78,7 @@ export const Share = () => {
             className="flex items-center justify-between gap-x-2"
           >
             <div className="flex items-center gap-x-2">
-              <Avatar>
+              <Avatar className="h-9 w-9">
                 <AvatarImage src={user.photoURL || ''} />
                 <AvatarFallback>
                   <CircleUser className="h-6 w-6" />
