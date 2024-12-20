@@ -1,4 +1,3 @@
-import { MouseEvent } from 'react'
 import { z } from 'zod'
 
 import { TUserResponse } from '~/lib/types'
@@ -21,9 +20,9 @@ export type THandleSetPermission = {
   uid: string
 }
 
-export type THandleDeletePermission = {
-  event: MouseEvent
-}
+export type THandleDeletePermission = Pick<TUserResponse, 'uid' | 'email'>
 
 export type TParamsPermission = Pick<TPermissions, 'write'> &
-  Pick<TUserResponse, 'uid' | 'displayName' | 'photoURL'>
+  Pick<TUserResponse, 'uid' | 'displayName' | 'photoURL' | 'email'> & {
+    handleDeletePermission: (params: THandleDeletePermission) => void
+  }

@@ -38,7 +38,7 @@ export const Share = (props: TPermissions) => {
     resolver: zodResolver(shareSchema(t)),
     defaultValues: { user: '' },
   })
-  const { handleSubmit } = formMethods
+  const { handleSubmit, getValues } = formMethods
 
   const onSubmit = handleSubmit(async (data) => {
     setEmail(data.user)
@@ -57,6 +57,14 @@ export const Share = (props: TPermissions) => {
       setDisabled(false)
     }
   }, [searchResults, permissions])
+
+  const handleDeletePermission = (params: THandleDeletePermission) => {
+    const { email, uid } = params
+    console.log('handleDeletePermission', uid) // eslint-disable-line no-console
+    if (email === getValues().user) {
+      setDisabled(false)
+    }
+  }
 
   return (
     <FormProvider {...formMethods}>
@@ -85,13 +93,15 @@ export const Share = (props: TPermissions) => {
 
         {searchResults
           ?.filter((user) => !permissions.has(user.uid))
-          .map(({ uid, photoURL, displayName }) => (
+          .map(({ uid, photoURL, displayName, email }) => (
             <Permission
               key={uid}
-              photoURL={photoURL || ''}
+              photoURL={photoURL}
               displayName={displayName}
               uid={uid}
+              email={email}
               write={[]}
+              handleDeletePermission={handleDeletePermission}
             />
           ))}
 
@@ -109,7 +119,9 @@ export const Share = (props: TPermissions) => {
                   displayName={
                     users.find((user) => user.uid === uid)?.displayName || ''
                   }
+                  email={users.find((user) => user.uid === uid)?.email || ''}
                   uid={uid}
+                  handleDeletePermission={handleDeletePermission}
                 />
               ),
           )}
@@ -123,13 +135,9 @@ const handleSetPermission = (params: THandleSetPermission) => {
   console.log('handlePermission', newValue, uid) // eslint-disable-line no-console
 }
 
-const handleDeletePermission = (params: THandleDeletePermission) => {
-  const { event } = params
-  console.log(event, 'event') // eslint-disable-line no-console
-}
-
 const Permission = (params: TParamsPermission) => {
-  const { write, photoURL, displayName, uid } = params
+  const { write, photoURL, displayName, uid, email, handleDeletePermission } =
+    params
   const { t } = useTranslation('common')
 
   return (
@@ -141,7 +149,10 @@ const Permission = (params: TParamsPermission) => {
             <CircleUser className="h-6 w-6" />
           </AvatarFallback>
         </Avatar>
-        <span>{displayName}</span>
+        <div className="max-w-32 md:max-w-48">
+          <p className="truncate">{displayName}</p>
+          <p className="truncate text-xs text-muted-foreground">{email}</p>
+        </div>
       </div>
       <div className="flex items-center gap-x-2">
         <Select
@@ -163,7 +174,7 @@ const Permission = (params: TParamsPermission) => {
         <Button
           type="button"
           variant="outline"
-          onClick={(event) => handleDeletePermission({ event })}
+          onClick={() => handleDeletePermission({ uid, email })}
         >
           <Trash className="h-4 w-4" />
         </Button>
