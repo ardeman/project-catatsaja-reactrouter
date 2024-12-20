@@ -35,9 +35,7 @@ export const Share = (props: TPermissions) => {
   const { data: users } = useGetUsers()
   const formMethods = useForm<TShareForm>({
     resolver: zodResolver(shareSchema(t)),
-    defaultValues: {
-      user: '',
-    },
+    defaultValues: { user: '' },
   })
   const { handleSubmit } = formMethods
 
@@ -54,8 +52,9 @@ export const Share = (props: TPermissions) => {
   useEffect(() => {
     if (
       searchResults?.filter((user) => !permissions.has(user.uid)).length === 0
-    )
+    ) {
       setDisabled(false)
+    }
   }, [searchResults, permissions])
 
   return (
@@ -139,9 +138,7 @@ const Permission = (params: TParamsPermission) => {
         <span>{displayName}</span>
       </div>
       <Select
-        onValueChange={(newValue) => {
-          handlePermission({ newValue, uid })
-        }}
+        onValueChange={(newValue) => handlePermission({ newValue, uid })}
         defaultValue={
           write.length > 0 ? (write.includes(uid) ? 'write' : 'read') : ''
         }
