@@ -26,6 +26,7 @@
     "confirm": "Iya",
     "undo": "Batal",
     "permissions": {
+      "select": "Pilih izin",
       "readOnly": "Hanya baca",
       "write": "Baca dan tulis",
       "shared": "Dibagikan"

@@ -26,6 +26,7 @@
     "confirm": "Confirm",
     "undo": "Undo",
     "permissions": {
+      "select": "Choose permissions",
       "readOnly": "Read only",
       "write": "Read and write",
       "shared": "Shared"

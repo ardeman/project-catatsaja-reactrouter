@@ -55,6 +55,7 @@ export const Share = () => {
         className="group/form is-shown space-y-4"
       >
         <Input
+          type="search"
           name="user"
           placeholder={t('form.user.placeholder')}
           required
@@ -88,11 +89,15 @@ export const Share = () => {
             </div>
             <Select>
               <SelectTrigger className="w-fit gap-2">
-                <SelectValue placeholder="Choose permission" />
+                <SelectValue placeholder={t('form.permissions.select')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="read">Read</SelectItem>
-                <SelectItem value="write">Write</SelectItem>
+                <SelectItem value="read">
+                  {t('form.permissions.readOnly')}
+                </SelectItem>
+                <SelectItem value="write">
+                  {t('form.permissions.write')}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
