@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BookUser, CircleUser } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -46,11 +46,17 @@ export const Share = (props: TPermissions) => {
     setDisabled(true)
   })
 
-  useEffect(() => {
-    if (searchResults?.length === 0) setDisabled(false)
-  }, [searchResults])
+  const permissions = useMemo(
+    () => new Set([...(read || []), ...(write || [])]),
+    [read, write],
+  )
 
-  const permissions = new Set([...(read || []), ...(write || [])])
+  useEffect(() => {
+    if (
+      searchResults?.filter((user) => !permissions.has(user.uid)).length === 0
+    )
+      setDisabled(false)
+  }, [searchResults, permissions])
 
   return (
     <FormProvider {...formMethods}>
@@ -77,15 +83,17 @@ export const Share = (props: TPermissions) => {
           )}
         />
 
-        {searchResults?.map(({ uid, photoURL, displayName }) => (
-          <Permission
-            key={uid}
-            photoURL={photoURL || ''}
-            displayName={displayName}
-            uid={uid}
-            write={write}
-          />
-        ))}
+        {searchResults
+          ?.filter((user) => !permissions.has(user.uid))
+          .map(({ uid, photoURL, displayName }) => (
+            <Permission
+              key={uid}
+              photoURL={photoURL || ''}
+              displayName={displayName}
+              uid={uid}
+              write={[]}
+            />
+          ))}
 
         {[...permissions]
           .filter((uid) => uid !== auth?.currentUser?.uid)
@@ -134,7 +142,9 @@ const Permission = (params: TParamsPermission) => {
         onValueChange={(newValue) => {
           handlePermission({ newValue, uid })
         }}
-        defaultValue={uid ? (write.includes(uid) ? 'write' : 'read') : ''}
+        defaultValue={
+          write.length > 0 ? (write.includes(uid) ? 'write' : 'read') : ''
+        }
       >
         <SelectTrigger className="w-fit gap-2">
           <SelectValue placeholder={t('form.permissions.select')} />
