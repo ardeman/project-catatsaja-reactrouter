@@ -16,18 +16,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui'
-import { useSearchUsers } from '~/lib/hooks'
-import { TShareForm } from '~/lib/types'
+import { auth } from '~/lib/configs'
+import { useSearchUsers, useGetUsers } from '~/lib/hooks'
+import {
+  THandlePermission,
+  TParamsPermission,
+  TPermissions,
+  TShareForm,
+} from '~/lib/types'
 import { shareSchema } from '~/lib/validations'
 
-import { useNote } from './context'
-
-export const Share = () => {
+export const Share = (props: TPermissions) => {
+  const { write, read } = props
   const [disabled, setDisabled] = useState(false)
   const [email, setEmail] = useState('')
-  const { selectedNote } = useNote()
   const { t } = useTranslation(['common', 'zod'])
   const { data: searchResults } = useSearchUsers(email)
+  const { data: users } = useGetUsers()
   const formMethods = useForm<TShareForm>({
     resolver: zodResolver(shareSchema(t)),
     defaultValues: {
@@ -37,16 +42,15 @@ export const Share = () => {
   const { handleSubmit } = formMethods
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log('selectedNote', selectedNote) // eslint-disable-line no-console
-
     setEmail(data.user)
     setDisabled(true)
   })
 
   useEffect(() => {
-    if (searchResults === undefined) return
-    if (searchResults.length === 0) setDisabled(false)
+    if (searchResults?.length === 0) setDisabled(false)
   }, [searchResults])
+
+  const permissions = new Set([...(read || []), ...(write || [])])
 
   return (
     <FormProvider {...formMethods}>
@@ -73,36 +77,73 @@ export const Share = () => {
           )}
         />
 
-        {searchResults?.map((user) => (
-          <div
-            key={user.uid}
-            className="flex items-center justify-between gap-x-2"
-          >
-            <div className="flex items-center gap-x-2">
-              <Avatar className="h-9 w-9">
-                <AvatarImage src={user.photoURL || ''} />
-                <AvatarFallback>
-                  <CircleUser className="h-6 w-6" />
-                </AvatarFallback>
-              </Avatar>
-              <span>{user.displayName}</span>
-            </div>
-            <Select>
-              <SelectTrigger className="w-fit gap-2">
-                <SelectValue placeholder={t('form.permissions.select')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="read">
-                  {t('form.permissions.readOnly')}
-                </SelectItem>
-                <SelectItem value="write">
-                  {t('form.permissions.write')}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        {searchResults?.map(({ uid, photoURL, displayName }) => (
+          <Permission
+            key={uid}
+            photoURL={photoURL || ''}
+            displayName={displayName}
+            uid={uid}
+            write={write}
+          />
         ))}
+
+        {[...permissions]
+          .filter((uid) => uid !== auth?.currentUser?.uid)
+          .map(
+            (uid) =>
+              users?.find((user) => user.uid === uid) && (
+                <Permission
+                  key={uid}
+                  write={write}
+                  photoURL={
+                    users.find((user) => user.uid === uid)?.photoURL || ''
+                  }
+                  displayName={
+                    users.find((user) => user.uid === uid)?.displayName || ''
+                  }
+                  uid={uid}
+                />
+              ),
+          )}
       </form>
     </FormProvider>
+  )
+}
+
+const handlePermission = (params: THandlePermission) => {
+  const { newValue, uid } = params
+  console.log('handlePermission', newValue, uid) // eslint-disable-line no-console
+}
+
+const Permission = (params: TParamsPermission) => {
+  const { write, photoURL, displayName, uid } = params
+  const { t } = useTranslation('common')
+
+  return (
+    <div className="flex items-center justify-between gap-x-2">
+      <div className="flex items-center gap-x-2">
+        <Avatar className="h-9 w-9">
+          <AvatarImage src={photoURL} />
+          <AvatarFallback>
+            <CircleUser className="h-6 w-6" />
+          </AvatarFallback>
+        </Avatar>
+        <span>{displayName}</span>
+      </div>
+      <Select
+        onValueChange={(newValue) => {
+          handlePermission({ newValue, uid })
+        }}
+        defaultValue={uid ? (write.includes(uid) ? 'write' : 'read') : ''}
+      >
+        <SelectTrigger className="w-fit gap-2">
+          <SelectValue placeholder={t('form.permissions.select')} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="read">{t('form.permissions.readOnly')}</SelectItem>
+          <SelectItem value="write">{t('form.permissions.write')}</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   )
 }

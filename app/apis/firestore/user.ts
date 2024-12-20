@@ -77,6 +77,23 @@ export const fetchUsersByEmail = async (email: string) => {
   })
 }
 
+export const fetchUsers = async () => {
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+
+  const usersRef = collection(firestore, 'users')
+  const snap = await getDocs(usersRef)
+
+  return snap.docs.map((doc) => {
+    const data = doc.data()
+    return {
+      ...data,
+      uid: doc.id,
+    } as TUserResponse
+  })
+}
+
 export const updateProfile = async (userData: TUpdateProfileRequest) => {
   const { ...rest } = userData
   if (!firestore) {

@@ -50,23 +50,17 @@ export const Input = <TFormValues extends Record<string, unknown>>(
               {label} {required && <sup className="text-red-500">*</sup>}
             </FormLabel>
           )}
-          <div
-            className={cn(
-              'relative flex items-center gap-x-3.5 rounded-md border border-input',
-              containerClassName,
-            )}
-          >
+          <div className={cn('relative flex items-center', containerClassName)}>
             {LeftNode && (
-              <LeftNode className="ml-3.5 h-4 w-4 cursor-pointer text-muted-foreground" />
+              <LeftNode className="absolute left-3.5 h-4 w-4 cursor-pointer text-muted-foreground" />
             )}
             <FormControl>
               <UIInput
                 id={id}
                 type={type}
                 className={cn(
-                  'border-0 focus:outline-none focus-visible:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0',
-                  LeftNode && 'pl-0',
-                  RightNode && 'pr-0',
+                  LeftNode && 'pl-10',
+                  RightNode && 'pr-10',
                   inputClassName,
                 )}
                 onClick={onClick}
@@ -75,7 +69,7 @@ export const Input = <TFormValues extends Record<string, unknown>>(
               />
             </FormControl>
             {RightNode && (
-              <RightNode className="mr-3.5 h-4 w-4 cursor-pointer text-muted-foreground" />
+              <RightNode className="absolute right-3.5 h-4 w-4 cursor-pointer text-muted-foreground" />
             )}
           </div>
           {hint && <FormDescription>{hint}</FormDescription>}

@@ -24,6 +24,7 @@ export const Wrapper = () => {
     handleCreateNote,
     handleConfirm,
     formRef,
+    selectedNote,
   } = useNote()
   const { data: notesData } = useGetNotes()
   const masonryRefPinned = useRef(null)
@@ -144,7 +145,10 @@ export const Wrapper = () => {
           />
         }
       >
-        <Share />
+        <Share
+          write={selectedNote?.permissions?.write || []}
+          read={selectedNote?.permissions?.read || []}
+        />
       </Modal>
     </main>
   )
