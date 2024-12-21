@@ -60,11 +60,12 @@ export const Share = (props: TPermissions) => {
 
   const handleDeletePermission = (params: THandleDeletePermission) => {
     const { email, uid } = params
-    console.log('handleDeletePermission', uid) // eslint-disable-line no-console
     if (email === getValues().user) {
       setEmail('')
       setDisabled(false)
+      return
     }
+    console.log('handleDeletePermission', uid) // eslint-disable-line no-console
   }
 
   return (
