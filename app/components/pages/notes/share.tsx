@@ -38,7 +38,7 @@ export const Share = (props: TPermissions) => {
     resolver: zodResolver(shareSchema(t)),
     defaultValues: { user: '' },
   })
-  const { handleSubmit, getValues } = formMethods
+  const { handleSubmit, getValues, setValue } = formMethods
 
   const onSubmit = handleSubmit(async (data) => {
     setEmail(data.user)
@@ -63,16 +63,18 @@ export const Share = (props: TPermissions) => {
     if (email === getValues().user) {
       setEmail('')
       setDisabled(false)
+      setValue('user', '')
       return
     }
     handleUnshare({ uid })
-    console.log('handleDeletePermission', uid) // eslint-disable-line no-console
   }
 
   const handleSetPermission = (params: THandleSetPermission) => {
     const { permission, uid } = params
     handleShare({ uid, permission })
-    console.log('handlePermission', permission, uid) // eslint-disable-line no-console
+    setEmail('')
+    setDisabled(false)
+    setValue('user', '')
   }
 
   return (
