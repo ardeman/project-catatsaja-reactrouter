@@ -13,6 +13,7 @@ import {
 import { auth, firestore } from '~/lib/configs'
 import {
   TCreateNoteRequest,
+  TNotePermissionRequest,
   TNoteResponse,
   TPinNoteRequest,
   TUpdateNoteRequest,
@@ -133,6 +134,49 @@ export const unlinkNote = async (note: TNoteResponse) => {
   }
 
   const ref = doc(firestore, 'notes', id)
+  return await updateDoc(ref, {
+    ...data,
+    updatedAt: new Date(),
+  })
+}
+
+export const setNotePermission = async (form: TNotePermissionRequest) => {
+  const { note, uid, permission } = form
+  const readPermission = new Set(note.permissions?.read || [])
+  const writePermission = new Set(note.permissions?.write || [])
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  switch (permission) {
+    case 'delete': {
+      readPermission.delete(uid)
+      writePermission.delete(uid)
+      break
+    }
+    case 'read': {
+      readPermission.add(uid)
+      writePermission.delete(uid)
+      break
+    }
+    case 'write': {
+      readPermission.add(uid)
+      writePermission.add(uid)
+      break
+    }
+    default: {
+      throw new Error(`Unknown permission: ${permission}`)
+    }
+  }
+  const ref = doc(firestore, 'notes', note.id)
+  const data = {
+    permissions: {
+      read: [...readPermission],
+      write: [...writePermission],
+    },
+  }
   return await updateDoc(ref, {
     ...data,
     updatedAt: new Date(),

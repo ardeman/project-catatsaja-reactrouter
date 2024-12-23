@@ -3,7 +3,12 @@ import { useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { Button, Modal } from '~/components/base'
-import { useGetNotes } from '~/lib/hooks'
+import { useGetNotes, useShareNote } from '~/lib/hooks'
+import {
+  THandleDeletePermission,
+  THandleSetPermission,
+  TNotePermissionRequest,
+} from '~/lib/types'
 
 import { Card } from './card'
 import { useNote } from './context'
@@ -31,6 +36,28 @@ export const Wrapper = () => {
   const masonryRefRegular = useRef(null)
   const pinnedNotes = notesData?.filter((note) => note.isPinned)
   const regularNotes = notesData?.filter((note) => !note.isPinned)
+  const {
+    mutate: mutateShare,
+    // isPending: isSharePending,
+    // isError: isShareError,
+  } = useShareNote()
+
+  const handleShare = (params: THandleSetPermission) => {
+    const data = {
+      ...params,
+      note: notesData?.find((note) => note.id === selectedNote?.id),
+    } as TNotePermissionRequest
+    mutateShare(data)
+  }
+
+  const handleUnshare = (params: Pick<THandleDeletePermission, 'uid'>) => {
+    const data = {
+      ...params,
+      permission: 'delete',
+      note: notesData?.find((note) => note.id === selectedNote?.id),
+    } as TNotePermissionRequest
+    mutateShare(data)
+  }
 
   useEffect(() => {
     if (masonryRefPinned?.current) {
@@ -146,8 +173,16 @@ export const Wrapper = () => {
         }
       >
         <Share
-          write={selectedNote?.permissions?.write || []}
-          read={selectedNote?.permissions?.read || []}
+          write={
+            notesData?.find((note) => note.id === selectedNote?.id)?.permissions
+              ?.write || []
+          }
+          read={
+            notesData?.find((note) => note.id === selectedNote?.id)?.permissions
+              ?.read || []
+          }
+          handleShare={handleShare}
+          handleUnshare={handleUnshare}
         />
       </Modal>
     </main>

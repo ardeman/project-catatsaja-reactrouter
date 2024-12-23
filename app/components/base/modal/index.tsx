@@ -92,7 +92,7 @@ const Dialog = (params: TParams) => {
         if (!isOpen) handleClose() // Trigger handleClose when closing
       }}
     >
-      <DialogContent className="max-h-dvh max-w-md overflow-y-auto rounded-lg">
+      <DialogContent className="max-h-dvh overflow-y-auto rounded-lg">
         <DialogHeader className={title || description ? '' : 'hidden'}>
           <DialogTitle className={title ? '' : 'hidden'}>{title}</DialogTitle>
           <DialogDescription className={description ? '' : 'hidden'}>

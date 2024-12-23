@@ -28,7 +28,7 @@ import {
 import { shareSchema } from '~/lib/validations'
 
 export const Share = (props: TPermissions) => {
-  const { write, read } = props
+  const { write, read, handleShare, handleUnshare } = props
   const [disabled, setDisabled] = useState(false)
   const [email, setEmail] = useState('')
   const { t } = useTranslation(['common', 'zod'])
@@ -65,7 +65,14 @@ export const Share = (props: TPermissions) => {
       setDisabled(false)
       return
     }
+    handleUnshare({ uid })
     console.log('handleDeletePermission', uid) // eslint-disable-line no-console
+  }
+
+  const handleSetPermission = (params: THandleSetPermission) => {
+    const { permission, uid } = params
+    handleShare({ uid, permission })
+    console.log('handlePermission', permission, uid) // eslint-disable-line no-console
   }
 
   return (
@@ -104,6 +111,7 @@ export const Share = (props: TPermissions) => {
               email={email}
               write={[]}
               handleDeletePermission={handleDeletePermission}
+              handleSetPermission={handleSetPermission}
             />
           ))}
 
@@ -124,6 +132,7 @@ export const Share = (props: TPermissions) => {
                   email={users.find((user) => user.uid === uid)?.email || ''}
                   uid={uid}
                   handleDeletePermission={handleDeletePermission}
+                  handleSetPermission={handleSetPermission}
                 />
               ),
           )}
@@ -132,14 +141,16 @@ export const Share = (props: TPermissions) => {
   )
 }
 
-const handleSetPermission = (params: THandleSetPermission) => {
-  const { newValue, uid } = params
-  console.log('handlePermission', newValue, uid) // eslint-disable-line no-console
-}
-
 const Permission = (params: TParamsPermission) => {
-  const { write, photoURL, displayName, uid, email, handleDeletePermission } =
-    params
+  const {
+    write,
+    photoURL,
+    displayName,
+    uid,
+    email,
+    handleDeletePermission,
+    handleSetPermission,
+  } = params
   const { t } = useTranslation('common')
 
   return (
@@ -158,7 +169,9 @@ const Permission = (params: TParamsPermission) => {
       </div>
       <div className="flex items-center gap-x-2">
         <Select
-          onValueChange={(newValue) => handleSetPermission({ newValue, uid })}
+          onValueChange={(newValue: THandleSetPermission['permission']) =>
+            handleSetPermission({ permission: newValue, uid })
+          }
           defaultValue={
             write.length > 0 ? (write.includes(uid) ? 'write' : 'read') : ''
           }

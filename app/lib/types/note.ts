@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { TPermissions, TTime } from '~/lib/types'
+import { THandleSetPermission, TPermissions, TTime } from '~/lib/types'
 import { noteSchema } from '~/lib/validations'
 
 export type TNoteForm = z.infer<typeof noteSchema>
@@ -21,4 +21,8 @@ export type TNoteResponse = {
   updatedAt: TTime
   owner: string
   permissions?: TPermissions
+}
+
+export type TNotePermissionRequest = THandleSetPermission & {
+  note: TNoteResponse
 }
