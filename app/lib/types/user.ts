@@ -16,4 +16,5 @@ export type TUserResponse = {
   photoURL: string
   createdAt: TTime
   updatedAt: TTime
+  defaultCurrency?: string
 }
