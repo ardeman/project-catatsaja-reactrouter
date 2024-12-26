@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { appleIcon, appName } from '~/lib/constants'
 import { cn } from '~/lib/utils'
 
-import { navs } from './data'
+import { navs, reloadNavs } from './data'
 import { TProps } from './type'
 
 export const Navigation = (props: TProps) => {
@@ -38,6 +38,7 @@ export const Navigation = (props: TProps) => {
             pathname === nav.href ? 'text-foreground' : 'text-muted-foreground',
             'whitespace-nowrap transition-colors hover:text-foreground',
           )}
+          reloadDocument={reloadNavs.includes(nav.href)}
         >
           {nav.name}
         </Link>
