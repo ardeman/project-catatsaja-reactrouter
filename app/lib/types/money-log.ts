@@ -18,4 +18,6 @@ export type TLogResponse = {
   currency: string
   rate: number
   timestamp: TTime
+  type: 'income' | 'expense'
+  category: string
 }

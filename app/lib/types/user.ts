@@ -17,4 +17,5 @@ export type TUserResponse = {
   createdAt: TTime
   updatedAt: TTime
   defaultCurrency?: string
+  numberFormat?: string
 }
