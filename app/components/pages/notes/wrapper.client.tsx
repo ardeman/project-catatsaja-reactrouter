@@ -2,7 +2,7 @@ import Masonry from 'masonry-layout'
 import { useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { Button, Modal } from '~/components/base'
+import { Button, Modal, Share } from '~/components/base'
 import { useGetNotes, useShareNote } from '~/lib/hooks'
 import {
   THandleDeletePermission,
@@ -13,7 +13,6 @@ import {
 import { Card } from './card'
 import { useNote } from './context'
 import { Form } from './form'
-import { Share } from './share'
 
 export const Wrapper = () => {
   const { t } = useTranslation()
