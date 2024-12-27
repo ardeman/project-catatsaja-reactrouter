@@ -7,7 +7,14 @@ import { FirebaseProvider, ThemeProvider } from '~/lib/contexts'
 
 import '~/styles/globals.css'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+    mutations: {},
+  },
+})
 
 export const handle = {
   i18n: 'common',

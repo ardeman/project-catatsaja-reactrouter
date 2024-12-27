@@ -9,6 +9,5 @@ export const useUserData = () => {
     queryKey: ['current-user'],
     queryFn: fetchUserData,
     enabled: !!auth?.currentUser, // Only run the query if the user is authenticated
-    retry: false, // Disable retries since there's no user when not logged in
   })
 }

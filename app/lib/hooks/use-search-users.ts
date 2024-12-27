@@ -8,6 +8,5 @@ export const useSearchUsers = (email: string) => {
     queryKey: ['search-users', email],
     queryFn: () => fetchUsersByEmail(email),
     enabled: !!auth?.currentUser && !!email, // Only run the query if the user is authenticated and email is provided
-    retry: false,
   })
 }

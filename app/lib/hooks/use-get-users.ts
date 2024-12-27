@@ -6,6 +6,5 @@ export const useGetUsers = () => {
   return useQuery({
     queryKey: ['users'],
     queryFn: fetchUsers,
-    retry: false,
   })
 }
