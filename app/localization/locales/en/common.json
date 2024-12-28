@@ -115,6 +115,9 @@
       "deleted": "Note deleted successfully"
     }
   },
+  "moneyLog": {
+    "add": "Add Money Log"
+  },
   "settings": {
     "profile": {
       "title": "Profile",

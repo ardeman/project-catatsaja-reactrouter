@@ -27,8 +27,8 @@ type MoneyLogContextValue = {
     SetStateAction<TMoneyLogConfirmation | undefined>
   >
   formRef: RefObject<{ submit: () => void } | null>
-  handleCreateLog: () => void
-  handleEditLog: (log: TMoneyLogResponse) => void
+  handleCreateMoneyLog: () => void
+  handleEditMoneyLog: (log: TMoneyLogResponse) => void
   handleFormClose: () => void
   handleConfirm: () => void
   // handleDeleteLog: (props: THandleModifyMoneyLog) => void
@@ -54,12 +54,12 @@ const MoneyLogProvider = (props: PropsWithChildren) => {
   // const { mutate: mutateUnlinkLog } = useUnlinkLog()
   const formRef = useRef<{ submit: () => void } | null>(null)
 
-  const handleCreateLog = () => {
+  const handleCreateMoneyLog = () => {
     setOpenForm(true)
     setSelectedMoneyLog(undefined)
   }
 
-  const handleEditLog = (log: TMoneyLogResponse) => {
+  const handleEditMoneyLog = (log: TMoneyLogResponse) => {
     setOpenForm(true)
     setSelectedMoneyLog(log)
   }
@@ -107,8 +107,8 @@ const MoneyLogProvider = (props: PropsWithChildren) => {
         selectedConfirmation,
         setSelectedConfirmation,
         formRef,
-        handleCreateLog,
-        handleEditLog,
+        handleCreateMoneyLog,
+        handleEditMoneyLog,
         handleFormClose,
         handleConfirm,
         // handleDeleteLog,

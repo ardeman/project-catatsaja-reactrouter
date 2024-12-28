@@ -35,11 +35,7 @@ export const Wrapper = () => {
   const masonryRefRegular = useRef(null)
   const pinnedNotes = notesData?.filter((note) => note.isPinned)
   const regularNotes = notesData?.filter((note) => !note.isPinned)
-  const {
-    mutate: mutateShare,
-    // isPending: isSharePending,
-    // isError: isShareError,
-  } = useShareNote()
+  const { mutate: mutateShare } = useShareNote()
 
   const handleShare = (params: THandleSetPermission) => {
     const data = {

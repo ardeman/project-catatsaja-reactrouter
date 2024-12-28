@@ -115,6 +115,9 @@
       "deleted": "Catatan berhasil dihapus"
     }
   },
+  "moneyLog": {
+    "add": "Tambah Catatan Keuangan"
+  },
   "settings": {
     "profile": {
       "title": "Profil",
