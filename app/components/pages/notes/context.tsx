@@ -84,8 +84,7 @@ const NoteProvider = (props: PropsWithChildren) => {
   }
 
   const handleDeleteNote = (props: THandleModifyNote) => {
-    const { event, note } = props
-    event.stopPropagation() // Prevents the Card's onClick from triggering
+    const { note } = props
     setOpenConfirmation(true)
     setSelectedConfirmation({
       kind: 'delete',
@@ -94,8 +93,7 @@ const NoteProvider = (props: PropsWithChildren) => {
   }
 
   const handleUnlinkNote = (props: THandleModifyNote) => {
-    const { event, note } = props
-    event.stopPropagation() // Prevents the Card's onClick from triggering
+    const { note } = props
     setOpenConfirmation(true)
     setSelectedConfirmation({
       kind: 'unlink',
@@ -104,14 +102,12 @@ const NoteProvider = (props: PropsWithChildren) => {
   }
 
   const handlePinNote = (props: THandlePinNote) => {
-    const { event, note, isPinned } = props
-    event.stopPropagation() // Prevents the Card's onClick from triggering
+    const { note, isPinned } = props
     mutatePinNote({ note, isPinned })
   }
 
   const handleShareNote = (props: THandleModifyNote) => {
-    const { event, note } = props
-    event.stopPropagation() // Prevents the Card's onClick from triggering
+    const { note } = props
     setOpenShare(true)
     setSelectedNote(note)
   }

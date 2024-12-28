@@ -3,7 +3,7 @@ import { forwardRef, useImperativeHandle } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { Textarea } from '~/components/base'
+import { Action, Textarea } from '~/components/base'
 import {
   useCreateNote,
   useDebounce,
@@ -14,14 +14,19 @@ import { TNoteForm } from '~/lib/types'
 import { getDateLabel } from '~/lib/utils'
 import { noteSchema } from '~/lib/validations'
 
-import { Action } from './action'
 import { useNote } from './context'
 import { TFormProps } from './type'
 
 export const Form = forwardRef((props: TFormProps, ref) => {
   const { notes } = props
   const { t, i18n } = useTranslation()
-  const { selectedNote } = useNote()
+  const {
+    selectedNote,
+    handleDeleteNote,
+    handlePinNote,
+    handleShareNote,
+    handleUnlinkNote,
+  } = useNote()
   const note = notes?.find((n) => n.id === selectedNote?.id)
   const dateLabel = note
     ? getDateLabel({
@@ -83,10 +88,13 @@ export const Form = forwardRef((props: TFormProps, ref) => {
       >
         {note && (
           <Action
-            note={note}
             isOwner={isOwner}
             isEditable={isEditable}
             isPinned={isPinned}
+            handleDelete={() => handleDeleteNote({ note })}
+            handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
+            handleShare={() => handleShareNote({ note })}
+            handleUnlink={() => handleUnlinkNote({ note })}
           />
         )}
         <Textarea

@@ -1,3 +1,4 @@
+import { HTMLAttributes } from 'react'
 import { z } from 'zod'
 
 import { TUserResponse } from '~/lib/types'
@@ -28,3 +29,14 @@ export type TParamsPermission = Pick<TPermissions, 'write'> &
     handleDeletePermission: (params: THandleDeletePermission) => void
     handleSetPermission: (params: THandleSetPermission) => void
   }
+
+export type TActionProps = {
+  isOwner: boolean
+  isEditable?: boolean
+  isPinned?: boolean
+  className?: HTMLAttributes<HTMLDivElement>['className']
+  handleDelete: () => void
+  handlePin: () => void
+  handleShare: () => void
+  handleUnlink: () => void
+}

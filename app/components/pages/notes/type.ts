@@ -1,4 +1,4 @@
-import { HTMLAttributes, MouseEvent } from 'react'
+import { HTMLAttributes } from 'react'
 
 import { TNoteResponse } from '~/lib/types'
 
@@ -7,7 +7,6 @@ export type TFormProps = {
 }
 
 export type THandleModifyNote = {
-  event: MouseEvent<HTMLButtonElement>
   note: TNoteResponse
 }
 

@@ -1,15 +1,20 @@
 import { Eye, Forward, Pin, Trash } from 'lucide-react'
 
 import { Button } from '~/components/base'
+import { TActionProps } from '~/lib/types'
 import { cn } from '~/lib/utils'
 
-import { useNote } from './context'
-import { TActionProps } from './type'
-
 export const Action = (props: TActionProps) => {
-  const { isOwner, isEditable, isPinned, note, className } = props
-  const { handleDeleteNote, handlePinNote, handleUnlinkNote, handleShareNote } =
-    useNote()
+  const {
+    isOwner,
+    isEditable,
+    isPinned,
+    className,
+    handleDelete,
+    handleUnlink,
+    handleShare,
+    handlePin,
+  } = props
   const buttonClassName =
     'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0'
 
@@ -18,12 +23,10 @@ export const Action = (props: TActionProps) => {
       {isOwner ? (
         <Button
           variant="outline"
-          onClick={(event) =>
-            handleDeleteNote({
-              event,
-              note,
-            })
-          }
+          onClick={(event) => {
+            event.stopPropagation()
+            handleDelete()
+          }}
           containerClassName="flex-1 flex items-center"
           className={cn(buttonClassName, 'hover:text-red-500')}
         >
@@ -32,12 +35,7 @@ export const Action = (props: TActionProps) => {
       ) : (
         <Button
           variant="outline"
-          onClick={(event) =>
-            handleUnlinkNote({
-              event,
-              note,
-            })
-          }
+          onClick={handleUnlink}
           containerClassName="flex-1 flex items-center"
           className={cn(buttonClassName, 'hover:text-red-500')}
         >
@@ -47,12 +45,7 @@ export const Action = (props: TActionProps) => {
       {isEditable && (
         <Button
           variant="outline"
-          onClick={(event) => {
-            handleShareNote({
-              event,
-              note,
-            })
-          }}
+          onClick={handleShare}
           containerClassName="flex-1 flex items-center"
           className={buttonClassName}
         >
@@ -61,7 +54,7 @@ export const Action = (props: TActionProps) => {
       )}
       <Button
         variant="outline"
-        onClick={(event) => handlePinNote({ event, note, isPinned: !isPinned })}
+        onClick={handlePin}
         containerClassName="flex-1 flex items-center"
         className={cn(
           buttonClassName,

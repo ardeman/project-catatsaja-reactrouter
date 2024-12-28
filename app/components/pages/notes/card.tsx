@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
+import { Action } from '~/components/base'
 import {
   Card as UICard,
   CardContent,
@@ -10,14 +11,19 @@ import {
 import { useUserData } from '~/lib/hooks'
 import { cn, getDateLabel } from '~/lib/utils'
 
-import { Action } from './action'
 import { useNote } from './context'
 import { TCardProps } from './type'
 
 export const Card = (props: TCardProps) => {
   const { note, className } = props
   const { t, i18n } = useTranslation()
-  const { handleEditNote } = useNote()
+  const {
+    handleEditNote,
+    handleDeleteNote,
+    handlePinNote,
+    handleShareNote,
+    handleUnlinkNote,
+  } = useNote()
   const { data: userData } = useUserData()
   const isPinned = note.isPinned
   const canWrite = note.permissions?.write?.includes(userData?.uid || '')
@@ -37,10 +43,13 @@ export const Card = (props: TCardProps) => {
     >
       <Action
         className="absolute bottom-1 left-1 right-1"
-        note={note}
         isOwner={isOwner}
         isEditable={isEditable}
         isPinned={isPinned}
+        handleDelete={() => handleDeleteNote({ note })}
+        handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
+        handleShare={() => handleShareNote({ note })}
+        handleUnlink={() => handleUnlinkNote({ note })}
       />
       <CardHeader className="pb-4">
         <CardDescription className="flex justify-between text-xs">
