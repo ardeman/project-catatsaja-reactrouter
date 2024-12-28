@@ -1,7 +1,7 @@
-import { MoneyLogsPage } from '~/components/pages'
+import { MoneyLogPage } from '~/components/pages'
 
 const MoneyLog = () => {
-  return <MoneyLogsPage />
+  return <MoneyLogPage />
 }
 
 export default MoneyLog
