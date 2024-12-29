@@ -1,7 +1,7 @@
-import { LoadingSpinner } from '~/components/base'
+import { MoneyLogFormPage } from '~/components/pages'
 
 const MoneyLog = () => {
-  return <LoadingSpinner classname="min-h-fit flex-1" />
+  return <MoneyLogFormPage />
 }
 
 export default MoneyLog
