@@ -1,4 +1,4 @@
-import { Eye, Forward, Pin, Trash } from 'lucide-react'
+import { Eye, Forward, Pin, Trash, Users } from 'lucide-react'
 
 import { Button } from '~/components/base'
 import { TActionProps } from '~/lib/types'
@@ -14,6 +14,7 @@ export const Action = (props: TActionProps) => {
     handleUnlink,
     handleShare,
     handlePin,
+    sharedCount,
   } = props
   const buttonClassName =
     'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0'
@@ -49,7 +50,14 @@ export const Action = (props: TActionProps) => {
           containerClassName="flex-1 flex items-center"
           className={buttonClassName}
         >
-          <Forward className="h-4 w-4" />
+          {sharedCount ? (
+            <>
+              <Users className="h-4 w-4" />
+              <span className="text-xs">{sharedCount}</span>
+            </>
+          ) : (
+            <Forward className="h-4 w-4" />
+          )}
         </Button>
       )}
       <Button

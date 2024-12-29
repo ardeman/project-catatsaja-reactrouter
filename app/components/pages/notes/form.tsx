@@ -4,6 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Action, Textarea } from '~/components/base'
+import { auth } from '~/lib/configs'
 import {
   useCreateNote,
   useDebounce,
@@ -41,6 +42,12 @@ export const Form = forwardRef((props: TFormProps, ref) => {
   const canWrite = note?.permissions?.write.includes(userData?.uid || '')
   const isOwner = note?.owner === userData?.uid
   const isEditable = isOwner || canWrite
+  const sharedCount = new Set(
+    [
+      ...(note?.permissions?.read || []),
+      ...(note?.permissions?.write || []),
+    ].filter((uid) => uid !== auth?.currentUser?.uid),
+  ).size
   const { mutate: mutateCreateNote } = useCreateNote()
   const { mutate: mutateUpdateNote } = useUpdateNote()
   const formMethods = useForm<TNoteForm>({
@@ -95,6 +102,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
             handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
             handleShare={() => handleShareNote({ note })}
             handleUnlink={() => handleUnlinkNote({ note })}
+            sharedCount={sharedCount}
           />
         )}
         <Textarea

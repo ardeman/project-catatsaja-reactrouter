@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui'
+import { auth } from '~/lib/configs'
 import { useUserData } from '~/lib/hooks'
 import { cn, getDateLabel } from '~/lib/utils'
 
@@ -35,6 +36,12 @@ export const Card = (props: TCardProps) => {
     t,
     locale: i18n.language,
   })
+  const sharedCount = new Set(
+    [
+      ...(note.permissions?.read || []),
+      ...(note.permissions?.write || []),
+    ].filter((uid) => uid !== auth?.currentUser?.uid),
+  ).size
 
   return (
     <UICard
@@ -50,6 +57,7 @@ export const Card = (props: TCardProps) => {
         handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
         handleShare={() => handleShareNote({ note })}
         handleUnlink={() => handleUnlinkNote({ note })}
+        sharedCount={sharedCount}
       />
       <CardHeader className="pb-4">
         <CardDescription className="flex justify-between text-xs">

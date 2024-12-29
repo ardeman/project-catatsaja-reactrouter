@@ -39,4 +39,5 @@ export type TActionProps = {
   handlePin: () => void
   handleShare: () => void
   handleUnlink: () => void
+  sharedCount: number
 }
