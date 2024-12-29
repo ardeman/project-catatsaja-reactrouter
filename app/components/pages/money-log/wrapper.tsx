@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base'
+import { Card, CardContent, CardTitle } from '~/components/ui'
 
 import { useMoneyLog } from './context'
 
@@ -17,7 +18,12 @@ export const Wrapper = () => {
       >
         {t('moneyLog.add')}
       </Button>
-      Wrapper
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        <Card>
+          <CardTitle>Title</CardTitle>
+          <CardContent>Content</CardContent>
+        </Card>
+      </div>
     </main>
   )
 }

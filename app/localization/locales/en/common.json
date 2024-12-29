@@ -116,7 +116,112 @@
     }
   },
   "moneyLog": {
-    "add": "Add Money Log"
+    "add": "Add Money Log",
+    "form": {
+      "title": {
+        "label": "Title"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "amount": {
+        "label": "Amount"
+      },
+      "currency": {
+        "label": "Currency"
+      },
+      "rate": {
+        "label": "Exchange Rate"
+      },
+      "type": {
+        "label": "Type",
+        "income": "Income",
+        "expense": "Expense"
+      },
+      "category": {
+        "label": "Category",
+        "fnb": {
+          "label": "Food & Beverage",
+          "description": "Restaurant, cafe, snacks"
+        },
+        "groceries": {
+          "label": "Groceries",
+          "description": "Food ingredients, household needs, daily necessities"
+        },
+        "shopping": {
+          "label": "Shopping",
+          "description": "Clothing, cosmetics, gadgets & electronics"
+        },
+        "emoney": {
+          "label": "Top Up E-Money",
+          "description": "Digital wallets"
+        },
+        "transport": {
+          "label": "Transportation",
+          "description": "Fuel, parking, toll, public transport, vehicle service"
+        },
+        "entertainment": {
+          "label": "Entertainment",
+          "description": "Hobbies, streaming platforms, online games"
+        },
+        "vacation": {
+          "label": "Vacation",
+          "description": "Travel tickets, accommodation"
+        },
+        "bills": {
+          "label": "Bills",
+          "description": "Water, electricity, gas, phone, internet"
+        },
+        "health": {
+          "label": "Health",
+          "description": "Exercise, doctor, medicine, self-care"
+        },
+        "social": {
+          "label": "Social",
+          "description": "Donations, gifts, zakat"
+        },
+        "insurance": {
+          "label": "Insurance",
+          "description": "Health, life, education insurance"
+        },
+        "investment": {
+          "label": "Investment",
+          "description": "Deposits, mutual funds, bonds, stocks, gold"
+        },
+        "education": {
+          "label": "Education",
+          "description": "School/college fees, courses, books"
+        },
+        "family": {
+          "label": "Family",
+          "description": "Needs of spouse, children, parents, pets"
+        },
+        "loan": {
+          "label": "Loan",
+          "description": "Installments, online loans, credit cards"
+        },
+        "fees": {
+          "label": "Fees",
+          "description": "Admin fees, taxes"
+        },
+        "otherExpenses": {
+          "label": "Other Expenses",
+          "description": "Outside available categories"
+        },
+        "income": {
+          "label": "Income",
+          "description": "Salary, business profit, pocket money"
+        },
+        "interest": {
+          "label": "Interest",
+          "description": "Savings interest, investment returns"
+        },
+        "otherIncome": {
+          "label": "Other Income",
+          "description": "Outside available categories"
+        }
+      }
+    }
   },
   "settings": {
     "profile": {

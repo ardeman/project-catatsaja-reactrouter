@@ -116,7 +116,112 @@
     }
   },
   "moneyLog": {
-    "add": "Tambah Catatan Keuangan"
+    "add": "Tambah Catatan Keuangan",
+    "form": {
+      "title": {
+        "label": "Judul"
+      },
+      "description": {
+        "label": "Deskripsi"
+      },
+      "amount": {
+        "label": "Jumlah"
+      },
+      "currency": {
+        "label": "Mata Uang"
+      },
+      "rate": {
+        "label": "Nilai Tukar"
+      },
+      "type": {
+        "label": "Tipe",
+        "income": "Pemasukan",
+        "expense": "Pengeluaran"
+      },
+      "category": {
+        "label": "Kategori",
+        "fnb": {
+          "label": "Makanan & Minuman",
+          "description": "Restoran, kafe, jajan"
+        },
+        "groceries": {
+          "label": "Groceries",
+          "description": "Bahan makanan, kebutuhan rumah, kebutuhan sehari-hari"
+        },
+        "shopping": {
+          "label": "Shopping",
+          "description": "Pakaian, kosmetik, gadget & elektronik"
+        },
+        "emoney": {
+          "label": "Top Up E-Money",
+          "description": "GoPay, OVO, DANA, ShopeePay, LinkAja"
+        },
+        "transport": {
+          "label": "Transportasi",
+          "description": "Bensin, parkir, tol, transportasi publik, servis kendaraan"
+        },
+        "entertainment": {
+          "label": "Hiburan",
+          "description": "Hobi, platform streaming, game online"
+        },
+        "vacation": {
+          "label": "Liburan",
+          "description": "Tiket perjalanan, penginapan"
+        },
+        "bills": {
+          "label": "Tagihan",
+          "description": "Air, listrik, gas, telepon, internet"
+        },
+        "health": {
+          "label": "Kesehatan",
+          "description": "Olahraga, dokter, obat-obatan, perawatan diri"
+        },
+        "social": {
+          "label": "Sosial",
+          "description": "Donasi, hadiah, zakat"
+        },
+        "insurance": {
+          "label": "Asuransi",
+          "description": "Asuransi kesehatan, jiwa, pendidikan"
+        },
+        "investment": {
+          "label": "Investasi",
+          "description": "Deposito, reksa dana, obligasi, saham, emas"
+        },
+        "education": {
+          "label": "Edukasi",
+          "description": "Uang sekolah/kuliah, kursus, buku"
+        },
+        "family": {
+          "label": "Keluarga",
+          "description": "Kebutuhan pasangan, anak, orang tua, peliharaan"
+        },
+        "loan": {
+          "label": "Pinjaman",
+          "description": "Cicilan, pinjaman online, kartu kredit"
+        },
+        "fees": {
+          "label": "Biaya-biaya",
+          "description": "Biaya admin, pajak"
+        },
+        "otherExpenses": {
+          "label": "Uang Keluar",
+          "description": "Diluar kategori yang tersedia"
+        },
+        "income": {
+          "label": "Pendapatan",
+          "description": "Gaji, laba usaha, uang saku"
+        },
+        "interest": {
+          "label": "Bunga",
+          "description": "Bunga tabungan, hasil investasi"
+        },
+        "otherIncome": {
+          "label": "Uang Masuk",
+          "description": "Diluar kategori yang tersedia"
+        }
+      }
+    }
   },
   "settings": {
     "profile": {
