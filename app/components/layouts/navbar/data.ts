@@ -1,5 +1,7 @@
 import { TFunction } from 'i18next'
 
+import { githubRepo, githubUser } from '~/lib/constants'
+
 export const userMenus = (t: TFunction) => [
   {
     name: t('navigation.settings'),
@@ -7,7 +9,11 @@ export const userMenus = (t: TFunction) => [
   },
   {
     name: t('navigation.reportIssues'),
-    href: 'https://github.com/ardeman/project-remix-catatsaja/issues',
+    href: `https://github.com/${githubUser}/${githubRepo}/issues`,
+  },
+  {
+    name: t('navigation.changelog'),
+    href: `https://github.com/${githubUser}/${githubRepo}/commits/main/`,
   },
 ]
 

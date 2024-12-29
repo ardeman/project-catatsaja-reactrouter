@@ -2,6 +2,9 @@ import { LinksFunction, MetaFunction } from '@remix-run/node'
 
 export const appName = 'Catat Saja'
 export const appleIcon = '/icon/apple-touch-icon.png'
+export const author = 'Ardeman'
+export const githubUser = 'ardeman'
+export const githubRepo = 'project-remix-catatsaja'
 
 export const meta: MetaFunction = () => [
   { title: appName },
@@ -10,6 +13,7 @@ export const meta: MetaFunction = () => [
     content:
       'A comprehensive personal productivity app featuring task lists, timers, and money logging. Organize your tasks, stay on top of your schedule, and track your finances efficiently.',
   },
+  { name: 'author', content: author },
 ]
 
 export const links: LinksFunction = () => [
