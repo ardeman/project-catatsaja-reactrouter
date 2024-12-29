@@ -118,6 +118,7 @@
   "moneyLog": {
     "add": "Tambah Catatan Keuangan",
     "form": {
+      "add": "Tambah Item",
       "title": {
         "label": "Judul"
       },

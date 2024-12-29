@@ -13,7 +13,7 @@ export const Wrapper = () => {
           className="w-full max-w-md"
           asChild
         >
-          <Link to="/dashboard/money-log/add">{t('moneyLog.add')}</Link>
+          <Link to="/dashboard/money-log/add">{t('moneyLog.form.add')}</Link>
         </Button>
       </div>
     </main>

@@ -118,6 +118,7 @@
   "moneyLog": {
     "add": "Add Money Log",
     "form": {
+      "add": "Add Item",
       "title": {
         "label": "Title"
       },
