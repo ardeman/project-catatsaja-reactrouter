@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { Button, Input } from '~/components/base'
+import { Button } from '~/components/base/button'
+import { Input } from '~/components/base/input'
 import {
   Card,
   CardContent,
@@ -13,20 +14,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+} from '~/components/ui/card'
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '~/components/ui'
-import {
-  useAuthUser,
-  useEmailVerification,
-  useResetPassword,
-  useUpdateEmail,
-} from '~/lib/hooks'
-import { TEmailRequest } from '~/lib/types'
-import { cn } from '~/lib/utils'
-import { emailSchema } from '~/lib/validations'
+} from '~/components/ui/tooltip'
+import { useAuthUser } from '~/lib/hooks/use-auth-user'
+import { useEmailVerification } from '~/lib/hooks/use-email-verification'
+import { useResetPassword } from '~/lib/hooks/use-reset-password'
+import { useUpdateEmail } from '~/lib/hooks/use-update-email'
+import { TEmailRequest } from '~/lib/types/user'
+import { cn } from '~/lib/utils/shadcn'
+import { emailSchema } from '~/lib/validations/user'
 
 import { TProps } from './type'
 

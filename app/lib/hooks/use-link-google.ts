@@ -3,9 +3,11 @@ import { FirebaseError } from 'firebase/app'
 import { GoogleAuthProvider, linkWithPopup } from 'firebase/auth'
 import { useTranslation } from 'react-i18next'
 
-import { auth } from '~/lib/configs'
-import { authError } from '~/lib/constants'
-import { useQueryActions, toast } from '~/lib/hooks'
+import { auth } from '~/lib/configs/firebase'
+import { authError } from '~/lib/constants/firebase'
+import { useQueryActions } from '~/lib/hooks/use-query-actions'
+
+import { toast } from './use-toast'
 
 export const useLinkGoogle = () => {
   const provider = new GoogleAuthProvider()

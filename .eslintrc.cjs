@@ -29,7 +29,7 @@ module.exports = {
     'no-restricted-imports': [
       'error',
       {
-        patterns: ['~/components/*/*', '~/apis/*/*', '~/lib/*/*', '../*'],
+        patterns: ['~/components/*/*/*', '~/apis/*/*/*', '~/lib/*/*/*', '../*'],
         paths: [],
       },
     ],

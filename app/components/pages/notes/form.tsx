@@ -3,17 +3,16 @@ import { forwardRef, useImperativeHandle } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { Action, Textarea } from '~/components/base'
-import { auth } from '~/lib/configs'
-import {
-  useCreateNote,
-  useDebounce,
-  useUpdateNote,
-  useUserData,
-} from '~/lib/hooks'
-import { TNoteForm } from '~/lib/types'
-import { getDateLabel } from '~/lib/utils'
-import { noteSchema } from '~/lib/validations'
+import { Action } from '~/components/base/action'
+import { Textarea } from '~/components/base/textarea'
+import { auth } from '~/lib/configs/firebase'
+import { useCreateNote } from '~/lib/hooks/use-create-note'
+import { useDebounce } from '~/lib/hooks/use-debounce'
+import { useUserData } from '~/lib/hooks/use-get-user'
+import { useUpdateNote } from '~/lib/hooks/use-update-note'
+import { TNoteForm } from '~/lib/types/note'
+import { getDateLabel } from '~/lib/utils/parser'
+import { noteSchema } from '~/lib/validations/note'
 
 import { useNote } from './context'
 import { TFormProps } from './type'

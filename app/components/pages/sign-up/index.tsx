@@ -5,19 +5,22 @@ import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { Button, Input, LanguageSelector, ModeToggle } from '~/components/base'
+import { Button } from '~/components/base/button'
+import { Input } from '~/components/base/input'
+import { LanguageSelector } from '~/components/base/language-selector'
+import { ModeToggle } from '~/components/base/mode-toggle'
+import { Button as UIButton } from '~/components/ui/button'
 import {
-  Button as UIButton,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
   Card,
-} from '~/components/ui'
-import { useRegister } from '~/lib/hooks'
-import { TSignUpRequest } from '~/lib/types'
-import { signUpSchema } from '~/lib/validations'
+} from '~/components/ui/card'
+import { useRegister } from '~/lib/hooks/use-register'
+import { TSignUpRequest } from '~/lib/types/user'
+import { signUpSchema } from '~/lib/validations/user'
 
 export const SignUpPage = () => {
   const { t } = useTranslation(['common', 'zod'])

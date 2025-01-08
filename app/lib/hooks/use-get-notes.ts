@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { fetchNotes } from '~/apis/firestore'
-import { auth } from '~/lib/configs'
+import { fetchNotes } from '~/apis/firestore/note'
+import { auth } from '~/lib/configs/firebase'
 
 // Custom hook to fetch current user data
 export const useGetNotes = () => {

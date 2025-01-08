@@ -1,8 +1,8 @@
 import { Link, useLocation } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 
-import { appleIcon, appName } from '~/lib/constants'
-import { cn } from '~/lib/utils'
+import { appleIcon, appName } from '~/lib/constants/metadata'
+import { cn } from '~/lib/utils/shadcn'
 
 import { navs, reloadNavs } from './data'
 import { TProps } from './type'

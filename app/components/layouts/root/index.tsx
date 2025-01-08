@@ -10,11 +10,12 @@ import clsx from 'clsx'
 import { PropsWithChildren, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { LoadingSpinner } from '~/components/base'
-import { Toaster } from '~/components/ui'
-import { useFirebase, useTheme } from '~/lib/contexts'
-import { useAuthUser } from '~/lib/hooks'
-import { middleware } from '~/lib/utils'
+import { LoadingSpinner } from '~/components/base/loading-spinner'
+import { Toaster } from '~/components/ui/toaster'
+import { useFirebase } from '~/lib/contexts/firebase'
+import { useTheme } from '~/lib/contexts/theme'
+import { useAuthUser } from '~/lib/hooks/use-auth-user'
+import { middleware } from '~/lib/utils/middleware'
 
 export const Rootlayout = (props: PropsWithChildren) => {
   const { children } = props

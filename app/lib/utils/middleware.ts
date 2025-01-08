@@ -1,8 +1,8 @@
 import { NavigateFunction } from '@remix-run/react'
 import { User } from 'firebase/auth'
 
-import { authPages, protectedPages } from '~/lib/configs'
-import { extractPathSegment } from '~/lib/utils'
+import { authPages, protectedPages } from '~/lib/configs/page'
+import { extractPathSegment } from '~/lib/utils/parser'
 
 type TProps = {
   navigate: NavigateFunction

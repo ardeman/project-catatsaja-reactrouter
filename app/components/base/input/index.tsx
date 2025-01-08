@@ -8,9 +8,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input as UIInput,
-} from '~/components/ui'
-import { cn } from '~/lib/utils'
+} from '~/components/ui/form'
+import { Input as UIInput } from '~/components/ui/input'
+import { cn } from '~/lib/utils/shadcn'
 
 import { TProps } from './type'
 

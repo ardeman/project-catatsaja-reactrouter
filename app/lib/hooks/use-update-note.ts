@@ -1,8 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { updateNote } from '~/apis/firestore'
-import { useQueryActions, toast } from '~/lib/hooks'
-import { TUpdateNoteRequest } from '~/lib/types'
+import { updateNote } from '~/apis/firestore/note'
+import { useQueryActions } from '~/lib/hooks/use-query-actions'
+import { TUpdateNoteRequest } from '~/lib/types/note'
+
+import { toast } from './use-toast'
 
 export const useUpdateNote = () => {
   const { invalidateQueries: invalidateNotes } = useQueryActions(['notes'])

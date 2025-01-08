@@ -1,14 +1,15 @@
 import { Trans, useTranslation } from 'react-i18next'
 
-import { LanguageSelector, ModeToggle } from '~/components/base'
+import { LanguageSelector } from '~/components/base/language-selector'
+import { ModeToggle } from '~/components/base/mode-toggle'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui'
-import { appName } from '~/lib/constants'
+} from '~/components/ui/card'
+import { appName } from '~/lib/constants/metadata'
 
 export const Appearance = () => {
   const { t } = useTranslation()

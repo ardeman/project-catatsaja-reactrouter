@@ -1,4 +1,4 @@
-import { MoneyLogFormPage } from '~/components/pages'
+import { MoneyLogFormPage } from '~/components/pages/money-log-form'
 
 const MoneyLog = () => {
   return <MoneyLogFormPage />

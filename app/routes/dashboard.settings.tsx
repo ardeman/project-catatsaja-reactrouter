@@ -1,7 +1,7 @@
 import { Outlet } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 
-import { Sidebar } from '~/components/layouts'
+import { Sidebar } from '~/components/layouts/sidebar'
 
 const Settings = () => {
   const { t } = useTranslation()

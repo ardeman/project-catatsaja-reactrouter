@@ -3,18 +3,17 @@ import { Moon, Sun } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Theme } from 'remix-themes'
 
+import { Button } from '~/components/ui/button'
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  Label,
-  RadioGroup,
-  RadioGroupItem,
-} from '~/components/ui'
-import { useTheme } from '~/lib/contexts'
+} from '~/components/ui/dropdown-menu'
+import { Label } from '~/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
+import { useTheme } from '~/lib/contexts/theme'
 
 import { themeOptions } from './data'
 import { TParams, TProps } from './type'

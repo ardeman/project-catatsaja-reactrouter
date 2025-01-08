@@ -2,13 +2,16 @@ import Masonry from 'masonry-layout'
 import { useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { Button, Modal, Share } from '~/components/base'
-import { useGetNotes, useShareNote } from '~/lib/hooks'
+import { Button } from '~/components/base/button'
+import { Modal } from '~/components/base/modal'
+import { Share } from '~/components/base/share'
+import { useGetNotes } from '~/lib/hooks/use-get-notes'
+import { useShareNote } from '~/lib/hooks/use-share-note'
 import {
   THandleDeletePermission,
   THandleSetPermission,
-  TNotePermissionRequest,
-} from '~/lib/types'
+} from '~/lib/types/common'
+import { TNotePermissionRequest } from '~/lib/types/note'
 
 import { Card } from './card'
 import { useNote } from './context'

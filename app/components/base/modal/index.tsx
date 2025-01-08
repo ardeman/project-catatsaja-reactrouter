@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useMediaQuery } from 'usehooks-ts'
 
-import { Button } from '~/components/base'
+import { Button } from '~/components/base/button'
 import {
   Dialog as UIDialog,
   DialogContent,
@@ -9,6 +9,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+} from '~/components/ui/dialog'
+import {
   Drawer as UIDrawer,
   DrawerClose,
   DrawerContent,
@@ -16,8 +18,8 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '~/components/ui'
-import { cn } from '~/lib/utils'
+} from '~/components/ui/drawer'
+import { cn } from '~/lib/utils/shadcn'
 
 import { TParams, TProps } from './type'
 

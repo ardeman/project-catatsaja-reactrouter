@@ -9,8 +9,10 @@ import {
   useState,
 } from 'react'
 
-import { useDeleteNote, usePinNote, useUnlinkNote } from '~/lib/hooks'
-import { TNoteResponse } from '~/lib/types'
+import { useDeleteNote } from '~/lib/hooks/use-delete-note'
+import { usePinNote } from '~/lib/hooks/use-pin-note'
+import { useUnlinkNote } from '~/lib/hooks/use-unlink-note'
+import { TNoteResponse } from '~/lib/types/note'
 
 import { THandleModifyNote, THandlePinNote, TNoteConfirmation } from './type'
 

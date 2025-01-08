@@ -1,16 +1,17 @@
 import { useTranslation } from 'react-i18next'
 
-import { Action } from '~/components/base'
+import { Action } from '~/components/base/action'
 import {
   Card as UICard,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui'
-import { auth } from '~/lib/configs'
-import { useUserData } from '~/lib/hooks'
-import { cn, getDateLabel } from '~/lib/utils'
+} from '~/components/ui/card'
+import { auth } from '~/lib/configs/firebase'
+import { useUserData } from '~/lib/hooks/use-get-user'
+import { getDateLabel } from '~/lib/utils/parser'
+import { cn } from '~/lib/utils/shadcn'
 
 import { useNote } from './context'
 import { TCardProps } from './type'

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { fetchUserData } from '~/apis/firestore'
-import { auth } from '~/lib/configs'
+import { fetchUserData } from '~/apis/firestore/user'
+import { auth } from '~/lib/configs/firebase'
 
 // Custom hook to fetch current user data
 export const useUserData = () => {

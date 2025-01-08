@@ -1,4 +1,4 @@
-import { AccountSettingsPage } from '~/components/pages'
+import { AccountSettingsPage } from '~/components/pages/account-settings'
 
 const AccountSettings = () => <AccountSettingsPage />
 

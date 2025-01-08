@@ -1,7 +1,7 @@
 import { VariantProps } from 'class-variance-authority'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { buttonVariants } from '~/components/ui'
+import { buttonVariants } from '~/components/ui/button'
 
 export type TProps = {
   open: boolean

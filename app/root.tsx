@@ -2,8 +2,9 @@ import { Outlet } from '@remix-run/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Theme } from 'remix-themes'
 
-import { Rootlayout } from '~/components/layouts'
-import { FirebaseProvider, ThemeProvider } from '~/lib/contexts'
+import { Rootlayout } from '~/components/layouts/root'
+import { FirebaseProvider } from '~/lib/contexts/firebase'
+import { ThemeProvider } from '~/lib/contexts/theme'
 
 import '~/styles/globals.css'
 
@@ -36,6 +37,6 @@ const App = () => {
   )
 }
 
-export { meta, links } from '~/lib/constants'
+export { meta, links } from '~/lib/constants/metadata'
 
 export default App

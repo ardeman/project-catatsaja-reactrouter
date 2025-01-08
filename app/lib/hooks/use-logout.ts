@@ -2,9 +2,11 @@ import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { signOut } from 'firebase/auth'
 
-import { auth } from '~/lib/configs'
-import { authError } from '~/lib/constants'
-import { useQueryActions, toast } from '~/lib/hooks'
+import { auth } from '~/lib/configs/firebase'
+import { authError } from '~/lib/constants/firebase'
+import { useQueryActions } from '~/lib/hooks/use-query-actions'
+
+import { toast } from './use-toast'
 
 export const useLogout = () => {
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])

@@ -2,17 +2,16 @@ import { Slot } from '@radix-ui/react-slot'
 import { Languages } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '~/components/ui/button'
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  Label,
-  RadioGroup,
-  RadioGroupItem,
-} from '~/components/ui'
+} from '~/components/ui/dropdown-menu'
+import { Label } from '~/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
 import { languageOptions } from '~/localization/i18n'
 
 import { TParams, TProps } from './type'

@@ -17,13 +17,9 @@ import {
   where,
 } from 'firebase/firestore'
 
-import { auth, firestore } from '~/lib/configs' // Assuming your Firestore is configured here
-import {
-  TSignInRequest,
-  TSignUpRequest,
-  TUpdateProfileRequest,
-  TUserResponse,
-} from '~/lib/types'
+import { auth, firestore } from '~/lib/configs/firebase' // Assuming your Firestore is configured here
+import { TUpdateProfileRequest } from '~/lib/types/settings'
+import { TSignInRequest, TSignUpRequest, TUserResponse } from '~/lib/types/user'
 
 // Function to fetch user data from Firestore
 export const fetchUserData = async () => {

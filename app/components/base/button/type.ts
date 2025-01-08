@@ -6,7 +6,7 @@ import {
   ReactNode,
 } from 'react'
 
-import { buttonVariants } from '~/components/ui'
+import { buttonVariants } from '~/components/ui/button'
 
 export type TButtonProps<T extends ElementType = 'button'> = {
   type?: 'button' | 'submit' | 'reset'

@@ -1,10 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 
-import { login } from '~/apis/firestore'
-import { authError } from '~/lib/constants'
-import { useQueryActions, toast } from '~/lib/hooks'
-import { TSignInRequest } from '~/lib/types'
+import { login } from '~/apis/firestore/user'
+import { authError } from '~/lib/constants/firebase'
+import { useQueryActions } from '~/lib/hooks/use-query-actions'
+import { TSignInRequest } from '~/lib/types/user'
+
+import { toast } from './use-toast'
 
 export const useLogin = () => {
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])

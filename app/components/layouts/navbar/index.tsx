@@ -4,26 +4,24 @@ import { CircleUser, Menu, Search } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { Input } from '~/components/base'
+import { Input } from '~/components/base/input'
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
+import { Button } from '~/components/ui/button'
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '~/components/ui'
-import { toast, useLogout, useUserData } from '~/lib/hooks'
-import { TSearchRequest } from '~/lib/types'
-import { cn } from '~/lib/utils'
-import { searchSchema } from '~/lib/validations'
+} from '~/components/ui/dropdown-menu'
+import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet'
+import { useUserData } from '~/lib/hooks/use-get-user'
+import { useLogout } from '~/lib/hooks/use-logout'
+import { toast } from '~/lib/hooks/use-toast'
+import { TSearchRequest } from '~/lib/types/search'
+import { cn } from '~/lib/utils/shadcn'
+import { searchSchema } from '~/lib/validations/search'
 
 import { userMenus } from './data'
 import { Navigation } from './navigation'

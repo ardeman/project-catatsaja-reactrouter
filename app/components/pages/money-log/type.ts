@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react'
 
-import { TMoneyLogResponse } from '~/lib/types'
+import { TMoneyLogResponse } from '~/lib/types/money-log'
 
 export type TMoneyLogConfirmation = {
   kind: string

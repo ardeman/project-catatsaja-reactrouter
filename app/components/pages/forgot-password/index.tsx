@@ -4,19 +4,22 @@ import { FC, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { Button, Input, LanguageSelector, ModeToggle } from '~/components/base'
+import { Button } from '~/components/base/button'
+import { Input } from '~/components/base/input'
+import { LanguageSelector } from '~/components/base/language-selector'
+import { ModeToggle } from '~/components/base/mode-toggle'
+import { Button as UIButton } from '~/components/ui/button'
 import {
-  Button as UIButton,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '~/components/ui'
-import { useForgotPassword } from '~/lib/hooks'
-import { TEmailRequest } from '~/lib/types'
-import { emailSchema } from '~/lib/validations'
+} from '~/components/ui/card'
+import { useForgotPassword } from '~/lib/hooks/use-forgot-password'
+import { TEmailRequest } from '~/lib/types/user'
+import { emailSchema } from '~/lib/validations/user'
 
 export const ForgotPasswordPage: FC = () => {
   const { t } = useTranslation(['common', 'zod'])

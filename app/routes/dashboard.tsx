@@ -1,6 +1,6 @@
 import { Outlet } from '@remix-run/react'
 
-import { Navbar } from '~/components/layouts'
+import { Navbar } from '~/components/layouts/navbar'
 
 const Dashboard = () => {
   return (

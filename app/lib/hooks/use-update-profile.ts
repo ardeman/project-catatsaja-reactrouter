@@ -2,10 +2,12 @@ import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { useTranslation } from 'react-i18next'
 
-import { updateProfile } from '~/apis/firestore'
-import { authError } from '~/lib/constants'
-import { useQueryActions, toast } from '~/lib/hooks'
-import { TUpdateProfileRequest } from '~/lib/types'
+import { updateProfile } from '~/apis/firestore/user'
+import { authError } from '~/lib/constants/firebase'
+import { TUpdateProfileRequest } from '~/lib/types/settings'
+
+import { useQueryActions } from './use-query-actions'
+import { toast } from './use-toast'
 
 export const useUpdateProfile = () => {
   const { invalidateQueries: invalidateCurrentUser } = useQueryActions([

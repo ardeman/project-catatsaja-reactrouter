@@ -4,28 +4,27 @@ import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { Input } from '~/components/base'
+import { Input } from '~/components/base/input'
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
+import { Button } from '~/components/ui/button'
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Button,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '~/components/ui'
-import { auth } from '~/lib/configs'
-import { useSearchUsers, useGetUsers } from '~/lib/hooks'
+} from '~/components/ui/select'
+import { auth } from '~/lib/configs/firebase'
+import { useGetUsers } from '~/lib/hooks/use-get-users'
+import { useSearchUsers } from '~/lib/hooks/use-search-users'
 import {
   THandleDeletePermission,
   THandleSetPermission,
   TParamsPermission,
   TPermissions,
   TShareForm,
-} from '~/lib/types'
-import { shareSchema } from '~/lib/validations'
+} from '~/lib/types/common'
+import { shareSchema } from '~/lib/validations/common'
 
 export const Share = (props: TPermissions) => {
   const { write, read, handleShare, handleUnshare } = props

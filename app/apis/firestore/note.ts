@@ -10,14 +10,14 @@ import {
   FieldPath,
 } from 'firebase/firestore'
 
-import { auth, firestore } from '~/lib/configs'
+import { auth, firestore } from '~/lib/configs/firebase'
 import {
   TCreateNoteRequest,
   TNotePermissionRequest,
   TNoteResponse,
   TPinNoteRequest,
   TUpdateNoteRequest,
-} from '~/lib/types'
+} from '~/lib/types/note'
 
 export const fetchNotes = async () => {
   if (!firestore) {

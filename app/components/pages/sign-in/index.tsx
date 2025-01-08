@@ -6,20 +6,24 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 
-import { Button, Input, LanguageSelector, ModeToggle } from '~/components/base'
+import { Button } from '~/components/base/button'
+import { Input } from '~/components/base/input'
+import { LanguageSelector } from '~/components/base/language-selector'
+import { ModeToggle } from '~/components/base/mode-toggle'
+import { Button as UIButton } from '~/components/ui/button'
 import {
-  Button as UIButton,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
   Card,
-} from '~/components/ui'
-import { appName } from '~/lib/constants'
-import { useLogin, useLoginGoogle } from '~/lib/hooks'
-import { TSignInRequest } from '~/lib/types'
-import { signInSchema } from '~/lib/validations'
+} from '~/components/ui/card'
+import { appName } from '~/lib/constants/metadata'
+import { useLogin } from '~/lib/hooks/use-login'
+import { useLoginGoogle } from '~/lib/hooks/use-login-google'
+import { TSignInRequest } from '~/lib/types/user'
+import { signInSchema } from '~/lib/validations/user'
 
 export const SignInPage = () => {
   const { t } = useTranslation(['common', 'zod'])

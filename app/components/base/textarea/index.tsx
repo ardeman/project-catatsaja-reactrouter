@@ -8,9 +8,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Textarea as UITextarea,
-} from '~/components/ui'
-import { cn } from '~/lib/utils'
+} from '~/components/ui/form'
+import { Textarea as UITextarea } from '~/components/ui/textarea'
+import { cn } from '~/lib/utils/shadcn'
 
 import { TProps } from './type'
 

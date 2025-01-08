@@ -2,16 +2,17 @@ import { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 
-import { Button } from '~/components/base'
+import { Button } from '~/components/base/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui'
-import { appName } from '~/lib/constants'
-import { useAuthUser, useLinkGoogle } from '~/lib/hooks'
+} from '~/components/ui/card'
+import { appName } from '~/lib/constants/metadata'
+import { useAuthUser } from '~/lib/hooks/use-auth-user'
+import { useLinkGoogle } from '~/lib/hooks/use-link-google'
 
 import { TProps } from './type'
 

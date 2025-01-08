@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { fetchLogs } from '~/apis/firestore'
-import { auth } from '~/lib/configs'
+import { fetchLogs } from '~/apis/firestore/money-log'
+import { auth } from '~/lib/configs/firebase'
 
 export const useGetMoneyLog = (id: string) => {
   return useQuery({

@@ -1,10 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
-import { deleteNote } from '~/apis/firestore'
-import { ToastAction } from '~/components/ui'
-import { useCreateNote, useQueryActions, toast } from '~/lib/hooks'
-import { TNoteResponse } from '~/lib/types'
+import { deleteNote } from '~/apis/firestore/note'
+import { ToastAction } from '~/components/ui/toast'
+import { TNoteResponse } from '~/lib/types/note'
+
+import { useCreateNote } from './use-create-note'
+import { useQueryActions } from './use-query-actions'
+import { toast } from './use-toast'
 
 export const useDeleteNote = () => {
   const { invalidateQueries: invalidateNotes } = useQueryActions(['notes'])

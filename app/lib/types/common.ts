@@ -1,8 +1,8 @@
 import { HTMLAttributes } from 'react'
 import { z } from 'zod'
 
-import { TUserResponse } from '~/lib/types'
-import { shareSchema } from '~/lib/validations'
+import { TUserResponse } from '~/lib/types/user'
+import { shareSchema } from '~/lib/validations/common'
 
 export type TTime = {
   seconds: number

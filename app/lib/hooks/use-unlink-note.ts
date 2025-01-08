@@ -1,8 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { unlinkNote } from '~/apis/firestore'
-import { useQueryActions, toast } from '~/lib/hooks'
-import { TNoteResponse } from '~/lib/types'
+import { unlinkNote } from '~/apis/firestore/note'
+import { useQueryActions } from '~/lib/hooks/use-query-actions'
+import { TNoteResponse } from '~/lib/types/note'
+
+import { toast } from './use-toast'
 
 export const useUnlinkNote = () => {
   const { invalidateQueries: invalidateNotes } = useQueryActions(['notes'])

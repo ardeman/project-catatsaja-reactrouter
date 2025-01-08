@@ -1,7 +1,8 @@
 import { z } from 'zod'
 
-import { THandleSetPermission, TPermissions, TTime } from '~/lib/types'
-import { noteSchema } from '~/lib/validations'
+import { noteSchema } from '~/lib/validations/note'
+
+import { THandleSetPermission, TPermissions, TTime } from './common'
 
 export type TNoteForm = z.infer<typeof noteSchema>
 

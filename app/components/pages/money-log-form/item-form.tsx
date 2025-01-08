@@ -1,7 +1,7 @@
 import { Link } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '~/components/ui'
+import { Button } from '~/components/ui/button'
 
 export const ItemForm = () => {
   const { t } = useTranslation()

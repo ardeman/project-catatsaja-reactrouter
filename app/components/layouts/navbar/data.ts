@@ -1,6 +1,6 @@
 import { TFunction } from 'i18next'
 
-import { githubRepo, githubUser } from '~/lib/constants'
+import { githubRepo, githubUser } from '~/lib/constants/metadata'
 
 export const userMenus = (t: TFunction) => [
   {

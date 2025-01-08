@@ -1,7 +1,8 @@
 import { Link } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 
-import { Button, Card, CardContent, CardTitle } from '~/components/ui'
+import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardTitle } from '~/components/ui/card'
 
 import { MoneyLogProvider } from './context'
 

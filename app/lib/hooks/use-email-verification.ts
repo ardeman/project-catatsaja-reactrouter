@@ -3,9 +3,9 @@ import { FirebaseError } from 'firebase/app'
 import { sendEmailVerification } from 'firebase/auth'
 import { useTranslation } from 'react-i18next'
 
-import { auth } from '~/lib/configs'
-import { authError } from '~/lib/constants'
-import { toast } from '~/lib/hooks'
+import { auth } from '~/lib/configs/firebase'
+import { authError } from '~/lib/constants/firebase'
+import { toast } from '~/lib/hooks/use-toast'
 
 export const useEmailVerification = () => {
   const { t } = useTranslation()

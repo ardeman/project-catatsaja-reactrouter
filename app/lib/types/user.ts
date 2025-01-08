@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
-import { TTime } from '~/lib/types'
-import { emailSchema, signInSchema, signUpSchema } from '~/lib/validations'
+import { TTime } from '~/lib/types/common'
+import { emailSchema, signInSchema, signUpSchema } from '~/lib/validations/user'
 
 export type TSignInRequest = z.infer<ReturnType<typeof signInSchema>>
 

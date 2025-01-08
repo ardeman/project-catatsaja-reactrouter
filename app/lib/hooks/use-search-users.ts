@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { fetchUsersByEmail } from '~/apis/firestore'
-import { auth } from '~/lib/configs'
+import { fetchUsersByEmail } from '~/apis/firestore/user'
+import { auth } from '~/lib/configs/firebase'
 
 export const useSearchUsers = (email: string) => {
   return useQuery({

@@ -1,4 +1,4 @@
-import { MoneyLogPage } from '~/components/pages'
+import { MoneyLogPage } from '~/components/pages/money-log'
 
 const MoneyLog = () => {
   return <MoneyLogPage />

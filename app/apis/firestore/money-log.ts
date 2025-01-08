@@ -6,8 +6,8 @@ import {
   where,
 } from 'firebase/firestore'
 
-import { auth, firestore } from '~/lib/configs'
-import { TLogResponse, TMoneyLogResponse } from '~/lib/types'
+import { auth, firestore } from '~/lib/configs/firebase'
+import { TLogResponse, TMoneyLogResponse } from '~/lib/types/money-log'
 
 export const fetchMoneyLogs = async () => {
   if (!firestore) {

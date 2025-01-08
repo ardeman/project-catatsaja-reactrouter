@@ -1,8 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { setNotePermission } from '~/apis/firestore'
-import { useQueryActions, toast } from '~/lib/hooks'
-import { TNotePermissionRequest } from '~/lib/types'
+import { setNotePermission } from '~/apis/firestore/note'
+import { useQueryActions } from '~/lib/hooks/use-query-actions'
+import { TNotePermissionRequest } from '~/lib/types/note'
+
+import { toast } from './use-toast'
 
 export const useShareNote = () => {
   const { invalidateQueries: invalidateNotes } = useQueryActions(['notes'])

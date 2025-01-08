@@ -1,4 +1,4 @@
-import { LoadingSpinner } from '~/components/base'
+import { LoadingSpinner } from '~/components/base/loading-spinner'
 
 const Home = () => <LoadingSpinner />
 

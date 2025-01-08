@@ -1,8 +1,8 @@
 import { Eye, Forward, Pin, Trash, Users } from 'lucide-react'
 
-import { Button } from '~/components/base'
-import { TActionProps } from '~/lib/types'
-import { cn } from '~/lib/utils'
+import { Button } from '~/components/base/button'
+import { TActionProps } from '~/lib/types/common'
+import { cn } from '~/lib/utils/shadcn'
 
 export const Action = (props: TActionProps) => {
   const {

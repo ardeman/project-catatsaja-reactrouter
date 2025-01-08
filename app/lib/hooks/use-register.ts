@@ -3,10 +3,12 @@ import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { useTranslation } from 'react-i18next'
 
-import { register } from '~/apis/firestore'
-import { authError } from '~/lib/constants'
-import { useQueryActions, toast } from '~/lib/hooks'
-import { TSignUpRequest } from '~/lib/types'
+import { register } from '~/apis/firestore/user'
+import { authError } from '~/lib/constants/firebase'
+import { useQueryActions } from '~/lib/hooks/use-query-actions'
+import { TSignUpRequest } from '~/lib/types/user'
+
+import { toast } from './use-toast'
 
 export const useRegister = () => {
   const { revalidate } = useRevalidator()

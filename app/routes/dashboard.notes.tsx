@@ -1,4 +1,4 @@
-import { NotesPage } from '~/components/pages'
+import { NotesPage } from '~/components/pages/notes'
 
 const Notes = () => <NotesPage />
 

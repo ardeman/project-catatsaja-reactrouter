@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react'
 
-import { TMoneyLogResponse } from '~/lib/types'
+import { TMoneyLogResponse } from '~/lib/types/money-log'
 
 import { TMoneyLogConfirmation } from './type'
 

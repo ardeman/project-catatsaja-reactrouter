@@ -3,10 +3,10 @@ import { FirebaseError } from 'firebase/app'
 import { verifyBeforeUpdateEmail } from 'firebase/auth'
 import { useTranslation } from 'react-i18next'
 
-import { auth } from '~/lib/configs'
-import { authError } from '~/lib/constants'
-import { toast } from '~/lib/hooks'
-import { TEmailRequest } from '~/lib/types'
+import { auth } from '~/lib/configs/firebase'
+import { authError } from '~/lib/constants/firebase'
+import { toast } from '~/lib/hooks/use-toast'
+import { TEmailRequest } from '~/lib/types/user'
 
 export const useUpdateEmail = () => {
   const { t } = useTranslation()

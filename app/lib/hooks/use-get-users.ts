@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { fetchUsers } from '~/apis/firestore'
+import { fetchUsers } from '~/apis/firestore/user'
 
 export const useGetUsers = () => {
   return useQuery({
