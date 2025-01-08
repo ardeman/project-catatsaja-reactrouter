@@ -4,12 +4,12 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "pnpm validate && react-router build",
+    "build": "pnpm validate && react-router build && cross-env NODE_ENV=production react-router build",
     "dev": "react-router dev",
     "lint": "eslint .",
     "preview": "vite preview",
-    "typecheck": "tsc",
-    "format": "prettier --write **/*.{js,jsx,ts,tsx}",
+    "typecheck": "react-router typegen && tsc",
+    "format": "prettier --write .",
     "prepare": "husky",
     "check:unused": "knip --max-issues 1",
     "validate": "pnpm lint && pnpm typecheck && pnpm check:unused"
