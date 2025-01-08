@@ -4,13 +4,15 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix vite:build",
+    "build": "pnpm validate && remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "preview": "vite preview",
     "typecheck": "tsc",
     "format": "prettier --write **/*.{js,jsx,ts,tsx}",
-    "prepare": "husky"
+    "prepare": "husky",
+    "check:unused": "knip --max-issues 1",
+    "validate": "pnpm lint && pnpm typecheck && pnpm check:unused"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -74,6 +76,7 @@
     "eslint-plugin-unicorn": "^56.0.1",
     "eslint-plugin-unused-imports": "^4.1.4",
     "husky": "^9.1.7",
+    "knip": "^5.41.1",
     "lint-staged": "^15.2.10",
     "postcss": "^8.4.38",
     "prettier": "^3.4.1",
