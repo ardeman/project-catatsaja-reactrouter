@@ -4,8 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "pnpm validate && react-router build && cross-env NODE_ENV=production react-router build",
-    "dev": "react-router dev",
+    "build": "pnpm install && pnpm validate && react-router build && cross-env NODE_ENV=production react-router build",
+    "dev": " react-router dev",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "react-router typegen && tsc",
