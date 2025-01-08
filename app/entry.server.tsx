@@ -6,14 +6,14 @@
 
 import { PassThrough } from 'node:stream'
 
-import type { EntryContext } from '@remix-run/node'
-import { createReadableStreamFromReadable } from '@remix-run/node'
-import { RemixServer } from '@remix-run/react'
+import { createReadableStreamFromReadable } from '@react-router/node'
 import { createInstance } from 'i18next'
 import Backend from 'i18next-fs-backend'
 import { isbot } from 'isbot'
 import { renderToPipeableStream } from 'react-dom/server'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
+import { ServerRouter } from 'react-router'
+import type { EntryContext } from 'react-router'
 
 import i18n from './localization/i18n'
 import i18next from './localization/i18next.server'
@@ -25,20 +25,20 @@ export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  reactRouterContext: EntryContext,
 ) {
   return isbot(request.headers.get('user-agent') || '')
     ? handleBotRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext,
+        reactRouterContext,
       )
     : handleBrowserRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext,
+        reactRouterContext,
       )
 }
 
@@ -46,11 +46,11 @@ async function handleBotRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  reactRouterContext: EntryContext,
 ) {
   const instance = createInstance()
   const lng = await i18next.getLocale(request)
-  const ns = i18next.getRouteNamespaces(remixContext)
+  const ns = i18next.getRouteNamespaces(reactRouterContext)
 
   await instance
     .use(initReactI18next) // Tell our instance to use react-i18next
@@ -65,10 +65,9 @@ async function handleBotRequest(
     let shellRendered = false
     const { pipe, abort } = renderToPipeableStream(
       <I18nextProvider i18n={instance}>
-        <RemixServer
-          context={remixContext}
+        <ServerRouter
+          context={reactRouterContext}
           url={request.url}
-          abortDelay={ABORT_DELAY}
         />
       </I18nextProvider>,
       {
@@ -104,7 +103,7 @@ async function handleBotRequest(
       },
     )
 
-    setTimeout(abort, ABORT_DELAY)
+    setTimeout(abort, ABORT_DELAY + 1000)
   })
 }
 
@@ -112,11 +111,11 @@ async function handleBrowserRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  reactRouterContext: EntryContext,
 ) {
   const instance = createInstance()
   const lng = await i18next.getLocale(request)
-  const ns = i18next.getRouteNamespaces(remixContext)
+  const ns = i18next.getRouteNamespaces(reactRouterContext)
 
   await instance
     .use(initReactI18next) // Tell our instance to use react-i18next
@@ -131,10 +130,9 @@ async function handleBrowserRequest(
     let shellRendered = false
     const { pipe, abort } = renderToPipeableStream(
       <I18nextProvider i18n={instance}>
-        <RemixServer
-          context={remixContext}
+        <ServerRouter
+          context={reactRouterContext}
           url={request.url}
-          abortDelay={ABORT_DELAY}
         />
       </I18nextProvider>,
       {
@@ -170,7 +168,7 @@ async function handleBrowserRequest(
       },
     )
 
-    setTimeout(abort, ABORT_DELAY)
+    setTimeout(abort, ABORT_DELAY + 1000)
   })
 }
 

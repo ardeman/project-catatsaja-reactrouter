@@ -5,9 +5,9 @@ import idZod from './locales/id/zod.json'
 
 const languages = ['id', 'en'] as const
 export const supportedLanguages = [...languages]
-export type Language = (typeof languages)[number]
 
-export type Resource = {
+type Language = (typeof languages)[number]
+type Resource = {
   common: typeof enCommon
   zod: typeof enZod
 }

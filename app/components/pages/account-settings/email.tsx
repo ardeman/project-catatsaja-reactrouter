@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRevalidator } from '@remix-run/react'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useRevalidator } from 'react-router'
 
 import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
@@ -29,10 +29,10 @@ import { TEmailRequest } from '~/lib/types/user'
 import { cn } from '~/lib/utils/shadcn'
 import { emailSchema } from '~/lib/validations/user'
 
-import { TProps } from './type'
+import { TProperties } from './type'
 
-export const Email = (props: TProps) => {
-  const { disabled, setDisabled } = props
+export const Email = (properties: TProperties) => {
+  const { disabled, setDisabled } = properties
   const { t } = useTranslation()
   const [timerEmailVerify, setTimerEmailVerify] = useState<number>()
   const [timerUpdateEmail, setTimerUpdateEmail] = useState<number>()
@@ -79,7 +79,7 @@ export const Email = (props: TProps) => {
       revalidate()
     } else if (timerUpdateEmail) {
       const timer = setTimeout(() => {
-        setTimerUpdateEmail((prev) => prev! - 1)
+        setTimerUpdateEmail((previous) => previous! - 1)
       }, 1000)
       return () => clearTimeout(timer)
     }
@@ -114,7 +114,7 @@ export const Email = (props: TProps) => {
       revalidate()
     } else if (timerEmailVerify) {
       const timer = setTimeout(() => {
-        setTimerEmailVerify((prev) => prev! - 1)
+        setTimerEmailVerify((previous) => previous! - 1)
       }, 1000)
       return () => clearTimeout(timer)
     }
@@ -144,7 +144,7 @@ export const Email = (props: TProps) => {
       revalidate()
     } else if (timerSetPassword) {
       const timer = setTimeout(() => {
-        setTimerSetPassword((prev) => prev! - 1)
+        setTimerSetPassword((previous) => previous! - 1)
       }, 1000)
       return () => clearTimeout(timer)
     }

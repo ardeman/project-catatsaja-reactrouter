@@ -1,14 +1,14 @@
-import { Link, useLocation } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
+import { Link, useLocation } from 'react-router'
 
 import { appleIcon, appName } from '~/lib/constants/metadata'
 import { cn } from '~/lib/utils/shadcn'
 
 import { navs, reloadNavs } from './data'
-import { TProps } from './type'
+import { TProperties } from './type'
 
-export const Navigation = (props: TProps) => {
-  const { className } = props
+export const Navigation = (properties: TProperties) => {
+  const { className } = properties
   const { pathname } = useLocation()
   const { t } = useTranslation()
 

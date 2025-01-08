@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@remix-run/react'
 import { Eye, EyeClosed } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 
 import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
@@ -41,7 +41,9 @@ export const SignUpPage = () => {
     mutateRegister(data)
   })
   const togglePassword = () => {
-    setPasswordType((prev) => (prev === 'password' ? 'text' : 'password'))
+    setPasswordType((previous) =>
+      previous === 'password' ? 'text' : 'password',
+    )
   }
 
   const {
@@ -80,7 +82,7 @@ export const SignUpPage = () => {
               label={t('auth.form.displayName.label')}
               name="displayName"
               placeholder={t('auth.form.displayName.placeholder')}
-              autoFocus
+              autoFocus // eslint-disable-line jsx-a11y/no-autofocus
               required
               disabled={disabled}
             />

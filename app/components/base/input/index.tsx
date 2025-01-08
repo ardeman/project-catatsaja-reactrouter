@@ -12,10 +12,10 @@ import {
 import { Input as UIInput } from '~/components/ui/input'
 import { cn } from '~/lib/utils/shadcn'
 
-import { TProps } from './type'
+import { TProperties } from './type'
 
 export const Input = <TFormValues extends Record<string, unknown>>(
-  props: TProps<TFormValues>,
+  properties: TProperties<TFormValues>,
 ) => {
   const generatedId = useId()
   const {
@@ -33,7 +33,7 @@ export const Input = <TFormValues extends Record<string, unknown>>(
     leftNode: LeftNode,
     rightNode: RightNode,
     ...rest
-  } = props
+  } = properties
   const { control } = useFormContext()
 
   return (

@@ -20,17 +20,17 @@ export type THandleDeletePermission = Pick<TUserResponse, 'uid' | 'email'>
 export type TPermissions = {
   read: string[]
   write: string[]
-  handleShare: (params: THandleSetPermission) => void
-  handleUnshare: (params: Pick<THandleDeletePermission, 'uid'>) => void
+  handleShare: (parameters: THandleSetPermission) => void
+  handleUnshare: (parameters: Pick<THandleDeletePermission, 'uid'>) => void
 }
 
-export type TParamsPermission = Pick<TPermissions, 'write'> &
+export type TParametersPermission = Pick<TPermissions, 'write'> &
   Pick<TUserResponse, 'uid' | 'displayName' | 'photoURL' | 'email'> & {
-    handleDeletePermission: (params: THandleDeletePermission) => void
-    handleSetPermission: (params: THandleSetPermission) => void
+    handleDeletePermission: (parameters: THandleDeletePermission) => void
+    handleSetPermission: (parameters: THandleSetPermission) => void
   }
 
-export type TActionProps = {
+export type TActionProperties = {
   isOwner: boolean
   isEditable?: boolean
   isPinned?: boolean

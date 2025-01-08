@@ -21,9 +21,9 @@ import {
 } from '~/components/ui/drawer'
 import { cn } from '~/lib/utils/shadcn'
 
-import { TParams, TProps } from './type'
+import { TParameters, TProperties } from './type'
 
-export const Modal = (props: TProps) => {
+export const Modal = (properties: TProperties) => {
   const {
     open,
     setOpen,
@@ -33,7 +33,7 @@ export const Modal = (props: TProps) => {
     onClose,
     handleConfirm,
     variant = 'default',
-  } = props
+  } = properties
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   const handleClose = () => {
@@ -74,7 +74,7 @@ export const Modal = (props: TProps) => {
   )
 }
 
-const Dialog = (params: TParams) => {
+const Dialog = (parameters: TParameters) => {
   const {
     open,
     setOpen,
@@ -84,7 +84,7 @@ const Dialog = (params: TParams) => {
     handleClose,
     handleConfirm,
     variant,
-  } = params
+  } = parameters
   const { t } = useTranslation()
   return (
     <UIDialog
@@ -117,7 +117,7 @@ const Dialog = (params: TParams) => {
   )
 }
 
-const Drawer = (params: TParams) => {
+const Drawer = (parameters: TParameters) => {
   const {
     open,
     setOpen,
@@ -127,7 +127,7 @@ const Drawer = (params: TParams) => {
     handleClose,
     handleConfirm,
     variant,
-  } = params
+  } = parameters
   return (
     <UIDrawer
       repositionInputs={false}

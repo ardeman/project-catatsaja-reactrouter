@@ -1,8 +1,8 @@
-import { LinksFunction, MetaFunction } from '@remix-run/node'
+import { LinksFunction, MetaFunction } from 'react-router'
 
 export const appName = 'Catat Saja'
 export const appleIcon = '/icon/apple-touch-icon.png'
-export const author = 'Ardeman'
+const author = 'Ardeman'
 export const githubUser = 'ardeman'
 export const githubRepo = 'project-remix-catatsaja'
 

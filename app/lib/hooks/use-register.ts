@@ -1,7 +1,7 @@
-import { useRevalidator } from '@remix-run/react'
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { useTranslation } from 'react-i18next'
+import { useRevalidator } from 'react-router'
 
 import { register } from '~/apis/firestore/user'
 import { authError } from '~/lib/constants/firebase'

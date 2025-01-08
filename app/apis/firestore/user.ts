@@ -34,8 +34,8 @@ export const fetchUserData = async () => {
     throw new Error('No authenticated user found.')
   }
 
-  const ref = doc(firestore, 'users', user.uid)
-  const snap = await getDoc(ref)
+  const reference = doc(firestore, 'users', user.uid)
+  const snap = await getDoc(reference)
 
   if (!snap.exists()) {
     throw new Error('User data not found in Firestore.')
@@ -56,19 +56,19 @@ export const fetchUsersByEmail = async (email: string) => {
     throw new Error('Firebase Firestore is not initialized.')
   }
 
-  const usersRef = collection(firestore, 'users')
+  const usersReference = collection(firestore, 'users')
   const usersQuery = query(
-    usersRef,
+    usersReference,
     where('email', '==', email),
     where('email', '!=', auth.currentUser?.email),
   )
   const snap = await getDocs(usersQuery)
 
-  return snap.docs.map((doc) => {
-    const data = doc.data()
+  return snap.docs.map((document) => {
+    const data = document.data()
     return {
       ...data,
-      uid: doc.id,
+      uid: document.id,
     } as TUserResponse
   })
 }
@@ -78,14 +78,14 @@ export const fetchUsers = async () => {
     throw new Error('Firebase Firestore is not initialized.')
   }
 
-  const usersRef = collection(firestore, 'users')
-  const snap = await getDocs(usersRef)
+  const usersReference = collection(firestore, 'users')
+  const snap = await getDocs(usersReference)
 
-  return snap.docs.map((doc) => {
-    const data = doc.data()
+  return snap.docs.map((document) => {
+    const data = document.data()
     return {
       ...data,
-      uid: doc.id,
+      uid: document.id,
     } as TUserResponse
   })
 }
@@ -98,8 +98,8 @@ export const updateProfile = async (userData: TUpdateProfileRequest) => {
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const ref = doc(firestore, 'users', auth?.currentUser.uid)
-  return await updateDoc(ref, {
+  const reference = doc(firestore, 'users', auth?.currentUser.uid)
+  return await updateDoc(reference, {
     ...rest,
     updatedAt: new Date(),
   })
@@ -117,13 +117,13 @@ export const login = async (userData: TSignInRequest) => {
 
   if (user) {
     // Check if user exists in Firestore
-    const ref = doc(firestore, 'users', user.uid)
-    const snap = await getDoc(ref)
+    const reference = doc(firestore, 'users', user.uid)
+    const snap = await getDoc(reference)
     const userData = snap.data()
 
     // Update the email in Firestore if it's different
     if (userData && user.email && userData.email !== user.email) {
-      return await updateDoc(ref, {
+      return await updateDoc(reference, {
         email,
         updatedAt: new Date(),
       })
@@ -143,12 +143,12 @@ export const loginWithGoogle = async () => {
 
   if (user) {
     // Check if user exists in Firestore
-    const ref = doc(firestore, 'users', user.uid)
-    const snap = await getDoc(ref)
+    const reference = doc(firestore, 'users', user.uid)
+    const snap = await getDoc(reference)
 
     // If user data doesn't exist, store it
     if (!snap.exists()) {
-      await setDoc(ref, {
+      await setDoc(reference, {
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL || '',

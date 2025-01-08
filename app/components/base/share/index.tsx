@@ -20,14 +20,14 @@ import { useSearchUsers } from '~/lib/hooks/use-search-users'
 import {
   THandleDeletePermission,
   THandleSetPermission,
-  TParamsPermission,
+  TParametersPermission,
   TPermissions,
   TShareForm,
 } from '~/lib/types/common'
 import { shareSchema } from '~/lib/validations/common'
 
-export const Share = (props: TPermissions) => {
-  const { write, read, handleShare, handleUnshare } = props
+export const Share = (properties: TPermissions) => {
+  const { write, read, handleShare, handleUnshare } = properties
   const [disabled, setDisabled] = useState(false)
   const [email, setEmail] = useState('')
   const { t } = useTranslation(['common', 'zod'])
@@ -57,8 +57,8 @@ export const Share = (props: TPermissions) => {
     }
   }, [searchResults, permissions])
 
-  const handleDeletePermission = (params: THandleDeletePermission) => {
-    const { email, uid } = params
+  const handleDeletePermission = (parameters: THandleDeletePermission) => {
+    const { email, uid } = parameters
     if (email === getValues().user) {
       setEmail('')
       setDisabled(false)
@@ -68,8 +68,8 @@ export const Share = (props: TPermissions) => {
     handleUnshare({ uid })
   }
 
-  const handleSetPermission = (params: THandleSetPermission) => {
-    const { permission, uid } = params
+  const handleSetPermission = (parameters: THandleSetPermission) => {
+    const { permission, uid } = parameters
     handleShare({ uid, permission })
     setEmail('')
     setDisabled(false)
@@ -142,7 +142,7 @@ export const Share = (props: TPermissions) => {
   )
 }
 
-const Permission = (params: TParamsPermission) => {
+const Permission = (parameters: TParametersPermission) => {
   const {
     write,
     photoURL,
@@ -151,7 +151,7 @@ const Permission = (params: TParamsPermission) => {
     email,
     handleDeletePermission,
     handleSetPermission,
-  } = params
+  } = parameters
   const { t } = useTranslation('common')
 
   return (

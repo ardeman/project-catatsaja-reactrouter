@@ -16,10 +16,10 @@ import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
 import { useTheme } from '~/lib/contexts/theme'
 
 import { themeOptions } from './data'
-import { TParams, TProps } from './type'
+import { TParameters, TProperties } from './type'
 
-export const ModeToggle = (props: TProps) => {
-  const { type = 'dropdown' } = props
+export const ModeToggle = (properties: TProperties) => {
+  const { type = 'dropdown' } = properties
   const [theme, setTheme, metadata] = useTheme()
   const value = metadata.definedBy === 'SYSTEM' ? 'system' : (theme as string)
 
@@ -50,8 +50,8 @@ export const ModeToggle = (props: TProps) => {
   )
 }
 
-const Radio = (params: TParams) => {
-  const { value, handleSetTheme } = params
+const Radio = (parameters: TParameters) => {
+  const { value, handleSetTheme } = parameters
   const { t } = useTranslation()
 
   return (
@@ -88,8 +88,8 @@ const Radio = (params: TParams) => {
   )
 }
 
-const Dropdown = (params: TParams) => {
-  const { value, handleSetTheme } = params
+const Dropdown = (parameters: TParameters) => {
+  const { value, handleSetTheme } = parameters
   const { t } = useTranslation()
 
   return (

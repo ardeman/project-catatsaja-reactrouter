@@ -17,7 +17,7 @@ export const fetchMoneyLogs = async () => {
     throw new Error('No user is currently signed in.')
   }
 
-  const queryRef = query(
+  const queryReference = query(
     collection(firestore, 'money-logs'),
     where(
       new FieldPath('permissions', 'read'),
@@ -25,13 +25,13 @@ export const fetchMoneyLogs = async () => {
       auth.currentUser.uid,
     ),
   )
-  const snap = await getDocs(queryRef)
+  const snap = await getDocs(queryReference)
 
-  return snap.docs.map((doc) => {
-    const data = doc.data()
+  return snap.docs.map((document) => {
+    const data = document.data()
     return {
       ...data,
-      id: doc.id,
+      id: document.id,
       isPinned: data.pinnedBy?.includes(auth?.currentUser?.uid),
     } as TMoneyLogResponse
   })
@@ -45,14 +45,14 @@ export const fetchLogs = async (id: string) => {
     throw new Error('No user is currently signed in.')
   }
 
-  const queryRef = query(collection(firestore, 'money-logs', id, 'logs'))
-  const snap = await getDocs(queryRef)
+  const queryReference = query(collection(firestore, 'money-logs', id, 'logs'))
+  const snap = await getDocs(queryReference)
 
-  return snap.docs.map((doc) => {
-    const data = doc.data()
+  return snap.docs.map((document) => {
+    const data = document.data()
     return {
       ...data,
-      id: doc.id,
+      id: document.id,
     } as TLogResponse
   })
 }

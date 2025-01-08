@@ -34,16 +34,16 @@ type NoteContextValue = {
   handleEditNote: (note: TNoteResponse) => void
   handleFormClose: () => void
   handleConfirm: () => void
-  handleDeleteNote: (props: THandleModifyNote) => void
-  handleUnlinkNote: (props: THandleModifyNote) => void
-  handlePinNote: (props: THandlePinNote) => void
-  handleShareNote: (props: THandleModifyNote) => void
+  handleDeleteNote: (properties: THandleModifyNote) => void
+  handleUnlinkNote: (properties: THandleModifyNote) => void
+  handlePinNote: (properties: THandlePinNote) => void
+  handleShareNote: (properties: THandleModifyNote) => void
 }
 
 const NoteContext = createContext<NoteContextValue | undefined>(undefined)
 
-const NoteProvider = (props: PropsWithChildren) => {
-  const { children } = props
+const NoteProvider = (properties: PropsWithChildren) => {
+  const { children } = properties
   const [openForm, setOpenForm] = useState<boolean>(false)
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false)
   const [openShare, setOpenShare] = useState<boolean>(false)
@@ -53,7 +53,7 @@ const NoteProvider = (props: PropsWithChildren) => {
   const { mutate: mutatePinNote } = usePinNote()
   const { mutate: mutateDeleteNote } = useDeleteNote()
   const { mutate: mutateUnlinkNote } = useUnlinkNote()
-  const formRef = useRef<{ submit: () => void } | null>(null)
+  const formReference = useRef<{ submit: () => void } | null>(null)
 
   const handleCreateNote = () => {
     setOpenForm(true)
@@ -69,7 +69,7 @@ const NoteProvider = (props: PropsWithChildren) => {
     setOpenForm(false)
     // Only submit the form if no `selectedNote` is present
     if (!selectedNote) {
-      formRef.current?.submit() // Trigger the form submission through a ref
+      formReference.current?.submit() // Trigger the form submission through a ref
     }
   }
 
@@ -85,8 +85,8 @@ const NoteProvider = (props: PropsWithChildren) => {
     }
   }
 
-  const handleDeleteNote = (props: THandleModifyNote) => {
-    const { note } = props
+  const handleDeleteNote = (properties_: THandleModifyNote) => {
+    const { note } = properties_
     setOpenConfirmation(true)
     setSelectedConfirmation({
       kind: 'delete',
@@ -94,8 +94,8 @@ const NoteProvider = (props: PropsWithChildren) => {
     })
   }
 
-  const handleUnlinkNote = (props: THandleModifyNote) => {
-    const { note } = props
+  const handleUnlinkNote = (properties_: THandleModifyNote) => {
+    const { note } = properties_
     setOpenConfirmation(true)
     setSelectedConfirmation({
       kind: 'unlink',
@@ -103,13 +103,13 @@ const NoteProvider = (props: PropsWithChildren) => {
     })
   }
 
-  const handlePinNote = (props: THandlePinNote) => {
-    const { note, isPinned } = props
+  const handlePinNote = (properties_: THandlePinNote) => {
+    const { note, isPinned } = properties_
     mutatePinNote({ note, isPinned })
   }
 
-  const handleShareNote = (props: THandleModifyNote) => {
-    const { note } = props
+  const handleShareNote = (properties_: THandleModifyNote) => {
+    const { note } = properties_
     setOpenShare(true)
     setSelectedNote(note)
   }
@@ -127,7 +127,7 @@ const NoteProvider = (props: PropsWithChildren) => {
         setSelectedNote,
         selectedConfirmation,
         setSelectedConfirmation,
-        formRef,
+        formRef: formReference,
         handleFormClose,
         handleCreateNote,
         handleEditNote,

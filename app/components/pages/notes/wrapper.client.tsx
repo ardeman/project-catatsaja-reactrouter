@@ -34,23 +34,23 @@ export const Wrapper = () => {
     selectedNote,
   } = useNote()
   const { data: notesData } = useGetNotes()
-  const masonryRefPinned = useRef(null)
-  const masonryRefRegular = useRef(null)
+  const masonryReferencePinned = useRef(null)
+  const masonryReferenceRegular = useRef(null)
   const pinnedNotes = notesData?.filter((note) => note.isPinned)
   const regularNotes = notesData?.filter((note) => !note.isPinned)
   const { mutate: mutateShare } = useShareNote()
 
-  const handleShare = (params: THandleSetPermission) => {
+  const handleShare = (parameters: THandleSetPermission) => {
     const data = {
-      ...params,
+      ...parameters,
       note: notesData?.find((note) => note.id === selectedNote?.id),
     } as TNotePermissionRequest
     mutateShare(data)
   }
 
-  const handleUnshare = (params: Pick<THandleDeletePermission, 'uid'>) => {
+  const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {
     const data = {
-      ...params,
+      ...parameters,
       permission: 'delete',
       note: notesData?.find((note) => note.id === selectedNote?.id),
     } as TNotePermissionRequest
@@ -58,23 +58,22 @@ export const Wrapper = () => {
   }
 
   useEffect(() => {
-    if (masonryRefPinned?.current) {
-      new Masonry(masonryRefPinned.current, {
+    if (masonryReferencePinned?.current) {
+      new Masonry(masonryReferencePinned.current, {
         itemSelector: '.masonry-item-pinned',
         gutter: 16,
         horizontalOrder: true,
         fitWidth: true,
       })
     }
-    if (masonryRefRegular?.current) {
-      new Masonry(masonryRefRegular.current, {
+    if (masonryReferenceRegular?.current) {
+      new Masonry(masonryReferenceRegular.current, {
         itemSelector: '.masonry-item-regular',
         gutter: 16,
         horizontalOrder: true,
         fitWidth: true,
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notesData])
 
   return (
@@ -88,7 +87,7 @@ export const Wrapper = () => {
       </Button>
       <div className="flex justify-center">
         <div
-          ref={masonryRefPinned}
+          ref={masonryReferencePinned}
           className="masonry-grid mx-auto max-w-screen-2xl"
         >
           {pinnedNotes
@@ -108,7 +107,7 @@ export const Wrapper = () => {
       </div>
       <div className="flex justify-center pb-9 md:pb-0">
         <div
-          ref={masonryRefRegular}
+          ref={masonryReferenceRegular}
           className="masonry-grid mx-auto max-w-screen-2xl"
         >
           {regularNotes

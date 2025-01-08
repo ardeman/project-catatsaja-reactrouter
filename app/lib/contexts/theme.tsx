@@ -13,7 +13,7 @@ import { ThemeProviderProps } from 'remix-themes/build/theme-provider'
 import { useBroadcastChannel } from 'remix-themes/build/useBroadcastChannel'
 import { useCorrectCssTransition } from 'remix-themes/build/useCorrectCssTransition'
 
-type TProps = Omit<ThemeProviderProps, 'themeAction'> & {
+type TProperties = Omit<ThemeProviderProps, 'themeAction'> & {
   themeAction?: string
 }
 type ThemeContextType = [
@@ -34,13 +34,13 @@ const mediaQuery =
     ? globalThis.matchMedia(prefersLightMQ)
     : null
 
-export function ThemeProvider(props: TProps) {
+export function ThemeProvider(properties: TProperties) {
   const {
     children,
     specifiedTheme,
     themeAction,
     disableTransitionOnThemeChange,
-  } = props
+  } = properties
   const ensureCorrectTransition = useCorrectCssTransition({
     disableTransitions: disableTransitionOnThemeChange,
   })
@@ -57,10 +57,10 @@ export function ThemeProvider(props: TProps) {
   const broadcastThemeChange = useBroadcastChannel<{
     theme: Theme
     definedBy: TDefinedBy
-  }>('remix-themes', (e) => {
+  }>('remix-themes', (event) => {
     ensureCorrectTransition(() => {
-      setTheme(e.data.theme)
-      setThemeDefinedBy(e.data.definedBy)
+      setTheme(event.data.theme)
+      setThemeDefinedBy(event.data.definedBy)
     })
   })
 
@@ -68,9 +68,9 @@ export function ThemeProvider(props: TProps) {
     if (themeDefinedBy === 'USER') {
       return () => {}
     }
-    const handleChange = (ev: MediaQueryListEvent) => {
+    const handleChange = (event: MediaQueryListEvent) => {
       ensureCorrectTransition(() => {
-        setTheme(ev.matches ? Theme.LIGHT : Theme.DARK)
+        setTheme(event.matches ? Theme.LIGHT : Theme.DARK)
       })
     }
     mediaQuery?.addEventListener('change', handleChange)
@@ -78,7 +78,7 @@ export function ThemeProvider(props: TProps) {
   }, [ensureCorrectTransition, themeDefinedBy])
 
   const handleThemeChange = useCallback(
-    (value: Theme | ((prevTheme: Theme | null) => Theme | null) | null) => {
+    (value: Theme | ((previousTheme: Theme | null) => Theme | null) | null) => {
       const nextTheme = typeof value === 'function' ? value(theme) : value
       if (nextTheme === null) {
         const preferredTheme = getPreferredTheme()
@@ -155,7 +155,7 @@ const clientThemeCode = String.raw`
 })();
 `
 
-interface PreventFlashOnWrongThemeProps {
+interface PreventFlashOnWrongThemeProperties {
   ssrTheme?: boolean
   nonce?: string
 }
@@ -163,7 +163,7 @@ interface PreventFlashOnWrongThemeProps {
 export function PreventFlashOnWrongTheme({
   ssrTheme,
   nonce,
-}: PreventFlashOnWrongThemeProps) {
+}: PreventFlashOnWrongThemeProperties) {
   const [theme] = useTheme()
   return (
     <>
@@ -173,7 +173,6 @@ export function PreventFlashOnWrongTheme({
       />
       {ssrTheme ? null : (
         <script
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: clientThemeCode }}
           nonce={nonce}
           suppressHydrationWarning
@@ -191,6 +190,6 @@ export function useTheme(): ThemeContextType {
   return context
 }
 
-export function isTheme(value: any): value is Theme {
+export function isTheme(value: string): value is Theme {
   return typeof value === 'string' && themes.includes(value as Theme)
 }

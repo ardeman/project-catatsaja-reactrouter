@@ -1,5 +1,5 @@
-import { Outlet } from '@remix-run/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Outlet } from 'react-router'
 import { Theme } from 'remix-themes'
 
 import { Rootlayout } from '~/components/layouts/root'

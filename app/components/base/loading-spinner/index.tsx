@@ -5,16 +5,18 @@ import { getRandomIndex } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
 import { IconComponent, icons } from './data'
-import { TProps } from './type'
+import { TProperties } from './type'
 
-export const LoadingSpinner = (props: TProps) => {
-  const { classname } = props
+export const LoadingSpinner = (properties: TProperties) => {
+  const { classname } = properties
   const [counter, setCounter] = useState(getRandomIndex(icons.length, -1))
 
   useEffect(() => {
     // Change the icon at the end of each animation cycle
     const interval = setInterval(() => {
-      setCounter((prevCounter) => getRandomIndex(icons.length, prevCounter))
+      setCounter((previousCounter) =>
+        getRandomIndex(icons.length, previousCounter),
+      )
     }, 3000) // Keep this at 3000ms
 
     return () => clearInterval(interval)

@@ -16,8 +16,8 @@ const FirebaseContext = createContext<TFirebaseContextValue | undefined>(
   undefined,
 )
 
-const FirebaseProvider = (props: PropsWithChildren) => {
-  const { children } = props
+const FirebaseProvider = (properties: PropsWithChildren) => {
+  const { children } = properties
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const value = {

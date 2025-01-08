@@ -38,11 +38,11 @@ export const fetchNotes = async () => {
   const snap = await getDocs(notesQuery)
 
   // Map over the snapshot documents, including both data and ID
-  return snap.docs.map((doc) => {
-    const data = doc.data()
+  return snap.docs.map((document) => {
+    const data = document.data()
     return {
       ...data,
-      id: doc.id, // Get document ID
+      id: document.id, // Get document ID
       isPinned: data.pinnedBy?.includes(auth?.currentUser?.uid),
     } as TNoteResponse
   })
@@ -55,8 +55,8 @@ export const createNote = async (data: TCreateNoteRequest) => {
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const ref = collection(firestore, 'notes')
-  return await addDoc(ref, {
+  const reference = collection(firestore, 'notes')
+  return await addDoc(reference, {
     ...data,
     owner: auth.currentUser.uid,
     permissions: {
@@ -75,8 +75,8 @@ export const updateNote = async (data: TUpdateNoteRequest) => {
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const ref = doc(firestore, 'notes', id)
-  return await updateDoc(ref, {
+  const reference = doc(firestore, 'notes', id)
+  return await updateDoc(reference, {
     ...rest,
     updatedAt: new Date(),
   })
@@ -97,8 +97,8 @@ export const pinNote = async (data: TPinNoteRequest) => {
     pinnedBy.delete(auth.currentUser.uid)
   }
 
-  const ref = doc(firestore, 'notes', note.id)
-  return await updateDoc(ref, {
+  const reference = doc(firestore, 'notes', note.id)
+  return await updateDoc(reference, {
     pinnedBy: [...pinnedBy],
     updatedAt: new Date(),
   })
@@ -112,8 +112,8 @@ export const deleteNote = async (note: TNoteResponse) => {
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const ref = doc(firestore, 'notes', id)
-  await deleteDoc(ref)
+  const reference = doc(firestore, 'notes', id)
+  await deleteDoc(reference)
   return note
 }
 
@@ -133,8 +133,8 @@ export const unlinkNote = async (note: TNoteResponse) => {
     },
   }
 
-  const ref = doc(firestore, 'notes', id)
-  return await updateDoc(ref, {
+  const reference = doc(firestore, 'notes', id)
+  return await updateDoc(reference, {
     ...data,
     updatedAt: new Date(),
   })
@@ -170,14 +170,14 @@ export const setNotePermission = async (form: TNotePermissionRequest) => {
       throw new Error(`Unknown permission: ${permission}`)
     }
   }
-  const ref = doc(firestore, 'notes', note.id)
+  const reference = doc(firestore, 'notes', note.id)
   const data = {
     permissions: {
       read: [...readPermission],
       write: [...writePermission],
     },
   }
-  return await updateDoc(ref, {
+  return await updateDoc(reference, {
     ...data,
     updatedAt: new Date(),
   })

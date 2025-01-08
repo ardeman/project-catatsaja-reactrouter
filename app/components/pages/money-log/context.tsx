@@ -41,8 +41,8 @@ const MoneyLogContext = createContext<MoneyLogContextValue | undefined>(
   undefined,
 )
 
-const MoneyLogProvider = (props: PropsWithChildren) => {
-  const { children } = props
+const MoneyLogProvider = (properties: PropsWithChildren) => {
+  const { children } = properties
   const [openForm, setOpenForm] = useState<boolean>(false)
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false)
   const [openShare, setOpenShare] = useState<boolean>(false)
@@ -52,7 +52,7 @@ const MoneyLogProvider = (props: PropsWithChildren) => {
   // const { mutate: mutatePinLog } = usePinLog()
   // const { mutate: mutateDeleteLog } = useDeleteLog()
   // const { mutate: mutateUnlinkLog } = useUnlinkLog()
-  const formRef = useRef<{ submit: () => void } | null>(null)
+  const formReference = useRef<{ submit: () => void } | null>(null)
 
   const handleCreateMoneyLog = () => {
     setOpenForm(true)
@@ -106,7 +106,7 @@ const MoneyLogProvider = (props: PropsWithChildren) => {
         setSelectedMoneyLog,
         selectedConfirmation,
         setSelectedConfirmation,
-        formRef,
+        formRef: formReference,
         handleCreateMoneyLog,
         handleEditMoneyLog,
         handleFormClose,

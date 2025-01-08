@@ -1,16 +1,16 @@
-import { RemixBrowser } from '@remix-run/react'
-import i18next, { use } from 'i18next'
+import i18next, { use as i18nextUse } from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import Backend from 'i18next-http-backend'
 import { startTransition, StrictMode } from 'react'
 import { hydrateRoot } from 'react-dom/client'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
+import { HydratedRouter } from 'react-router/dom'
 
 import i18n from './localization/i18n'
 import { resources } from './localization/resource'
 
 async function hydrate() {
-  await use(initReactI18next) // Tell i18next to use the react-i18next plugin
+  await i18nextUse(initReactI18next) // Tell i18next to use the react-i18next plugin
     .use(LanguageDetector) // Setup a client-side language detector
     .use(Backend) // Setup your backend
     .init({
@@ -34,7 +34,7 @@ async function hydrate() {
       document,
       <I18nextProvider i18n={i18next}>
         <StrictMode>
-          <RemixBrowser />
+          <HydratedRouter />
         </StrictMode>
       </I18nextProvider>,
     )

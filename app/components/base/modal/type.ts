@@ -1,9 +1,9 @@
-import { VariantProps } from 'class-variance-authority'
+import type { VariantProps } from 'class-variance-authority'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import { buttonVariants } from '~/components/ui/button'
 
-export type TProps = {
+export type TProperties = {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   children: ReactNode
@@ -14,6 +14,6 @@ export type TProps = {
   variant?: VariantProps<typeof buttonVariants>['variant']
 }
 
-export type TParams = {
+export type TParameters = {
   handleClose: () => void
-} & TProps
+} & TProperties

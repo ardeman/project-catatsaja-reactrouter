@@ -8,7 +8,7 @@ import {
 
 import { buttonVariants } from '~/components/ui/button'
 
-export type TButtonProps<T extends ElementType = 'button'> = {
+export type TButtonProperties<T extends ElementType = 'button'> = {
   type?: 'button' | 'submit' | 'reset'
   onClick?: MouseEventHandler<HTMLButtonElement>
   className?: HTMLAttributes<HTMLButtonElement>['className']

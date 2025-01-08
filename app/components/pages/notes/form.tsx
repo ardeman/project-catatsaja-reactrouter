@@ -15,10 +15,10 @@ import { getDateLabel } from '~/lib/utils/parser'
 import { noteSchema } from '~/lib/validations/note'
 
 import { useNote } from './context'
-import { TFormProps } from './type'
+import { TFormProperties } from './type'
 
-export const Form = forwardRef((props: TFormProps, ref) => {
-  const { notes } = props
+export const Form = forwardRef((properties: TFormProperties, reference) => {
+  const { notes } = properties
   const { t, i18n } = useTranslation()
   const {
     selectedNote,
@@ -82,7 +82,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
   })
 
   // Expose the submit function to the parent component via ref
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(reference, () => ({
     submit: () => onSubmit(),
   }))
 
@@ -108,11 +108,11 @@ export const Form = forwardRef((props: TFormProps, ref) => {
           name="title"
           placeholder={t('notes.form.title.label')}
           inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-0"
-          autoFocus={!selectedNote}
+          autoFocus={!selectedNote} // eslint-disable-line jsx-a11y/no-autofocus
           rows={1}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault()
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault()
               formMethods.setFocus('content')
             }
           }}

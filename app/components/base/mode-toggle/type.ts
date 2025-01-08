@@ -1,8 +1,8 @@
-export type TProps = {
+export type TProperties = {
   type?: 'dropdown' | 'radio'
 }
 
-export type TParams = {
+export type TParameters = {
   value: string
   handleSetTheme: (value: string) => void
 }

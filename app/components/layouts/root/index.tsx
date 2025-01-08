@@ -1,3 +1,6 @@
+import clsx from 'clsx'
+import { PropsWithChildren, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Links,
   Meta,
@@ -5,10 +8,7 @@ import {
   ScrollRestoration,
   useLocation,
   useNavigate,
-} from '@remix-run/react'
-import clsx from 'clsx'
-import { PropsWithChildren, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
+} from 'react-router'
 
 import { LoadingSpinner } from '~/components/base/loading-spinner'
 import { Toaster } from '~/components/ui/toaster'
@@ -17,8 +17,8 @@ import { useTheme } from '~/lib/contexts/theme'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { middleware } from '~/lib/utils/middleware'
 
-export const Rootlayout = (props: PropsWithChildren) => {
-  const { children } = props
+export const Rootlayout = (properties: PropsWithChildren) => {
+  const { children } = properties
   const { pathname } = useLocation()
   const { isLoading } = useFirebase()
   const { data: user, isLoading: userIsLoading } = useAuthUser()

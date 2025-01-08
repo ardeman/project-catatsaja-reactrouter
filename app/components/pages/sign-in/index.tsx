@@ -1,10 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@remix-run/react'
 import { Eye, EyeClosed } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
+import { Link } from 'react-router'
 
 import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
@@ -42,7 +42,9 @@ export const SignInPage = () => {
     mutateLogin(data)
   })
   const togglePassword = () => {
-    setPasswordType((prev) => (prev === 'password' ? 'text' : 'password'))
+    setPasswordType((previous) =>
+      previous === 'password' ? 'text' : 'password',
+    )
   }
 
   const {
@@ -98,7 +100,7 @@ export const SignInPage = () => {
               label={t('auth.form.email.label')}
               name="email"
               placeholder="you@me.com"
-              autoFocus
+              autoFocus // eslint-disable-line jsx-a11y/no-autofocus
               required
               disabled={disabled}
             />

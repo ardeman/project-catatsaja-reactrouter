@@ -12,10 +12,10 @@ import {
 import { Textarea as UITextarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils/shadcn'
 
-import { TProps } from './type'
+import { TProperties } from './type'
 
 export const Textarea = <TFormValues extends Record<string, unknown>>(
-  props: TProps<TFormValues>,
+  properties: TProperties<TFormValues>,
 ) => {
   const generatedId = useId()
   const {
@@ -32,7 +32,7 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
     leftNode: LeftNode,
     rightNode: RightNode,
     ...rest
-  } = props
+  } = properties
   const { control } = useFormContext()
 
   return (
@@ -62,8 +62,8 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
                   inputClassName,
                 )}
                 onClick={onClick}
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement
+                onInput={(event) => {
+                  const target = event.target as HTMLTextAreaElement
                   target.style.height = 'auto'
                   target.style.height = `${target.scrollHeight}px`
                 }}

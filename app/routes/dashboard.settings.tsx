@@ -1,5 +1,5 @@
-import { Outlet } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
+import { Outlet } from 'react-router'
 
 import { Sidebar } from '~/components/layouts/sidebar'
 

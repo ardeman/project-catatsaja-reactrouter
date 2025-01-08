@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react'
 
-export type TProps = {
+export type TProperties = {
   className?: HTMLAttributes<HTMLDivElement>['className']
 }

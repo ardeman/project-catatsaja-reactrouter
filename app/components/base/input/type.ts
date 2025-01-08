@@ -6,7 +6,7 @@ import {
 } from 'react'
 import { FieldValues, Path } from 'react-hook-form'
 
-export type TProps<TFormValues extends FieldValues> = {
+export type TProperties<TFormValues extends FieldValues> = {
   id?: string
   name: Path<TFormValues>
   label?: string
@@ -24,7 +24,7 @@ export type TProps<TFormValues extends FieldValues> = {
   readOnly?: boolean
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode']
   autoFocus?: boolean
-  leftNode?: (props: HTMLAttributes<HTMLDivElement>) => ReactNode
-  rightNode?: (props: HTMLAttributes<HTMLDivElement>) => ReactNode
+  leftNode?: (properties: HTMLAttributes<HTMLDivElement>) => ReactNode
+  rightNode?: (properties: HTMLAttributes<HTMLDivElement>) => ReactNode
   autoComplete?: HTMLInputAutoCompleteAttribute
 }

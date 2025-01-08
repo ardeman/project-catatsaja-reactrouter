@@ -3,9 +3,9 @@ import { Loader2 } from 'lucide-react'
 import { Button as UIButton } from '~/components/ui/button'
 import { cn } from '~/lib/utils/shadcn'
 
-import { TButtonProps } from './type'
+import { TButtonProperties } from './type'
 
-export const Button = (props: TButtonProps) => {
+export const Button = (properties: TButtonProperties) => {
   const {
     disabled,
     children,
@@ -15,7 +15,7 @@ export const Button = (props: TButtonProps) => {
     onClick,
     containerClassName,
     variant,
-  } = props
+  } = properties
   return (
     <div className={cn('grid space-y-1', containerClassName)}>
       <UIButton

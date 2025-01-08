@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 
-export type TProps = {
+export type TProperties = {
   disabled: boolean
   setDisabled: Dispatch<SetStateAction<boolean>>
 }

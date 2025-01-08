@@ -1,7 +1,7 @@
-export type TProps = {
+export type TProperties = {
   type?: 'dropdown' | 'radio'
 }
 
-export type TParams = {
+export type TParameters = {
   changeLanguage: (lng: string) => void
 }

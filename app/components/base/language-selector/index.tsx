@@ -14,10 +14,10 @@ import { Label } from '~/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
 import { languageOptions } from '~/localization/i18n'
 
-import { TParams, TProps } from './type'
+import { TParameters, TProperties } from './type'
 
-export const LanguageSelector = (props: TProps) => {
-  const { type = 'dropdown' } = props
+export const LanguageSelector = (properties: TProperties) => {
+  const { type = 'dropdown' } = properties
   const { i18n } = useTranslation()
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng)
@@ -30,8 +30,8 @@ export const LanguageSelector = (props: TProps) => {
   return <Dropdown changeLanguage={changeLanguage} />
 }
 
-const Radio = (params: TParams) => {
-  const { changeLanguage } = params
+const Radio = (parameters: TParameters) => {
+  const { changeLanguage } = parameters
   const { t, i18n } = useTranslation()
 
   return (
@@ -68,8 +68,8 @@ const Radio = (params: TParams) => {
   )
 }
 
-const Dropdown = (params: TParams) => {
-  const { changeLanguage } = params
+const Dropdown = (parameters: TParameters) => {
+  const { changeLanguage } = parameters
   const { t, i18n } = useTranslation()
 
   return (

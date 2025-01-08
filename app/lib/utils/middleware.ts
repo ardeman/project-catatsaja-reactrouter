@@ -1,17 +1,17 @@
-import { NavigateFunction } from '@remix-run/react'
 import { User } from 'firebase/auth'
+import { NavigateFunction } from 'react-router'
 
 import { authPages, protectedPages } from '~/lib/configs/page'
 import { extractPathSegment } from '~/lib/utils/parser'
 
-type TProps = {
+type TProperties = {
   navigate: NavigateFunction
   pathname: string
   user?: User | null
 }
 
-export const middleware = (props: TProps) => {
-  const { navigate, pathname, user } = props
+export const middleware = (properties: TProperties) => {
+  const { navigate, pathname, user } = properties
   const extractedPath = extractPathSegment(pathname)
 
   if (protectedPages.has(extractedPath) && !user) {

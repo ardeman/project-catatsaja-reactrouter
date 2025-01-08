@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@remix-run/react'
 import { FC, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 
 import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
@@ -58,7 +58,7 @@ export const ForgotPasswordPage: FC = () => {
       setTimerForgotPassword(undefined)
     } else if (timerForgotPassword) {
       const timer = setTimeout(() => {
-        setTimerForgotPassword((prev) => prev! - 1)
+        setTimerForgotPassword((previous) => previous! - 1)
       }, 1000)
       return () => clearTimeout(timer)
     }

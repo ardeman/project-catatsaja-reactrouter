@@ -14,10 +14,10 @@ import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
 import { useNote } from './context'
-import { TCardProps } from './type'
+import { TCardProperties } from './type'
 
-export const Card = (props: TCardProps) => {
-  const { note, className } = props
+export const Card = (properties: TCardProperties) => {
+  const { note, className } = properties
   const { t, i18n } = useTranslation()
   const {
     handleEditNote,

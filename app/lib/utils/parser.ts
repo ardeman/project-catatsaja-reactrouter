@@ -39,7 +39,7 @@ export const getDateLabel = ({
   return dateLabel
 }
 
-export const formatDate = ({
+const formatDate = ({
   timestamp,
   locale,
 }: {

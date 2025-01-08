@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link, useNavigate } from '@remix-run/react'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { Link, useNavigate } from 'react-router'
 
 import { Input } from '~/components/base/input'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
@@ -25,10 +25,10 @@ import { searchSchema } from '~/lib/validations/search'
 
 import { userMenus } from './data'
 import { Navigation } from './navigation'
-import { TProps } from './type'
+import { TProperties } from './type'
 
-export const Navbar = (props: TProps) => {
-  const { className } = props
+export const Navbar = (properties: TProperties) => {
+  const { className } = properties
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { data: userData } = useUserData()
