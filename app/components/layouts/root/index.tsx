@@ -22,7 +22,7 @@ export const Rootlayout = (properties: PropsWithChildren) => {
   const { pathname } = useLocation()
   const { isLoading } = useFirebase()
   const { data: user, isLoading: userIsLoading } = useAuthUser()
-  const [theme] = useTheme()
+  const { theme } = useTheme()
   const navigate = useNavigate()
   const { i18n } = useTranslation()
 

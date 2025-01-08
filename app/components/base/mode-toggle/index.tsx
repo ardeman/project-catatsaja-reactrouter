@@ -1,7 +1,6 @@
 import { Slot } from '@radix-ui/react-slot'
 import { Moon, Sun } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Theme } from 'remix-themes'
 
 import { Button } from '~/components/ui/button'
 import {
@@ -13,30 +12,23 @@ import {
 } from '~/components/ui/dropdown-menu'
 import { Label } from '~/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
-import { useTheme } from '~/lib/contexts/theme'
+import { Theme, useTheme } from '~/lib/contexts/theme'
 
 import { themeOptions } from './data'
 import { TParameters, TProperties } from './type'
 
 export const ModeToggle = (properties: TProperties) => {
   const { type = 'dropdown' } = properties
-  const [theme, setTheme, metadata] = useTheme()
-  const value = metadata.definedBy === 'SYSTEM' ? 'system' : (theme as string)
+  const { setTheme, theme } = useTheme()
 
-  const handleSetTheme = (value: string) => {
-    if (value === 'system') {
-      setTheme(null)
-      globalThis.localStorage.removeItem('theme')
-      return
-    }
-    setTheme(value as Theme)
-    globalThis.localStorage.setItem('theme', value)
+  const handleSetTheme = (theme: Theme) => {
+    setTheme(theme)
   }
 
   if (type === 'radio') {
     return (
       <Radio
-        value={value}
+        value={theme}
         handleSetTheme={handleSetTheme}
       />
     )
@@ -44,7 +36,7 @@ export const ModeToggle = (properties: TProperties) => {
 
   return (
     <Dropdown
-      value={value}
+      value={theme}
       handleSetTheme={handleSetTheme}
     />
   )
@@ -109,7 +101,7 @@ const Dropdown = (parameters: TParameters) => {
       <DropdownMenuContent align="end">
         <DropdownMenuRadioGroup
           value={value}
-          onValueChange={handleSetTheme}
+          onValueChange={(newValue) => handleSetTheme(newValue as Theme)}
         >
           <DropdownMenuRadioItem value="light">
             {t('settings.appearance.form.theme.light')}
