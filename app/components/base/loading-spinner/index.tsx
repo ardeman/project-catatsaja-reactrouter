@@ -4,7 +4,7 @@ import { appName } from '~/lib/constants/metadata'
 import { getRandomIndex } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
-import { IconComponent, icons } from './data'
+import { IconComponent, icons } from './constant'
 import { TProperties } from './type'
 
 export const LoadingSpinner = (properties: TProperties) => {

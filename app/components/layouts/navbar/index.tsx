@@ -23,7 +23,7 @@ import { TSearchRequest } from '~/lib/types/search'
 import { cn } from '~/lib/utils/shadcn'
 import { searchSchema } from '~/lib/validations/search'
 
-import { userMenus } from './data'
+import { userMenus } from './constant'
 import { Navigation } from './navigation'
 import { TProperties } from './type'
 

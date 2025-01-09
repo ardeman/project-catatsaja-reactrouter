@@ -14,7 +14,7 @@ import { Label } from '~/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
 import { Theme, useTheme } from '~/lib/contexts/theme'
 
-import { themeOptions } from './data'
+import { themeOptions } from './constant'
 import { TParameters, TProperties } from './type'
 
 export const ModeToggle = (properties: TProperties) => {

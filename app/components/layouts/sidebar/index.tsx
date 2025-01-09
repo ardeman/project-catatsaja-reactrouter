@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 
-import { settings } from './data'
+import { settings } from './constant'
 
 export const Sidebar = () => {
   const { pathname } = useLocation()

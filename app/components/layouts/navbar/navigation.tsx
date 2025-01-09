@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router'
 import { appleIcon, appName } from '~/lib/constants/metadata'
 import { cn } from '~/lib/utils/shadcn'
 
-import { navs, reloadNavs } from './data'
+import { navs } from './constant'
 import { TProperties } from './type'
 
 export const Navigation = (properties: TProperties) => {
@@ -38,7 +38,7 @@ export const Navigation = (properties: TProperties) => {
             pathname === nav.href ? 'text-foreground' : 'text-muted-foreground',
             'whitespace-nowrap transition-colors hover:text-foreground',
           )}
-          reloadDocument={reloadNavs.includes(nav.href)}
+          reloadDocument
         >
           {nav.name}
         </Link>

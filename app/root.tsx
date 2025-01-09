@@ -24,10 +24,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <FirebaseProvider>
-        <ThemeProvider
-          defaultTheme="dark"
-          storageKey="vite-ui-theme"
-        >
+        <ThemeProvider>
           <Rootlayout>
             <Outlet />
           </Rootlayout>
