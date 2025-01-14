@@ -59,20 +59,26 @@ export const Wrapper = () => {
 
   useEffect(() => {
     if (masonryReferencePinned?.current) {
-      new Masonry(masonryReferencePinned.current, {
+      const pinned = new Masonry(masonryReferencePinned.current, {
         itemSelector: '.masonry-item-pinned',
         gutter: 16,
         horizontalOrder: true,
         fitWidth: true,
       })
+      if (pinned.layout) {
+        pinned.layout()
+      }
     }
     if (masonryReferenceRegular?.current) {
-      new Masonry(masonryReferenceRegular.current, {
+      const regular = new Masonry(masonryReferenceRegular.current, {
         itemSelector: '.masonry-item-regular',
         gutter: 16,
         horizontalOrder: true,
         fitWidth: true,
       })
+      if (regular.layout) {
+        regular.layout()
+      }
     }
   }, [notesData])
 
@@ -93,10 +99,10 @@ export const Wrapper = () => {
           {pinnedNotes
             ?.sort(
               (a, b) =>
-                (b.updatedAt?.seconds || b.createdAt?.seconds) -
-                (a.updatedAt?.seconds || a.createdAt?.seconds),
+                (b.updatedAt?.seconds || b.createdAt?.seconds || 0) -
+                (a.updatedAt?.seconds || a.createdAt?.seconds || 0),
             )
-            .map((note) => (
+            ?.map((note) => (
               <Card
                 note={note}
                 key={note.id}
@@ -113,10 +119,10 @@ export const Wrapper = () => {
           {regularNotes
             ?.sort(
               (a, b) =>
-                (b.updatedAt?.seconds || b.createdAt?.seconds) -
-                (a.updatedAt?.seconds || a.createdAt?.seconds),
+                (b.updatedAt?.seconds || b.createdAt?.seconds || 0) -
+                (a.updatedAt?.seconds || a.createdAt?.seconds || 0),
             )
-            .map((note) => (
+            ?.map((note) => (
               <Card
                 note={note}
                 key={note.id}

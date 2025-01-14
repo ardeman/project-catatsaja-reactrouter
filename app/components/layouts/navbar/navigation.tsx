@@ -38,7 +38,6 @@ export const Navigation = (properties: TProperties) => {
             pathname === nav.href ? 'text-foreground' : 'text-muted-foreground',
             'whitespace-nowrap transition-colors hover:text-foreground',
           )}
-          reloadDocument
         >
           {nav.name}
         </Link>

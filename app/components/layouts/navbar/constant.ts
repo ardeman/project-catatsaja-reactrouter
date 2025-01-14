@@ -35,5 +35,3 @@ export const navs = (t: TFunction) => [
     href: '/dashboard/money-log',
   },
 ]
-
-export const reloadNavs = ['/dashboard/notes']
