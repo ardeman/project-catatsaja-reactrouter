@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { PropsWithChildren, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -13,7 +12,6 @@ import {
 import { LoadingSpinner } from '~/components/base/loading-spinner'
 import { Toaster } from '~/components/ui/toaster'
 import { useFirebase } from '~/lib/contexts/firebase'
-import { useTheme } from '~/lib/contexts/theme'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { middleware } from '~/lib/utils/middleware'
 
@@ -22,7 +20,6 @@ export const Rootlayout = (properties: PropsWithChildren) => {
   const { pathname } = useLocation()
   const { isLoading } = useFirebase()
   const { data: user, isLoading: userIsLoading } = useAuthUser()
-  const { theme } = useTheme()
   const navigate = useNavigate()
   const { i18n } = useTranslation()
 
@@ -34,7 +31,6 @@ export const Rootlayout = (properties: PropsWithChildren) => {
   return (
     <html
       lang={i18n.language}
-      className={clsx(theme)}
       dir={i18n.dir()}
     >
       <head>
