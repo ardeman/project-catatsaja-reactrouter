@@ -25,7 +25,9 @@
     "labelClassName",
     "buttonClassName",
     "leftNodeClassName",
-    "rightNodeClassName"
+    "rightNodeClassName",
+    "variants",
+    "variant"
   ],
   "cSpell.words": ["firestore"]
 }
