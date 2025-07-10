@@ -1,24 +1,20 @@
-import { useQuery } from '@tanstack/react-query'
-import { onAuthStateChanged, User } from 'firebase/auth'
+import { onAuthStateChanged, type User } from 'firebase/auth'
+import { useEffect, useState } from 'react'
 
 import { auth } from '~/lib/configs/firebase'
 
 export const useAuthUser = () => {
-  return useQuery<User | null>({
-    queryKey: ['auth-user'],
-    queryFn: () =>
-      new Promise<User | null>((resolve) => {
-        if (!auth) {
-          resolve(null)
-          return
-        }
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-          resolve(currentUser) // Resolve the current user or null
-        })
+  const [data, setData] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-        // Cleanup the listener when the query is no longer needed
-        return () => unsubscribe()
-      }),
-    staleTime: Infinity,
-  })
+  useEffect(() => {
+    if (!auth) return
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setData(currentUser)
+      setIsLoading(false)
+    })
+    return () => unsubscribe()
+  }, [])
+
+  return { data, isLoading }
 }
