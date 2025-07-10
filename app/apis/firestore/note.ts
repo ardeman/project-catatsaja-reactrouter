@@ -18,13 +18,19 @@ import {
   TPinNoteRequest,
   TUpdateNoteRequest,
 } from '~/lib/types/note'
+import { waitForAuth } from '~/lib/utils/wait-for-auth'
 
 export const fetchNotes = async () => {
   if (!firestore) {
     throw new Error('Firebase DB is not initialized')
   }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
+  if (!auth) {
+    throw new Error('Firebase Auth is not initialized')
+  }
+
+  const user = auth.currentUser ?? (await waitForAuth())
+  if (!user) {
+    return []
   }
 
   const notesQuery = query(
@@ -32,7 +38,7 @@ export const fetchNotes = async () => {
     where(
       new FieldPath('permissions', 'read'),
       'array-contains',
-      auth.currentUser.uid,
+      user.uid,
     ),
   )
   const snap = await getDocs(notesQuery)
@@ -43,7 +49,7 @@ export const fetchNotes = async () => {
     return {
       ...data,
       id: document.id, // Get document ID
-      isPinned: data.pinnedBy?.includes(auth?.currentUser?.uid),
+      isPinned: data.pinnedBy?.includes(user.uid),
     } as TNoteResponse
   })
 }
