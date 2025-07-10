@@ -17,7 +17,7 @@ export const useGetNotes = () => {
 
   useEffect(() => {
     if (!firestore) return
-    const db = firestore
+    const database = firestore
     let unsubscribe: () => void
 
     const listen = async () => {
@@ -29,7 +29,7 @@ export const useGetNotes = () => {
       }
 
       const notesQuery = query(
-        collection(db, 'notes'),
+        collection(database, 'notes'),
         where(new FieldPath('permissions', 'read'), 'array-contains', user.uid),
       )
 

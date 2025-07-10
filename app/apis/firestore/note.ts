@@ -14,7 +14,6 @@ import {
   TPinNoteRequest,
   TUpdateNoteRequest,
 } from '~/lib/types/note'
-import { waitForAuth } from '~/lib/utils/wait-for-auth'
 
 export const createNote = async (data: TCreateNoteRequest) => {
   if (!firestore) {

@@ -36,7 +36,10 @@ export const Action = (properties: TActionProperties) => {
       ) : (
         <Button
           variant="outline"
-          onClick={handleUnlink}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleUnlink()
+          }}
           containerClassName="flex-1 flex items-center"
           className={cn(buttonClassName, 'hover:text-red-500')}
         >
@@ -46,7 +49,10 @@ export const Action = (properties: TActionProperties) => {
       {isEditable && (
         <Button
           variant="outline"
-          onClick={handleShare}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleShare()
+          }}
           containerClassName="flex-1 flex items-center"
           className={buttonClassName}
         >
@@ -62,7 +68,10 @@ export const Action = (properties: TActionProperties) => {
       )}
       <Button
         variant="outline"
-        onClick={handlePin}
+        onClick={(event) => {
+          event.stopPropagation()
+          handlePin()
+        }}
         containerClassName="flex-1 flex items-center"
         className={cn(
           buttonClassName,
