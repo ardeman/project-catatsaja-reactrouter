@@ -16,7 +16,7 @@ const firebaseConfig = {
 
 // Initialize Firebase app and services
 let firebase: FirebaseApp | null = null
-let analytics: Analytics | null = null
+let _analytics: Analytics | null = null
 let auth: Auth | null = null
 let firestore: Firestore | null = null
 
@@ -32,7 +32,7 @@ if (typeof globalThis !== 'undefined') {
       try {
         const supported = await isSupported()
         if (supported) {
-          analytics = getAnalytics(firebase!)
+          _analytics = getAnalytics(firebase!)
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -47,4 +47,4 @@ if (typeof globalThis !== 'undefined') {
   }
 }
 
-export { auth, firestore, analytics }
+export { auth, firestore }
