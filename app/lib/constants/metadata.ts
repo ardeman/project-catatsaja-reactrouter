@@ -4,7 +4,7 @@ export const appName = 'Catat Saja'
 export const appleIcon = '/icon/apple-touch-icon.png'
 const author = 'Ardeman'
 export const githubUser = 'ardeman'
-export const githubRepo = 'project-remix-catatsaja'
+export const githubRepo = 'project-catatsaja-reactrouter'
 
 export const meta: MetaFunction = () => [
   { title: appName },
