@@ -1,21 +1,26 @@
-import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
+import { useState } from 'react'
+import { useRevalidator } from 'react-router'
 
 import { login } from '~/apis/firestore/user'
 import { authError } from '~/lib/constants/firebase'
-import { useQueryActions } from '~/lib/hooks/use-query-actions'
 import { TSignInRequest } from '~/lib/types/user'
 
 import { toast } from './use-toast'
 
 export const useLogin = () => {
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
-  return useMutation({
-    mutationFn: (data: TSignInRequest) => login(data),
-    onSuccess: () => {
-      invalidateUser()
-    },
-    onError: (error: unknown) => {
+  const { revalidate } = useRevalidator()
+  const [isPending, setIsPending] = useState(false)
+  const [isError, setIsError] = useState(false)
+
+  const mutate = async (data: TSignInRequest) => {
+    setIsPending(true)
+    setIsError(false)
+    try {
+      await login(data)
+      revalidate()
+    } catch (error: unknown) {
+      setIsError(true)
       let message = String(error)
       if (error instanceof FirebaseError) {
         message =
@@ -26,6 +31,10 @@ export const useLogin = () => {
         variant: 'destructive',
         description: message,
       })
-    },
-  })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  return { mutate, isPending, isError }
 }

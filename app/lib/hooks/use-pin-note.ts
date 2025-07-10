@@ -1,24 +1,33 @@
-import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useRevalidator } from 'react-router'
 
 import { pinNote } from '~/apis/firestore/note'
-import { useQueryActions } from '~/lib/hooks/use-query-actions'
 import { TPinNoteRequest } from '~/lib/types/note'
 
 import { toast } from './use-toast'
 
 export const usePinNote = () => {
-  const { invalidateQueries: invalidateNotes } = useQueryActions(['notes'])
-  return useMutation({
-    mutationFn: (data: TPinNoteRequest) => pinNote(data),
-    onSuccess: () => {
-      invalidateNotes()
-    },
-    onError: (error: unknown) => {
+  const { revalidate } = useRevalidator()
+  const [isPending, setIsPending] = useState(false)
+  const [isError, setIsError] = useState(false)
+
+  const mutate = async (data: TPinNoteRequest) => {
+    setIsPending(true)
+    setIsError(false)
+    try {
+      await pinNote(data)
+      revalidate()
+    } catch (error: unknown) {
+      setIsError(true)
       const message = String(error)
       toast({
         variant: 'destructive',
         description: message,
       })
-    },
-  })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  return { mutate, isPending, isError }
 }

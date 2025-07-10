@@ -1,12 +1,23 @@
-import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 
 import { fetchUsersByEmail } from '~/apis/firestore/user'
 import { auth } from '~/lib/configs/firebase'
+import { TUserResponse } from '~/lib/types/user'
 
 export const useSearchUsers = (email: string) => {
-  return useQuery({
-    queryKey: ['search-users', email],
-    queryFn: () => fetchUsersByEmail(email),
-    enabled: !!auth?.currentUser && !!email, // Only run the query if the user is authenticated and email is provided
-  })
+  const [data, setData] = useState<TUserResponse[]>()
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    const load = async () => {
+      if (!auth?.currentUser || !email) return
+      setIsLoading(true)
+      const result = await fetchUsersByEmail(email)
+      setData(result)
+      setIsLoading(false)
+    }
+    load()
+  }, [email])
+
+  return { data, isLoading }
 }

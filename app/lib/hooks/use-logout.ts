@@ -1,26 +1,29 @@
-import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { signOut } from 'firebase/auth'
+import { useState } from 'react'
+import { useRevalidator } from 'react-router'
 
 import { auth } from '~/lib/configs/firebase'
 import { authError } from '~/lib/constants/firebase'
-import { useQueryActions } from '~/lib/hooks/use-query-actions'
 
 import { toast } from './use-toast'
 
 export const useLogout = () => {
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
-  return useMutation({
-    mutationFn: async () => {
+  const { revalidate } = useRevalidator()
+  const [isPending, setIsPending] = useState(false)
+  const [isError, setIsError] = useState(false)
+
+  const mutate = async () => {
+    setIsPending(true)
+    setIsError(false)
+    try {
       if (!auth) {
         throw new Error('Firebase Auth is not initialized.')
       }
       await signOut(auth)
-    },
-    onSuccess: () => {
-      invalidateUser()
-    },
-    onError: (error: unknown) => {
+      revalidate()
+    } catch (error: unknown) {
+      setIsError(true)
       let message = String(error)
       if (error instanceof FirebaseError) {
         message =
@@ -31,6 +34,10 @@ export const useLogout = () => {
         variant: 'destructive',
         description: message,
       })
-    },
-  })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  return { mutate, isPending, isError }
 }

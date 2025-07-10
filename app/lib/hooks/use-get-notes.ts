@@ -1,13 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+import { useLoaderData } from 'react-router'
 
-import { fetchNotes } from '~/apis/firestore/note'
-import { auth } from '~/lib/configs/firebase'
+import { TNoteResponse } from '~/lib/types/note'
 
-// Custom hook to fetch current user data
 export const useGetNotes = () => {
-  return useQuery({
-    queryKey: ['notes'],
-    queryFn: fetchNotes,
-    enabled: !!auth?.currentUser, // Only run the query if the user is authenticated
-  })
+  const data = useLoaderData() as { notes: TNoteResponse[] }
+  return { data: data.notes }
 }

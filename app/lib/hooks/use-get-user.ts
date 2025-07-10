@@ -1,13 +1,26 @@
-import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 
 import { fetchUserData } from '~/apis/firestore/user'
 import { auth } from '~/lib/configs/firebase'
+import { TUserResponse } from '~/lib/types/user'
 
 // Custom hook to fetch current user data
 export const useUserData = () => {
-  return useQuery({
-    queryKey: ['current-user'],
-    queryFn: fetchUserData,
-    enabled: !!auth?.currentUser, // Only run the query if the user is authenticated
-  })
+  const [data, setData] = useState<TUserResponse | undefined>()
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const load = async () => {
+      if (!auth?.currentUser) {
+        setIsLoading(false)
+        return
+      }
+      const result = await fetchUserData()
+      setData(result)
+      setIsLoading(false)
+    }
+    load()
+  }, [])
+
+  return { data, isLoading }
 }

@@ -1,28 +1,35 @@
-import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendEmailVerification } from 'firebase/auth'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useRevalidator } from 'react-router'
 
 import { auth } from '~/lib/configs/firebase'
 import { authError } from '~/lib/constants/firebase'
 import { toast } from '~/lib/hooks/use-toast'
 
 export const useEmailVerification = () => {
+  const { revalidate } = useRevalidator()
   const { t } = useTranslation()
+  const [isPending, setIsPending] = useState(false)
+  const [isError, setIsError] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
-  return useMutation({
-    mutationFn: () => {
+  const mutate = async () => {
+    setIsPending(true)
+    setIsError(false)
+    try {
       if (!auth?.currentUser) {
         throw new Error('No user is currently signed in.')
       }
-      return sendEmailVerification(auth.currentUser)
-    },
-    onSuccess: () => {
+      await sendEmailVerification(auth.currentUser)
       toast({
         description: t('auth.toast.verificationSent'),
       })
-    },
-    onError: (error: unknown) => {
+      setIsSuccess(true)
+      revalidate()
+    } catch (error: unknown) {
+      setIsError(true)
       let message = String(error)
       if (error instanceof FirebaseError) {
         message =
@@ -33,6 +40,10 @@ export const useEmailVerification = () => {
         variant: 'destructive',
         description: message,
       })
-    },
-  })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  return { mutate, isPending, isError, isSuccess }
 }

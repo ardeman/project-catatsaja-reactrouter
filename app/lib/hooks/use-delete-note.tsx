@@ -1,24 +1,26 @@
-import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useRevalidator } from 'react-router'
 
 import { deleteNote } from '~/apis/firestore/note'
 import { ToastAction } from '~/components/ui/toast'
 import { TNoteResponse } from '~/lib/types/note'
 
 import { useCreateNote } from './use-create-note'
-import { useQueryActions } from './use-query-actions'
 import { toast } from './use-toast'
 
 export const useDeleteNote = () => {
-  const { invalidateQueries: invalidateNotes } = useQueryActions(['notes'])
+  const { revalidate } = useRevalidator()
+  const [isPending, setIsPending] = useState(false)
   const { mutate: mutateCreateNote } = useCreateNote()
   const { t } = useTranslation()
 
-  return useMutation({
-    mutationFn: (note: TNoteResponse) => deleteNote(note),
-    onSuccess: (note: TNoteResponse) => {
+  const mutate = async (note: TNoteResponse) => {
+    setIsPending(true)
+    try {
       const { isPinned: _isPinned, id: _id, ...data } = note
-      invalidateNotes()
+      await deleteNote(note)
+      revalidate()
       toast({
         description: t('notes.toast.deleted'),
         action: (
@@ -30,13 +32,16 @@ export const useDeleteNote = () => {
           </ToastAction>
         ),
       })
-    },
-    onError: (error: unknown) => {
+    } catch (error: unknown) {
       const message = String(error)
       toast({
         variant: 'destructive',
         description: message,
       })
-    },
-  })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  return { mutate, isPending }
 }

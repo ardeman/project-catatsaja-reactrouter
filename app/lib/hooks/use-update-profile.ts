@@ -1,29 +1,34 @@
-import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useRevalidator } from 'react-router'
 
 import { updateProfile } from '~/apis/firestore/user'
 import { authError } from '~/lib/constants/firebase'
 import { TUpdateProfileRequest } from '~/lib/types/settings'
 
-import { useQueryActions } from './use-query-actions'
 import { toast } from './use-toast'
 
 export const useUpdateProfile = () => {
-  const { invalidateQueries: invalidateCurrentUser } = useQueryActions([
-    'current-user',
-  ])
+  const { revalidate } = useRevalidator()
   const { t } = useTranslation()
+  const [isPending, setIsPending] = useState(false)
+  const [isError, setIsError] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
-  return useMutation({
-    mutationFn: (data: TUpdateProfileRequest) => updateProfile(data),
-    onSuccess: () => {
+  const mutate = async (data: TUpdateProfileRequest) => {
+    setIsPending(true)
+    setIsError(false)
+    setIsSuccess(false)
+    try {
+      await updateProfile(data)
       toast({
         description: t('auth.toast.profileUpdated'),
       })
-      invalidateCurrentUser()
-    },
-    onError: (error: unknown) => {
+      setIsSuccess(true)
+      revalidate()
+    } catch (error: unknown) {
+      setIsError(true)
       let message = String(error)
       if (error instanceof FirebaseError) {
         message =
@@ -34,6 +39,10 @@ export const useUpdateProfile = () => {
         variant: 'destructive',
         description: message,
       })
-    },
-  })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  return { mutate, isPending, isError, isSuccess }
 }
