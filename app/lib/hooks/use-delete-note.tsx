@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useRevalidator } from 'react-router'
 
 import { deleteNote } from '~/apis/firestore/note'
 import { ToastAction } from '~/components/ui/toast'
@@ -10,7 +9,6 @@ import { useCreateNote } from './use-create-note'
 import { toast } from './use-toast'
 
 export const useDeleteNote = () => {
-  const { revalidate } = useRevalidator()
   const [isPending, setIsPending] = useState(false)
   const { mutate: mutateCreateNote } = useCreateNote()
   const { t } = useTranslation()
@@ -20,7 +18,6 @@ export const useDeleteNote = () => {
     try {
       const { isPinned: _isPinned, id: _id, ...data } = note
       await deleteNote(note)
-      revalidate()
       toast({
         description: t('notes.toast.deleted'),
         action: (

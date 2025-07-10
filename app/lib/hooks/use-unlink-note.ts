@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useRevalidator } from 'react-router'
 
 import { unlinkNote } from '~/apis/firestore/note'
 import { TNoteResponse } from '~/lib/types/note'
@@ -7,7 +6,6 @@ import { TNoteResponse } from '~/lib/types/note'
 import { toast } from './use-toast'
 
 export const useUnlinkNote = () => {
-  const { revalidate } = useRevalidator()
   const [isPending, setIsPending] = useState(false)
   const [isError, setIsError] = useState(false)
 
@@ -16,7 +14,6 @@ export const useUnlinkNote = () => {
     setIsError(false)
     try {
       await unlinkNote(data)
-      revalidate()
     } catch (error: unknown) {
       setIsError(true)
       const message = String(error)
