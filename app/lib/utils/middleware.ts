@@ -20,7 +20,7 @@ export const middleware = (properties: TProperties) => {
   }
 
   if (authPages.has(extractedPath) && user) {
-    const url = '/dashboard'
+    const url = '/notes'
     return navigate(url)
   }
 }

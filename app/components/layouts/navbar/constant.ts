@@ -5,7 +5,7 @@ import { githubRepo, githubUser } from '~/lib/constants/metadata'
 export const userMenus = (t: TFunction) => [
   {
     name: t('navigation.settings'),
-    href: '/dashboard/settings',
+    href: '/settings',
   },
   {
     name: t('navigation.reportIssues'),
@@ -19,19 +19,15 @@ export const userMenus = (t: TFunction) => [
 
 export const navs = (t: TFunction) => [
   {
-    name: t('navigation.dashboard'),
-    href: '/dashboard',
-  },
-  {
     name: t('navigation.notes'),
-    href: '/dashboard/notes',
+    href: '/notes',
   },
   {
     name: t('navigation.tasks'),
-    href: '/dashboard/tasks',
+    href: '/tasks',
   },
   {
     name: t('navigation.moneyLog'),
-    href: '/dashboard/money-log',
+    href: '/money-log',
   },
 ]
