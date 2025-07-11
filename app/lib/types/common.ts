@@ -31,15 +31,15 @@ export type TParametersPermission = Pick<TPermissions, 'write'> &
   }
 
 export type TActionProperties = {
-  isOwner: boolean
+  isOwner?: boolean
   isEditable?: boolean
   isPinned?: boolean
   className?: HTMLAttributes<HTMLDivElement>['className']
-  handleDelete: () => void
-  handlePin: () => void
-  handleShare: () => void
-  handleUnlink: () => void
-  sharedCount: number
-  handleOpen?: () => void
+  handleDelete?: () => void
+  handlePin?: () => void
+  handleShare?: () => void
+  handleUnlink?: () => void
+  sharedCount?: number
   handleBack?: () => void
+  isCreate?: boolean
 }

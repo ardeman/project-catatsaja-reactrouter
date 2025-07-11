@@ -1,12 +1,4 @@
-import {
-  ArrowLeft,
-  ExternalLink,
-  Eye,
-  Forward,
-  Pin,
-  Trash,
-  Users,
-} from 'lucide-react'
+import { ArrowLeft, Eye, Forward, Pin, Save, Trash, Users } from 'lucide-react'
 
 import { Button } from '~/components/base/button'
 import { TActionProperties } from '~/lib/types/common'
@@ -23,8 +15,8 @@ export const Action = (properties: TActionProperties) => {
     handleShare,
     handlePin,
     sharedCount,
-    handleOpen,
     handleBack,
+    isCreate = false,
   } = properties
   const buttonClassName =
     'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0'
@@ -44,7 +36,18 @@ export const Action = (properties: TActionProperties) => {
           <ArrowLeft className="h-4 w-4" />
         </Button>
       )}
-      {isOwner ? (
+      {isCreate && (
+        <Button
+          variant="outline"
+          containerClassName="flex-1 flex items-center"
+          className={buttonClassName}
+          type="submit"
+        >
+          <Save className="h-4 w-4" />
+          <span className="sr-only">Submit</span>
+        </Button>
+      )}
+      {isOwner && handleDelete && (
         <Button
           variant="outline"
           onClick={(event) => {
@@ -56,7 +59,8 @@ export const Action = (properties: TActionProperties) => {
         >
           <Trash className="h-4 w-4" />
         </Button>
-      ) : (
+      )}
+      {!isOwner && handleUnlink && (
         <Button
           variant="outline"
           onClick={(event) => {
@@ -69,7 +73,7 @@ export const Action = (properties: TActionProperties) => {
           <Eye className="h-4 w-4" />
         </Button>
       )}
-      {isEditable && (
+      {isEditable && handleShare && (
         <Button
           variant="outline"
           onClick={(event) => {
@@ -89,43 +93,32 @@ export const Action = (properties: TActionProperties) => {
           )}
         </Button>
       )}
-      {handleOpen && (
+      {handlePin && (
         <Button
           variant="outline"
           onClick={(event) => {
             event.stopPropagation()
-            handleOpen()
+            handlePin()
           }}
           containerClassName="flex-1 flex items-center"
-          className={buttonClassName}
+          className={cn(
+            buttonClassName,
+            isPinned
+              ? 'text-yellow-500 hover:text-muted-foreground sm:opacity-100'
+              : 'text-muted-foreground hover:text-yellow-500 sm:opacity-0',
+            'group/button',
+          )}
         >
-          <ExternalLink className="h-4 w-4" />
+          <Pin
+            className={cn(
+              isPinned
+                ? 'rotate-45 group-hover/button:rotate-0'
+                : 'group-hover/button:rotate-45',
+              'h-4 w-4 transition-all duration-300',
+            )}
+          />
         </Button>
       )}
-      <Button
-        variant="outline"
-        onClick={(event) => {
-          event.stopPropagation()
-          handlePin()
-        }}
-        containerClassName="flex-1 flex items-center"
-        className={cn(
-          buttonClassName,
-          isPinned
-            ? 'text-yellow-500 hover:text-muted-foreground sm:opacity-100'
-            : 'text-muted-foreground hover:text-yellow-500 sm:opacity-0',
-          'group/button',
-        )}
-      >
-        <Pin
-          className={cn(
-            isPinned
-              ? 'rotate-45 group-hover/button:rotate-0'
-              : 'group-hover/button:rotate-45',
-            'h-4 w-4 transition-all duration-300',
-          )}
-        />
-      </Button>
     </div>
   )
 }

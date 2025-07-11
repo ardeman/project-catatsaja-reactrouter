@@ -18,7 +18,7 @@ import { useNote } from './context'
 import { TFormProperties } from './type'
 
 export const Form = forwardRef((properties: TFormProperties, reference) => {
-  const { notes, isDetailPage } = properties
+  const { notes } = properties
   const { t, i18n } = useTranslation()
   const {
     selectedNote,
@@ -26,7 +26,6 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
     handlePinNote,
     handleShareNote,
     handleUnlinkNote,
-    handleOpenNote,
     handleBackNote,
   } = useNote()
   const note = notes?.find((n) => n.id === selectedNote?.id)
@@ -94,7 +93,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
         onSubmit={onSubmit}
         className="group/form is-shown space-y-4"
       >
-        {note && (
+        {note ? (
           <Action
             isOwner={isOwner}
             isEditable={isEditable}
@@ -104,8 +103,12 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
             handleShare={() => handleShareNote({ note })}
             handleUnlink={() => handleUnlinkNote({ note })}
             sharedCount={sharedCount}
-            handleOpen={isDetailPage ? undefined : () => handleOpenNote(note)}
-            handleBack={isDetailPage ? () => handleBackNote() : undefined}
+            handleBack={() => handleBackNote()}
+          />
+        ) : (
+          <Action
+            isCreate={true}
+            handleBack={() => handleBackNote()}
           />
         )}
         <Textarea

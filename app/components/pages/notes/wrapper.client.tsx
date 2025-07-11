@@ -15,23 +15,18 @@ import { TNotePermissionRequest } from '~/lib/types/note'
 
 import { Card } from './card'
 import { useNote } from './context'
-import { Form } from './form'
 
 export const Wrapper = () => {
   const { t } = useTranslation()
   const {
-    openForm,
-    setOpenForm,
     openConfirmation,
     setOpenConfirmation,
     openShare,
     setOpenShare,
     selectedConfirmation,
-    handleFormClose,
-    handleCreateNote,
     handleConfirm,
-    formRef,
     selectedNote,
+    handleCreateNote,
   } = useNote()
   const { data: notesData } = useGetNotes()
   const masonryReferencePinned = useRef(null)
@@ -131,18 +126,6 @@ export const Wrapper = () => {
             ))}
         </div>
       </div>
-
-      <Modal
-        open={openForm}
-        setOpen={setOpenForm}
-        onClose={handleFormClose}
-      >
-        <Form
-          ref={formRef}
-          notes={notesData}
-          isDetailPage={false}
-        />
-      </Modal>
 
       <Modal
         open={openConfirmation}
