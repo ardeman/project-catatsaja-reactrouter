@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { useNavigate } from 'react-router'
 
 import { useDeleteNote } from '~/lib/hooks/use-delete-note'
 import { usePinNote } from '~/lib/hooks/use-pin-note'
@@ -38,6 +39,7 @@ type NoteContextValue = {
   handleUnlinkNote: (properties: THandleModifyNote) => void
   handlePinNote: (properties: THandlePinNote) => void
   handleShareNote: (properties: THandleModifyNote) => void
+  handleOpenNote: (note: TNoteResponse) => void
 }
 
 const NoteContext = createContext<NoteContextValue | undefined>(undefined)
@@ -53,6 +55,7 @@ const NoteProvider = (properties: PropsWithChildren) => {
   const { mutate: mutatePinNote } = usePinNote()
   const { mutate: mutateDeleteNote } = useDeleteNote()
   const { mutate: mutateUnlinkNote } = useUnlinkNote()
+  const navigate = useNavigate()
   const formReference = useRef<{ submit: () => void } | null>(null)
 
   const handleCreateNote = () => {
@@ -114,6 +117,10 @@ const NoteProvider = (properties: PropsWithChildren) => {
     setSelectedNote(note)
   }
 
+  const handleOpenNote = (note: TNoteResponse) => {
+    navigate(`/notes/${note.id}`)
+  }
+
   return (
     <NoteContext.Provider
       value={{
@@ -136,6 +143,7 @@ const NoteProvider = (properties: PropsWithChildren) => {
         handleUnlinkNote,
         handlePinNote,
         handleShareNote,
+        handleOpenNote,
       }}
     >
       {children}

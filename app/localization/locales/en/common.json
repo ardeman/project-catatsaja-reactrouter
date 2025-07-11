@@ -25,6 +25,7 @@
     "share": "Share this <span>{{item}}</span>",
     "confirm": "Confirm",
     "undo": "Undo",
+    "openPage": "Open Page",
     "permissions": {
       "select": "Choose permissions",
       "readOnly": "Read only",
