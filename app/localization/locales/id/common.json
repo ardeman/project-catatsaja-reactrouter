@@ -25,6 +25,7 @@
     "share": "Bagikan <span>{{item}}</span> ini",
     "confirm": "Iya",
     "undo": "Batal",
+    "openPage": "Buka Halaman",
     "permissions": {
       "select": "Pilih izin",
       "readOnly": "Hanya baca",

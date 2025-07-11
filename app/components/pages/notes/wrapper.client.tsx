@@ -140,6 +140,7 @@ export const Wrapper = () => {
         <Form
           ref={formRef}
           notes={notesData}
+          isDetailPage={false}
         />
       </Modal>
 
