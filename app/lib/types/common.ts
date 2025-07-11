@@ -41,4 +41,5 @@ export type TActionProperties = {
   handleUnlink: () => void
   sharedCount: number
   handleOpen?: () => void
+  handleBack?: () => void
 }
