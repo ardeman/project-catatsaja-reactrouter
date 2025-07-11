@@ -113,7 +113,8 @@
       }
     },
     "toast": {
-      "deleted": "Note deleted successfully"
+      "deleted": "Note deleted successfully",
+      "created": "Note created successfully"
     }
   },
   "moneyLog": {

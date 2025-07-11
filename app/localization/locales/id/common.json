@@ -113,7 +113,8 @@
       }
     },
     "toast": {
-      "deleted": "Catatan berhasil dihapus"
+      "deleted": "Catatan berhasil dihapus",
+      "created": "Catatan berhasil dibuat"
     }
   },
   "moneyLog": {
