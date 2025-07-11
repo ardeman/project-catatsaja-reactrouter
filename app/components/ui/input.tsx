@@ -2,7 +2,10 @@ import * as React from 'react'
 
 import { cn } from '~/lib/utils/shadcn'
 
-export type InputProperties = React.InputHTMLAttributes<HTMLInputElement>
+export type InputProperties = React.InputHTMLAttributes<HTMLInputElement> & {
+  className?: string
+  type?: React.HTMLInputTypeAttribute
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProperties>(
   ({ className, type, ...properties }, reference) => {

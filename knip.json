@@ -10,11 +10,5 @@
   ],
   "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
   "ignore": ["app/components/ui/*.{js,ts,tsx}", "app/localization/resource.ts"],
-  "ignoreDependencies": [
-    "@typescript-eslint/eslint-plugin",
-    "eslint-config-prettier",
-    "eslint-import-resolver-typescript",
-    "eslint-plugin-react",
-    "eslint-plugin-unused-imports"
-  ]
+  "ignoreDependencies": ["eslint-import-resolver-typescript"]
 }
