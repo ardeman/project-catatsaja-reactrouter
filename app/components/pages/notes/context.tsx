@@ -40,6 +40,7 @@ type NoteContextValue = {
   handlePinNote: (properties: THandlePinNote) => void
   handleShareNote: (properties: THandleModifyNote) => void
   handleOpenNote: (note: TNoteResponse) => void
+  handleBackNote: () => void
 }
 
 const NoteContext = createContext<NoteContextValue | undefined>(undefined)
@@ -121,6 +122,10 @@ const NoteProvider = (properties: PropsWithChildren) => {
     navigate(`/notes/${note.id}`)
   }
 
+  const handleBackNote = () => {
+    navigate('/notes')
+  }
+
   return (
     <NoteContext.Provider
       value={{
@@ -144,6 +149,7 @@ const NoteProvider = (properties: PropsWithChildren) => {
         handlePinNote,
         handleShareNote,
         handleOpenNote,
+        handleBackNote,
       }}
     >
       {children}
