@@ -10,7 +10,7 @@ export type TProperties = {
   title?: ReactNode
   description?: string
   onClose?: () => void
-  handleConfirm?: () => void
+  handleConfirm?: () => void | Promise<void>
   variant?: VariantProps<typeof buttonVariants>['variant']
 }
 

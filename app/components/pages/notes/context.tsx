@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 
 import { useDeleteNote } from '~/lib/hooks/use-delete-note'
 import { usePinNote } from '~/lib/hooks/use-pin-note'
@@ -29,7 +29,7 @@ type NoteContextValue = {
     SetStateAction<TNoteConfirmation | undefined>
   >
   formRef: RefObject<{ submit: () => void } | null>
-  handleConfirm: () => void
+  handleConfirm: () => Promise<void>
   handleDeleteNote: (properties: THandleModifyNote) => void
   handleUnlinkNote: (properties: THandleModifyNote) => void
   handlePinNote: (properties: THandlePinNote) => void
@@ -52,15 +52,22 @@ const NoteProvider = (properties: PropsWithChildren) => {
   const { mutate: mutateDeleteNote } = useDeleteNote()
   const { mutate: mutateUnlinkNote } = useUnlinkNote()
   const navigate = useNavigate()
+  const location = useLocation()
   const formReference = useRef<{ submit: () => void } | null>(null)
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setOpenConfirmation(false)
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
-    if (selectedConfirmation?.kind === 'delete') {
-      mutateDeleteNote(selectedConfirmation.detail)
+    if (selectedConfirmation.kind === 'delete') {
+      await mutateDeleteNote(selectedConfirmation.detail)
+      if (
+        location.pathname.startsWith('/notes/') &&
+        location.pathname !== '/notes/create'
+      ) {
+        navigate('/notes')
+      }
     }
-    if (selectedConfirmation?.kind === 'unlink') {
+    if (selectedConfirmation.kind === 'unlink') {
       mutateUnlinkNote(selectedConfirmation.detail)
     }
   }
