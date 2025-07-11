@@ -20,7 +20,7 @@ export const Card = (properties: TCardProperties) => {
   const { note, className } = properties
   const { t, i18n } = useTranslation()
   const {
-    handleEditNote,
+    handleViewNote,
     handleDeleteNote,
     handlePinNote,
     handleShareNote,
@@ -48,7 +48,7 @@ export const Card = (properties: TCardProperties) => {
   return (
     <UICard
       className={cn(className, 'group/card relative mb-4 w-full sm:max-w-xs')}
-      onClick={() => isEditable && handleEditNote(note)}
+      onClick={() => handleViewNote(note)}
     >
       <Action
         className="absolute bottom-1 left-1 right-1"

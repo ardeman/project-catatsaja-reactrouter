@@ -120,15 +120,23 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
               formMethods.setFocus('content')
             }
           }}
+          readOnly={note && !isEditable}
         />
         <Textarea
           name="content"
           placeholder={t('notes.form.content.label')}
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
+          readOnly={note && !isEditable}
         />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
-        {dateLabel}
+        <span>
+          {dateLabel}{' '}
+          {note &&
+            (isEditable
+              ? !isOwner && `(${t('form.permissions.shared')})`
+              : `(${t('form.permissions.readOnly')})`)}
+        </span>
       </span>
     </FormProvider>
   )

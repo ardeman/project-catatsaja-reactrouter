@@ -32,7 +32,7 @@ type NoteContextValue = {
   >
   formRef: RefObject<{ submit: () => void } | null>
   handleCreateNote: () => void
-  handleEditNote: (note: TNoteResponse) => void
+  handleViewNote: (note: TNoteResponse) => void
   handleFormClose: () => void
   handleConfirm: () => void
   handleDeleteNote: (properties: THandleModifyNote) => void
@@ -64,7 +64,7 @@ const NoteProvider = (properties: PropsWithChildren) => {
     setSelectedNote(undefined)
   }
 
-  const handleEditNote = (note: TNoteResponse) => {
+  const handleViewNote = (note: TNoteResponse) => {
     setOpenForm(true)
     setSelectedNote(note)
   }
@@ -142,7 +142,7 @@ const NoteProvider = (properties: PropsWithChildren) => {
         formRef: formReference,
         handleFormClose,
         handleCreateNote,
-        handleEditNote,
+        handleViewNote,
         handleConfirm,
         handleDeleteNote,
         handleUnlinkNote,
