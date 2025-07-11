@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { Textarea } from '~/components/base/textarea'
@@ -49,6 +50,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
     ].filter((uid) => uid !== auth?.currentUser?.uid),
   ).size
   const { mutate: mutateCreateNote } = useCreateNote()
+  const navigate = useNavigate()
   const { mutate: mutateUpdateNote } = useUpdateNote()
   const formMethods = useForm<TNoteForm>({
     resolver: zodResolver(noteSchema),
@@ -73,7 +75,10 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
       mutateUpdateNote({ id: selectedNote.id, ...data })
       return
     }
-    mutateCreateNote(data)
+    const reference = await mutateCreateNote(data)
+    if (reference) {
+      navigate(`/notes/${reference.id}`)
+    }
   })
 
   useDebounce({
