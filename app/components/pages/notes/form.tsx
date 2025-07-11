@@ -49,7 +49,8 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
       ...(note?.permissions?.write || []),
     ].filter((uid) => uid !== auth?.currentUser?.uid),
   ).size
-  const { mutate: mutateCreateNote } = useCreateNote()
+  const { mutate: mutateCreateNote, isPending: isCreatePending } =
+    useCreateNote()
   const navigate = useNavigate()
   const { mutate: mutateUpdateNote } = useUpdateNote()
   const formMethods = useForm<TNoteForm>({
@@ -112,6 +113,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
           />
         ) : (
           <Action
+            isLoading={isCreatePending}
             isCreate={true}
             handleBack={() => handleBackNote()}
           />

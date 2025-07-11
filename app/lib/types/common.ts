@@ -42,4 +42,5 @@ export type TActionProperties = {
   sharedCount?: number
   handleBack?: () => void
   isCreate?: boolean
+  isLoading?: boolean
 }
