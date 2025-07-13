@@ -1,26 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useRouteLoaderData } from 'react-router'
 
-import { fetchUserData } from '~/apis/firestore/user'
-import { auth } from '~/lib/configs/firebase'
 import { TUserResponse } from '~/lib/types/user'
+import { clientLoader as mainLoader } from '~/routes/_layout._main'
 
-// Custom hook to fetch current user data
+// Custom hook to access current user data from the layout loader
 export const useUserData = () => {
-  const [data, setData] = useState<TUserResponse | undefined>()
-  const [isLoading, setIsLoading] = useState(true)
+  const data = useRouteLoaderData<typeof mainLoader>('routes/_layout._main') as
+    | TUserResponse
+    | undefined
 
-  useEffect(() => {
-    const load = async () => {
-      if (!auth?.currentUser) {
-        setIsLoading(false)
-        return
-      }
-      const result = await fetchUserData()
-      setData(result)
-      setIsLoading(false)
-    }
-    load()
-  }, [])
-
-  return { data, isLoading }
+  return { data, isLoading: false }
 }
