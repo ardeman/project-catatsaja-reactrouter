@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '~/components/ui/card'
@@ -84,6 +85,8 @@ export const Appearance = () => {
           value={selectedTheme}
           onChange={(value) => setSelectedTheme(value)}
         />
+      </CardContent>
+      <CardFooter className="border-t px-6 py-4">
         <Button
           className="w-fit"
           isLoading={isPending}
@@ -96,7 +99,7 @@ export const Appearance = () => {
         >
           {t('form.save')}
         </Button>
-      </CardContent>
+      </CardFooter>
     </Card>
   )
 }
