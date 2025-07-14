@@ -65,10 +65,10 @@ Feel free to fork this repository. If you do, please give proper credit by linki
   pnpm prepare
   ```
 
-- **Lint the code**:
+- **Lint, typecheck and check the unused code**:
 
   ```shell
-  pnpm lint
+  pnpm validate
   ```
 
 - **Format the code**:

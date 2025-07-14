@@ -61,7 +61,7 @@ jobs:
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-      - name: Lint
+      - name: Lint, typecheck and check the unused code
         run: ${{ steps.detect-package-manager.outputs.runner }} validate
       - name: Generate web manifest
         run: node ./scripts/generate-manifest.mjs
