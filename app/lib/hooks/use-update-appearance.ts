@@ -5,7 +5,7 @@ import { useRevalidator } from 'react-router'
 
 import { updateAppearance } from '~/apis/firestore/user'
 import { authError } from '~/lib/constants/firebase'
-import { Theme } from '~/lib/contexts/theme'
+import { TUpdateAppearanceRequest } from '~/lib/types/settings'
 
 import { toast } from './use-toast'
 
@@ -16,7 +16,7 @@ export const useUpdateAppearance = () => {
   const [isError, setIsError] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const mutate = async (data: { theme?: Theme; language?: string }) => {
+  const mutate = async (data: TUpdateAppearanceRequest) => {
     setIsPending(true)
     setIsError(false)
     setIsSuccess(false)
