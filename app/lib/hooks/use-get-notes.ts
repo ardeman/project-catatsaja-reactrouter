@@ -8,12 +8,14 @@ import {
 import { useEffect, useState } from 'react'
 
 import { auth, firestore } from '~/lib/configs/firebase'
+import { useFirebase } from '~/lib/contexts/firebase'
 import { TNoteResponse } from '~/lib/types/note'
 import { waitForAuth } from '~/lib/utils/wait-for-auth'
 
 export const useGetNotes = () => {
   const [data, setData] = useState<TNoteResponse[]>()
   const [isLoading, setIsLoading] = useState(true)
+  const { setIsLoading: setGlobalLoading } = useFirebase()
 
   useEffect(() => {
     if (!firestore) return
@@ -21,10 +23,12 @@ export const useGetNotes = () => {
     let unsubscribe: () => void
 
     const listen = async () => {
+      setGlobalLoading(true)
       const user = auth?.currentUser ?? (await waitForAuth())
       if (!user) {
         setData([])
         setIsLoading(false)
+        setGlobalLoading(false)
         return
       }
 
@@ -44,6 +48,7 @@ export const useGetNotes = () => {
         })
         setData(result)
         setIsLoading(false)
+        setGlobalLoading(false)
       })
     }
 
@@ -52,7 +57,7 @@ export const useGetNotes = () => {
     return () => {
       if (unsubscribe) unsubscribe()
     }
-  }, [])
+  }, [setGlobalLoading])
 
   return { data, isLoading }
 }
