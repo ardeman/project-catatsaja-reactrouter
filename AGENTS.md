@@ -5,7 +5,7 @@
 Run the following commands before submitting any pull request or commit:
 
 ```bash
-pnpm build
+pnpm validate
 ```
 
 ## Development server
