@@ -4,8 +4,8 @@ import * as React from 'react'
 
 import { cn } from '~/lib/utils/shadcn'
 
-const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+const variantClassName = cva(
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:!opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
@@ -36,7 +36,7 @@ const buttonVariants = cva(
 
 export interface ButtonProperties
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+    VariantProps<typeof variantClassName> {
   asChild?: boolean
 }
 
@@ -45,7 +45,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(
     const Comp = asChild ? Slot : 'button'
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(variantClassName({ variant, size, className }))}
         ref={reference}
         {...properties}
       />
@@ -54,4 +54,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(
 )
 Button.displayName = 'Button'
 
-export { Button, buttonVariants }
+export { Button, variantClassName }

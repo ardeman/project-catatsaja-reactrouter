@@ -27,7 +27,8 @@
     "leftNodeClassName",
     "rightNodeClassName",
     "variants",
-    "variant"
+    "variant",
+    "variantClassName"
   ],
   "cSpell.words": ["firestore"]
 }
