@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { FormProvider, useForm, Controller } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 
@@ -21,7 +21,7 @@ import { TUpdateAppearanceRequest } from '~/lib/types/settings'
 
 export const Appearance = () => {
   const { t, i18n } = useTranslation()
-  const { theme, setTheme } = useTheme()
+  const { theme } = useTheme()
   const { mutate, isPending } = useUpdateAppearance()
   const { data: userData } = useUserData()
 
@@ -35,10 +35,6 @@ export const Appearance = () => {
 
   const watchTheme = watch('theme')
   const watchLanguage = watch('language')
-
-  const initialLanguage = useRef(userData?.language ?? i18n.language)
-  const initialTheme = useRef(theme)
-  const isSaved = useRef(false)
 
   useEffect(() => {
     const root = document.documentElement
@@ -56,24 +52,12 @@ export const Appearance = () => {
   }, [watchTheme])
 
   useEffect(() => {
-    i18n.changeLanguage(watchLanguage)
+    if (watchLanguage && i18n.language !== watchLanguage)
+      i18n.changeLanguage(watchLanguage)
   }, [watchLanguage, i18n])
-
-  useEffect(() => {
-    const initTheme = initialTheme.current
-    const initLanguage = initialLanguage.current
-    return () => {
-      if (!isSaved.current) {
-        setTheme(initTheme)
-        i18n.changeLanguage(initLanguage)
-      }
-    }
-  }, [setTheme, i18n])
 
   const onSubmit = handleSubmit(async (data) => {
     await mutate(data)
-    setTheme(data.theme)
-    isSaved.current = true
   })
 
   return (
