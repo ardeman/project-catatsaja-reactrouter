@@ -238,12 +238,15 @@
         "language": {
           "selector": "Bahasa"
         },
-        "theme": {
-          "selector": "Tema",
-          "dark": "Gelap",
-          "light": "Terang",
-          "system": "Sistem"
-        }
+      "theme": {
+        "selector": "Tema",
+        "dark": "Gelap",
+        "light": "Terang",
+        "system": "Sistem"
+      }
+      },
+      "toast": {
+        "updated": "Pengaturan tampilan berhasil diperbarui."
       }
     },
     "email": {

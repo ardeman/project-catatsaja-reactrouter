@@ -238,12 +238,15 @@
         "language": {
           "selector": "Language"
         },
-        "theme": {
-          "selector": "Theme",
-          "dark": "Dark",
-          "light": "Light",
-          "system": "System"
-        }
+      "theme": {
+        "selector": "Theme",
+        "dark": "Dark",
+        "light": "Light",
+        "system": "System"
+      }
+      },
+      "toast": {
+        "updated": "Appearance updated successfully."
       }
     },
     "email": {

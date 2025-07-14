@@ -18,14 +18,16 @@ import {
   CardTitle,
   Card,
 } from '~/components/ui/card'
+import { useTheme } from '~/lib/contexts/theme'
 import { useRegister } from '~/lib/hooks/use-register'
 import { TSignUpRequest } from '~/lib/types/user'
 import { signUpSchema } from '~/lib/validations/user'
 
 export const SignUpPage = () => {
-  const { t } = useTranslation(['common', 'zod'])
+  const { t, i18n } = useTranslation(['common', 'zod'])
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
+  const { theme } = useTheme()
   const formMethods = useForm<TSignUpRequest>({
     resolver: zodResolver(signUpSchema(t)),
     defaultValues: {
@@ -38,7 +40,7 @@ export const SignUpPage = () => {
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateRegister(data)
+    mutateRegister({ ...data, theme, language: i18n.language })
   })
   const togglePassword = () => {
     setPasswordType((previous) =>

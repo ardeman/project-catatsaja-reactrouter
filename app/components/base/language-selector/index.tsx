@@ -17,22 +17,35 @@ import { languageOptions } from '~/localization/i18n'
 import { TParameters, TProperties } from './type'
 
 export const LanguageSelector = (properties: TProperties) => {
-  const { type = 'dropdown' } = properties
+  const { type = 'dropdown', onChange, value } = properties
   const { i18n } = useTranslation()
   const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng)
+    if (value === undefined) {
+      i18n.changeLanguage(lng)
+    }
+    onChange?.(lng)
   }
 
   if (type === 'radio') {
-    return <Radio changeLanguage={changeLanguage} />
+    return (
+      <Radio
+        changeLanguage={changeLanguage}
+        value={value ?? i18n.language}
+      />
+    )
   }
 
-  return <Dropdown changeLanguage={changeLanguage} />
+  return (
+    <Dropdown
+      changeLanguage={changeLanguage}
+      value={value ?? i18n.language}
+    />
+  )
 }
 
 const Radio = (parameters: TParameters) => {
-  const { changeLanguage } = parameters
-  const { t, i18n } = useTranslation()
+  const { changeLanguage, value } = parameters
+  const { t } = useTranslation()
 
   return (
     <div className="space-y-1">
@@ -40,7 +53,7 @@ const Radio = (parameters: TParameters) => {
       <Slot>
         <RadioGroup
           onValueChange={changeLanguage}
-          value={i18n.language}
+          value={value}
           className="flex flex-col"
         >
           {languageOptions.map((option) => (
@@ -69,8 +82,8 @@ const Radio = (parameters: TParameters) => {
 }
 
 const Dropdown = (parameters: TParameters) => {
-  const { changeLanguage } = parameters
-  const { t, i18n } = useTranslation()
+  const { changeLanguage, value } = parameters
+  const { t } = useTranslation()
 
   return (
     <DropdownMenu>
@@ -87,7 +100,7 @@ const Dropdown = (parameters: TParameters) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuRadioGroup
-          value={i18n.language}
+          value={value}
           onValueChange={changeLanguage}
         >
           {languageOptions.map((option) => (
