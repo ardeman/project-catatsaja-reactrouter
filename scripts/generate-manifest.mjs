@@ -20,7 +20,6 @@ const manifest = {
   name: appName,
   short_name: appName,
   icons: [
-    { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
     { src: shortcutIcon, sizes: '512x512', type: 'image/png' },
     { src: appleIcon, sizes: '180x180', type: 'image/png' },
   ],
