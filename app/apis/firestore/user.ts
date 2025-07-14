@@ -20,6 +20,7 @@ import {
 import { auth, firestore } from '~/lib/configs/firebase' // Assuming your Firestore is configured here
 import { TUpdateProfileRequest } from '~/lib/types/settings'
 import { TSignInRequest, TSignUpRequest, TUserResponse } from '~/lib/types/user'
+import { waitForAuth } from '~/lib/utils/wait-for-auth'
 
 // Function to fetch user data from Firestore
 export const fetchUserData = async () => {
@@ -29,7 +30,7 @@ export const fetchUserData = async () => {
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-  const user = auth.currentUser
+  const user = auth.currentUser ?? (await waitForAuth())
   if (!user) {
     throw new Error('No authenticated user found.')
   }
