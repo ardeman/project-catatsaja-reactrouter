@@ -2,6 +2,7 @@ import { LinksFunction, MetaFunction } from 'react-router'
 
 export const appName = 'Catat Saja'
 export const appleIcon = '/apple-touch-icon.png'
+export const shortcutIcon = '/android-chrome-512x512.png'
 const author = 'Ardeman'
 export const githubUser = 'ardeman'
 export const githubRepo = 'project-catatsaja-reactrouter'
@@ -18,7 +19,7 @@ export const meta: MetaFunction = () => [
 
 export const links: LinksFunction = () => [
   { rel: 'icon', href: '/favicon.ico' },
-  { rel: 'shortcut icon', href: '/android-chrome-512x512.png' },
+  { rel: 'shortcut icon', href: shortcutIcon },
   { rel: 'apple-touch-icon', href: appleIcon },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
