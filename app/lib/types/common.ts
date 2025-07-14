@@ -43,4 +43,5 @@ export type TActionProperties = {
   handleBack?: () => void
   isCreate?: boolean
   isLoading?: boolean
+  disabled?: boolean
 }

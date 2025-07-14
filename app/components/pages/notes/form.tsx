@@ -116,6 +116,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
             isLoading={isCreatePending}
             isCreate={true}
             handleBack={() => handleBackNote()}
+            disabled={!isDirty}
           />
         )}
         <Textarea

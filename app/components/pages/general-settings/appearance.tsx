@@ -15,6 +15,7 @@ import {
 } from '~/components/ui/card'
 import { appName } from '~/lib/constants/metadata'
 import { useTheme } from '~/lib/contexts/theme'
+import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateAppearance } from '~/lib/hooks/use-update-appearance'
 import { TUpdateAppearanceRequest } from '~/lib/types/settings'
 
@@ -22,11 +23,12 @@ export const Appearance = () => {
   const { t, i18n } = useTranslation()
   const { theme, setTheme } = useTheme()
   const { mutate, isPending } = useUpdateAppearance()
+  const { data: userData } = useUserData()
 
   const formMethods = useForm<TUpdateAppearanceRequest>({
-    defaultValues: {
-      theme,
-      language: i18n.language,
+    values: {
+      theme: userData?.theme ?? theme,
+      language: userData?.language ?? i18n.language,
     },
   })
   const { handleSubmit, watch, formState } = formMethods
@@ -34,7 +36,7 @@ export const Appearance = () => {
   const watchTheme = watch('theme')
   const watchLanguage = watch('language')
 
-  const initialLanguage = useRef(i18n.language)
+  const initialLanguage = useRef(userData?.language ?? i18n.language)
   const initialTheme = useRef(theme)
   const isSaved = useRef(false)
 
