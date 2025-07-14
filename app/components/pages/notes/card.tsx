@@ -73,7 +73,9 @@ export const Card = (properties: TCardProperties) => {
       </CardHeader>
       {note.content && (
         <CardContent>
-          <p className="whitespace-pre-wrap text-sm">{note.content}</p>
+          <p className="whitespace-pre-wrap break-words text-sm">
+            {note.content}
+          </p>
         </CardContent>
       )}
     </UICard>
