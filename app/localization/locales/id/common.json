@@ -99,7 +99,8 @@
       "linkGoogle": "Akun Google Anda telah terhubung.",
       "emailVerify": "Silakan cek email Anda untuk verifikasi akun.",
       "updateEmail": "Silakan cek email Anda untuk verifikasi alamat email baru.",
-      "profileUpdated": "Profil Anda telah diperbarui."
+      "profileUpdated": "Profil Anda telah diperbarui.",
+      "photoUpdated": "Foto profil Anda telah diperbarui."
     }
   },
   "notes": {
@@ -231,6 +232,10 @@
       "title": "Profil",
       "description": "Perbarui informasi profil Anda."
     },
+    "photo": {
+      "title": "Foto Profil",
+      "description": "Perbarui foto profil Anda."
+    },
     "appearance": {
       "title": "Tampilan",
       "description": "Atur tampilan <span>{{appName}}</span>.",
@@ -238,12 +243,12 @@
         "language": {
           "selector": "Bahasa"
         },
-      "theme": {
-        "selector": "Tema",
-        "dark": "Gelap",
-        "light": "Terang",
-        "system": "Sistem"
-      }
+        "theme": {
+          "selector": "Tema",
+          "dark": "Gelap",
+          "light": "Terang",
+          "system": "Sistem"
+        }
       },
       "toast": {
         "updated": "Pengaturan tampilan berhasil diperbarui."
