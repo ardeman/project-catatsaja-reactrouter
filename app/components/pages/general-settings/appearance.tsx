@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { FormProvider, useForm, Controller } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
@@ -13,16 +14,25 @@ import {
   CardTitle,
 } from '~/components/ui/card'
 import { appName } from '~/lib/constants/metadata'
-import { Theme, useTheme } from '~/lib/contexts/theme'
+import { useTheme } from '~/lib/contexts/theme'
 import { useUpdateAppearance } from '~/lib/hooks/use-update-appearance'
+import { TUpdateAppearanceRequest } from '~/lib/types/settings'
 
 export const Appearance = () => {
   const { t, i18n } = useTranslation()
   const { theme, setTheme } = useTheme()
   const { mutate, isPending } = useUpdateAppearance()
 
-  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
-  const [selectedTheme, setSelectedTheme] = useState<Theme>(theme)
+  const formMethods = useForm<TUpdateAppearanceRequest>({
+    defaultValues: {
+      theme,
+      language: i18n.language,
+    },
+  })
+  const { handleSubmit, watch, formState } = formMethods
+
+  const watchTheme = watch('theme')
+  const watchLanguage = watch('language')
 
   const initialLanguage = useRef(i18n.language)
   const initialTheme = useRef(theme)
@@ -31,7 +41,7 @@ export const Appearance = () => {
   useEffect(() => {
     const root = document.documentElement
     root.classList.remove('light', 'dark')
-    const value = selectedTheme
+    const value = watchTheme
     if (value === 'system') {
       const systemTheme = globalThis.matchMedia('(prefers-color-scheme: dark)')
         .matches
@@ -41,26 +51,28 @@ export const Appearance = () => {
     } else {
       root.classList.add(value)
     }
-  }, [selectedTheme])
+  }, [watchTheme])
 
   useEffect(() => {
-    i18n.changeLanguage(selectedLanguage)
-  }, [selectedLanguage, i18n])
+    i18n.changeLanguage(watchLanguage)
+  }, [watchLanguage, i18n])
 
   useEffect(() => {
+    const initTheme = initialTheme.current
+    const initLanguage = initialLanguage.current
     return () => {
       if (!isSaved.current) {
-        setTheme(initialTheme.current)
-        i18n.changeLanguage(initialLanguage.current)
+        setTheme(initTheme)
+        i18n.changeLanguage(initLanguage)
       }
     }
   }, [setTheme, i18n])
 
-  const handleSave = async () => {
-    await mutate({ theme: selectedTheme, language: selectedLanguage })
-    setTheme(selectedTheme)
+  const onSubmit = handleSubmit(async (data) => {
+    await mutate(data)
+    setTheme(data.theme)
     isSaved.current = true
-  }
+  })
 
   return (
     <Card>
@@ -74,32 +86,44 @@ export const Appearance = () => {
           />
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <LanguageSelector
-          type="radio"
-          value={selectedLanguage}
-          onChange={(lng) => setSelectedLanguage(lng)}
-        />
-        <ModeToggle
-          type="radio"
-          value={selectedTheme}
-          onChange={(value) => setSelectedTheme(value)}
-        />
-      </CardContent>
-      <CardFooter className="border-t px-6 py-4">
-        <Button
-          className="w-fit"
-          isLoading={isPending}
-          disabled={
-            isPending ||
-            (selectedLanguage === initialLanguage.current &&
-              selectedTheme === initialTheme.current)
-          }
-          onClick={handleSave}
-        >
-          {t('form.save')}
-        </Button>
-      </CardFooter>
+      <FormProvider {...formMethods}>
+        <form onSubmit={onSubmit}>
+          <CardContent className="space-y-6">
+            <Controller
+              control={formMethods.control}
+              name="language"
+              render={({ field }) => (
+                <LanguageSelector
+                  type="radio"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <Controller
+              control={formMethods.control}
+              name="theme"
+              render={({ field }) => (
+                <ModeToggle
+                  type="radio"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+          </CardContent>
+          <CardFooter className="border-t px-6 py-4">
+            <Button
+              className="w-fit"
+              isLoading={isPending}
+              disabled={isPending || !formState.isDirty}
+              type="submit"
+            >
+              {t('form.save')}
+            </Button>
+          </CardFooter>
+        </form>
+      </FormProvider>
     </Card>
   )
 }
