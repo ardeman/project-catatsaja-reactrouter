@@ -17,7 +17,7 @@ import {
   where,
 } from 'firebase/firestore'
 
-import { auth, firestore } from '~/lib/configs/firebase' // Assuming your Firestore is configured here
+import { auth, firestore } from '~/lib/configs/firebase'
 import {
   TUpdateAppearanceRequest,
   TUpdateProfileRequest,
@@ -121,6 +121,30 @@ export const updateAppearance = async (data: TUpdateAppearanceRequest) => {
     ...data,
     updatedAt: new Date(),
   })
+}
+
+export const updatePhoto = async (file: File) => {
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const reader = new FileReader()
+  const dataURL = await new Promise<string>((resolve, reject) => {
+    reader.addEventListener('load', () => resolve(reader.result as string))
+    reader.addEventListener('error', () =>
+      reject(new Error('Failed to read file')),
+    )
+    reader.readAsDataURL(file)
+  })
+  await updateProfileAuth(auth.currentUser, { photoURL: dataURL })
+  const reference = doc(firestore, 'users', auth.currentUser.uid)
+  await updateDoc(reference, {
+    photoURL: dataURL,
+    updatedAt: new Date(),
+  })
+  return dataURL
 }
 
 export const login = async (userData: TSignInRequest) => {

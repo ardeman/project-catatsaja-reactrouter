@@ -99,7 +99,8 @@
       "linkGoogle": "Your Google account has been linked successfully.",
       "emailVerify": "Please check your email to verify your account.",
       "updateEmail": "Please check your email to verify the new email address.",
-      "profileUpdated": "Your profile has been updated successfully."
+      "profileUpdated": "Your profile has been updated successfully.",
+      "photoUpdated": "Your profile photo has been updated."
     }
   },
   "notes": {
@@ -231,6 +232,10 @@
       "title": "Profile",
       "description": "Update your profile information."
     },
+    "photo": {
+      "title": "Profile Photo",
+      "description": "Update your profile picture."
+    },
     "appearance": {
       "title": "Appearance",
       "description": "Customize the appearance of <span>{{appName}}</span>.",
@@ -238,12 +243,12 @@
         "language": {
           "selector": "Language"
         },
-      "theme": {
-        "selector": "Theme",
-        "dark": "Dark",
-        "light": "Light",
-        "system": "System"
-      }
+        "theme": {
+          "selector": "Theme",
+          "dark": "Dark",
+          "light": "Light",
+          "system": "System"
+        }
       },
       "toast": {
         "updated": "Appearance updated successfully."
