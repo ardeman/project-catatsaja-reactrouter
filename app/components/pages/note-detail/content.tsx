@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 
-import { LoadingSpinner } from '~/components/base/loading-spinner'
+import { LoadingScreen } from '~/components/base/loading-screen'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { Form, useNote } from '~/components/pages/notes'
@@ -53,7 +53,7 @@ export const Content = () => {
     mutateShare(data)
   }
 
-  if (!notes) return <LoadingSpinner classname="min-h-fit flex-1" />
+  if (!notes) return <LoadingScreen isLoading classname="min-h-fit flex-1" />
 
   return (
     <main className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
