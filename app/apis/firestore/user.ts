@@ -17,7 +17,6 @@ import {
   where,
 } from 'firebase/firestore'
 
-import { uploadToGravatar } from '~/apis/gravatar'
 import { auth, firestore } from '~/lib/configs/firebase'
 import {
   TUpdateAppearanceRequest,
@@ -122,23 +121,6 @@ export const updateAppearance = async (data: TUpdateAppearanceRequest) => {
     ...data,
     updatedAt: new Date(),
   })
-}
-
-export const updatePhoto = async (file: File) => {
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const gravatarURL = await uploadToGravatar(file)
-  await updateProfileAuth(auth.currentUser, { photoURL: gravatarURL })
-  const reference = doc(firestore, 'users', auth.currentUser.uid)
-  await updateDoc(reference, {
-    photoURL: gravatarURL,
-    updatedAt: new Date(),
-  })
-  return gravatarURL
 }
 
 export const login = async (userData: TSignInRequest) => {
