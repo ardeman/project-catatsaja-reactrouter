@@ -40,7 +40,8 @@ Feel free to fork this repository. If you do, please give proper credit by linki
    pnpm install
    ```
 
-4. Create `.env` file based on `.env.example`, and put firebase configuration there.
+4. Create `.env` file based on `.env.example`, and put firebase configuration
+   and your Gravatar API key there.
 
 5. Set up firebase tools:
 

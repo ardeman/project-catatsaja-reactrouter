@@ -17,6 +17,7 @@ import {
   where,
 } from 'firebase/firestore'
 
+import { uploadToGravatar } from '~/apis/gravatar'
 import { auth, firestore } from '~/lib/configs/firebase'
 import {
   TUpdateAppearanceRequest,
@@ -130,21 +131,14 @@ export const updatePhoto = async (file: File) => {
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const reader = new FileReader()
-  const dataURL = await new Promise<string>((resolve, reject) => {
-    reader.addEventListener('load', () => resolve(reader.result as string))
-    reader.addEventListener('error', () =>
-      reject(new Error('Failed to read file')),
-    )
-    reader.readAsDataURL(file)
-  })
-  await updateProfileAuth(auth.currentUser, { photoURL: dataURL })
+  const gravatarURL = await uploadToGravatar(file)
+  await updateProfileAuth(auth.currentUser, { photoURL: gravatarURL })
   const reference = doc(firestore, 'users', auth.currentUser.uid)
   await updateDoc(reference, {
-    photoURL: dataURL,
+    photoURL: gravatarURL,
     updatedAt: new Date(),
   })
-  return dataURL
+  return gravatarURL
 }
 
 export const login = async (userData: TSignInRequest) => {
