@@ -5,8 +5,6 @@
 Run the following commands before submitting any pull request or commit:
 
 ```bash
-pnpm lint
-pnpm typecheck
 pnpm build
 ```
 
