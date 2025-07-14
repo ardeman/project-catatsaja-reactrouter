@@ -2,10 +2,8 @@ import {
   createContext,
   Dispatch,
   PropsWithChildren,
-  RefObject,
   SetStateAction,
   useContext,
-  useRef,
   useState,
 } from 'react'
 import { useNavigate, useLocation } from 'react-router'
@@ -28,7 +26,6 @@ type NoteContextValue = {
   setSelectedConfirmation: Dispatch<
     SetStateAction<TNoteConfirmation | undefined>
   >
-  formRef: RefObject<{ submit: () => void } | null>
   handleConfirm: () => Promise<void>
   handleDeleteNote: (properties: THandleModifyNote) => void
   handleUnlinkNote: (properties: THandleModifyNote) => void
@@ -53,7 +50,6 @@ const NoteProvider = (properties: PropsWithChildren) => {
   const { mutate: mutateUnlinkNote } = useUnlinkNote()
   const navigate = useNavigate()
   const location = useLocation()
-  const formReference = useRef<{ submit: () => void } | null>(null)
 
   const handleConfirm = async () => {
     setOpenConfirmation(false)
@@ -124,7 +120,6 @@ const NoteProvider = (properties: PropsWithChildren) => {
         setSelectedNote,
         selectedConfirmation,
         setSelectedConfirmation,
-        formRef: formReference,
         handleConfirm,
         handleDeleteNote,
         handleUnlinkNote,

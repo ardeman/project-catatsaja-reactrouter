@@ -16,7 +16,7 @@ import { TNotePermissionRequest } from '~/lib/types/note'
 import { Card } from './card'
 import { useNote } from './context'
 
-export const Wrapper = () => {
+export const List = () => {
   const { t } = useTranslation()
   const {
     openConfirmation,

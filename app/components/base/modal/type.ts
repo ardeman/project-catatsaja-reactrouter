@@ -1,7 +1,7 @@
 import type { VariantProps } from 'class-variance-authority'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { buttonVariants } from '~/components/ui/button'
+import { variantClassName } from '~/components/ui/button'
 
 export type TProperties = {
   open: boolean
@@ -11,7 +11,7 @@ export type TProperties = {
   description?: string
   onClose?: () => void
   handleConfirm?: () => void | Promise<void>
-  variant?: VariantProps<typeof buttonVariants>['variant']
+  variant?: VariantProps<typeof variantClassName>['variant']
 }
 
 export type TParameters = {

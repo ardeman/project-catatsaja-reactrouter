@@ -118,6 +118,9 @@
       "created": "Note created successfully"
     }
   },
+  "tasks": {
+    "add": "Create New"
+  },
   "moneyLog": {
     "add": "Create New",
     "form": {

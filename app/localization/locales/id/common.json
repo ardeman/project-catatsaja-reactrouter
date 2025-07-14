@@ -118,6 +118,9 @@
       "created": "Catatan berhasil dibuat"
     }
   },
+  "tasks": {
+    "add": "Buat Baru"
+  },
   "moneyLog": {
     "add": "Buat Baru",
     "form": {
