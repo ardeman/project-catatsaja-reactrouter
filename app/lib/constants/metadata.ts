@@ -2,7 +2,7 @@ import { LinksFunction, MetaFunction } from 'react-router'
 
 export const appName = 'Catat Saja'
 export const appleIcon = '/apple-touch-icon.png'
-export const shortcutIcon = '/android-chrome-512x512.png'
+const shortcutIcon = '/android-chrome-512x512.png'
 const author = 'Ardeman'
 export const githubUser = 'ardeman'
 export const githubRepo = 'project-catatsaja-reactrouter'
