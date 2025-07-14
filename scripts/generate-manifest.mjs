@@ -14,13 +14,14 @@ const extract = (name, fallback) => {
 
 const appName = extract('appName', 'App')
 const appleIcon = extract('appleIcon', '/apple-touch-icon.png')
+const shortcutIcon = extract('shortcutIcon', '/android-chrome-512x512.png')
 
 const manifest = {
   name: appName,
   short_name: appName,
   icons: [
     { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-    { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+    { src: shortcutIcon, sizes: '512x512', type: 'image/png' },
     { src: appleIcon, sizes: '180x180', type: 'image/png' },
   ],
   theme_color: '#ffffff',
