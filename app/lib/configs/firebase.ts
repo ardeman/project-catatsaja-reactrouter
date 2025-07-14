@@ -3,15 +3,16 @@ import { FirebaseApp, initializeApp } from 'firebase/app'
 import { getAuth, Auth } from 'firebase/auth'
 import { getFirestore, Firestore } from 'firebase/firestore'
 
+import { environment } from '~/lib/utils/environment'
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID as string,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string,
-  messagingSenderId: import.meta.env
-    .VITE_FIREBASE_MESSAGING_SENDER_ID as string,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID as string,
+  apiKey: environment.VITE_FIREBASE_API_KEY,
+  authDomain: environment.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: environment.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: environment.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: environment.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: environment.VITE_FIREBASE_APP_ID,
+  measurementId: environment.VITE_FIREBASE_MEASUREMENT_ID,
 }
 
 // Initialize Firebase app and services
