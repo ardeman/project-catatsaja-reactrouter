@@ -104,6 +104,7 @@
     }
   },
   "notes": {
+    "title": "Note",
     "add": "Create New",
     "form": {
       "title": {
@@ -119,7 +120,9 @@
     }
   },
   "tasks": {
+    "title": "Task",
     "add": "Create New",
+    "more": "... {{number}} more",
     "form": {
       "title": {
         "label": "Title"

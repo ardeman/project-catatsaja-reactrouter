@@ -6,7 +6,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardContent,
 } from '~/components/ui/card'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Label } from '~/components/ui/label'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -45,7 +48,7 @@ export const Card = (properties: TCardProperties) => {
 
   return (
     <UICard
-      className={cn(className, 'group/card relative mb-4 w-full sm:max-w-xs')}
+      className={cn(className, 'group/card relative mb-4 w-full')}
       onClick={() => handleOpenTask(task)}
     >
       <Action
@@ -70,6 +73,26 @@ export const Card = (properties: TCardProperties) => {
         </CardDescription>
         {task.title && <CardTitle className="text-xl">{task.title}</CardTitle>}
       </CardHeader>
+      {task.content && (
+        <CardContent className="flex flex-col gap-1">
+          {task.content
+            .filter((_, index) => index < 2)
+            .map((item) => (
+              <div
+                key={item.sequence}
+                className="flex items-center gap-2"
+              >
+                <Checkbox checked={item.checked} />
+                <Label>{item.description}</Label>
+              </div>
+            ))}
+          {task.content.length > 2 && (
+            <div className="ml-6 text-xs">
+              {t('tasks.more', { number: task.content.length - 2 })}
+            </div>
+          )}
+        </CardContent>
+      )}
     </UICard>
   )
 }

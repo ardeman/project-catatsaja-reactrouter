@@ -74,7 +74,7 @@ export const Content = () => {
         title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}
-            values={{ item: t('navigation.tasks') }}
+            values={{ item: t('tasks.title') }}
             components={{ span: <span className="text-primary" /> }}
           />
         }
@@ -89,7 +89,7 @@ export const Content = () => {
         title={
           <Trans
             i18nKey="form.share"
-            values={{ item: t('navigation.tasks') }}
+            values={{ item: t('tasks.title') }}
             components={{ span: <span className="text-primary" /> }}
           />
         }

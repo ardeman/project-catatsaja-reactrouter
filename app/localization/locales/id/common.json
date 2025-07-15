@@ -104,6 +104,7 @@
     }
   },
   "notes": {
+    "title": "Catatan",
     "add": "Buat Baru",
     "form": {
       "title": {
@@ -119,7 +120,9 @@
     }
   },
   "tasks": {
+    "title": "Tugas",
     "add": "Buat Baru",
+    "more": "... {{number}} lagi",
     "form": {
       "title": {
         "label": "Judul"

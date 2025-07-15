@@ -135,7 +135,7 @@ export const List = () => {
         title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}
-            values={{ item: t('navigation.notes') }}
+            values={{ item: t('notes.title') }}
             components={{ span: <span className="text-primary" /> }}
           />
         }
@@ -154,7 +154,7 @@ export const List = () => {
         title={
           <Trans
             i18nKey="form.share"
-            values={{ item: t('navigation.notes') }}
+            values={{ item: t('notes.title') }}
             components={{ span: <span className="text-primary" /> }}
           />
         }
