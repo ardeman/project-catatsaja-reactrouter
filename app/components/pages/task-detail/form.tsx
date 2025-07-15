@@ -72,18 +72,19 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
       ],
     },
   })
-  const { fields, append, remove } = useFieldArray({
-    control: formMethods.control,
-    name: 'content',
-  })
   const {
     handleSubmit,
     watch,
     formState: { isDirty },
     setFocus,
+    control,
   } = formMethods
+  const { fields, append, remove } = useFieldArray({
+    control: control,
+    name: 'content',
+  })
   const watchTitle = watch('title')
-  const watchContent = useWatch({ control: formMethods.control, name: 'content' })
+  const watchContent = useWatch({ control: control, name: 'content' })
 
   const focusIndexReference = useRef<number | null>(null)
 
