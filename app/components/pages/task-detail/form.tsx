@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
 import { forwardRef, useImperativeHandle, useEffect, useRef } from 'react'
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
@@ -83,7 +83,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
     setFocus,
   } = formMethods
   const watchTitle = watch('title')
-  const watchContent = watch('content')
+  const watchContent = useWatch({ control: formMethods.control, name: 'content' })
 
   const focusIndexReference = useRef<number | null>(null)
 
