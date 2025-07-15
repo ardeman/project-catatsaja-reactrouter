@@ -32,6 +32,7 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
     inputClassName,
     textareaContainerClassName,
     textareaClassName,
+    rightNode: RightNode,
     required,
     rows,
     readOnly,
@@ -57,7 +58,10 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
               />
             </FormControl>
             {label ? (
-              <FormLabel htmlFor={id} className={labelClassName}>
+              <FormLabel
+                htmlFor={id}
+                className={labelClassName}
+              >
                 {label} {required && <sup className="text-red-500">*</sup>}
               </FormLabel>
             ) : (
@@ -70,6 +74,7 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
                   rows={rows}
                   readOnly={readOnly}
                   onKeyDown={onKeyDown}
+                  rightNode={RightNode}
                 />
               )
             )}

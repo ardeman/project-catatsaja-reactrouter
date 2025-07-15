@@ -17,6 +17,7 @@ import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateTask } from '~/lib/hooks/use-update-task'
 import { TTaskForm } from '~/lib/types/task'
 import { getDateLabel } from '~/lib/utils/parser'
+import { cn } from '~/lib/utils/shadcn'
 import { taskSchema } from '~/lib/validations/task'
 
 import { TFormProperties } from './type'
@@ -193,22 +194,26 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
               }}
               disabled={task && !isEditable}
               className="m-0"
+              rightNode={
+                isEditable
+                  ? ({ className }) => (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className={cn(className, 'h-4 w-4 p-0')}
+                        onClick={() => remove(index)}
+                      >
+                        <Trash className="h-3 w-3" />
+                      </Button>
+                    )
+                  : undefined
+              }
             />
             <input
               type="hidden"
               {...formMethods.register(`content.${index}.sequence`)}
               value={index}
             />
-            {isEditable && (
-              <Button
-                type="button"
-                variant="ghost"
-                className="h-4 w-4 p-0"
-                onClick={() => remove(index)}
-              >
-                <Trash className="h-3 w-3" />
-              </Button>
-            )}
           </div>
         ))}
         {isEditable && (
