@@ -1,9 +1,9 @@
-import { ReactNode, useEffect } from 'react'
+import { useEffect, type DependencyList } from 'react'
 
 type TProperties = {
   trigger: () => void
   condition?: boolean
-  watch: ReactNode[]
+  watch: DependencyList
 }
 
 export const useDebounce = (properties: TProperties) => {
@@ -17,5 +17,5 @@ export const useDebounce = (properties: TProperties) => {
 
     return () => clearTimeout(delayDebounceFunction)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...watch])
+  }, watch)
 }
