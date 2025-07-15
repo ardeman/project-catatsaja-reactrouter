@@ -121,7 +121,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
         )}
         <Textarea
           name="title"
-          placeholder={t('notes.form.title.label')}
+          placeholder={t('tasks.form.title.label')}
           inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-0"
           autoFocus={!selectedTask} // eslint-disable-line jsx-a11y/no-autofocus
           rows={1}
@@ -134,12 +134,6 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
           readOnly={task && !isEditable}
         />
         <Checkbox />
-        {/* <Textarea
-          name="content"
-          placeholder={t('notes.form.content.label')}
-          inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
-          readOnly={note && !isEditable}
-        /> */}
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
         <span>
