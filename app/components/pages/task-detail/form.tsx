@@ -80,6 +80,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
     handleSubmit,
     watch,
     formState: { isDirty },
+    setFocus,
   } = formMethods
   const watchTitle = watch('title')
 
@@ -122,10 +123,10 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
 
   useEffect(() => {
     if (focusIndexReference.current !== null) {
-      formMethods.setFocus(`content.${focusIndexReference.current}.description`)
+      setFocus(`content.${focusIndexReference.current}.description`)
       focusIndexReference.current = null
     }
-  }, [fields.length, formMethods])
+  }, [fields.length, setFocus])
 
   return (
     <FormProvider {...formMethods}>
@@ -162,7 +163,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.preventDefault()
-              formMethods.setFocus('content.0.description')
+              setFocus('content.0.description')
             }
           }}
           readOnly={task && !isEditable}
@@ -193,7 +194,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
                       description: '',
                     })
                   } else {
-                    formMethods.setFocus(`content.${index + 1}.description`)
+                    setFocus(`content.${index + 1}.description`)
                   }
                 }
                 if (
