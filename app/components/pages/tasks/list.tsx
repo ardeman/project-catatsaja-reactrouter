@@ -4,6 +4,7 @@ import { Button } from '~/components/base/button'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
 import { cn } from '~/lib/utils/shadcn'
 
+import { Card } from './card'
 import { useTask } from './context'
 
 export const List = () => {
@@ -23,10 +24,32 @@ export const List = () => {
         {t('tasks.add')}
       </Button>
       <div className={cn('justify-left grid grid-cols-2')}>
-        {JSON.stringify(pinnedTasks)}
+        {pinnedTasks
+          ?.sort(
+            (a, b) =>
+              (b.updatedAt?.seconds || b.createdAt?.seconds || 0) -
+              (a.updatedAt?.seconds || a.createdAt?.seconds || 0),
+          )
+          ?.map((task) => (
+            <Card
+              task={task}
+              key={task.id}
+            />
+          ))}
       </div>
       <div className={cn('grid grid-cols-2 justify-center pb-9 md:pb-0')}>
-        {JSON.stringify(regularTasks)}
+        {regularTasks
+          ?.sort(
+            (a, b) =>
+              (b.updatedAt?.seconds || b.createdAt?.seconds || 0) -
+              (a.updatedAt?.seconds || a.createdAt?.seconds || 0),
+          )
+          ?.map((task) => (
+            <Card
+              task={task}
+              key={task.id}
+            />
+          ))}
       </div>
     </main>
   )

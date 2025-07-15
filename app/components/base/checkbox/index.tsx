@@ -32,11 +32,12 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
     inputClassName,
     textareaContainerClassName,
     textareaClassName,
-    rightNode: RightNode,
     required,
     rows,
     readOnly,
     onKeyDown,
+    index,
+    sequenceName,
     ...rest
   } = properties
   const { control } = useFormContext()
@@ -57,26 +58,31 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
                 {...rest}
               />
             </FormControl>
-            {label ? (
+            {sequenceName && (
+              <input
+                type="hidden"
+                name={sequenceName}
+                value={index}
+              />
+            )}
+            {label && (
               <FormLabel
                 htmlFor={id}
                 className={labelClassName}
               >
                 {label} {required && <sup className="text-red-500">*</sup>}
               </FormLabel>
-            ) : (
-              textareaName && (
-                <Textarea
-                  name={textareaName}
-                  placeholder={placeholder}
-                  containerClassName={cn('flex-1', textareaContainerClassName)}
-                  inputClassName={textareaClassName}
-                  rows={rows}
-                  readOnly={readOnly}
-                  onKeyDown={onKeyDown}
-                  rightNode={RightNode}
-                />
-              )
+            )}
+            {textareaName && (
+              <Textarea
+                name={textareaName}
+                placeholder={placeholder}
+                containerClassName={cn('flex-1', textareaContainerClassName)}
+                inputClassName={textareaClassName}
+                rows={rows}
+                readOnly={readOnly}
+                onKeyDown={onKeyDown}
+              />
             )}
           </div>
           {hint && <FormDescription>{hint}</FormDescription>}

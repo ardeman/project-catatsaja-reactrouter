@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus, Trash } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -17,10 +17,12 @@ import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateTask } from '~/lib/hooks/use-update-task'
 import { TTaskForm } from '~/lib/types/task'
 import { getDateLabel } from '~/lib/utils/parser'
-import { cn } from '~/lib/utils/shadcn'
 import { taskSchema } from '~/lib/validations/task'
 
 import { TFormProperties } from './type'
+
+const buttonClassName =
+  'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0'
 
 export const Form = forwardRef((properties: TFormProperties, reference) => {
   const { tasks } = properties
@@ -162,6 +164,8 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
             className="flex items-start gap-2"
           >
             <BaseCheckbox
+              index={index}
+              sequenceName={`content.${index}.sequence`}
               name={`content.${index}.checked`}
               textareaName={`content.${index}.description`}
               placeholder={t('tasks.form.content.label')}
@@ -194,45 +198,24 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
               }}
               disabled={task && !isEditable}
               className="m-0"
-              rightNode={
-                isEditable
-                  ? ({ className }) => (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        className={cn(className, 'h-4 w-4 p-0')}
-                        onClick={() => remove(index)}
-                      >
-                        <Trash className="h-3 w-3" />
-                      </Button>
-                    )
-                  : undefined
-              }
-            />
-            <input
-              type="hidden"
-              {...formMethods.register(`content.${index}.sequence`)}
-              value={index}
             />
           </div>
         ))}
-        {isEditable && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              append({
-                sequence: fields.length,
-                checked: false,
-                description: '',
-              })
-              formMethods.setFocus(`content.${fields.length}.description`)
-            }}
-            className="w-full"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        )}
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            append({
+              sequence: fields.length,
+              checked: false,
+              description: '',
+            })
+            formMethods.setFocus(`content.${fields.length}.description`)
+          }}
+          className={buttonClassName}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
         <span>

@@ -22,11 +22,12 @@ export type TProperties<TFormValues extends FieldValues> = {
   inputClassName?: ComponentPropsWithoutRef<typeof Checkbox>['className']
   textareaContainerClassName?: HTMLAttributes<HTMLDivElement>['className']
   textareaClassName?: HTMLAttributes<HTMLTextAreaElement>['className']
-  rightNode?: (properties: HTMLAttributes<HTMLDivElement>) => ReactNode
   required?: boolean
   rows?: TextareaHTMLAttributes<HTMLTextAreaElement>['rows']
   readOnly?: boolean
   onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>
+  index?: number
+  sequenceName?: string
 } & Omit<
   ComponentPropsWithoutRef<typeof Checkbox>,
   'className' | 'checked' | 'onCheckedChange'
