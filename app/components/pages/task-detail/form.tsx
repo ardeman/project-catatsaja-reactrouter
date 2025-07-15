@@ -83,6 +83,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
     setFocus,
   } = formMethods
   const watchTitle = watch('title')
+  const watchContent = watch('content')
 
   const focusIndexReference = useRef<number | null>(null)
 
@@ -112,7 +113,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
 
   useDebounce({
     trigger: () => onSubmit(),
-    watch: [watchTitle],
+    watch: [watchTitle, watchContent],
     condition: !!selectedTask,
   })
 
