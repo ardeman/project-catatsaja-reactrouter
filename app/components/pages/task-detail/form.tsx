@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle, useEffect, useRef } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -83,6 +83,8 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
   } = formMethods
   const watchTitle = watch('title')
 
+  const focusIndexReference = useRef<number | null>(null)
+
   const onSubmit = handleSubmit(async (data) => {
     const payload = {
       ...data,
@@ -117,6 +119,13 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
   useImperativeHandle(reference, () => ({
     submit: () => onSubmit(),
   }))
+
+  useEffect(() => {
+    if (focusIndexReference.current !== null) {
+      formMethods.setFocus(`content.${focusIndexReference.current}.description`)
+      focusIndexReference.current = null
+    }
+  }, [fields.length, formMethods])
 
   return (
     <FormProvider {...formMethods}>
@@ -177,12 +186,12 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
                 if (event.key === 'Enter') {
                   event.preventDefault()
                   if (index === fields.length - 1) {
+                    focusIndexReference.current = fields.length
                     append({
                       sequence: fields.length,
                       checked: false,
                       description: '',
                     })
-                    formMethods.setFocus(`content.${fields.length}.description`)
                   } else {
                     formMethods.setFocus(`content.${index + 1}.description`)
                   }
@@ -193,6 +202,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
                   fields.length > 1
                 ) {
                   event.preventDefault()
+                  focusIndexReference.current = Math.max(0, index - 1)
                   remove(index)
                 }
               }}
@@ -205,12 +215,12 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
           type="button"
           variant="outline"
           onClick={() => {
+            focusIndexReference.current = fields.length
             append({
               sequence: fields.length,
               checked: false,
               description: '',
             })
-            formMethods.setFocus(`content.${fields.length}.description`)
           }}
           className={buttonClassName}
         >
