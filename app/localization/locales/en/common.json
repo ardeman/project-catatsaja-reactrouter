@@ -119,7 +119,19 @@
     }
   },
   "tasks": {
-    "add": "Create New"
+    "add": "Create New",
+    "form": {
+      "title": {
+        "label": "Title"
+      },
+      "content": {
+        "label": "Content"
+      }
+    },
+    "toast": {
+      "deleted": "Task deleted successfully",
+      "created": "Task created successfully"
+    }
   },
   "moneyLog": {
     "add": "Create New",

@@ -119,7 +119,19 @@
     }
   },
   "tasks": {
-    "add": "Buat Baru"
+    "add": "Buat Baru",
+    "form": {
+      "title": {
+        "label": "Judul"
+      },
+      "content": {
+        "label": "Konten"
+      }
+    },
+    "toast": {
+      "deleted": "Tugas berhasil dihapus",
+      "created": "Tugas berhasil dibuat"
+    }
   },
   "moneyLog": {
     "add": "Buat Baru",
