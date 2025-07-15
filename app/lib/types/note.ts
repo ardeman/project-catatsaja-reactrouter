@@ -14,15 +14,13 @@ export type TPinNoteRequest = { note: TNoteResponse; isPinned: boolean }
 
 export type TNoteResponse = {
   id: string
-  title: string
-  content: string
   isPinned?: boolean
   pinnedBy?: string[]
   createdAt: TTime
   updatedAt: TTime
   owner: string
   permissions?: TPermissions
-}
+} & TNoteForm
 
 export type TNotePermissionRequest = THandleSetPermission & {
   note: TNoteResponse

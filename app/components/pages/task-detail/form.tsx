@@ -6,58 +6,59 @@ import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { Textarea } from '~/components/base/textarea'
+import { useTask } from '~/components/pages/tasks'
+import { Checkbox } from '~/components/ui/checkbox'
 import { auth } from '~/lib/configs/firebase'
-import { useCreateNote } from '~/lib/hooks/use-create-note'
+import { useCreateTask } from '~/lib/hooks/use-create-task'
 import { useDebounce } from '~/lib/hooks/use-debounce'
 import { useUserData } from '~/lib/hooks/use-get-user'
-import { useUpdateNote } from '~/lib/hooks/use-update-note'
-import { TNoteForm } from '~/lib/types/note'
+import { useUpdateTask } from '~/lib/hooks/use-update-task'
+import { TTaskForm } from '~/lib/types/task'
 import { getDateLabel } from '~/lib/utils/parser'
-import { noteSchema } from '~/lib/validations/note'
+import { taskSchema } from '~/lib/validations/task'
 
-import { useNote } from './context'
 import { TFormProperties } from './type'
 
 export const Form = forwardRef((properties: TFormProperties, reference) => {
-  const { notes } = properties
+  const { tasks } = properties
   const { t, i18n } = useTranslation()
   const {
-    selectedNote,
-    handleDeleteNote,
-    handlePinNote,
-    handleShareNote,
-    handleUnlinkNote,
-    handleBackNote,
-  } = useNote()
-  const note = notes?.find((n) => n.id === selectedNote?.id)
-  const dateLabel = note
+    selectedTask,
+    handleDeleteTask,
+    handlePinTask,
+    handleShareTask,
+    handleUnlinkTask,
+    handleBackTask,
+  } = useTask()
+  const task = tasks?.find((n) => n.id === selectedTask?.id)
+  const dateLabel = task
     ? getDateLabel({
-        updatedAt: note.updatedAt?.seconds,
-        createdAt: note.createdAt.seconds,
+        updatedAt: task.updatedAt?.seconds,
+        createdAt: task.createdAt.seconds,
         t,
         locale: i18n.language,
       })
     : ''
   const { data: userData } = useUserData()
-  const isPinned = note?.isPinned
-  const canWrite = note?.permissions?.write.includes(userData?.uid || '')
-  const isOwner = note?.owner === userData?.uid
+  const isPinned = task?.isPinned
+  const canWrite = task?.permissions?.write.includes(userData?.uid || '')
+  const isOwner = task?.owner === userData?.uid
   const isEditable = isOwner || canWrite
   const sharedCount = new Set(
     [
-      ...(note?.permissions?.read || []),
-      ...(note?.permissions?.write || []),
+      ...(task?.permissions?.read || []),
+      ...(task?.permissions?.write || []),
     ].filter((uid) => uid !== auth?.currentUser?.uid),
   ).size
-  const { mutate: mutateCreateNote, isPending: isCreatePending } =
-    useCreateNote()
+  const { mutate: mutateCreateTask, isPending: isCreatePending } =
+    useCreateTask()
   const navigate = useNavigate()
-  const { mutate: mutateUpdateNote } = useUpdateNote()
-  const formMethods = useForm<TNoteForm>({
-    resolver: zodResolver(noteSchema),
+  const { mutate: mutateUpdateTask } = useUpdateTask()
+  const formMethods = useForm<TTaskForm>({
+    resolver: zodResolver(taskSchema),
     values: {
-      title: selectedNote?.title || '',
-      content: selectedNote?.content || '',
+      title: selectedTask?.title || '',
+      content: selectedTask?.content || [],
     },
   })
   const {
@@ -66,26 +67,25 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
     formState: { isDirty },
   } = formMethods
   const watchTitle = watch('title')
-  const watchContent = watch('content')
 
   const onSubmit = handleSubmit(async (data) => {
     if ((data.title.length === 0 && data.content.length === 0) || !isDirty) {
       return
     }
-    if (selectedNote) {
-      mutateUpdateNote({ id: selectedNote.id, ...data })
+    if (selectedTask) {
+      mutateUpdateTask({ id: selectedTask.id, ...data })
       return
     }
-    const reference = await mutateCreateNote(data)
+    const reference = await mutateCreateTask(data)
     if (reference) {
-      navigate(`/notes/${reference.id}`)
+      navigate(`/tasks/${reference.id}`)
     }
   })
 
   useDebounce({
     trigger: () => onSubmit(),
-    watch: [watchTitle, watchContent],
-    condition: !!selectedNote,
+    watch: [watchTitle],
+    condition: !!selectedTask,
   })
 
   // Expose the submit function to the parent component via ref
@@ -99,23 +99,23 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
         onSubmit={onSubmit}
         className="group/form is-shown space-y-4"
       >
-        {note ? (
+        {task ? (
           <Action
             isOwner={isOwner}
             isEditable={isEditable}
             isPinned={isPinned}
-            handleDelete={() => handleDeleteNote({ note })}
-            handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
-            handleShare={() => handleShareNote({ note })}
-            handleUnlink={() => handleUnlinkNote({ note })}
+            handleDelete={() => handleDeleteTask({ task })}
+            handlePin={() => handlePinTask({ task, isPinned: !isPinned })}
+            handleShare={() => handleShareTask({ task })}
+            handleUnlink={() => handleUnlinkTask({ task })}
             sharedCount={sharedCount}
-            handleBack={() => handleBackNote()}
+            handleBack={() => handleBackTask()}
           />
         ) : (
           <Action
             isLoading={isCreatePending}
             isCreate={true}
-            handleBack={() => handleBackNote()}
+            handleBack={() => handleBackTask()}
             disabled={!isDirty}
           />
         )}
@@ -123,7 +123,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
           name="title"
           placeholder={t('notes.form.title.label')}
           inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-0"
-          autoFocus={!selectedNote} // eslint-disable-line jsx-a11y/no-autofocus
+          autoFocus={!selectedTask} // eslint-disable-line jsx-a11y/no-autofocus
           rows={1}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
@@ -131,19 +131,20 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
               formMethods.setFocus('content')
             }
           }}
-          readOnly={note && !isEditable}
+          readOnly={task && !isEditable}
         />
-        <Textarea
+        <Checkbox />
+        {/* <Textarea
           name="content"
           placeholder={t('notes.form.content.label')}
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
           readOnly={note && !isEditable}
-        />
+        /> */}
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
         <span>
           {dateLabel}{' '}
-          {note &&
+          {task &&
             (isEditable
               ? !isOwner && `(${t('form.permissions.shared')})`
               : `(${t('form.permissions.readOnly')})`)}

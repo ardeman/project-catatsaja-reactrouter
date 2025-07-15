@@ -1,12 +1,17 @@
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
+import { useGetTasks } from '~/lib/hooks/use-get-tasks'
+import { cn } from '~/lib/utils/shadcn'
 
 import { useTask } from './context'
 
 export const List = () => {
   const { t } = useTranslation()
   const { handleCreateTask } = useTask()
+  const { data: tasksData } = useGetTasks()
+  const pinnedTasks = tasksData?.filter((task) => task.isPinned)
+  const regularTasks = tasksData?.filter((task) => !task.isPinned)
 
   return (
     <main className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
@@ -17,7 +22,12 @@ export const List = () => {
       >
         {t('tasks.add')}
       </Button>
-      <div className="flex justify-center">List will be here</div>
+      <div className={cn('justify-left grid grid-cols-2')}>
+        {JSON.stringify(pinnedTasks)}
+      </div>
+      <div className={cn('grid grid-cols-2 justify-center pb-9 md:pb-0')}>
+        {JSON.stringify(regularTasks)}
+      </div>
     </main>
   )
 }

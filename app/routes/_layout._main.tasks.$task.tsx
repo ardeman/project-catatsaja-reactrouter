@@ -1,12 +1,5 @@
-import { LoadingScreen } from '~/components/base/loading-screen'
+import { TaskDetailPage } from '~/components/pages/task-detail'
 
-const Tasks = () => {
-  return (
-    <LoadingScreen
-      isLoading
-      classname="min-h-fit flex-1"
-    />
-  )
-}
+const Tasks = () => <TaskDetailPage />
 
 export default Tasks

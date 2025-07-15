@@ -5,44 +5,44 @@ import { useParams } from 'react-router'
 import { LoadingScreen } from '~/components/base/loading-screen'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
-import { useNote } from '~/components/pages/notes'
-import { useGetNotes } from '~/lib/hooks/use-get-notes'
-import { useShareNote } from '~/lib/hooks/use-share-note'
+import { useTask } from '~/components/pages/tasks'
+import { useGetTasks } from '~/lib/hooks/use-get-tasks'
+import { useShareTask } from '~/lib/hooks/use-share-task'
 import {
   THandleDeletePermission,
   THandleSetPermission,
 } from '~/lib/types/common'
-import { TNotePermissionRequest } from '~/lib/types/note'
+import { TTaskPermissionRequest } from '~/lib/types/task'
 
 import { Form } from './form'
 
 export const Content = () => {
-  const { note } = useParams()
+  const { task } = useParams()
   const { t } = useTranslation()
-  const { data: notes } = useGetNotes()
+  const { data: tasks } = useGetTasks()
   const {
-    setSelectedNote,
+    setSelectedTask,
     openConfirmation,
     setOpenConfirmation,
     openShare,
     setOpenShare,
     selectedConfirmation,
     handleConfirm,
-    selectedNote,
-  } = useNote()
-  const { mutate: mutateShare } = useShareNote()
+    selectedTask,
+  } = useTask()
+  const { mutate: mutateShare } = useShareTask()
 
-  const current = notes?.find((n) => n.id === note)
+  const current = tasks?.find((n) => n.id === task)
 
   useEffect(() => {
-    if (current) setSelectedNote(current)
-  }, [current, setSelectedNote])
+    if (current) setSelectedTask(current)
+  }, [current, setSelectedTask])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
       ...parameters,
-      note: notes?.find((n) => n.id === selectedNote?.id),
-    } as TNotePermissionRequest
+      task: tasks?.find((n) => n.id === selectedTask?.id),
+    } as TTaskPermissionRequest
     mutateShare(data)
   }
 
@@ -50,12 +50,12 @@ export const Content = () => {
     const data = {
       ...parameters,
       permission: 'delete',
-      note: notes?.find((n) => n.id === selectedNote?.id),
-    } as TNotePermissionRequest
+      task: tasks?.find((n) => n.id === selectedTask?.id),
+    } as TTaskPermissionRequest
     mutateShare(data)
   }
 
-  if (!notes)
+  if (!tasks)
     return (
       <LoadingScreen
         isLoading
@@ -65,7 +65,7 @@ export const Content = () => {
 
   return (
     <main className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
-      <Form notes={notes} />
+      <Form tasks={tasks} />
       <Modal
         open={openConfirmation}
         setOpen={setOpenConfirmation}
@@ -74,16 +74,13 @@ export const Content = () => {
         title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}
-            values={{ item: t('navigation.notes') }}
+            values={{ item: t('navigation.tasks') }}
             components={{ span: <span className="text-primary" /> }}
           />
         }
       >
         {selectedConfirmation?.detail.title && (
           <p className="text-xl">{selectedConfirmation.detail.title}</p>
-        )}
-        {selectedConfirmation?.detail.content && (
-          <p>{selectedConfirmation.detail.content}</p>
         )}
       </Modal>
       <Modal
@@ -92,18 +89,18 @@ export const Content = () => {
         title={
           <Trans
             i18nKey="form.share"
-            values={{ item: t('navigation.notes') }}
+            values={{ item: t('navigation.tasks') }}
             components={{ span: <span className="text-primary" /> }}
           />
         }
       >
         <Share
           write={
-            notes?.find((n) => n.id === selectedNote?.id)?.permissions?.write ||
+            tasks?.find((n) => n.id === selectedTask?.id)?.permissions?.write ||
             []
           }
           read={
-            notes?.find((n) => n.id === selectedNote?.id)?.permissions?.read ||
+            tasks?.find((n) => n.id === selectedTask?.id)?.permissions?.read ||
             []
           }
           handleShare={handleShare}

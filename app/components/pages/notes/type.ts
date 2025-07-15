@@ -2,10 +2,6 @@ import { HTMLAttributes } from 'react'
 
 import { TNoteResponse } from '~/lib/types/note'
 
-export type TFormProperties = {
-  notes?: TNoteResponse[]
-}
-
 export type THandleModifyNote = {
   note: TNoteResponse
 }
