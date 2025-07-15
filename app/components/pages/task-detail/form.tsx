@@ -60,7 +60,13 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
     resolver: zodResolver(taskSchema),
     values: {
       title: selectedTask?.title || '',
-      content: selectedTask?.content || [],
+      content: selectedTask?.content || [
+        {
+          sequence: 1,
+          checked: false,
+          description: '',
+        },
+      ],
     },
   })
   const { fields, append, remove } = useFieldArray({
@@ -150,14 +156,16 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
           readOnly={task && !isEditable}
         />
         {fields.map((field, index) => (
-          <div key={field.id} className="flex items-start gap-2">
+          <div
+            key={field.id}
+            className="flex items-start gap-2"
+          >
             <BaseCheckbox
               name={`content.${index}.checked`}
               textareaName={`content.${index}.description`}
               placeholder={t('tasks.form.content.label')}
-              inputClassName="mt-2"
               textareaContainerClassName="flex-1"
-              textareaClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
+              textareaClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
               rows={1}
               readOnly={task && !isEditable}
               onKeyDown={(event) => {
@@ -195,10 +203,10 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
               <Button
                 type="button"
                 variant="ghost"
-                className="h-8 w-8 p-0"
+                className="h-4 w-4 p-0"
                 onClick={() => remove(index)}
               >
-                <Trash className="h-4 w-4" />
+                <Trash className="h-3 w-3" />
               </Button>
             )}
           </div>
