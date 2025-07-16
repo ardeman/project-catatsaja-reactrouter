@@ -121,7 +121,7 @@ export const Form = (properties: TFormProperties) => {
           autoFocus={!selectedNote} // eslint-disable-line jsx-a11y/no-autofocus
           rows={1}
           onKeyDown={(event) => {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' || event.key === 'ArrowDown') {
               event.preventDefault()
               setFocus('content')
             }
@@ -134,7 +134,10 @@ export const Form = (properties: TFormProperties) => {
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
           readOnly={note && !isEditable}
           onKeyDown={(event) => {
-            if (event.key === 'Backspace' && watchContent.length === 0) {
+            if (
+              (event.key === 'Backspace' || event.key === 'ArrowUp') &&
+              watchContent.length === 0
+            ) {
               event.preventDefault()
               setFocus('title')
             }

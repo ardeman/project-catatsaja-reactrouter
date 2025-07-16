@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { Button } from '~/components/base/button'
-import { Checkbox as BaseCheckbox } from '~/components/base/checkbox'
+import { Checkbox } from '~/components/base/checkbox'
 import { Textarea } from '~/components/base/textarea'
 import { useTask } from '~/components/pages/tasks'
 import { auth } from '~/lib/configs/firebase'
@@ -159,7 +159,7 @@ export const Form = (properties: TFormProperties) => {
           autoFocus={!selectedTask} // eslint-disable-line jsx-a11y/no-autofocus
           rows={1}
           onKeyDown={(event) => {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' || event.key === 'ArrowDown') {
               event.preventDefault()
               setFocus('content.0.item')
             }
@@ -171,7 +171,7 @@ export const Form = (properties: TFormProperties) => {
             key={field.id}
             className="flex items-start gap-2"
           >
-            <BaseCheckbox
+            <Checkbox
               name={`content.${index}.checked`}
               disabled={task && !isEditable}
               className="m-0"
@@ -191,7 +191,13 @@ export const Form = (properties: TFormProperties) => {
                   rows={1}
                   readOnly={task && !isEditable}
                   onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
+                    const isEnter = event.key === 'Enter'
+                    const isBackspace = event.key === 'Backspace'
+                    const isArrowUp = event.key === 'ArrowUp'
+                    const isArrowDown = event.key === 'ArrowDown'
+                    const isEmpty = !getValues(`content.${index}.item`)
+
+                    if (isEnter) {
                       event.preventDefault()
                       if (index === fields.length - 1) {
                         focusIndexReference.current = fields.length
@@ -204,22 +210,31 @@ export const Form = (properties: TFormProperties) => {
                         setFocus(`content.${index + 1}.item`)
                       }
                     }
-                    if (
-                      event.key === 'Backspace' &&
-                      !getValues(`content.${index}.item`) &&
-                      fields.length > 1
-                    ) {
+
+                    if (isBackspace && isEmpty) {
                       event.preventDefault()
-                      focusIndexReference.current = Math.max(0, index - 1)
-                      remove(index)
+                      if (fields.length > 1) {
+                        focusIndexReference.current = Math.max(0, index - 1)
+                        remove(index)
+                      } else {
+                        setFocus('title')
+                      }
                     }
-                    if (
-                      event.key === 'Backspace' &&
-                      !getValues(`content.${index}.item`) &&
-                      fields.length === 1
-                    ) {
+
+                    if (isArrowUp) {
                       event.preventDefault()
-                      setFocus('title')
+                      if (index > 0) {
+                        setFocus(`content.${index - 1}.item`)
+                      } else {
+                        setFocus('title')
+                      }
+                    }
+
+                    if (isArrowDown) {
+                      event.preventDefault()
+                      if (index < fields.length - 1) {
+                        setFocus(`content.${index + 1}.item`)
+                      }
                     }
                   }}
                 />
