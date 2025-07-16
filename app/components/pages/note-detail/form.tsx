@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { forwardRef, useImperativeHandle } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -18,7 +17,7 @@ import { noteSchema } from '~/lib/validations/note'
 
 import { TFormProperties } from './type'
 
-export const Form = forwardRef((properties: TFormProperties, reference) => {
+export const Form = (properties: TFormProperties) => {
   const { notes } = properties
   const { t, i18n } = useTranslation()
   const {
@@ -88,16 +87,11 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
     condition: !!selectedNote,
   })
 
-  // Expose the submit function to the parent component via ref
-  useImperativeHandle(reference, () => ({
-    submit: () => onSubmit(),
-  }))
-
   return (
     <FormProvider {...formMethods}>
       <form
         onSubmit={onSubmit}
-        className="group/form is-shown space-y-4"
+        className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
       >
         {note ? (
           <Action
@@ -151,5 +145,4 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
       </span>
     </FormProvider>
   )
-})
-Form.displayName = 'Form'
+}

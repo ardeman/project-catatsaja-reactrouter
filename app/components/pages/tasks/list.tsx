@@ -60,7 +60,7 @@ export const List = () => {
       </Button>
       <div
         className={cn(
-          'justify-left grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3',
+          'justify-left grid gap-x-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6',
         )}
       >
         {pinnedTasks
@@ -78,7 +78,7 @@ export const List = () => {
       </div>
       <div
         className={cn(
-          'justify-left grid gap-x-4 pb-9 sm:grid-cols-2 md:pb-0 lg:grid-cols-3',
+          'justify-left grid gap-x-4 pb-9 sm:grid-cols-2 md:pb-0 lg:grid-cols-4 xl:grid-cols-6',
         )}
       >
         {regularTasks
