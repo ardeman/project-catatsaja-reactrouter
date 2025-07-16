@@ -63,15 +63,13 @@ export const Form = (properties: TFormProperties) => {
     resolver: zodResolver(taskSchema),
     values: {
       title: selectedTask?.title || '',
-      content: selectedTask?.content
-        ? selectedTask.content.map((item) => ({ ...item }))
-        : [
-            {
-              sequence: 1,
-              checked: false,
-              description: '',
-            },
-          ],
+      content: selectedTask?.content || [
+        {
+          sequence: 0,
+          checked: false,
+          item: '',
+        },
+      ],
     },
   })
   const {
@@ -123,7 +121,7 @@ export const Form = (properties: TFormProperties) => {
 
   useEffect(() => {
     if (focusIndexReference.current !== null) {
-      setFocus(`content.${focusIndexReference.current}.description`)
+      setFocus(`content.${focusIndexReference.current}.item`)
       focusIndexReference.current = null
     }
   }, [fields.length, setFocus])
@@ -163,7 +161,7 @@ export const Form = (properties: TFormProperties) => {
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.preventDefault()
-              setFocus('content.0.description')
+              setFocus('content.0.item')
             }
           }}
           readOnly={task && !isEditable}
@@ -174,41 +172,58 @@ export const Form = (properties: TFormProperties) => {
             className="flex items-start gap-2"
           >
             <BaseCheckbox
-              index={index}
-              sequenceName={`content.${index}.sequence`}
               name={`content.${index}.checked`}
-              textareaName={`content.${index}.description`}
-              placeholder={t('tasks.form.content.label')}
-              textareaContainerClassName="flex-1"
-              textareaClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
-              rows={1}
-              readOnly={task && !isEditable}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault()
-                  if (index === fields.length - 1) {
-                    focusIndexReference.current = fields.length
-                    append({
-                      sequence: fields.length,
-                      checked: false,
-                      description: '',
-                    })
-                  } else {
-                    setFocus(`content.${index + 1}.description`)
-                  }
-                }
-                if (
-                  event.key === 'Backspace' &&
-                  !getValues(`content.${index}.description`) &&
-                  fields.length > 1
-                ) {
-                  event.preventDefault()
-                  focusIndexReference.current = Math.max(0, index - 1)
-                  remove(index)
-                }
-              }}
               disabled={task && !isEditable}
               className="m-0"
+              leftNode={
+                <input
+                  type="hidden"
+                  name={`content.${index}.sequence`}
+                  value={index}
+                />
+              }
+              rightNode={
+                <Textarea
+                  name={`content.${index}.item`}
+                  placeholder={t('tasks.form.item.label')}
+                  containerClassName="flex-1"
+                  inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
+                  rows={1}
+                  readOnly={task && !isEditable}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault()
+                      if (index === fields.length - 1) {
+                        focusIndexReference.current = fields.length
+                        append({
+                          sequence: fields.length,
+                          checked: false,
+                          item: '',
+                        })
+                      } else {
+                        setFocus(`content.${index + 1}.item`)
+                      }
+                    }
+                    if (
+                      event.key === 'Backspace' &&
+                      !getValues(`content.${index}.item`) &&
+                      fields.length > 1
+                    ) {
+                      event.preventDefault()
+                      focusIndexReference.current = Math.max(0, index - 1)
+                      remove(index)
+                    }
+                    if (
+                      event.key === 'Backspace' &&
+                      !getValues(`content.${index}.item`) &&
+                      fields.length === 1
+                    ) {
+                      event.preventDefault()
+                      setFocus('title')
+                    }
+                  }}
+                />
+              }
             />
           </div>
         ))}
@@ -220,7 +235,7 @@ export const Form = (properties: TFormProperties) => {
             append({
               sequence: fields.length,
               checked: false,
-              description: '',
+              item: '',
             })
           }}
           className={buttonClassName}

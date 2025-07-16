@@ -63,6 +63,7 @@ export const Form = (properties: TFormProperties) => {
     handleSubmit,
     watch,
     formState: { isDirty },
+    setFocus,
   } = formMethods
   const watchTitle = watch('title')
   const watchContent = watch('content')
@@ -122,7 +123,7 @@ export const Form = (properties: TFormProperties) => {
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.preventDefault()
-              formMethods.setFocus('content')
+              setFocus('content')
             }
           }}
           readOnly={note && !isEditable}
@@ -132,6 +133,12 @@ export const Form = (properties: TFormProperties) => {
           placeholder={t('notes.form.content.label')}
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
           readOnly={note && !isEditable}
+          onKeyDown={(event) => {
+            if (event.key === 'Backspace' && watchContent.length === 0) {
+              event.preventDefault()
+              setFocus('title')
+            }
+          }}
         />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">

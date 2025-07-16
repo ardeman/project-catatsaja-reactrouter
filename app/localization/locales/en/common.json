@@ -127,8 +127,8 @@
       "title": {
         "label": "Title"
       },
-      "content": {
-        "label": "Content"
+      "item": {
+        "label": "Item"
       }
     },
     "toast": {

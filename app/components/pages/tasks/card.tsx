@@ -83,7 +83,7 @@ export const Card = (properties: TCardProperties) => {
                 className="flex items-center gap-2"
               >
                 <Checkbox checked={item.checked} />
-                <Label>{item.description}</Label>
+                <Label>{item.item}</Label>
               </div>
             ))}
           {task.content.length > 2 && (

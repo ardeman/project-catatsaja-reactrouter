@@ -5,7 +5,7 @@ export const taskSchema = z.object({
     z.object({
       sequence: z.number(),
       checked: z.boolean(),
-      description: z.string(),
+      item: z.string(),
     }),
   ),
 })

@@ -127,8 +127,8 @@
       "title": {
         "label": "Judul"
       },
-      "content": {
-        "label": "Konten"
+      "item": {
+        "label": "Item"
       }
     },
     "toast": {
