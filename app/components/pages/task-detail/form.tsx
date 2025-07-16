@@ -85,6 +85,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
   })
   const watchTitle = watch('title')
   const watchContent = useWatch({ control: control, name: 'content' })
+  const serializedContent = JSON.stringify(watchContent)
 
   const focusIndexReference = useRef<number | null>(null)
 
@@ -114,7 +115,7 @@ export const Form = forwardRef((properties: TFormProperties, reference) => {
 
   useDebounce({
     trigger: () => onSubmit(),
-    watch: [watchTitle, watchContent],
+    watch: [watchTitle, serializedContent],
     condition: !!selectedTask,
   })
 
