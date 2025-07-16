@@ -86,8 +86,6 @@ export const Form = (properties: TFormProperties) => {
   })
   const watchTitle = watch('title')
   const watchContent = useWatch({ control: control, name: 'content' })
-  const serializedContent = JSON.stringify(watchContent)
-  const checkedStates = watchContent.map((item) => item.checked).join(',')
 
   const focusIndexReference = useRef<number | null>(null)
 
@@ -117,7 +115,7 @@ export const Form = (properties: TFormProperties) => {
 
   useDebounce({
     trigger: () => onSubmit(),
-    watch: [watchTitle, serializedContent, checkedStates],
+    watch: [watchTitle, watchContent],
     condition: !!selectedTask,
   })
 
