@@ -48,6 +48,8 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
                 className={cn(inputClassName)}
                 checked={field.value}
                 onCheckedChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 {...rest}
               />
             </FormControl>
