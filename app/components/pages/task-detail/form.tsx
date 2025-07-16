@@ -63,13 +63,15 @@ export const Form = (properties: TFormProperties) => {
     resolver: zodResolver(taskSchema),
     values: {
       title: selectedTask?.title || '',
-      content: selectedTask?.content || [
-        {
-          sequence: 1,
-          checked: false,
-          description: '',
-        },
-      ],
+      content: selectedTask?.content
+        ? selectedTask.content.map((item) => ({ ...item }))
+        : [
+            {
+              sequence: 1,
+              checked: false,
+              description: '',
+            },
+          ],
     },
   })
   const {
