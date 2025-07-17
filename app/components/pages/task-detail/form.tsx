@@ -1,12 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
-import { Button } from '~/components/base/button'
 import { Checkbox } from '~/components/base/checkbox'
 import { Textarea } from '~/components/base/textarea'
 import { useTask } from '~/components/pages/tasks'
@@ -20,9 +18,6 @@ import { getDateLabel } from '~/lib/utils/parser'
 import { taskSchema } from '~/lib/validations/task'
 
 import { TFormProperties } from './type'
-
-const buttonClassName =
-  'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0'
 
 export const Form = (properties: TFormProperties) => {
   const { tasks } = properties
@@ -242,21 +237,6 @@ export const Form = (properties: TFormProperties) => {
             />
           </div>
         ))}
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            focusIndexReference.current = fields.length
-            append({
-              sequence: fields.length,
-              checked: false,
-              item: '',
-            })
-          }}
-          className={buttonClassName}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
         <span>
