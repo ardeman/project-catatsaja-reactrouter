@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useRef } from 'react'
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -58,13 +57,8 @@ export const Form = (properties: TFormProperties) => {
     resolver: zodResolver(taskSchema),
     values: {
       title: selectedTask?.title || '',
-      content: selectedTask?.content || [
-        {
-          sequence: 0,
-          checked: false,
-          item: '',
-        },
-      ],
+      item: '',
+      content: selectedTask?.content || [],
     },
   })
   const {
@@ -73,25 +67,23 @@ export const Form = (properties: TFormProperties) => {
     formState: { isDirty },
     setFocus,
     control,
-    getValues,
+    // getValues,
+    setValue,
   } = formMethods
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields,
+    append,
+    // remove
+  } = useFieldArray({
     control: control,
     name: 'content',
   })
   const watchTitle = watch('title')
+  const watchItem = watch('item')
   const watchContent = useWatch({ control: control, name: 'content' })
 
-  const focusIndexReference = useRef<number | null>(null)
-
   const onSubmit = handleSubmit(async (data) => {
-    const payload = {
-      ...data,
-      content: data.content.map((item, index) => ({
-        ...item,
-        sequence: index,
-      })),
-    }
+    const { item: _item, ...payload } = data
     if (
       (payload.title.length === 0 && payload.content.length === 0) ||
       !isDirty
@@ -113,13 +105,6 @@ export const Form = (properties: TFormProperties) => {
     watch: [watchTitle, watchContent],
     condition: !!selectedTask,
   })
-
-  useEffect(() => {
-    if (focusIndexReference.current !== null) {
-      setFocus(`content.${focusIndexReference.current}.item`)
-      focusIndexReference.current = null
-    }
-  }, [fields.length, setFocus])
 
   return (
     <FormProvider {...formMethods}>
@@ -156,7 +141,7 @@ export const Form = (properties: TFormProperties) => {
           onKeyDown={(event) => {
             if (event.key === 'Enter' || event.key === 'ArrowDown') {
               event.preventDefault()
-              setFocus('content.0.item')
+              setFocus('item')
             }
           }}
           readOnly={task && !isEditable}
@@ -177,66 +162,67 @@ export const Form = (properties: TFormProperties) => {
                   value={index}
                 />
               }
+              label={field.item}
               rightNode={
-                <Textarea
+                <input
+                  type="hidden"
                   name={`content.${index}.item`}
-                  placeholder={t('tasks.form.item.label')}
-                  containerClassName="flex-1"
-                  inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
-                  rows={1}
-                  readOnly={task && !isEditable}
-                  onKeyDown={(event) => {
-                    const isEnter = event.key === 'Enter'
-                    const isBackspace = event.key === 'Backspace'
-                    const isArrowUp = event.key === 'ArrowUp'
-                    const isArrowDown = event.key === 'ArrowDown'
-                    const isEmpty = !getValues(`content.${index}.item`)
-
-                    if (isEnter) {
-                      event.preventDefault()
-                      if (index === fields.length - 1) {
-                        focusIndexReference.current = fields.length
-                        append({
-                          sequence: fields.length,
-                          checked: false,
-                          item: '',
-                        })
-                      } else {
-                        setFocus(`content.${index + 1}.item`)
-                      }
-                    }
-
-                    if (isBackspace && isEmpty) {
-                      event.preventDefault()
-                      if (fields.length > 1) {
-                        focusIndexReference.current = Math.max(0, index - 1)
-                        remove(index)
-                      } else {
-                        setFocus('title')
-                      }
-                    }
-
-                    if (isArrowUp) {
-                      event.preventDefault()
-                      if (index > 0) {
-                        setFocus(`content.${index - 1}.item`)
-                      } else {
-                        setFocus('title')
-                      }
-                    }
-
-                    if (isArrowDown) {
-                      event.preventDefault()
-                      if (index < fields.length - 1) {
-                        setFocus(`content.${index + 1}.item`)
-                      }
-                    }
-                  }}
+                  value={field.item}
                 />
               }
             />
           </div>
         ))}
+        <Textarea
+          name={`item`}
+          placeholder={t('tasks.form.item.label')}
+          containerClassName="flex-1"
+          inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
+          rows={1}
+          readOnly={task && !isEditable}
+          onKeyDown={(event) => {
+            const isEnter = event.key === 'Enter'
+            // const isBackspace = event.key === 'Backspace'
+            // const isArrowUp = event.key === 'ArrowUp'
+            // const isArrowDown = event.key === 'ArrowDown'
+            // const isEmpty = !getValues(`content.${index}.item`)
+            if (isEnter) {
+              event.preventDefault()
+              append({
+                sequence: fields.length,
+                checked: false,
+                item: watchItem,
+              })
+              setValue('item', '')
+              requestAnimationFrame(() => {
+                setFocus('item')
+              })
+            }
+            // if (isBackspace && isEmpty) {
+            //   event.preventDefault()
+            //   if (fields.length > 1) {
+            //     focusIndexReference.current = Math.max(0, index - 1)
+            //     remove(index)
+            //   } else {
+            //     setFocus('title')
+            //   }
+            // }
+            // if (isArrowUp) {
+            //   event.preventDefault()
+            //   if (index > 0) {
+            //     setFocus(`content.${index - 1}.item`)
+            //   } else {
+            //     setFocus('title')
+            //   }
+            // }
+            // if (isArrowDown) {
+            //   event.preventDefault()
+            //   if (index < fields.length - 1) {
+            //     setFocus(`content.${index + 1}.item`)
+            //   }
+            // }
+          }}
+        />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
         <span>

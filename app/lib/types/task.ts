@@ -6,9 +6,9 @@ import { THandleSetPermission, TPermissions, TTime } from './common'
 
 export type TTaskForm = z.infer<typeof taskSchema>
 
-export type TCreateTaskRequest = TTaskForm
+export type TCreateTaskRequest = Omit<TTaskForm, 'item'>
 
-export type TUpdateTaskRequest = { id: string } & TTaskForm
+export type TUpdateTaskRequest = { id: string } & Omit<TTaskForm, 'item'>
 
 export type TPinTaskRequest = { task: TTaskResponse; isPinned: boolean }
 

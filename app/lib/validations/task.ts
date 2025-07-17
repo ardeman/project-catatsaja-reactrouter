@@ -1,6 +1,7 @@
 import { z } from 'zod'
 export const taskSchema = z.object({
   title: z.string(),
+  item: z.string(),
   content: z.array(
     z.object({
       sequence: z.number(),
