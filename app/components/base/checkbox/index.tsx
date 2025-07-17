@@ -30,6 +30,7 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
     labelClassName,
     inputClassName,
     required,
+    onChange,
     ...rest
   } = properties
   const { control } = useFormContext()
@@ -47,7 +48,13 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
                 id={id}
                 className={cn(inputClassName)}
                 checked={field.value}
-                onCheckedChange={field.onChange}
+                onCheckedChange={(checked) => {
+                  if (onChange) {
+                    onChange(checked)
+                    return
+                  }
+                  field.onChange(checked)
+                }}
                 onBlur={field.onBlur}
                 ref={field.ref}
                 {...rest}

@@ -1,3 +1,4 @@
+import { CheckedState } from '@radix-ui/react-checkbox'
 import { ComponentPropsWithoutRef, HTMLAttributes, ReactNode } from 'react'
 import { FieldValues, Path } from 'react-hook-form'
 
@@ -15,6 +16,7 @@ export type TProperties<TFormValues extends FieldValues> = {
   labelClassName?: HTMLAttributes<HTMLLabelElement>['className']
   inputClassName?: ComponentPropsWithoutRef<typeof Checkbox>['className']
   required?: boolean
+  onChange?: (checked: CheckedState) => void
 } & Omit<
   ComponentPropsWithoutRef<typeof Checkbox>,
   'className' | 'checked' | 'onCheckedChange'

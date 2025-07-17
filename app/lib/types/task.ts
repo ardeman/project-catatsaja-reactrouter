@@ -4,7 +4,7 @@ import { taskSchema } from '~/lib/validations/task'
 
 import { THandleSetPermission, TPermissions, TTime } from './common'
 
-export type TTaskForm = z.infer<typeof taskSchema>
+export type TTaskForm = z.infer<ReturnType<typeof taskSchema>>
 
 export type TCreateTaskRequest = Omit<TTaskForm, 'item'>
 
