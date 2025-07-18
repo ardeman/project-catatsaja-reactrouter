@@ -116,7 +116,8 @@
     },
     "toast": {
       "deleted": "Catatan berhasil dihapus",
-      "created": "Catatan berhasil dibuat"
+      "created": "Catatan berhasil dibuat",
+      "notFound": "Catatan tidak ditemukan atau Anda tidak memiliki akses"
     }
   },
   "tasks": {
@@ -133,7 +134,8 @@
     },
     "toast": {
       "deleted": "Tugas berhasil dihapus",
-      "created": "Tugas berhasil dibuat"
+      "created": "Tugas berhasil dibuat",
+      "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses"
     }
   },
   "moneyLog": {

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 import { LoadingScreen } from '~/components/base/loading-screen'
 import { Modal } from '~/components/base/modal'
@@ -8,6 +8,7 @@ import { Share } from '~/components/base/share'
 import { useTask } from '~/components/pages/tasks'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
 import { useShareTask } from '~/lib/hooks/use-share-task'
+import { toast } from '~/lib/hooks/use-toast'
 import {
   THandleDeletePermission,
   THandleSetPermission,
@@ -19,6 +20,7 @@ import { Form } from './form'
 export const Content = () => {
   const { task } = useParams()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { data: tasks } = useGetTasks()
   const {
     setSelectedTask,
@@ -37,6 +39,18 @@ export const Content = () => {
   useEffect(() => {
     if (current) setSelectedTask(current)
   }, [current, setSelectedTask])
+
+  useEffect(() => {
+    if (tasks && task !== 'create' && !current) {
+      toast({
+        variant: 'destructive',
+        description: t('tasks.toast.notFound', {
+          defaultValue: "Task not found or you don't have access",
+        }),
+      })
+      navigate('/tasks/create', { replace: true })
+    }
+  }, [tasks, task, current, navigate, t])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
