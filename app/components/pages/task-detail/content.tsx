@@ -44,9 +44,7 @@ export const Content = () => {
     if (tasks && task !== 'create' && !current) {
       toast({
         variant: 'destructive',
-        description: t('tasks.toast.notFound', {
-          defaultValue: "Task not found or you don't have access",
-        }),
+        description: t('tasks.toast.notFound'),
       })
       navigate('/tasks/create', { replace: true })
     }

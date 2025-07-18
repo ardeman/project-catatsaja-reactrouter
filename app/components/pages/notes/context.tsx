@@ -49,18 +49,15 @@ const NoteProvider = (properties: PropsWithChildren) => {
   const { mutate: mutateDeleteNote } = useDeleteNote()
   const { mutate: mutateUnlinkNote } = useUnlinkNote()
   const navigate = useNavigate()
-  const location = useLocation()
+  const { pathname } = useLocation()
 
   const handleConfirm = async () => {
     setOpenConfirmation(false)
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
     if (selectedConfirmation.kind === 'delete') {
       await mutateDeleteNote(selectedConfirmation.detail)
-      if (
-        location.pathname.startsWith('/notes/') &&
-        location.pathname !== '/notes/create'
-      ) {
-        navigate('/notes')
+      if (pathname.startsWith('/notes/') && pathname !== '/notes/create') {
+        navigate('/notes', { replace: true })
       }
     }
     if (selectedConfirmation.kind === 'unlink') {

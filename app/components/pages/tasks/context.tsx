@@ -49,18 +49,15 @@ const TaskProvider = (properties: PropsWithChildren) => {
   const { mutate: mutateDeleteTask } = useDeleteTask()
   const { mutate: mutateUnlinkTask } = useUnlinkTask()
   const navigate = useNavigate()
-  const location = useLocation()
+  const { pathname } = useLocation()
 
   const handleConfirm = async () => {
     setOpenConfirmation(false)
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
     if (selectedConfirmation.kind === 'delete') {
       await mutateDeleteTask(selectedConfirmation.detail)
-      if (
-        location.pathname.startsWith('/tasks/') &&
-        location.pathname !== '/tasks/create'
-      ) {
-        navigate('/tasks')
+      if (pathname.startsWith('/tasks/') && pathname !== '/tasks/create') {
+        navigate('/tasks', { replace: true })
       }
     }
     if (selectedConfirmation.kind === 'unlink') {

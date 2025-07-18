@@ -44,9 +44,7 @@ export const Content = () => {
     if (notes && note !== 'create' && !current) {
       toast({
         variant: 'destructive',
-        description: t('notes.toast.notFound', {
-          defaultValue: "Note not found or you don't have access",
-        }),
+        description: t('notes.toast.notFound'),
       })
       navigate('/notes/create', { replace: true })
     }

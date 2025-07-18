@@ -49,7 +49,7 @@ export const Navbar = (properties: TProperties) => {
   })
   const handleLogout = () => {
     mutateLogout()
-    navigate('/')
+    navigate('/', { replace: true })
   }
 
   const { mutate: mutateLogout } = useLogout()
