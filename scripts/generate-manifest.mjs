@@ -18,6 +18,7 @@ const extract = (name, fallback) => {
 const appName = extract('appName', 'App')
 const appleIcon = extract('appleIcon', '/apple-touch-icon.png')
 const shortcutIcon = extract('shortcutIcon', '/android-chrome-512x512.png')
+const themeColor = extract('themeColor', '#ffffff')
 
 const manifest = {
   name: appName,
@@ -26,7 +27,7 @@ const manifest = {
     { src: shortcutIcon, sizes: '512x512', type: 'image/png' },
     { src: appleIcon, sizes: '180x180', type: 'image/png' },
   ],
-  theme_color: '#facc14',
+  theme_color: themeColor,
   background_color: '#ffffff',
   display: 'standalone',
 }

@@ -5,6 +5,8 @@ export const appleIcon = '/apple-touch-icon.png'
 const shortcutIcon = '/android-chrome-512x512.png'
 const favicon = '/favicon.ico'
 const author = 'Ardeman'
+const themeColor = '#facc14'
+const manifest = '/site.webmanifest'
 export const githubUser = 'ardeman'
 export const githubRepo = 'project-catatsaja-reactrouter'
 
@@ -16,6 +18,10 @@ export const meta: MetaFunction = () => [
       'A comprehensive personal productivity app featuring task lists, timers, and money logging. Organize your tasks, stay on top of your schedule, and track your finances efficiently.',
   },
   { name: 'author', content: author },
+  {
+    name: 'theme-color',
+    content: themeColor,
+  },
 ]
 
 export const links: LinksFunction = () => [
@@ -34,6 +40,6 @@ export const links: LinksFunction = () => [
   },
   {
     rel: 'manifest',
-    href: '/site.webmanifest',
+    href: manifest,
   },
 ]
