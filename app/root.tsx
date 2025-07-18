@@ -4,7 +4,6 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
 import { LoadingSpinner } from '~/components/base/loading-spinner'
 import { Rootlayout } from '~/components/layouts/root'
-import { appName } from '~/lib/constants/metadata'
 import { FirebaseProvider } from '~/lib/contexts/firebase'
 import { ThemeProvider, useTheme } from '~/lib/contexts/theme'
 
@@ -58,7 +57,6 @@ export const HydrateFallback = () => {
           name="viewport"
           content="width=device-width, initial-scale=1"
         />
-        <title>{appName}</title>
         <Meta />
         <Links />
       </head>
