@@ -8,6 +8,7 @@ import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
 import { LanguageSelector } from '~/components/base/language-selector'
 import { ModeToggle } from '~/components/base/mode-toggle'
+import { AuthFooter } from '~/components/layouts/auth-footer'
 import { Button as UIButton } from '~/components/ui/button'
 import {
   Card,
@@ -65,7 +66,7 @@ export const ForgotPasswordPage: FC = () => {
   }, [timerForgotPassword])
 
   return (
-    <Card className="min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
+    <Card className="relative min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="grid">
@@ -119,6 +120,7 @@ export const ForgotPasswordPage: FC = () => {
           </UIButton>
         </div>
       </CardFooter>
+      <AuthFooter />
     </Card>
   )
 }

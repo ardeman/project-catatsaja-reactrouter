@@ -24,7 +24,7 @@ import { TSearchRequest } from '~/lib/types/search'
 import { cn } from '~/lib/utils/shadcn'
 import { searchSchema } from '~/lib/validations/search'
 
-import { userMenus } from './constant'
+import { aboutMenus, userMenus } from './constant'
 import { Navigation } from './navigation'
 import { TProperties } from './type'
 
@@ -120,6 +120,23 @@ export const Navbar = (properties: TProperties) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {userMenus(t).map((menu, index) => (
+              <Link
+                key={index}
+                to={menu.href}
+                rel={
+                  menu.href.startsWith('http')
+                    ? 'noopener noreferrer'
+                    : undefined
+                }
+                target={menu.href.startsWith('http') ? '_blank' : undefined}
+              >
+                <DropdownMenuItem className="cursor-pointer">
+                  {menu.name}
+                </DropdownMenuItem>
+              </Link>
+            ))}
+            <DropdownMenuSeparator />
+            {aboutMenus(t).map((menu, index) => (
               <Link
                 key={index}
                 to={menu.href}

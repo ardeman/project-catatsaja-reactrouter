@@ -10,6 +10,7 @@ import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
 import { LanguageSelector } from '~/components/base/language-selector'
 import { ModeToggle } from '~/components/base/mode-toggle'
+import { AuthFooter } from '~/components/layouts/auth-footer'
 import { Button as UIButton } from '~/components/ui/button'
 import {
   CardContent,
@@ -71,7 +72,7 @@ export const SignInPage = () => {
   }, [isLoginError, isLoginGoogleError])
 
   return (
-    <Card className="min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
+    <Card className="relative min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="grid">
@@ -162,29 +163,8 @@ export const SignInPage = () => {
             <Link to="/auth/sign-up">{t('auth.signIn.form.switch.link')}</Link>
           </UIButton>
         </div>
-        <div className="space-x-2 text-center text-xs text-muted-foreground">
-          <Link
-            to="/about"
-            className="hover:underline"
-          >
-            {t('navigation.about')}
-          </Link>
-          <span>&middot;</span>
-          <Link
-            to="/privacy-policy"
-            className="hover:underline"
-          >
-            {t('navigation.privacyPolicy')}
-          </Link>
-          <span>&middot;</span>
-          <Link
-            to="/terms-of-service"
-            className="hover:underline"
-          >
-            {t('navigation.termsOfService')}
-          </Link>
-        </div>
       </CardFooter>
+      <AuthFooter />
     </Card>
   )
 }

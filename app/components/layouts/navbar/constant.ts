@@ -17,6 +17,21 @@ export const userMenus = (t: TFunction) => [
   },
 ]
 
+export const aboutMenus = (t: TFunction) => [
+  {
+    name: t('navigation.about'),
+    href: '/about',
+  },
+  {
+    name: t('navigation.privacyPolicy'),
+    href: '/privacy-policy',
+  },
+  {
+    name: t('navigation.termsOfService'),
+    href: '/terms-of-service',
+  },
+]
+
 export const navs = (t: TFunction) => [
   {
     name: t('navigation.notes'),
