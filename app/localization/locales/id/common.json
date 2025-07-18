@@ -12,6 +12,9 @@
     "account": "Akun",
     "reportIssues": "Laporkan Masalah",
     "changelog": "Catatan Perubahan",
+    "about": "Tentang Aplikasi",
+    "privacyPolicy": "Kebijakan Privasi",
+    "termsOfService": "Syarat Layanan",
     "signOut": "Keluar",
     "search": {
       "placeholder": "Cari"

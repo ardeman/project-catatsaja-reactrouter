@@ -12,6 +12,9 @@
     "account": "Account",
     "reportIssues": "Report Issues",
     "changelog": "Changelog",
+    "about": "About",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
     "signOut": "Sign Out",
     "search": {
       "placeholder": "Search"

@@ -162,6 +162,28 @@ export const SignInPage = () => {
             <Link to="/auth/sign-up">{t('auth.signIn.form.switch.link')}</Link>
           </UIButton>
         </div>
+        <div className="space-x-2 text-center text-xs text-muted-foreground">
+          <Link
+            to="/about"
+            className="hover:underline"
+          >
+            {t('navigation.about')}
+          </Link>
+          <span>&middot;</span>
+          <Link
+            to="/privacy-policy"
+            className="hover:underline"
+          >
+            {t('navigation.privacyPolicy')}
+          </Link>
+          <span>&middot;</span>
+          <Link
+            to="/terms-of-service"
+            className="hover:underline"
+          >
+            {t('navigation.termsOfService')}
+          </Link>
+        </div>
       </CardFooter>
     </Card>
   )
