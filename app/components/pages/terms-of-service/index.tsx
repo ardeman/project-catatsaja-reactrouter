@@ -7,10 +7,7 @@ export const TermsOfServicePage = () => {
       <h1 className="text-3xl font-semibold">
         {t('navigation.termsOfService')}
       </h1>
-      <p>
-        By using this application you agree to abide by our terms of service and
-        use the application responsibly.
-      </p>
+      <p>{t('termsOfService.description')}</p>
     </main>
   )
 }

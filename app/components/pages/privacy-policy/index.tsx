@@ -7,10 +7,7 @@ export const PrivacyPolicyPage = () => {
       <h1 className="text-3xl font-semibold">
         {t('navigation.privacyPolicy')}
       </h1>
-      <p>
-        We respect your privacy and do not share your personal information with
-        third parties except as required to provide our services.
-      </p>
+      <p>{t('privacyPolicy.description')}</p>
     </main>
   )
 }

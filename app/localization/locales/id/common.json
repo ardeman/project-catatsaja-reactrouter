@@ -250,6 +250,15 @@
       }
     }
   },
+  "about": {
+    "description": "{{appName}} adalah aplikasi produktivitas pribadi yang membantu Anda mengelola tugas, catatan, dan keuangan dalam satu tempat."
+  },
+  "privacyPolicy": {
+    "description": "Kami menghormati privasi Anda dan tidak membagikan informasi pribadi Anda kepada pihak ketiga kecuali untuk menyediakan layanan kami."
+  },
+  "termsOfService": {
+    "description": "Dengan menggunakan aplikasi ini Anda setuju untuk mematuhi syarat layanan kami dan menggunakan aplikasi dengan bertanggung jawab."
+  },
   "settings": {
     "profile": {
       "title": "Profil",
