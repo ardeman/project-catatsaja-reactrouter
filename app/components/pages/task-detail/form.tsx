@@ -293,6 +293,7 @@ export const Form = (properties: TFormProperties) => {
                       'ml-4 h-4 w-4',
                       selectedEdit === index ? 'hidden' : '',
                     )}
+                    type="button"
                     onClick={() => {
                       setSelectedEdit(index)
                       requestAnimationFrame(() => {
@@ -311,6 +312,7 @@ export const Form = (properties: TFormProperties) => {
                       'ml-4 h-4 w-4',
                       selectedEdit === index ? 'hidden' : '',
                     )}
+                    type="button"
                     onClick={() => remove(index)}
                   >
                     <Trash />
@@ -349,6 +351,14 @@ export const Form = (properties: TFormProperties) => {
           rows={1}
           readOnly={task && !isEditable}
           onKeyDown={handleNewItemKeyDown}
+          leftNode={({ className }) => (
+            <div
+              className={cn(
+                className,
+                'relative left-0 mr-2 size-4 rounded-full border border-dashed border-primary opacity-50',
+              )}
+            />
+          )}
         />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">

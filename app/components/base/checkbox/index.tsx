@@ -22,8 +22,8 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
     id = generatedId,
     name,
     label,
-    rightNode,
-    leftNode,
+    rightNode: RightNode,
+    leftNode: LeftNode,
     hint,
     className,
     containerClassName,
@@ -42,10 +42,11 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
       render={({ field }) => (
         <FormItem className={cn('space-y-1', className)}>
           <div className={cn('flex items-center gap-2', containerClassName)}>
-            {leftNode && leftNode}
+            {LeftNode && LeftNode}
             <FormControl>
               <UICheckbox
                 id={id}
+                name={field.name}
                 className={cn(inputClassName)}
                 checked={field.value}
                 onCheckedChange={(checked) => {
@@ -68,7 +69,7 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
                 {label} {required && <sup className="text-red-500">*</sup>}
               </FormLabel>
             )}
-            {rightNode && rightNode}
+            {RightNode && RightNode}
           </div>
           {hint && <FormDescription>{hint}</FormDescription>}
           <FormMessage />

@@ -8,8 +8,8 @@ export type TProperties<TFormValues extends FieldValues> = {
   id?: string
   name: Path<TFormValues>
   label?: ReactNode
-  rightNode?: ReactNode
   leftNode?: ReactNode
+  rightNode?: ReactNode
   hint?: ReactNode
   className?: HTMLAttributes<HTMLDivElement>['className']
   containerClassName?: HTMLAttributes<HTMLDivElement>['className']
