@@ -6,7 +6,9 @@ import { LoadingScreen } from '~/components/base/loading-screen'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useTask } from '~/components/pages/tasks'
+import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
+import { useLogout } from '~/lib/hooks/use-logout'
 import { useShareTask } from '~/lib/hooks/use-share-task'
 import { toast } from '~/lib/hooks/use-toast'
 import {
@@ -22,6 +24,8 @@ export const Content = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { data: tasks } = useGetTasks()
+  const { data: user, isLoading: userIsLoading } = useAuthUser()
+  const { mutate: mutateLogout } = useLogout()
   const {
     setSelectedTask,
     openConfirmation,
@@ -42,13 +46,18 @@ export const Content = () => {
 
   useEffect(() => {
     if (tasks && task !== 'create' && !current) {
+      if (!user && !userIsLoading) {
+        mutateLogout()
+        return
+      }
+
       toast({
         variant: 'destructive',
         description: t('tasks.toast.notFound'),
       })
       navigate('/tasks/create', { replace: true })
     }
-  }, [tasks, task, current, navigate, t])
+  }, [tasks, task, current, navigate, t, user, userIsLoading, mutateLogout])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
