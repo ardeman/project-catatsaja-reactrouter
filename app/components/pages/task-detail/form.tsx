@@ -283,7 +283,19 @@ export const Form = (properties: TFormProperties) => {
                   value={index}
                 />
               }
-              label={selectedEdit === index ? '' : field.item}
+              label={
+                selectedEdit === index ? (
+                  ''
+                ) : (
+                  <span
+                    className={cn(
+                      field.checked ? 'italic line-through opacity-50' : '',
+                    )}
+                  >
+                    {field.item}
+                  </span>
+                )
+              }
               rightNode={
                 <>
                   <Button
@@ -293,6 +305,7 @@ export const Form = (properties: TFormProperties) => {
                       'ml-4 h-4 w-4',
                       selectedEdit === index ? 'hidden' : '',
                     )}
+                    disabled={field.checked === true}
                     type="button"
                     onClick={() => {
                       setSelectedEdit(index)
@@ -360,6 +373,9 @@ export const Form = (properties: TFormProperties) => {
             />
           )}
         />
+        <div className="text-xs opacity-50">
+          {`(${fieldsContent.filter((item) => item.checked === true).length}/${fieldsContent.length})`}
+        </div>
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
         <span>

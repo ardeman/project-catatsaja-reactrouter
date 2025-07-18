@@ -83,7 +83,15 @@ export const Card = (properties: TCardProperties) => {
                 className="flex items-center gap-2"
               >
                 <Checkbox checked={item.checked} />
-                <Label>{item.item}</Label>
+                <Label
+                  className={cn(
+                    item.checked === true
+                      ? 'italic line-through opacity-50'
+                      : '',
+                  )}
+                >
+                  {item.item}
+                </Label>
               </div>
             ))}
           {task.content.length > 2 && (
@@ -91,6 +99,9 @@ export const Card = (properties: TCardProperties) => {
               {t('tasks.more', { number: task.content.length - 2 })}
             </div>
           )}
+          <div className="text-xs opacity-50">
+            {`(${task.content.filter((item) => item.checked === true).length}/${task.content.length})`}
+          </div>
         </CardContent>
       )}
     </UICard>
