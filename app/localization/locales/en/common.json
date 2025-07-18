@@ -4,7 +4,6 @@
     "edited": "Edited {{time}}"
   },
   "navigation": {
-    "dashboard": "Dashboard",
     "notes": "Notes",
     "tasks": "Tasks",
     "moneyLog": "Money Log",
@@ -26,6 +25,7 @@
     "share": "Share this <span>{{item}}</span>",
     "confirm": "Confirm",
     "undo": "Undo",
+    "openPage": "Open Page",
     "permissions": {
       "select": "Choose permissions",
       "readOnly": "Read only",
@@ -99,11 +99,13 @@
       "linkGoogle": "Your Google account has been linked successfully.",
       "emailVerify": "Please check your email to verify your account.",
       "updateEmail": "Please check your email to verify the new email address.",
-      "profileUpdated": "Your profile has been updated successfully."
+      "profileUpdated": "Your profile has been updated successfully.",
+      "photoUpdated": "Your profile photo has been updated."
     }
   },
   "notes": {
-    "add": "Add Note",
+    "title": "Note",
+    "add": "Create New",
     "form": {
       "title": {
         "label": "Title"
@@ -113,11 +115,31 @@
       }
     },
     "toast": {
-      "deleted": "Note deleted successfully"
+      "deleted": "Note deleted successfully",
+      "created": "Note created successfully",
+      "notFound": "Note not found or you don't have access"
+    }
+  },
+  "tasks": {
+    "title": "Task",
+    "add": "Create New",
+    "more": "... {{number}} more",
+    "form": {
+      "title": {
+        "label": "Title"
+      },
+      "placeholder": {
+        "label": "Add Item"
+      }
+    },
+    "toast": {
+      "deleted": "Task deleted successfully",
+      "created": "Task created successfully",
+      "notFound": "Task not found or you don't have access"
     }
   },
   "moneyLog": {
-    "add": "Add Money Log",
+    "add": "Create New",
     "form": {
       "add": "Add Item",
       "title": {
@@ -230,6 +252,10 @@
       "title": "Profile",
       "description": "Update your profile information."
     },
+    "photo": {
+      "title": "Profile Photo",
+      "description": "Update your profile picture."
+    },
     "appearance": {
       "title": "Appearance",
       "description": "Customize the appearance of <span>{{appName}}</span>.",
@@ -243,6 +269,9 @@
           "light": "Light",
           "system": "System"
         }
+      },
+      "toast": {
+        "updated": "Appearance updated successfully."
       }
     },
     "email": {

@@ -1,30 +1,34 @@
-import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRevalidator } from 'react-router'
 
 import { register } from '~/apis/firestore/user'
 import { authError } from '~/lib/constants/firebase'
-import { useQueryActions } from '~/lib/hooks/use-query-actions'
 import { TSignUpRequest } from '~/lib/types/user'
 
 import { toast } from './use-toast'
 
 export const useRegister = () => {
   const { revalidate } = useRevalidator()
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const { t } = useTranslation()
+  const [isPending, setIsPending] = useState(false)
+  const [isError, setIsError] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
-  return useMutation({
-    mutationFn: (data: TSignUpRequest) => register(data),
-    onSuccess: () => {
-      invalidateUser()
+  const mutate = async (data: TSignUpRequest) => {
+    setIsPending(true)
+    setIsError(false)
+    setIsSuccess(false)
+    try {
+      await register(data)
       toast({
         description: t('auth.toast.emailVerify'),
       })
+      setIsSuccess(true)
       revalidate()
-    },
-    onError: (error: unknown) => {
+    } catch (error: unknown) {
+      setIsError(true)
       let message = String(error)
       if (error instanceof FirebaseError) {
         message =
@@ -35,6 +39,10 @@ export const useRegister = () => {
         variant: 'destructive',
         description: message,
       })
-    },
-  })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  return { mutate, isPending, isError, isSuccess }
 }

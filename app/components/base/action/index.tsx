@@ -1,4 +1,4 @@
-import { Eye, Forward, Pin, Trash, Users } from 'lucide-react'
+import { ArrowLeft, Eye, Forward, Pin, Save, Trash, Users } from 'lucide-react'
 
 import { Button } from '~/components/base/button'
 import { TActionProperties } from '~/lib/types/common'
@@ -15,13 +15,43 @@ export const Action = (properties: TActionProperties) => {
     handleShare,
     handlePin,
     sharedCount,
+    handleBack,
+    isCreate = false,
+    isLoading = false,
+    disabled = false,
   } = properties
   const buttonClassName =
     'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0'
 
   return (
     <div className={cn(className, 'flex justify-between gap-1')}>
-      {isOwner ? (
+      {handleBack && (
+        <Button
+          variant="outline"
+          onClick={(event) => {
+            event.stopPropagation()
+            handleBack()
+          }}
+          containerClassName="flex-1 flex items-center"
+          className={buttonClassName}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+      )}
+      {isCreate && (
+        <Button
+          variant="outline"
+          containerClassName="flex-1 flex items-center"
+          className={buttonClassName}
+          type="submit"
+          isLoading={isLoading}
+          disabled={isLoading || disabled}
+        >
+          <Save className="h-4 w-4" />
+          <span className="sr-only">Submit</span>
+        </Button>
+      )}
+      {isOwner && handleDelete && (
         <Button
           variant="outline"
           onClick={(event) => {
@@ -33,20 +63,27 @@ export const Action = (properties: TActionProperties) => {
         >
           <Trash className="h-4 w-4" />
         </Button>
-      ) : (
+      )}
+      {!isOwner && handleUnlink && (
         <Button
           variant="outline"
-          onClick={handleUnlink}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleUnlink()
+          }}
           containerClassName="flex-1 flex items-center"
           className={cn(buttonClassName, 'hover:text-red-500')}
         >
           <Eye className="h-4 w-4" />
         </Button>
       )}
-      {isEditable && (
+      {isEditable && handleShare && (
         <Button
           variant="outline"
-          onClick={handleShare}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleShare()
+          }}
           containerClassName="flex-1 flex items-center"
           className={buttonClassName}
         >
@@ -60,27 +97,32 @@ export const Action = (properties: TActionProperties) => {
           )}
         </Button>
       )}
-      <Button
-        variant="outline"
-        onClick={handlePin}
-        containerClassName="flex-1 flex items-center"
-        className={cn(
-          buttonClassName,
-          isPinned
-            ? 'text-yellow-500 hover:text-muted-foreground sm:opacity-100'
-            : 'text-muted-foreground hover:text-yellow-500 sm:opacity-0',
-          'group/button',
-        )}
-      >
-        <Pin
+      {handlePin && (
+        <Button
+          variant="outline"
+          onClick={(event) => {
+            event.stopPropagation()
+            handlePin()
+          }}
+          containerClassName="flex-1 flex items-center"
           className={cn(
+            buttonClassName,
             isPinned
-              ? 'rotate-45 group-hover/button:rotate-0'
-              : 'group-hover/button:rotate-45',
-            'h-4 w-4 transition-all duration-300',
+              ? 'text-yellow-500 hover:text-muted-foreground sm:opacity-100'
+              : 'text-muted-foreground hover:text-yellow-500 sm:opacity-0',
+            'group/button',
           )}
-        />
-      </Button>
+        >
+          <Pin
+            className={cn(
+              isPinned
+                ? 'rotate-45 group-hover/button:rotate-0'
+                : 'group-hover/button:rotate-45',
+              'h-4 w-4 transition-all duration-300',
+            )}
+          />
+        </Button>
+      )}
     </div>
   )
 }

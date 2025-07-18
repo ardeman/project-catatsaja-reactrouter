@@ -1,13 +1,13 @@
-import { useQuery } from '@tanstack/react-query'
+import { useRouteLoaderData } from 'react-router'
 
-import { fetchUserData } from '~/apis/firestore/user'
-import { auth } from '~/lib/configs/firebase'
+import { TUserResponse } from '~/lib/types/user'
+import { clientLoader as mainLoader } from '~/routes/_layout._main'
 
-// Custom hook to fetch current user data
+// Custom hook to access current user data from the layout loader
 export const useUserData = () => {
-  return useQuery({
-    queryKey: ['current-user'],
-    queryFn: fetchUserData,
-    enabled: !!auth?.currentUser, // Only run the query if the user is authenticated
-  })
+  const data = useRouteLoaderData<typeof mainLoader>('routes/_layout._main') as
+    | TUserResponse
+    | undefined
+
+  return { data, isLoading: false }
 }

@@ -28,7 +28,7 @@ export const Profile = () => {
       displayName: userData?.displayName || '',
     },
   })
-  const { handleSubmit } = formMethods
+  const { handleSubmit, formState } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
     mutateUpdateProfile(data)
@@ -65,7 +65,9 @@ export const Profile = () => {
           </CardContent>
           <CardFooter className="border-t px-6 py-4">
             <Button
-              disabled={isUpdateProfilePending || disabled}
+              disabled={
+                isUpdateProfilePending || disabled || !formState.isDirty
+              }
               isLoading={isUpdateProfilePending}
               type="submit"
             >

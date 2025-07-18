@@ -17,9 +17,13 @@ import {
   where,
 } from 'firebase/firestore'
 
-import { auth, firestore } from '~/lib/configs/firebase' // Assuming your Firestore is configured here
-import { TUpdateProfileRequest } from '~/lib/types/settings'
+import { auth, firestore } from '~/lib/configs/firebase'
+import {
+  TUpdateAppearanceRequest,
+  TUpdateProfileRequest,
+} from '~/lib/types/settings'
 import { TSignInRequest, TSignUpRequest, TUserResponse } from '~/lib/types/user'
+import { waitForAuth } from '~/lib/utils/wait-for-auth'
 
 // Function to fetch user data from Firestore
 export const fetchUserData = async () => {
@@ -29,7 +33,7 @@ export const fetchUserData = async () => {
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-  const user = auth.currentUser
+  const user = auth.currentUser ?? (await waitForAuth())
   if (!user) {
     throw new Error('No authenticated user found.')
   }
@@ -105,6 +109,20 @@ export const updateProfile = async (userData: TUpdateProfileRequest) => {
   })
 }
 
+export const updateAppearance = async (data: TUpdateAppearanceRequest) => {
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const reference = doc(firestore, 'users', auth.currentUser.uid)
+  return await updateDoc(reference, {
+    ...data,
+    updatedAt: new Date(),
+  })
+}
+
 export const login = async (userData: TSignInRequest) => {
   const { email, password } = userData
   if (!auth || !firestore) {
@@ -159,7 +177,7 @@ export const loginWithGoogle = async () => {
 }
 
 export const register = async (userData: TSignUpRequest) => {
-  const { email, password, displayName } = userData
+  const { email, password, displayName, language, theme } = userData
   if (!auth || !firestore) {
     throw new Error('Firebase is not initialized.')
   }
@@ -174,7 +192,7 @@ export const register = async (userData: TSignUpRequest) => {
   if (user) {
     // Update the user's profile with the display name
     await updateProfileAuth(user, {
-      displayName: displayName,
+      displayName,
     })
 
     // Send email verification
@@ -182,8 +200,10 @@ export const register = async (userData: TSignUpRequest) => {
 
     // Store user data in Firestore
     await setDoc(doc(firestore, 'users', user.uid), {
-      displayName: displayName,
-      email: email,
+      displayName,
+      email,
+      language,
+      theme,
       createdAt: new Date(),
     })
   } else {

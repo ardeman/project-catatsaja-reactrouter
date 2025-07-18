@@ -48,7 +48,7 @@ export const Email = (properties: TProperties) => {
   const userPasswordProvider = authData?.providerData.find(
     (provider) => provider.providerId === 'password',
   )
-  const { handleSubmit, watch } = formMethods
+  const { handleSubmit, watch, formState } = formMethods
   const watchEmail = watch('email')
 
   const {
@@ -231,7 +231,8 @@ export const Email = (properties: TProperties) => {
                 disabled ||
                 !authData?.emailVerified ||
                 !!timerUpdateEmail ||
-                !userPasswordProvider
+                !userPasswordProvider ||
+                !formState.isDirty
               }
               isLoading={isUpdateEmailPending}
               type="submit"

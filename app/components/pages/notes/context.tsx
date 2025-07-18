@@ -2,12 +2,11 @@ import {
   createContext,
   Dispatch,
   PropsWithChildren,
-  RefObject,
   SetStateAction,
   useContext,
-  useRef,
   useState,
 } from 'react'
+import { useNavigate, useLocation } from 'react-router'
 
 import { useDeleteNote } from '~/lib/hooks/use-delete-note'
 import { usePinNote } from '~/lib/hooks/use-pin-note'
@@ -17,8 +16,6 @@ import { TNoteResponse } from '~/lib/types/note'
 import { THandleModifyNote, THandlePinNote, TNoteConfirmation } from './type'
 
 type NoteContextValue = {
-  openForm: boolean
-  setOpenForm: Dispatch<SetStateAction<boolean>>
   openConfirmation: boolean
   setOpenConfirmation: Dispatch<SetStateAction<boolean>>
   openShare: boolean
@@ -29,22 +26,20 @@ type NoteContextValue = {
   setSelectedConfirmation: Dispatch<
     SetStateAction<TNoteConfirmation | undefined>
   >
-  formRef: RefObject<{ submit: () => void } | null>
-  handleCreateNote: () => void
-  handleEditNote: (note: TNoteResponse) => void
-  handleFormClose: () => void
-  handleConfirm: () => void
+  handleConfirm: () => Promise<void>
   handleDeleteNote: (properties: THandleModifyNote) => void
   handleUnlinkNote: (properties: THandleModifyNote) => void
   handlePinNote: (properties: THandlePinNote) => void
   handleShareNote: (properties: THandleModifyNote) => void
+  handleOpenNote: (note: TNoteResponse) => void
+  handleBackNote: () => void
+  handleCreateNote: () => void
 }
 
 const NoteContext = createContext<NoteContextValue | undefined>(undefined)
 
 const NoteProvider = (properties: PropsWithChildren) => {
   const { children } = properties
-  const [openForm, setOpenForm] = useState<boolean>(false)
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false)
   const [openShare, setOpenShare] = useState<boolean>(false)
   const [selectedNote, setSelectedNote] = useState<TNoteResponse>()
@@ -53,34 +48,19 @@ const NoteProvider = (properties: PropsWithChildren) => {
   const { mutate: mutatePinNote } = usePinNote()
   const { mutate: mutateDeleteNote } = useDeleteNote()
   const { mutate: mutateUnlinkNote } = useUnlinkNote()
-  const formReference = useRef<{ submit: () => void } | null>(null)
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
 
-  const handleCreateNote = () => {
-    setOpenForm(true)
-    setSelectedNote(undefined)
-  }
-
-  const handleEditNote = (note: TNoteResponse) => {
-    setOpenForm(true)
-    setSelectedNote(note)
-  }
-
-  const handleFormClose = () => {
-    setOpenForm(false)
-    // Only submit the form if no `selectedNote` is present
-    if (!selectedNote) {
-      formReference.current?.submit() // Trigger the form submission through a ref
-    }
-  }
-
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setOpenConfirmation(false)
-    setOpenForm(false)
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
-    if (selectedConfirmation?.kind === 'delete') {
-      mutateDeleteNote(selectedConfirmation.detail)
+    if (selectedConfirmation.kind === 'delete') {
+      await mutateDeleteNote(selectedConfirmation.detail)
+      if (pathname.startsWith('/notes/') && pathname !== '/notes/create') {
+        navigate('/notes', { replace: true })
+      }
     }
-    if (selectedConfirmation?.kind === 'unlink') {
+    if (selectedConfirmation.kind === 'unlink') {
       mutateUnlinkNote(selectedConfirmation.detail)
     }
   }
@@ -114,11 +94,21 @@ const NoteProvider = (properties: PropsWithChildren) => {
     setSelectedNote(note)
   }
 
+  const handleCreateNote = () => {
+    navigate('/notes/create')
+  }
+
+  const handleOpenNote = (note: TNoteResponse) => {
+    navigate(`/notes/${note.id}`)
+  }
+
+  const handleBackNote = () => {
+    navigate('/notes')
+  }
+
   return (
     <NoteContext.Provider
       value={{
-        openForm,
-        setOpenForm,
         openConfirmation,
         setOpenConfirmation,
         openShare,
@@ -127,15 +117,14 @@ const NoteProvider = (properties: PropsWithChildren) => {
         setSelectedNote,
         selectedConfirmation,
         setSelectedConfirmation,
-        formRef: formReference,
-        handleFormClose,
-        handleCreateNote,
-        handleEditNote,
         handleConfirm,
         handleDeleteNote,
         handleUnlinkNote,
         handlePinNote,
         handleShareNote,
+        handleOpenNote,
+        handleBackNote,
+        handleCreateNote,
       }}
     >
       {children}

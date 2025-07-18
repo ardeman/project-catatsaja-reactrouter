@@ -20,11 +20,11 @@ export const Card = (properties: TCardProperties) => {
   const { note, className } = properties
   const { t, i18n } = useTranslation()
   const {
-    handleEditNote,
     handleDeleteNote,
     handlePinNote,
     handleShareNote,
     handleUnlinkNote,
+    handleOpenNote,
   } = useNote()
   const { data: userData } = useUserData()
   const isPinned = note.isPinned
@@ -47,7 +47,7 @@ export const Card = (properties: TCardProperties) => {
   return (
     <UICard
       className={cn(className, 'group/card relative mb-4 w-full sm:max-w-xs')}
-      onClick={() => isEditable && handleEditNote(note)}
+      onClick={() => handleOpenNote(note)}
     >
       <Action
         className="absolute bottom-1 left-1 right-1"
@@ -73,7 +73,9 @@ export const Card = (properties: TCardProperties) => {
       </CardHeader>
       {note.content && (
         <CardContent>
-          <p className="whitespace-pre-wrap text-sm">{note.content}</p>
+          <p className="whitespace-pre-wrap break-words text-sm">
+            {note.content}
+          </p>
         </CardContent>
       )}
     </UICard>

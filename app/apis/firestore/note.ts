@@ -1,13 +1,9 @@
 import {
   addDoc,
   collection,
-  query,
-  getDocs,
   doc,
   updateDoc,
-  where,
   deleteDoc,
-  FieldPath,
 } from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
@@ -18,35 +14,6 @@ import {
   TPinNoteRequest,
   TUpdateNoteRequest,
 } from '~/lib/types/note'
-
-export const fetchNotes = async () => {
-  if (!firestore) {
-    throw new Error('Firebase DB is not initialized')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-
-  const notesQuery = query(
-    collection(firestore, 'notes'),
-    where(
-      new FieldPath('permissions', 'read'),
-      'array-contains',
-      auth.currentUser.uid,
-    ),
-  )
-  const snap = await getDocs(notesQuery)
-
-  // Map over the snapshot documents, including both data and ID
-  return snap.docs.map((document) => {
-    const data = document.data()
-    return {
-      ...data,
-      id: document.id, // Get document ID
-      isPinned: data.pinnedBy?.includes(auth?.currentUser?.uid),
-    } as TNoteResponse
-  })
-}
 
 export const createNote = async (data: TCreateNoteRequest) => {
   if (!firestore) {

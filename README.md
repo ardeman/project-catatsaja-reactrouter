@@ -1,10 +1,10 @@
 <h1 align="center">
-  project-remix-catatsaja
+  project-catatsaja-reactrouter
 </h1>
 
 <p align="center">
-  <a href="https://github.com/ardeman/project-remix-catatsaja/actions/workflows/firebase-remix.yml" target="_blank">
-    <img src="https://github.com/ardeman/project-remix-catatsaja/actions/workflows/firebase-remix.yml/badge.svg?branch=main" alt="Deployment Status" />
+  <a href="https://github.com/ardeman/project-catatsaja-reactrouter/actions/workflows/firebase-remix.yml" target="_blank">
+    <img src="https://github.com/ardeman/project-catatsaja-reactrouter/actions/workflows/firebase-remix.yml/badge.svg?branch=main" alt="Deployment Status" />
   </a>
 </p>
 
@@ -25,13 +25,13 @@ Feel free to fork this repository. If you do, please give proper credit by linki
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/ardeman/project-remix-catatsaja.git
+   git clone https://github.com/ardeman/project-catatsaja-reactrouter.git
    ```
 
 2. Navigate to the project directory:
 
    ```shell
-   cd project-remix-catatsaja
+   cd project-catatsaja-reactrouter
    ```
 
 3. Install dependencies:
@@ -40,7 +40,8 @@ Feel free to fork this repository. If you do, please give proper credit by linki
    pnpm install
    ```
 
-4. Create `.env` file based on `.env.example`, and put firebase configuration there.
+4. Create `.env` file based on `.env.example`, and put firebase configuration
+   and your Gravatar API key there.
 
 5. Set up firebase tools:
 
@@ -65,10 +66,10 @@ Feel free to fork this repository. If you do, please give proper credit by linki
   pnpm prepare
   ```
 
-- **Lint the code**:
+- **Lint, typecheck and check the unused code**:
 
   ```shell
-  pnpm lint
+  pnpm validate
   ```
 
 - **Format the code**:

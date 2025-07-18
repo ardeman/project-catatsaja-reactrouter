@@ -3,20 +3,21 @@ import { FirebaseApp, initializeApp } from 'firebase/app'
 import { getAuth, Auth } from 'firebase/auth'
 import { getFirestore, Firestore } from 'firebase/firestore'
 
+import { environment } from '~/lib/utils/environment'
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID as string,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string,
-  messagingSenderId: import.meta.env
-    .VITE_FIREBASE_MESSAGING_SENDER_ID as string,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID as string,
+  apiKey: environment.VITE_FIREBASE_API_KEY,
+  authDomain: environment.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: environment.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: environment.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: environment.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: environment.VITE_FIREBASE_APP_ID,
+  measurementId: environment.VITE_FIREBASE_MEASUREMENT_ID,
 }
 
 // Initialize Firebase app and services
 let firebase: FirebaseApp | null = null
-let analytics: Analytics | null = null
+let _analytics: Analytics | null = null
 let auth: Auth | null = null
 let firestore: Firestore | null = null
 
@@ -32,7 +33,7 @@ if (typeof globalThis !== 'undefined') {
       try {
         const supported = await isSupported()
         if (supported) {
-          analytics = getAnalytics(firebase!)
+          _analytics = getAnalytics(firebase!)
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -47,4 +48,4 @@ if (typeof globalThis !== 'undefined') {
   }
 }
 
-export { auth, firestore, analytics }
+export { auth, firestore }

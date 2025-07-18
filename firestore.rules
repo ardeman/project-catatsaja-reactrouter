@@ -40,18 +40,11 @@ service cloud.firestore {
       allow write: if canWrite(resource.data.permissions.write);
     }
 
-    match /to-dos/{todoId} {
+    match /tasks/{taskId} {
       allow delete: if isOwner(resource.data.owner);
       allow create: if isRegistered();
-      allow read: if canRead(resource.data.permissions.read);
-      allow write: if canWrite(resource.data.permissions.write);
-    }
-
-    match /reminders/{reminderId} {
-      allow delete: if isOwner(resource.data.owner);
-      allow create: if isRegistered();
-      allow read: if canRead(resource.data.permissions.read);
-      allow write: if canWrite(resource.data.permissions.write);
+      allow read, write: if canRead(resource.data.permissions.read);
+      // allow write: if canWrite(resource.data.permissions.write);
     }
 
     match /money-logs/{moneyLogId} {

@@ -18,17 +18,21 @@ import { themeOptions } from './constant'
 import { TParameters, TProperties } from './type'
 
 export const ModeToggle = (properties: TProperties) => {
-  const { type = 'dropdown' } = properties
+  const { type = 'dropdown', onChange, value } = properties
   const { setTheme, theme } = useTheme()
+  const currentTheme = value ?? theme
 
   const handleSetTheme = (theme: Theme) => {
-    setTheme(theme)
+    if (value === undefined) {
+      setTheme(theme)
+    }
+    onChange?.(theme)
   }
 
   if (type === 'radio') {
     return (
       <Radio
-        value={theme}
+        value={currentTheme}
         handleSetTheme={handleSetTheme}
       />
     )
@@ -36,7 +40,7 @@ export const ModeToggle = (properties: TProperties) => {
 
   return (
     <Dropdown
-      value={theme}
+      value={currentTheme}
       handleSetTheme={handleSetTheme}
     />
   )

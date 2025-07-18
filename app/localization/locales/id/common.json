@@ -4,7 +4,6 @@
     "edited": "Diedit {{time}}"
   },
   "navigation": {
-    "dashboard": "Dasbor",
     "notes": "Catatan",
     "tasks": "Tugas",
     "moneyLog": "Catatan Keuangan",
@@ -26,6 +25,7 @@
     "share": "Bagikan <span>{{item}}</span> ini",
     "confirm": "Iya",
     "undo": "Batal",
+    "openPage": "Buka Halaman",
     "permissions": {
       "select": "Pilih izin",
       "readOnly": "Hanya baca",
@@ -99,11 +99,13 @@
       "linkGoogle": "Akun Google Anda telah terhubung.",
       "emailVerify": "Silakan cek email Anda untuk verifikasi akun.",
       "updateEmail": "Silakan cek email Anda untuk verifikasi alamat email baru.",
-      "profileUpdated": "Profil Anda telah diperbarui."
+      "profileUpdated": "Profil Anda telah diperbarui.",
+      "photoUpdated": "Foto profil Anda telah diperbarui."
     }
   },
   "notes": {
-    "add": "Tambah Catatan",
+    "title": "Catatan",
+    "add": "Buat Baru",
     "form": {
       "title": {
         "label": "Judul"
@@ -113,11 +115,31 @@
       }
     },
     "toast": {
-      "deleted": "Catatan berhasil dihapus"
+      "deleted": "Catatan berhasil dihapus",
+      "created": "Catatan berhasil dibuat",
+      "notFound": "Catatan tidak ditemukan atau Anda tidak memiliki akses"
+    }
+  },
+  "tasks": {
+    "title": "Tugas",
+    "add": "Buat Baru",
+    "more": "... {{number}} lagi",
+    "form": {
+      "title": {
+        "label": "Judul"
+      },
+      "placeholder": {
+        "label": "Tambah Item"
+      }
+    },
+    "toast": {
+      "deleted": "Tugas berhasil dihapus",
+      "created": "Tugas berhasil dibuat",
+      "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses"
     }
   },
   "moneyLog": {
-    "add": "Tambah Catatan Keuangan",
+    "add": "Buat Baru",
     "form": {
       "add": "Tambah Item",
       "title": {
@@ -230,6 +252,10 @@
       "title": "Profil",
       "description": "Perbarui informasi profil Anda."
     },
+    "photo": {
+      "title": "Foto Profil",
+      "description": "Perbarui foto profil Anda."
+    },
     "appearance": {
       "title": "Tampilan",
       "description": "Atur tampilan <span>{{appName}}</span>.",
@@ -243,6 +269,9 @@
           "light": "Terang",
           "system": "Sistem"
         }
+      },
+      "toast": {
+        "updated": "Pengaturan tampilan berhasil diperbarui."
       }
     },
     "email": {

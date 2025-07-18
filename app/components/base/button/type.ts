@@ -6,7 +6,7 @@ import {
   ReactNode,
 } from 'react'
 
-import { buttonVariants } from '~/components/ui/button'
+import { variantClassName } from '~/components/ui/button'
 
 export type TButtonProperties<T extends ElementType = 'button'> = {
   type?: 'button' | 'submit' | 'reset'
@@ -17,5 +17,5 @@ export type TButtonProperties<T extends ElementType = 'button'> = {
   children: ReactNode
   isLoading?: boolean
   as?: T
-  variant?: VariantProps<typeof buttonVariants>['variant']
+  variant?: VariantProps<typeof variantClassName>['variant']
 }
