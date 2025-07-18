@@ -116,7 +116,8 @@
     },
     "toast": {
       "deleted": "Note deleted successfully",
-      "created": "Note created successfully"
+      "created": "Note created successfully",
+      "notFound": "Note not found or you don't have access"
     }
   },
   "tasks": {
@@ -133,7 +134,8 @@
     },
     "toast": {
       "deleted": "Task deleted successfully",
-      "created": "Task created successfully"
+      "created": "Task created successfully",
+      "notFound": "Task not found or you don't have access"
     }
   },
   "moneyLog": {

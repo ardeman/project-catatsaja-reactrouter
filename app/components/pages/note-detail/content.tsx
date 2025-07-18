@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 import { LoadingScreen } from '~/components/base/loading-screen'
 import { Modal } from '~/components/base/modal'
@@ -8,6 +8,7 @@ import { Share } from '~/components/base/share'
 import { useNote } from '~/components/pages/notes'
 import { useGetNotes } from '~/lib/hooks/use-get-notes'
 import { useShareNote } from '~/lib/hooks/use-share-note'
+import { toast } from '~/lib/hooks/use-toast'
 import {
   THandleDeletePermission,
   THandleSetPermission,
@@ -19,6 +20,7 @@ import { Form } from './form'
 export const Content = () => {
   const { note } = useParams()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { data: notes } = useGetNotes()
   const {
     setSelectedNote,
@@ -37,6 +39,18 @@ export const Content = () => {
   useEffect(() => {
     if (current) setSelectedNote(current)
   }, [current, setSelectedNote])
+
+  useEffect(() => {
+    if (notes && note !== 'create' && !current) {
+      toast({
+        variant: 'destructive',
+        description: t('notes.toast.notFound', {
+          defaultValue: "Note not found or you don't have access",
+        }),
+      })
+      navigate('/notes/create', { replace: true })
+    }
+  }, [notes, note, current, navigate, t])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {

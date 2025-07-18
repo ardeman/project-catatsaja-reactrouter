@@ -17,7 +17,7 @@ import { middleware } from '~/lib/utils/middleware'
 
 export const Rootlayout = (properties: PropsWithChildren) => {
   const { children } = properties
-  const { pathname } = useLocation()
+  const location = useLocation()
   const { isLoading } = useFirebase()
   const { data: user, isLoading: userIsLoading } = useAuthUser()
   const navigate = useNavigate()
@@ -25,8 +25,8 @@ export const Rootlayout = (properties: PropsWithChildren) => {
 
   useEffect(() => {
     if (userIsLoading) return
-    middleware({ user, navigate, pathname })
-  }, [user, userIsLoading, navigate, pathname])
+    middleware({ user, navigate, location })
+  }, [user, userIsLoading, navigate, location])
 
   return (
     <html
