@@ -268,7 +268,6 @@ export const Form = (properties: TFormProperties) => {
           >
             <Checkbox
               name={`content.${index}.checked`}
-              disabled={task && !isEditable}
               className="m-0"
               onChange={(checked) => {
                 update(index, {
@@ -298,53 +297,57 @@ export const Form = (properties: TFormProperties) => {
               }
               rightNode={
                 <>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn(
-                      'ml-4 h-4 w-4',
-                      selectedEdit === index ? 'hidden' : '',
-                    )}
-                    disabled={field.checked === true}
-                    type="button"
-                    onClick={() => {
-                      setSelectedEdit(index)
-                      requestAnimationFrame(() => {
-                        setFocus(`content.${index}.item`, {
-                          shouldSelect: true,
-                        })
-                      })
-                    }}
-                  >
-                    <Edit />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn(
-                      'ml-4 h-4 w-4',
-                      selectedEdit === index ? 'hidden' : '',
-                    )}
-                    type="button"
-                    onClick={() => remove(index)}
-                  >
-                    <Trash />
-                  </Button>
+                  {(!task || isEditable) && (
+                    <>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className={cn(
+                          'ml-4 h-4 w-4',
+                          selectedEdit === index ? 'hidden' : '',
+                        )}
+                        disabled={field.checked === true}
+                        type="button"
+                        onClick={() => {
+                          setSelectedEdit(index)
+                          requestAnimationFrame(() => {
+                            setFocus(`content.${index}.item`, {
+                              shouldSelect: true,
+                            })
+                          })
+                        }}
+                      >
+                        <Edit />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className={cn(
+                          'ml-4 h-4 w-4',
+                          selectedEdit === index ? 'hidden' : '',
+                        )}
+                        type="button"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash />
+                      </Button>
 
-                  <Textarea
-                    name={`content.${index}.item`}
-                    placeholder={field.item}
-                    containerClassName={cn(
-                      'flex-1',
-                      selectedEdit === index ? '' : 'hidden',
-                    )}
-                    inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
-                    rows={1}
-                    readOnly={task && !isEditable}
-                    onKeyDown={(event) =>
-                      handleContentKeyDown(event, index, field)
-                    }
-                  />
+                      <Textarea
+                        name={`content.${index}.item`}
+                        placeholder={field.item}
+                        containerClassName={cn(
+                          'flex-1',
+                          selectedEdit === index ? '' : 'hidden',
+                        )}
+                        inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
+                        rows={1}
+                        readOnly={task && !isEditable}
+                        onKeyDown={(event) =>
+                          handleContentKeyDown(event, index, field)
+                        }
+                      />
+                    </>
+                  )}
 
                   <input
                     type="hidden"
@@ -359,7 +362,7 @@ export const Form = (properties: TFormProperties) => {
         <Textarea
           name={`item`}
           placeholder={t('tasks.form.placeholder.label')}
-          containerClassName="flex-1"
+          containerClassName={cn('flex-1', task && !isEditable ? 'hidden' : '')}
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
           rows={1}
           readOnly={task && !isEditable}
