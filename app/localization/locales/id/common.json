@@ -127,7 +127,7 @@
       "title": {
         "label": "Judul"
       },
-      "item": {
+      "placeholder": {
         "label": "Tambah Item"
       }
     },

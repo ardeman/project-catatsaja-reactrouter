@@ -127,7 +127,7 @@
       "title": {
         "label": "Title"
       },
-      "item": {
+      "placeholder": {
         "label": "Add Item"
       }
     },

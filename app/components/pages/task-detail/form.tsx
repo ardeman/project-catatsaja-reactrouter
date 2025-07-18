@@ -320,7 +320,7 @@ export const Form = (properties: TFormProperties) => {
 
                   <Textarea
                     name={`content.${index}.item`}
-                    placeholder={t('tasks.form.item.label')}
+                    placeholder={field.item}
                     containerClassName={cn(
                       'flex-1',
                       selectedEdit === index ? '' : 'hidden',
@@ -345,7 +345,7 @@ export const Form = (properties: TFormProperties) => {
         ))}
         <Textarea
           name={`item`}
-          placeholder={t('tasks.form.item.label')}
+          placeholder={t('tasks.form.placeholder.label')}
           containerClassName="flex-1"
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
           rows={1}
