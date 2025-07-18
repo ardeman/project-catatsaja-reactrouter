@@ -12,6 +12,9 @@
     "account": "Account",
     "reportIssues": "Report Issues",
     "changelog": "Changelog",
+    "about": "About",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
     "signOut": "Sign Out",
     "search": {
       "placeholder": "Search"
@@ -246,6 +249,15 @@
         }
       }
     }
+  },
+  "about": {
+    "description": "{{appName}} is a personal productivity application that helps you manage tasks, notes, and finances in one place."
+  },
+  "privacyPolicy": {
+    "description": "We respect your privacy and do not share your personal information with third parties except as required to provide our services."
+  },
+  "termsOfService": {
+    "description": "By using this application you agree to abide by our terms of service and use the application responsibly."
   },
   "settings": {
     "profile": {
