@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleUser, Menu, Search } from 'lucide-react'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
@@ -29,6 +30,7 @@ import { TProperties } from './type'
 
 export const Navbar = (properties: TProperties) => {
   const { className } = properties
+  const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { data: userData } = useUserData()
@@ -60,7 +62,10 @@ export const Navbar = (properties: TProperties) => {
       )}
     >
       <Navigation className="hidden flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
-      <Sheet>
+      <Sheet
+        open={open}
+        onOpenChange={setOpen}
+      >
         <SheetTrigger asChild>
           <Button
             variant="outline"
@@ -72,7 +77,10 @@ export const Navbar = (properties: TProperties) => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
-          <Navigation className="grid" />
+          <Navigation
+            className="grid"
+            onLinkClick={() => setOpen(false)}
+          />
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">

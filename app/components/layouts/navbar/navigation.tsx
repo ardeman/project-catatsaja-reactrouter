@@ -8,7 +8,7 @@ import { navs } from './constant'
 import { TProperties } from './type'
 
 export const Navigation = (properties: TProperties) => {
-  const { className } = properties
+  const { className, onLinkClick } = properties
   const { pathname } = useLocation()
   const { t } = useTranslation()
 
@@ -16,6 +16,7 @@ export const Navigation = (properties: TProperties) => {
     <nav className={cn('gap-6 text-lg font-medium', className)}>
       <Link
         to="#"
+        onClick={onLinkClick}
         className="flex items-center gap-2 whitespace-nowrap text-lg font-semibold md:text-base"
       >
         <div className="relative h-6 w-6">
@@ -34,6 +35,7 @@ export const Navigation = (properties: TProperties) => {
         <Link
           key={index}
           to={nav.href}
+          onClick={onLinkClick}
           className={cn(
             pathname === nav.href ? 'text-foreground' : 'text-muted-foreground',
             'whitespace-nowrap transition-colors hover:text-foreground',
