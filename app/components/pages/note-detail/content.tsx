@@ -6,7 +6,9 @@ import { LoadingScreen } from '~/components/base/loading-screen'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useNote } from '~/components/pages/notes'
+import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { useGetNotes } from '~/lib/hooks/use-get-notes'
+import { useLogout } from '~/lib/hooks/use-logout'
 import { useShareNote } from '~/lib/hooks/use-share-note'
 import { toast } from '~/lib/hooks/use-toast'
 import {
@@ -22,6 +24,8 @@ export const Content = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { data: notes } = useGetNotes()
+  const { data: user, isLoading: userIsLoading } = useAuthUser()
+  const { mutate: mutateLogout } = useLogout()
   const {
     setSelectedNote,
     openConfirmation,
@@ -42,6 +46,11 @@ export const Content = () => {
 
   useEffect(() => {
     if (notes && note !== 'create' && !current) {
+      if (!user && !userIsLoading) {
+        mutateLogout()
+        return
+      }
+
       toast({
         variant: 'destructive',
         description: t('notes.toast.notFound', {
@@ -50,7 +59,7 @@ export const Content = () => {
       })
       navigate('/notes/create', { replace: true })
     }
-  }, [notes, note, current, navigate, t])
+  }, [notes, note, current, navigate, t, user, userIsLoading, mutateLogout])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
