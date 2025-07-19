@@ -155,7 +155,7 @@ const Permission = (parameters: TParametersPermission) => {
   const { t } = useTranslation('common')
 
   return (
-    <div className="flex items-center justify-between gap-x-2">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-x-2">
         <Avatar className="h-9 w-9">
           <AvatarImage src={photoURL} />
@@ -163,7 +163,7 @@ const Permission = (parameters: TParametersPermission) => {
             <CircleUser className="h-6 w-6" />
           </AvatarFallback>
         </Avatar>
-        <div className="max-w-32 md:max-w-48">
+        <div className="max-w-48">
           <p className="truncate">{displayName}</p>
           <p className="truncate text-xs text-muted-foreground">{email}</p>
         </div>
