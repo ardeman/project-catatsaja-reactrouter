@@ -1,9 +1,13 @@
+import { MilkdownProvider } from '@milkdown/react'
+
 import { NoteProvider } from '~/components/pages/notes'
 
 import { Content } from './content'
 
 export const NoteDetailPage = () => (
   <NoteProvider>
-    <Content />
+    <MilkdownProvider>
+      <Content />
+    </MilkdownProvider>
   </NoteProvider>
 )

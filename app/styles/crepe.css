@@ -1,0 +1,34 @@
+.milkdown {
+  --crepe-color-background: transparent;
+  --crepe-color-on-background: theme('colors.foreground');
+  --crepe-color-surface: theme('colors.card.DEFAULT');
+  --crepe-color-surface-low: theme('colors.muted.DEFAULT');
+  --crepe-color-on-surface: theme('colors.card.foreground');
+  --crepe-color-on-surface-variant: theme('colors.muted.foreground');
+  --crepe-color-outline: theme('colors.foreground');
+  --crepe-color-primary: theme('colors.primary.DEFAULT');
+  --crepe-color-secondary: theme('colors.secondary.DEFAULT');
+  --crepe-color-on-secondary: theme('colors.secondary.foreground');
+  --crepe-color-inverse: theme('colors.foreground');
+  --crepe-color-on-inverse: theme('colors.background');
+  --crepe-color-inline-code: theme('colors.accent.foreground');
+  --crepe-color-error: theme('colors.destructive.DEFAULT');
+  --crepe-color-hover: theme('colors.accent.DEFAULT');
+  --crepe-color-selected: theme('colors.input');
+  --crepe-color-inline-area: theme('colors.accent.DEFAULT');
+
+  --crepe-font-title: theme('fontFamily.serif');
+  --crepe-font-default: theme('fontFamily.sans');
+  --crepe-font-code: theme('fontFamily.mono');
+
+  --crepe-shadow-1:
+    0px 1px 2px 0px rgba(255, 255, 255, 0.3),
+    0px 1px 3px 1px rgba(255, 255, 255, 0.15);
+  --crepe-shadow-2:
+    0px 1px 2px 0px rgba(255, 255, 255, 0.3),
+    0px 2px 6px 2px rgba(255, 255, 255, 0.15);
+}
+
+.milkdown .ProseMirror {
+  padding: 0;
+}
