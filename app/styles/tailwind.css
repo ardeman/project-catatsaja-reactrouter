@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import '@milkdown/theme-nord/style.css';
-
 html {
   scroll-behavior: smooth;
 }
