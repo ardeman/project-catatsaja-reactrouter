@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
+import { MarkdownEditor } from '~/components/base/markdown-editor'
 import { Textarea } from '~/components/base/textarea'
 import { useNote } from '~/components/pages/notes'
 import { auth } from '~/lib/configs/firebase'
@@ -128,10 +129,10 @@ export const Form = (properties: TFormProperties) => {
           }}
           readOnly={note && !isEditable}
         />
-        <Textarea
+        <MarkdownEditor
           name="content"
           placeholder={t('notes.form.content.label')}
-          inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
+          inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none focus-visible:shadow-none focus:outline-none"
           readOnly={note && !isEditable}
           onKeyDown={(event) => {
             if (
