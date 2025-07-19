@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
+import { MilkdownEditor } from '~/components/base/milkdown-editor'
 import { Textarea } from '~/components/base/textarea'
 import { useNote } from '~/components/pages/notes'
 import { auth } from '~/lib/configs/firebase'
@@ -128,21 +129,7 @@ export const Form = (properties: TFormProperties) => {
           }}
           readOnly={note && !isEditable}
         />
-        <Textarea
-          name="content"
-          placeholder={t('notes.form.content.label')}
-          inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none"
-          readOnly={note && !isEditable}
-          onKeyDown={(event) => {
-            if (
-              (event.key === 'Backspace' || event.key === 'ArrowUp') &&
-              watchContent.length === 0
-            ) {
-              event.preventDefault()
-              setFocus('title')
-            }
-          }}
-        />
+        <MilkdownEditor name="content" />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
         <span>
