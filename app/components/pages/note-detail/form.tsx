@@ -129,7 +129,11 @@ export const Form = (properties: TFormProperties) => {
           }}
           readOnly={note && !isEditable}
         />
-        <MilkdownEditor name="content" />
+        <MilkdownEditor
+          key={selectedNote?.id ?? 'create'}
+          name="content"
+          placeholder={t('notes.form.content.label')}
+        />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
         <span>
