@@ -6,9 +6,6 @@ export default {
   content: ['./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
-      screens: {
-        xs: '30rem',
-      },
       fontFamily: {
         sans: [
           'Inter',

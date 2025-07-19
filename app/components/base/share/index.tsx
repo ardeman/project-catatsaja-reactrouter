@@ -80,7 +80,7 @@ export const Share = (properties: TPermissions) => {
     <FormProvider {...formMethods}>
       <form
         onSubmit={onSubmit}
-        className="group/form is-shown space-y-4"
+        className="group/form is-shown min-w-0 space-y-4"
       >
         <Input
           type="search"
@@ -155,7 +155,7 @@ const Permission = (parameters: TParametersPermission) => {
   const { t } = useTranslation('common')
 
   return (
-    <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between">
+    <div className="flex min-w-0 items-center justify-between gap-2">
       <div className="flex items-center gap-x-2">
         <Avatar className="h-9 w-9">
           <AvatarImage src={photoURL} />
@@ -163,12 +163,12 @@ const Permission = (parameters: TParametersPermission) => {
             <CircleUser className="h-6 w-6" />
           </AvatarFallback>
         </Avatar>
-        <div className="max-w-48">
-          <p className="truncate">{displayName}</p>
-          <p className="truncate text-xs text-muted-foreground">{email}</p>
-        </div>
       </div>
-      <div className="flex items-center gap-x-2">
+      <div className="flex min-w-16 flex-1 flex-col justify-center">
+        <p className="truncate">{displayName}</p>
+        <p className="truncate text-xs text-muted-foreground">{email}</p>
+      </div>
+      <div className="flex min-w-0 items-center gap-x-2">
         <Select
           onValueChange={(newValue: THandleSetPermission['permission']) =>
             handleSetPermission({ permission: newValue, uid })
@@ -177,8 +177,11 @@ const Permission = (parameters: TParametersPermission) => {
             write.length > 0 ? (write.includes(uid) ? 'write' : 'read') : ''
           }
         >
-          <SelectTrigger className="w-fit gap-2">
-            <SelectValue placeholder={t('form.permissions.select')} />
+          <SelectTrigger className="w-fit min-w-16 gap-2">
+            <SelectValue
+              placeholder={t('form.permissions.select')}
+              className="truncate"
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="read">
