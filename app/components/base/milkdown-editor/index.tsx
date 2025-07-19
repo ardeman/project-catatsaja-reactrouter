@@ -23,15 +23,7 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
       root,
       defaultValue: (getValues(name) as string) || '',
       features: {
-        // [Crepe.Feature.Cursor]: true,
-        // [Crepe.Feature.ListItem]: true,
-        // [Crepe.Feature.LinkTooltip]: true,
-        // [Crepe.Feature.ImageBlock]: true,
         [Crepe.Feature.BlockEdit]: false,
-        // [Crepe.Feature.Toolbar]: true,
-        // [Crepe.Feature.CodeMirror]: true,
-        // [Crepe.Feature.Table]: true,
-        // [Crepe.Feature.Latex]: true,
       },
       featureConfigs: {
         [Crepe.Feature.Placeholder]: {
