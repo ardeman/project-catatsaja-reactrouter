@@ -1,9 +1,9 @@
+@import '@milkdown/theme-nord/style.css';
+@import 'milkdown-plugin-placeholder/styles/index.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import '@milkdown/theme-nord/style.css';
-@import 'milkdown-plugin-placeholder/styles/index.css';
 
 html {
   scroll-behavior: smooth;
