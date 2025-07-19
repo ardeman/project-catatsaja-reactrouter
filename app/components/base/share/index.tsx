@@ -177,11 +177,8 @@ const Permission = (parameters: TParametersPermission) => {
             write.length > 0 ? (write.includes(uid) ? 'write' : 'read') : ''
           }
         >
-          <SelectTrigger className="w-fit min-w-16 gap-2">
-            <SelectValue
-              placeholder={t('form.permissions.select')}
-              className="truncate"
-            />
+          <SelectTrigger className="w-fit min-w-16 gap-2 [&>span]:truncate">
+            <SelectValue placeholder={t('form.permissions.select')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="read">
