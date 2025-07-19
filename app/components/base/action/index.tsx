@@ -77,7 +77,7 @@ export const Action = (properties: TActionProperties) => {
           <Eye className="h-4 w-4" />
         </Button>
       )}
-      {isEditable && handleShare && (
+      {isOwner && isEditable && handleShare && (
         <Button
           variant="outline"
           onClick={(event) => {
