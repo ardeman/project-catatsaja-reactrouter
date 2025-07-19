@@ -30,7 +30,7 @@
     "variant",
     "variantClassName"
   ],
-  "cSpell.words": ["firestore"],
+  "cSpell.words": ["firestore", "navs", "shadcn"],
   "IDX.aI.enableInlineCompletion": true,
   "IDX.aI.enableCodebaseIndexing": true,
   "files.autoSave": "off"

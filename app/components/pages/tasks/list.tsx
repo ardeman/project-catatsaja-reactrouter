@@ -50,7 +50,7 @@ export const List = () => {
   }
 
   return (
-    <main className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
+    <div className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
       <Button
         containerClassName="flex justify-center md:static md:transform-none fixed bottom-4 left-1/2 -translate-x-1/2 z-50"
         className="w-full max-w-md"
@@ -137,6 +137,6 @@ export const List = () => {
           handleUnshare={handleUnshare}
         />
       </Modal>
-    </main>
+    </div>
   )
 }

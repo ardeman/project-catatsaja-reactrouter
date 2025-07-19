@@ -2,13 +2,13 @@ import { Outlet } from 'react-router'
 
 import { AboutFooter } from '~/components/layouts/about-footer'
 
-const Auth = () => {
+const Home = () => {
   return (
-    <main className="relative flex min-h-dvh flex-col items-center justify-start bg-muted/40 md:justify-center">
+    <main className="relative flex min-h-dvh w-full flex-col items-center justify-center bg-muted/40">
       <Outlet />
       <AboutFooter />
     </main>
   )
 }
 
-export default Auth
+export default Home

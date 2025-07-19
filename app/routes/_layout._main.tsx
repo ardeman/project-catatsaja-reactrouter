@@ -15,7 +15,7 @@ export const clientLoader = async () => {
   }
 }
 
-const Dashboard = () => {
+const Main = () => {
   const { data: userData } = useUserData()
   const { setTheme, theme } = useTheme()
   const { i18n } = useTranslation()
@@ -34,4 +34,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default Main

@@ -1,8 +1,9 @@
 import { TFunction } from 'i18next'
 
 import { githubRepo, githubUser } from '~/lib/constants/metadata'
+import { TMenu } from '~/lib/types/common'
 
-export const userMenus = (t: TFunction) => [
+export const userMenus = (t: TFunction): TMenu[] => [
   {
     name: t('navigation.settings'),
     href: '/settings',
@@ -17,7 +18,7 @@ export const userMenus = (t: TFunction) => [
   },
 ]
 
-export const aboutMenus = (t: TFunction) => [
+export const aboutMenus = (t: TFunction): TMenu[] => [
   {
     name: t('navigation.about'),
     href: '/about',
@@ -32,7 +33,7 @@ export const aboutMenus = (t: TFunction) => [
   },
 ]
 
-export const navs = (t: TFunction) => [
+export const navs = (t: TFunction): TMenu[] => [
   {
     name: t('navigation.notes'),
     href: '/notes',

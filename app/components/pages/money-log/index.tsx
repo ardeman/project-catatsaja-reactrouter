@@ -8,7 +8,7 @@ export const MoneyLogPage = () => {
   const { t } = useTranslation()
 
   return (
-    <main className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
+    <div className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
       <div className="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 justify-center md:static md:transform-none">
         <Button
           className="w-full max-w-md"
@@ -23,6 +23,6 @@ export const MoneyLogPage = () => {
           <CardContent>Content</CardContent>
         </Card>
       </div>
-    </main>
+    </div>
   )
 }

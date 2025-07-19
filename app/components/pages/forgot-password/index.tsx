@@ -8,7 +8,6 @@ import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
 import { LanguageSelector } from '~/components/base/language-selector'
 import { ModeToggle } from '~/components/base/mode-toggle'
-import { AuthFooter } from '~/components/layouts/auth-footer'
 import { Button as UIButton } from '~/components/ui/button'
 import {
   Card,
@@ -120,7 +119,6 @@ export const ForgotPasswordPage: FC = () => {
           </UIButton>
         </div>
       </CardFooter>
-      <AuthFooter />
     </Card>
   )
 }

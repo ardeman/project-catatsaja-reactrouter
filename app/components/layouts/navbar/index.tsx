@@ -27,6 +27,7 @@ import { searchSchema } from '~/lib/validations/search'
 import { aboutMenus, userMenus } from './constant'
 import { Navigation } from './navigation'
 import { TProperties } from './type'
+export { aboutMenus } from './constant'
 
 export const Navbar = (properties: TProperties) => {
   const { className } = properties

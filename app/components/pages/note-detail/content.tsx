@@ -85,7 +85,7 @@ export const Content = () => {
     )
 
   return (
-    <main className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
+    <div className="flex flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-8">
       <Form notes={notes} />
       <Modal
         open={openConfirmation}
@@ -131,6 +131,6 @@ export const Content = () => {
           handleUnshare={handleUnshare}
         />
       </Modal>
-    </main>
+    </div>
   )
 }

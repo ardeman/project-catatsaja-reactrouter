@@ -45,3 +45,8 @@ export type TActionProperties = {
   isLoading?: boolean
   disabled?: boolean
 }
+
+export type TMenu = {
+  name: string
+  href: string
+}
