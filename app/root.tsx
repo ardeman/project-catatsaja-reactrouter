@@ -1,3 +1,4 @@
+import { MilkdownProvider } from '@milkdown/react'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
@@ -17,9 +18,11 @@ const App = () => {
   return (
     <FirebaseProvider>
       <ThemeProvider>
-        <Rootlayout>
-          <Outlet />
-        </Rootlayout>
+        <MilkdownProvider>
+          <Rootlayout>
+            <Outlet />
+          </Rootlayout>
+        </MilkdownProvider>
       </ThemeProvider>
     </FirebaseProvider>
   )
