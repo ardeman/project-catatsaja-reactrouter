@@ -1,0 +1,35 @@
+.milkdown {
+  background: transparent;
+  --crepe-color-background: hsl(var(--background));
+  --crepe-color-on-background: hsl(var(--foreground));
+  --crepe-color-surface: hsl(var(--card));
+  --crepe-color-surface-low: hsl(var(--muted));
+  --crepe-color-on-surface: hsl(var(--card-foreground));
+  --crepe-color-on-surface-variant: hsl(var(--muted-foreground));
+  --crepe-color-outline: hsl(var(--foreground));
+  --crepe-color-primary: hsl(var(--primary));
+  --crepe-color-secondary: hsl(var(--secondary));
+  --crepe-color-on-secondary: hsl(var(--secondary-foreground));
+  --crepe-color-inverse: hsl(var(--foreground));
+  --crepe-color-on-inverse: hsl(var(--background));
+  --crepe-color-inline-code: hsl(var(--destructive));
+  --crepe-color-error: hsl(var(--destructive));
+  --crepe-color-hover: hsl(var(--accent));
+  --crepe-color-selected: hsl(var(--input));
+  --crepe-color-inline-area: hsl(var(--ring));
+
+  --crepe-font-title: theme('fontFamily.serif');
+  --crepe-font-default: theme('fontFamily.sans');
+  --crepe-font-code: theme('fontFamily.mono');
+
+  --crepe-shadow-1:
+    0px 1px 2px 0px rgba(255, 255, 255, 0.3),
+    0px 1px 3px 1px rgba(255, 255, 255, 0.15);
+  --crepe-shadow-2:
+    0px 1px 2px 0px rgba(255, 255, 255, 0.3),
+    0px 2px 6px 2px rgba(255, 255, 255, 0.15);
+}
+
+.milkdown .ProseMirror {
+  padding: 0;
+}

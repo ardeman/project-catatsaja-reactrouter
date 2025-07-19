@@ -11,18 +11,12 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
-      '@milkdown/kit':
+      '@milkdown/crepe':
         specifier: ^7.15.1
-        version: 7.15.1(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(typescript@5.8.3)
-      '@milkdown/plugin-listener':
-        specifier: ^7.15.1
-        version: 7.15.1
+        version: 7.15.1(prosemirror-model@1.25.2)(prosemirror-state@1.4.3)(prosemirror-view@1.40.1)(typescript@5.8.3)
       '@milkdown/react':
         specifier: ^7.15.1
         version: 7.15.1(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(prosemirror-model@1.25.2)(prosemirror-state@1.4.3)(prosemirror-view@1.40.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
-      '@milkdown/theme-nord':
-        specifier: ^7.15.1
-        version: 7.15.1
       '@radix-ui/react-avatar':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -92,9 +86,6 @@ importers:
       masonry-layout:
         specifier: ^4.2.2
         version: 4.2.2
-      milkdown-plugin-placeholder:
-        specifier: ^0.2.1
-        version: 0.2.1
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -1157,9 +1148,6 @@ packages:
     peerDependencies:
       react: '*'
       react-dom: '*'
-
-  '@milkdown/theme-nord@7.15.1':
-    resolution: {integrity: sha512-oUMFCqY8MFNQUSckvWQaWDwueE/yriIhY+WP2oM/005FnKTR3d692UAUId+NjwmtkvQjitqGh8XvPVeHxuYJSQ==}
 
   '@milkdown/transformer@7.15.1':
     resolution: {integrity: sha512-Hwp0swHmvN2D6iM67mnoP7wPeiDipz/GDdyO7CfnYjUsUQcRHzMouoqJ91dp9bO+f4EJ0Vr+8C1qIYRAn4ZDhA==}
@@ -3834,9 +3822,6 @@ packages:
   micromatch@4.0.8:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
-
-  milkdown-plugin-placeholder@0.2.1:
-    resolution: {integrity: sha512-L8uELM//htnGXdpH7HbcNh3VWacBTwDLrwy/0gVehcUfpamgZ6apJuLI8kxSAlDytvyb//E5Omj2SC9id1WYCw==}
 
   mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
@@ -6729,16 +6714,6 @@ snapshots:
       - prosemirror-view
       - supports-color
       - typescript
-
-  '@milkdown/theme-nord@7.15.1':
-    dependencies:
-      '@milkdown/core': 7.15.1
-      '@milkdown/ctx': 7.15.1
-      '@milkdown/prose': 7.15.1
-      clsx: 2.1.1
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
 
   '@milkdown/transformer@7.15.1':
     dependencies:
@@ -9924,15 +9899,6 @@ snapshots:
     dependencies:
       braces: 3.0.3
       picomatch: 2.3.1
-
-  milkdown-plugin-placeholder@0.2.1:
-    dependencies:
-      '@milkdown/core': 7.15.1
-      '@milkdown/ctx': 7.15.1
-      '@milkdown/prose': 7.15.1
-      '@milkdown/transformer': 7.15.1
-    transitivePeerDependencies:
-      - supports-color
 
   mime-db@1.52.0: {}
 
