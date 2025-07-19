@@ -3,7 +3,6 @@ import { commonmark } from '@milkdown/kit/preset/commonmark'
 import { listener, listenerCtx } from '@milkdown/plugin-listener'
 import { Milkdown, useEditor } from '@milkdown/react'
 import { nord } from '@milkdown/theme-nord'
-import '@milkdown/theme-nord/style.css'
 import { useEffect } from 'react'
 import { PathValue, useFormContext } from 'react-hook-form'
 
