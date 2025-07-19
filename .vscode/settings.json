@@ -30,7 +30,7 @@
     "variant",
     "variantClassName"
   ],
-  "cSpell.words": ["firestore", "navs", "shadcn"],
+  "cSpell.words": ["catatsaja", "firestore", "navs", "reactrouter", "shadcn"],
   "IDX.aI.enableInlineCompletion": true,
   "IDX.aI.enableCodebaseIndexing": true,
   "files.autoSave": "off"

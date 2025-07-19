@@ -8,6 +8,10 @@
   </a>
 </p>
 
+## About
+
+This is a web application for managing notes, tasks, and money logs. It is built with React Router.
+
 ## 🍴 Forking This Repo
 
 Feel free to fork this repository. If you do, please give proper credit by linking back to [ardeman.com](https://ardeman.com/). Thank you!
