@@ -155,7 +155,7 @@ const Permission = (parameters: TParametersPermission) => {
   const { t } = useTranslation('common')
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between">
       <div className="flex items-center gap-x-2">
         <Avatar className="h-9 w-9">
           <AvatarImage src={photoURL} />
