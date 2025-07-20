@@ -3,7 +3,7 @@ import enZod from './locales/en/zod.json'
 import idCommon from './locales/id/common.json'
 import idZod from './locales/id/zod.json'
 
-const languages = ['id', 'en'] as const
+const languages = ['en', 'id'] as const
 export const supportedLanguages = [...languages]
 
 type Language = (typeof languages)[number]
