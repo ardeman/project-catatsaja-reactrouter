@@ -254,10 +254,14 @@
     "description": "{{appName}} is a personal productivity application that helps you manage tasks, notes, and finances in one place."
   },
   "privacyPolicy": {
-    "description": "We respect your privacy and do not share your personal information with third parties except as required to provide our services."
+    "paragraph1": "We collect the email address you provide when signing in. This information is used only to authenticate you and to store your notes, tasks, and financial entries.",
+    "paragraph2": "Your content is saved in Google\u2019s Firebase services and is subject to Google\u2019s security and privacy practices. We never sell or share your personal data with other parties.",
+    "paragraph3": "Aggregated, anonymous analytics may be used to improve the application. Contact us at any time if you wish to remove your account and associated data."
   },
   "termsOfService": {
-    "description": "By using this application you agree to abide by our terms of service and use the application responsibly."
+    "paragraph1": "By accessing CatatSaja you agree to use the application legally and responsibly.",
+    "paragraph2": "The service is provided as is without warranties and we may suspend accounts for misuse or security issues.",
+    "paragraph3": "We may modify these terms at any time and continued use signifies acceptance of any changes."
   },
   "settings": {
     "profile": {
