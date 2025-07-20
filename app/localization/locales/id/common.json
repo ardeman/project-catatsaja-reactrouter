@@ -251,7 +251,7 @@
     }
   },
   "about": {
-    "description": "{{appName}} adalah aplikasi produktivitas pribadi yang membantu Anda mengelola tugas, catatan, dan keuangan dalam satu tempat."
+    "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi yang membantu Anda mengelola tugas, catatan, dan keuangan dalam satu tempat."
   },
   "privacyPolicy": {
     "paragraph1": "Kami mengumpulkan alamat email yang Anda berikan saat masuk. Informasi ini hanya digunakan untuk mengautentikasi Anda dan menyimpan catatan, tugas, serta catatan keuangan Anda.",

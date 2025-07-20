@@ -251,7 +251,7 @@
     }
   },
   "about": {
-    "description": "{{appName}} is a personal productivity application that helps you manage tasks, notes, and finances in one place."
+    "description": "<span>{{appName}}</span> is a personal productivity application that helps you manage tasks, notes, and finances in one place."
   },
   "privacyPolicy": {
     "paragraph1": "We collect the email address you provide when signing in. This information is used only to authenticate you and to store your notes, tasks, and financial entries.",
