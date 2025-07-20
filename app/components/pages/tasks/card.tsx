@@ -100,7 +100,11 @@ export const Card = (properties: TCardProperties) => {
             </div>
           )}
           <div className="text-xs opacity-50">
-            {`(${task.content.filter((item) => item.checked === true).length}/${task.content.length})`}
+            (
+            <span className="text-primary">
+              {task.content.filter((item) => item.checked === true).length}
+            </span>
+            /{task.content.length})
           </div>
         </CardContent>
       )}

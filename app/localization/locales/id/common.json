@@ -259,7 +259,7 @@
     "paragraph3": "Analitik anonim secara agregat dapat digunakan untuk meningkatkan aplikasi. Hubungi kami kapan saja jika Anda ingin menghapus akun beserta datanya."
   },
   "termsOfService": {
-    "paragraph1": "Dengan mengakses CatatSaja, Anda setuju untuk menggunakan aplikasi ini secara legal dan bertanggung jawab.",
+    "paragraph1": "Dengan mengakses <span>{{appName}}</span>, Anda setuju untuk menggunakan aplikasi ini secara legal dan bertanggung jawab.",
     "paragraph2": "Layanan diberikan apa adanya tanpa jaminan dan kami dapat menangguhkan akun Anda jika disalahgunakan atau terjadi masalah keamanan.",
     "paragraph3": "Kami dapat mengubah syarat ini kapan saja dan penggunaan berkelanjutan berarti Anda menerima perubahan tersebut."
   },

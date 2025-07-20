@@ -259,7 +259,7 @@
     "paragraph3": "Aggregated, anonymous analytics may be used to improve the application. Contact us at any time if you wish to remove your account and associated data."
   },
   "termsOfService": {
-    "paragraph1": "By accessing CatatSaja you agree to use the application legally and responsibly.",
+    "paragraph1": "By accessing <span>{{appName}}</span> you agree to use the application legally and responsibly.",
     "paragraph2": "The service is provided as is without warranties and we may suspend accounts for misuse or security issues.",
     "paragraph3": "We may modify these terms at any time and continued use signifies acceptance of any changes."
   },

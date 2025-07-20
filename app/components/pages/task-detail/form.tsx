@@ -406,7 +406,11 @@ export const Form = (properties: TFormProperties) => {
           )}
         />
         <div className="text-xs opacity-50">
-          {`(${fieldsContent.filter((item) => item.checked === true).length}/${fieldsContent.length})`}
+          (
+          <span className="text-primary">
+            {fieldsContent.filter((item) => item.checked === true).length}
+          </span>
+          /{fieldsContent.length})
         </div>
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">

@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { appName } from '~/lib/constants/metadata'
+import { cn } from '~/lib/utils/shadcn'
+
 import { homeMenus } from './constant'
 
 export const AboutFooter = () => {
@@ -15,7 +18,10 @@ export const AboutFooter = () => {
         >
           <Link
             to={menu.href}
-            className="hover:underline"
+            className={cn(
+              'hover:underline',
+              menu.name === appName ? 'text-primary' : '',
+            )}
           >
             {menu.name}
           </Link>
