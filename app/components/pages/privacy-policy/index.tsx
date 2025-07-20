@@ -7,7 +7,9 @@ export const PrivacyPolicyPage = () => {
       <h1 className="text-3xl font-semibold">
         {t('navigation.privacyPolicy')}
       </h1>
-      <p>{t('privacyPolicy.description')}</p>
+      <p>{t('privacyPolicy.paragraph1')}</p>
+      <p>{t('privacyPolicy.paragraph2')}</p>
+      <p>{t('privacyPolicy.paragraph3')}</p>
     </div>
   )
 }

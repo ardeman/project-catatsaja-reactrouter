@@ -221,6 +221,34 @@ export const Form = (properties: TFormProperties) => {
     }
   }
 
+  const handleNewItemPaste = (
+    event: React.ClipboardEvent<HTMLTextAreaElement>,
+  ) => {
+    const text = event.clipboardData.getData('text')
+    const lines = text
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+    if (lines.length > 1) {
+      event.preventDefault()
+      setSelectedEdit(undefined)
+      const base = fieldsContent.length
+      let index = 0
+      for (const line of lines) {
+        append({
+          sequence: base + index,
+          checked: false,
+          item: line,
+        })
+        index += 1
+      }
+      setValue('item', '')
+      requestAnimationFrame(() => {
+        setFocus('item')
+      })
+    }
+  }
+
   return (
     <FormProvider {...formMethods}>
       <form
@@ -367,6 +395,7 @@ export const Form = (properties: TFormProperties) => {
           rows={1}
           readOnly={task && !isEditable}
           onKeyDown={handleNewItemKeyDown}
+          onPaste={handleNewItemPaste}
           leftNode={({ className }) => (
             <div
               className={cn(

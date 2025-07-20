@@ -4,6 +4,7 @@ import {
   MouseEventHandler,
   ReactNode,
   TextareaHTMLAttributes,
+  ClipboardEventHandler,
 } from 'react'
 import { FieldValues, Path } from 'react-hook-form'
 
@@ -29,4 +30,5 @@ export type TProperties<TFormValues extends FieldValues> = {
   autoResize?: boolean
   rows?: TextareaHTMLAttributes<HTMLTextAreaElement>['rows']
   onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>
+  onPaste?: ClipboardEventHandler<HTMLTextAreaElement>
 }

@@ -254,10 +254,14 @@
     "description": "{{appName}} adalah aplikasi produktivitas pribadi yang membantu Anda mengelola tugas, catatan, dan keuangan dalam satu tempat."
   },
   "privacyPolicy": {
-    "description": "Kami menghormati privasi Anda dan tidak membagikan informasi pribadi Anda kepada pihak ketiga kecuali untuk menyediakan layanan kami."
+    "paragraph1": "Kami mengumpulkan alamat email yang Anda berikan saat masuk. Informasi ini hanya digunakan untuk mengautentikasi Anda dan menyimpan catatan, tugas, serta catatan keuangan Anda.",
+    "paragraph2": "Konten Anda disimpan di layanan Firebase milik Google dan tunduk pada praktik keamanan dan privasi Google. Kami tidak menjual atau membagikan data pribadi Anda kepada pihak lain.",
+    "paragraph3": "Analitik anonim secara agregat dapat digunakan untuk meningkatkan aplikasi. Hubungi kami kapan saja jika Anda ingin menghapus akun beserta datanya."
   },
   "termsOfService": {
-    "description": "Dengan menggunakan aplikasi ini Anda setuju untuk mematuhi syarat layanan kami dan menggunakan aplikasi dengan bertanggung jawab."
+    "paragraph1": "Dengan mengakses CatatSaja, Anda setuju untuk menggunakan aplikasi ini secara legal dan bertanggung jawab.",
+    "paragraph2": "Layanan diberikan apa adanya tanpa jaminan dan kami dapat menangguhkan akun Anda jika disalahgunakan atau terjadi masalah keamanan.",
+    "paragraph3": "Kami dapat mengubah syarat ini kapan saja dan penggunaan berkelanjutan berarti Anda menerima perubahan tersebut."
   },
   "settings": {
     "profile": {

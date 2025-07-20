@@ -7,7 +7,9 @@ export const TermsOfServicePage = () => {
       <h1 className="text-3xl font-semibold">
         {t('navigation.termsOfService')}
       </h1>
-      <p>{t('termsOfService.description')}</p>
+      <p>{t('termsOfService.paragraph1')}</p>
+      <p>{t('termsOfService.paragraph2')}</p>
+      <p>{t('termsOfService.paragraph3')}</p>
     </div>
   )
 }
