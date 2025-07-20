@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 
 import { appName } from '~/lib/constants/metadata'
 import { cn } from '~/lib/utils/shadcn'
@@ -8,6 +8,7 @@ import { homeMenus } from './constant'
 
 export const AboutFooter = () => {
   const { t } = useTranslation(['common', 'zod'])
+  const { pathname } = useLocation()
 
   return (
     <div className="mt-2 flex w-full items-center justify-center text-center text-xs text-muted-foreground">
@@ -21,6 +22,7 @@ export const AboutFooter = () => {
             className={cn(
               'hover:underline',
               menu.name === appName ? 'text-primary' : '',
+              menu.href === pathname ? 'text-foreground' : '',
             )}
           >
             {menu.name}

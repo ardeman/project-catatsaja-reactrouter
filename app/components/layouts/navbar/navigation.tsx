@@ -37,7 +37,9 @@ export const Navigation = (properties: TProperties) => {
           to={nav.href}
           onClick={onLinkClick}
           className={cn(
-            pathname === nav.href ? 'text-foreground' : 'text-muted-foreground',
+            pathname.split('/')[1] === nav.href.split('/')[1]
+              ? 'text-primary'
+              : 'text-muted-foreground',
             'whitespace-nowrap transition-colors hover:text-foreground',
           )}
         >

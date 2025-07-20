@@ -25,11 +25,11 @@ export const aboutMenus = (t: TFunction): TMenu[] => [
   },
   {
     name: t('navigation.privacyPolicy'),
-    href: '/privacy-policy',
+    href: '/privacy',
   },
   {
     name: t('navigation.termsOfService'),
-    href: '/terms-of-service',
+    href: '/terms',
   },
 ]
 
