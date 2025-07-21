@@ -59,7 +59,10 @@ export const Action = (properties: TActionProperties) => {
             handleDelete()
           }}
           containerClassName="flex-1 flex items-center"
-          className={cn(buttonClassName, 'hover:text-red-500')}
+          className={cn(
+            buttonClassName,
+            'text-destructive hover:bg-destructive',
+          )}
         >
           <Trash className="h-4 w-4" />
         </Button>
@@ -72,7 +75,10 @@ export const Action = (properties: TActionProperties) => {
             handleUnlink()
           }}
           containerClassName="flex-1 flex items-center"
-          className={cn(buttonClassName, 'hover:text-red-500')}
+          className={cn(
+            buttonClassName,
+            'text-destructive hover:bg-destructive',
+          )}
         >
           <Eye className="h-4 w-4" />
         </Button>
@@ -108,8 +114,8 @@ export const Action = (properties: TActionProperties) => {
           className={cn(
             buttonClassName,
             isPinned
-              ? 'text-yellow-500 hover:text-muted-foreground sm:opacity-100'
-              : 'text-muted-foreground hover:text-yellow-500 sm:opacity-0',
+              ? 'text-primary hover:text-muted-foreground sm:opacity-100'
+              : 'text-muted-foreground hover:text-primary sm:opacity-0',
             'group/button',
           )}
         >

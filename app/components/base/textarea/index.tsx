@@ -47,7 +47,7 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
               htmlFor={id}
               className={cn(labelClassName)}
             >
-              {label} {required && <sup className="text-red-500">*</sup>}
+              {label} {required && <sup className="text-destructive">*</sup>}
             </FormLabel>
           )}
           <div className={cn('relative flex items-center', containerClassName)}>

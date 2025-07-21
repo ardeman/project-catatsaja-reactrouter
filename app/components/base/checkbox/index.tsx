@@ -66,7 +66,7 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
                 htmlFor={id}
                 className={labelClassName}
               >
-                {label} {required && <sup className="text-red-500">*</sup>}
+                {label} {required && <sup className="text-destructive">*</sup>}
               </FormLabel>
             )}
             {RightNode && RightNode}

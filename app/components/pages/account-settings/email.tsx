@@ -184,7 +184,7 @@ export const Email = (properties: TProperties) => {
                           <BadgeAlert
                             className={cn(
                               className,
-                              'text-red-500 hover:cursor-help',
+                              'text-destructive hover:cursor-help',
                             )}
                           />
                         )}
