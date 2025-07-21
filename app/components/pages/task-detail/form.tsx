@@ -357,7 +357,7 @@ export const Form = (properties: TFormProperties) => {
                           variant="outline"
                           size="icon"
                           className={cn(
-                            'h-5 w-5 rounded-[5px]',
+                            'h-4 w-8',
                             selectedEdit === index ? 'hidden' : '',
                           )}
                           disabled={field.checked === true}
@@ -375,7 +375,7 @@ export const Form = (properties: TFormProperties) => {
                           variant="outline"
                           size="icon"
                           className={cn(
-                            'h-5 w-5 rounded-[5px]',
+                            'h-4 w-8',
                             selectedEdit === index ? 'hidden' : '',
                           )}
                           type="button"
@@ -387,7 +387,7 @@ export const Form = (properties: TFormProperties) => {
                           variant="outline"
                           size="icon"
                           className={cn(
-                            'h-5 w-5 rounded-[5px]',
+                            'h-4 w-8',
                             selectedEdit === index ? 'hidden' : '',
                           )}
                           type="button"
@@ -400,7 +400,7 @@ export const Form = (properties: TFormProperties) => {
                           variant="outline"
                           size="icon"
                           className={cn(
-                            'h-5 w-5 rounded-[5px]',
+                            'h-4 w-8',
                             selectedEdit === index ? 'hidden' : '',
                           )}
                           type="button"
