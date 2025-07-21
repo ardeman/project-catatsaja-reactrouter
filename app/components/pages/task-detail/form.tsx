@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Edit, Trash } from 'lucide-react'
+import { Edit, Trash, ChevronUp, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -79,6 +79,7 @@ export const Form = (properties: TFormProperties) => {
     append,
     remove,
     update,
+    move,
   } = useFieldArray({
     control: control,
     name: 'content',
@@ -364,6 +365,32 @@ export const Form = (properties: TFormProperties) => {
                         onClick={() => remove(index)}
                       >
                         <Trash />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className={cn(
+                          'ml-4 h-4 w-4',
+                          selectedEdit === index ? 'hidden' : '',
+                        )}
+                        type="button"
+                        disabled={index === 0}
+                        onClick={() => move(index, index - 1)}
+                      >
+                        <ChevronUp />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className={cn(
+                          'ml-4 h-4 w-4',
+                          selectedEdit === index ? 'hidden' : '',
+                        )}
+                        type="button"
+                        disabled={index === fieldsContent.length - 1}
+                        onClick={() => move(index, index + 1)}
+                      >
+                        <ChevronDown />
                       </Button>
 
                       <Textarea
