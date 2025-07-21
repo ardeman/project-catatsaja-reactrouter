@@ -5,6 +5,7 @@ import {
   ReactNode,
   TextareaHTMLAttributes,
   ClipboardEventHandler,
+  FocusEventHandler,
 } from 'react'
 import { FieldValues, Path } from 'react-hook-form'
 
@@ -31,4 +32,5 @@ export type TProperties<TFormValues extends FieldValues> = {
   rows?: TextareaHTMLAttributes<HTMLTextAreaElement>['rows']
   onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>
   onPaste?: ClipboardEventHandler<HTMLTextAreaElement>
+  onFocus?: FocusEventHandler<HTMLTextAreaElement>
 }

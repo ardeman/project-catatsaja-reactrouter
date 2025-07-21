@@ -24,6 +24,7 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
     label,
     onClick,
     onPaste,
+    onFocus,
     hint,
     className,
     containerClassName,
@@ -64,6 +65,7 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
                 )}
                 onClick={onClick}
                 onPaste={onPaste}
+                onFocus={onFocus}
                 onInput={(event) => {
                   const target = event.target as HTMLTextAreaElement
                   target.style.height = 'auto'

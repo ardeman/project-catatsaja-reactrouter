@@ -432,6 +432,7 @@ export const Form = (properties: TFormProperties) => {
           readOnly={task && !isEditable}
           onKeyDown={handleNewItemKeyDown}
           onPaste={handleNewItemPaste}
+          onFocus={() => setSelectedEdit(undefined)}
           leftNode={({ className }) => (
             <div
               className={cn(
