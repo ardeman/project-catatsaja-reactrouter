@@ -141,30 +141,37 @@ export const Form = (properties: TFormProperties) => {
     }
     if (isArrowUp) {
       event.preventDefault()
-      if (index > 0) {
-        setSelectedEdit(index - 1)
-        requestAnimationFrame(() => {
-          setFocus(`content.${index - 1}.item`, {
-            shouldSelect: true,
-          })
-        })
-      } else {
+      const previousIndex = [...fieldsContent]
+        .slice(0, index)
+        .map((field, index) => ({ field, index }))
+        .reverse()
+        .find(({ field }) => field.checked === false)?.index
+
+      if (previousIndex === undefined) {
         setSelectedEdit(undefined)
         setFocus('title')
+      } else {
+        setSelectedEdit(previousIndex)
+        requestAnimationFrame(() => {
+          setFocus(`content.${previousIndex}.item`)
+        })
       }
     }
     if (isArrowDown) {
       event.preventDefault()
-      if (index < fieldsContent.length - 1) {
-        setSelectedEdit(index + 1)
-        requestAnimationFrame(() => {
-          setFocus(`content.${index + 1}.item`, {
-            shouldSelect: true,
-          })
-        })
-      } else {
+      const nextIndex = fieldsContent
+        .map((field, index) => ({ field, index }))
+        .slice(index + 1)
+        .find(({ field }) => field.checked === false)?.index
+
+      if (nextIndex === undefined) {
         setSelectedEdit(undefined)
         setFocus('item')
+      } else {
+        setSelectedEdit(nextIndex)
+        requestAnimationFrame(() => {
+          setFocus(`content.${nextIndex}.item`)
+        })
       }
     }
   }
@@ -173,7 +180,12 @@ export const Form = (properties: TFormProperties) => {
     event: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
     const contentLength = fieldsContent.length
-    const index = contentLength - 1
+    const index =
+      [...fieldsContent]
+        .map((field, index) => ({ field, index }))
+        .reverse()
+        .find(({ field }) => field.checked === false)?.index ??
+      contentLength - 1
     const isEnter = event.key === 'Enter'
     const isBackspace = event.key === 'Backspace'
     const isArrowUp = event.key === 'ArrowUp'
@@ -196,9 +208,7 @@ export const Form = (properties: TFormProperties) => {
       if (contentLength > 0) {
         setSelectedEdit(index)
         requestAnimationFrame(() => {
-          setFocus(`content.${index}.item`, {
-            shouldSelect: true,
-          })
+          setFocus(`content.${index}.item`)
         })
       } else {
         setSelectedEdit(undefined)
@@ -210,9 +220,7 @@ export const Form = (properties: TFormProperties) => {
       if (contentLength > 0) {
         setSelectedEdit(index)
         requestAnimationFrame(() => {
-          setFocus(`content.${index}.item`, {
-            shouldSelect: true,
-          })
+          setFocus(`content.${index}.item`)
         })
       } else {
         setSelectedEdit(undefined)
@@ -296,7 +304,7 @@ export const Form = (properties: TFormProperties) => {
           >
             <Checkbox
               name={`content.${index}.checked`}
-              className="m-0"
+              className="m-0 w-full"
               onChange={(checked) => {
                 update(index, {
                   ...field,
@@ -339,9 +347,7 @@ export const Form = (properties: TFormProperties) => {
                         onClick={() => {
                           setSelectedEdit(index)
                           requestAnimationFrame(() => {
-                            setFocus(`content.${index}.item`, {
-                              shouldSelect: true,
-                            })
+                            setFocus(`content.${index}.item`)
                           })
                         }}
                       >
@@ -363,6 +369,7 @@ export const Form = (properties: TFormProperties) => {
                       <Textarea
                         name={`content.${index}.item`}
                         placeholder={field.item}
+                        className={selectedEdit === index ? 'w-full' : ''}
                         containerClassName={cn(
                           'flex-1',
                           selectedEdit === index ? '' : 'hidden',
