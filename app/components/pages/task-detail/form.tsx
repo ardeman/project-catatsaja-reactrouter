@@ -336,63 +336,6 @@ export const Form = (properties: TFormProperties) => {
                 <>
                   {(!task || isEditable) && (
                     <>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className={cn(
-                          'ml-4 h-4 w-4',
-                          selectedEdit === index ? 'hidden' : '',
-                        )}
-                        disabled={field.checked === true}
-                        type="button"
-                        onClick={() => {
-                          setSelectedEdit(index)
-                          requestAnimationFrame(() => {
-                            setFocus(`content.${index}.item`)
-                          })
-                        }}
-                      >
-                        <Edit />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className={cn(
-                          'ml-4 h-4 w-4',
-                          selectedEdit === index ? 'hidden' : '',
-                        )}
-                        type="button"
-                        onClick={() => remove(index)}
-                      >
-                        <Trash />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className={cn(
-                          'ml-4 h-4 w-4',
-                          selectedEdit === index ? 'hidden' : '',
-                        )}
-                        type="button"
-                        disabled={index === 0}
-                        onClick={() => move(index, index - 1)}
-                      >
-                        <ChevronUp />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className={cn(
-                          'ml-4 h-4 w-4',
-                          selectedEdit === index ? 'hidden' : '',
-                        )}
-                        type="button"
-                        disabled={index === fieldsContent.length - 1}
-                        onClick={() => move(index, index + 1)}
-                      >
-                        <ChevronDown />
-                      </Button>
-
                       <Textarea
                         name={`content.${index}.item`}
                         placeholder={field.item}
@@ -408,6 +351,65 @@ export const Form = (properties: TFormProperties) => {
                           handleContentKeyDown(event, index, field)
                         }
                       />
+
+                      <div className="flex items-center gap-x-1">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className={cn(
+                            'h-5 w-5 rounded-[5px]',
+                            selectedEdit === index ? 'hidden' : '',
+                          )}
+                          disabled={field.checked === true}
+                          type="button"
+                          onClick={() => {
+                            setSelectedEdit(index)
+                            requestAnimationFrame(() => {
+                              setFocus(`content.${index}.item`)
+                            })
+                          }}
+                        >
+                          <Edit />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className={cn(
+                            'h-5 w-5 rounded-[5px]',
+                            selectedEdit === index ? 'hidden' : '',
+                          )}
+                          type="button"
+                          onClick={() => remove(index)}
+                        >
+                          <Trash />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className={cn(
+                            'h-5 w-5 rounded-[5px]',
+                            selectedEdit === index ? 'hidden' : '',
+                          )}
+                          type="button"
+                          disabled={index === 0}
+                          onClick={() => move(index, index - 1)}
+                        >
+                          <ChevronUp />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className={cn(
+                            'h-5 w-5 rounded-[5px]',
+                            selectedEdit === index ? 'hidden' : '',
+                          )}
+                          type="button"
+                          disabled={index === fieldsContent.length - 1}
+                          onClick={() => move(index, index + 1)}
+                        >
+                          <ChevronDown />
+                        </Button>
+                      </div>
                     </>
                   )}
 
