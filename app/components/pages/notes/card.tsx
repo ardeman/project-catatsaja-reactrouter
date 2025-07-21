@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { Action } from '~/components/base/action'
+import { Markdown } from '~/components/base/markdown'
 import {
   Card as UICard,
   CardContent,
@@ -73,9 +74,9 @@ export const Card = (properties: TCardProperties) => {
       </CardHeader>
       {note.content && (
         <CardContent>
-          <p className="whitespace-pre-wrap break-words text-sm">
+          <Markdown className="whitespace-pre-wrap break-words text-sm">
             {note.content}
-          </p>
+          </Markdown>
         </CardContent>
       )}
     </UICard>

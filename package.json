@@ -40,6 +40,7 @@
     "i18next-http-backend": "^3.0.1",
     "isbot": "^4.1.0",
     "lucide-react": "^0.464.0",
+    "markdown-to-jsx": "^7.7.12",
     "masonry-layout": "^4.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

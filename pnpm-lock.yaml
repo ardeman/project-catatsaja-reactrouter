@@ -83,6 +83,9 @@ importers:
       lucide-react:
         specifier: ^0.464.0
         version: 0.464.0(react@18.3.1)
+      markdown-to-jsx:
+        specifier: ^7.7.12
+        version: 7.7.12(react@18.3.1)
       masonry-layout:
         specifier: ^4.2.2
         version: 4.2.2
@@ -3663,6 +3666,12 @@ packages:
 
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
+
+  markdown-to-jsx@7.7.12:
+    resolution: {integrity: sha512-Y5xNBqoaTooSLkmlg2P0fdbh53gp4MqW7zhvcweGCPUWvWI5BecWRYI8vPlzT8D7OULxsQg2qoRW9EsJlBWasQ==}
+    engines: {node: '>= 10'}
+    peerDependencies:
+      react: '>= 0.14.0'
 
   masonry-layout@4.2.2:
     resolution: {integrity: sha512-iGtAlrpHNyxaR19CvKC3npnEcAwszXoyJiI8ARV2ePi7fmYhIud25MHK8Zx4P0LCC4d3TNO9+rFa1KoK1OEOaA==}
@@ -9554,6 +9563,10 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
 
   markdown-table@3.0.4: {}
+
+  markdown-to-jsx@7.7.12(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   masonry-layout@4.2.2:
     dependencies:
