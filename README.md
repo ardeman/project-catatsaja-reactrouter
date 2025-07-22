@@ -10,7 +10,7 @@
 
 ## About
 
-This is a web application for managing notes, tasks, and money logs. It is built with React Router.
+This is a web application for managing notes, tasks, and finances. It is built with React Router.
 
 ## 🍴 Forking This Repo
 

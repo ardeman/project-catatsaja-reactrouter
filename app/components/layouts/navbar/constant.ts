@@ -43,7 +43,7 @@ export const navs = (t: TFunction): TMenu[] => [
     href: '/tasks',
   },
   {
-    name: t('navigation.moneyLog'),
-    href: '/money-log',
+    name: t('navigation.finances'),
+    href: '/finances',
   },
 ]

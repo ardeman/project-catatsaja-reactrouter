@@ -6,7 +6,7 @@
   "navigation": {
     "notes": "Catatan",
     "tasks": "Tugas",
-    "moneyLog": "Catatan Keuangan",
+    "finances": "Keuangan",
     "settings": "Pengaturan",
     "general": "Umum",
     "account": "Akun",
@@ -143,7 +143,7 @@
       "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses"
     }
   },
-  "moneyLog": {
+  "finances": {
     "add": "Buat Baru",
     "form": {
       "add": "Tambah Item",

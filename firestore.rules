@@ -47,7 +47,7 @@ service cloud.firestore {
       // allow write: if canWrite(resource.data.permissions.write);
     }
 
-    match /money-logs/{moneyLogId} {
+    match /finances/{financeId} {
       allow delete: if isOwner(resource.data.owner);
       allow create: if isRegistered();
       allow read, write: if canRead(resource.data.permissions.read);

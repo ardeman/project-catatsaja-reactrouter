@@ -15,7 +15,7 @@ export const meta: MetaFunction = () => [
   {
     name: 'description',
     content:
-      'A comprehensive personal productivity app featuring task lists, timers, and money logging. Organize your tasks, stay on top of your schedule, and track your finances efficiently.',
+      'A personal productivity application that helps you manage tasks, notes, and finances in one place.',
   },
   { name: 'author', content: author },
   {

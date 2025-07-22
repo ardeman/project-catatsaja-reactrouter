@@ -2,7 +2,7 @@ export const protectedPages = new Set([
   '/',
   '/notes',
   '/tasks',
-  '/money-log',
+  '/finances',
   '/settings',
 ])
 

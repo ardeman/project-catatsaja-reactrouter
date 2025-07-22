@@ -13,7 +13,7 @@ export const ItemForm = () => {
           className="w-full max-w-md"
           asChild
         >
-          <Link to="/money-log/add">{t('moneyLog.form.add')}</Link>
+          <Link to="/finances/add">{t('finances.form.add')}</Link>
         </Button>
       </div>
     </div>
