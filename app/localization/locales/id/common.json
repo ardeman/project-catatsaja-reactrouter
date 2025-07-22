@@ -140,7 +140,8 @@
       "deleted": "Tugas berhasil dihapus",
       "created": "Tugas berhasil dibuat",
       "unlinked": "Tugas berhasil diputuskan",
-      "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses"
+      "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses",
+      "itemDeleted": "{{item}} dihapus"
     }
   },
   "finances": {
