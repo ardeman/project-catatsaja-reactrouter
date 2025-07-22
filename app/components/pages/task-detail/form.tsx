@@ -300,6 +300,7 @@ export const Form = (properties: TFormProperties) => {
               setFocus('item')
             }
           }}
+          onFocus={() => setSelectedEdit(undefined)}
           readOnly={task && !isEditable}
         />
         {fieldsContent.map((field, index) => (
