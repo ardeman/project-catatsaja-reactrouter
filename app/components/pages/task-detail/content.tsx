@@ -51,13 +51,31 @@ export const Content = () => {
         return
       }
 
+      if (
+        selectedConfirmation?.kind === 'delete' &&
+        selectedConfirmation.detail.id === task
+      ) {
+        navigate('/tasks', { replace: true })
+        return
+      }
+
       toast({
         variant: 'destructive',
         description: t('tasks.toast.notFound'),
       })
       navigate('/tasks/create', { replace: true })
     }
-  }, [tasks, task, current, navigate, t, user, userIsLoading, mutateLogout])
+  }, [
+    tasks,
+    task,
+    current,
+    navigate,
+    t,
+    user,
+    userIsLoading,
+    mutateLogout,
+    selectedConfirmation,
+  ])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {

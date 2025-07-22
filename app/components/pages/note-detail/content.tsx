@@ -51,13 +51,31 @@ export const Content = () => {
         return
       }
 
+      if (
+        selectedConfirmation?.kind === 'delete' &&
+        selectedConfirmation.detail.id === note
+      ) {
+        navigate('/notes', { replace: true })
+        return
+      }
+
       toast({
         variant: 'destructive',
         description: t('notes.toast.notFound'),
       })
       navigate('/notes/create', { replace: true })
     }
-  }, [notes, note, current, navigate, t, user, userIsLoading, mutateLogout])
+  }, [
+    notes,
+    note,
+    current,
+    navigate,
+    t,
+    user,
+    userIsLoading,
+    mutateLogout,
+    selectedConfirmation,
+  ])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
