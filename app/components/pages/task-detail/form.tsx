@@ -264,26 +264,30 @@ export const Form = (properties: TFormProperties) => {
         onSubmit={onSubmit}
         className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
       >
-        {task ? (
-          <Action
-            isOwner={isOwner}
-            isEditable={isEditable}
-            isPinned={isPinned}
-            handleDelete={() => handleDeleteTask({ task })}
-            handlePin={() => handlePinTask({ task, isPinned: !isPinned })}
-            handleShare={() => handleShareTask({ task })}
-            handleUnlink={() => handleUnlinkTask({ task })}
-            sharedCount={sharedCount}
-            handleBack={() => handleBackTask()}
-          />
-        ) : (
-          <Action
-            isLoading={isCreatePending}
-            isCreate={true}
-            handleBack={() => handleBackTask()}
-            disabled={!isDirty}
-          />
-        )}
+        <div className="sticky top-24 z-50 flex justify-center">
+          {task ? (
+            <Action
+              className="w-full"
+              isOwner={isOwner}
+              isEditable={isEditable}
+              isPinned={isPinned}
+              handleDelete={() => handleDeleteTask({ task })}
+              handlePin={() => handlePinTask({ task, isPinned: !isPinned })}
+              handleShare={() => handleShareTask({ task })}
+              handleUnlink={() => handleUnlinkTask({ task })}
+              sharedCount={sharedCount}
+              handleBack={() => handleBackTask()}
+            />
+          ) : (
+            <Action
+              className="w-full"
+              isLoading={isCreatePending}
+              isCreate={true}
+              handleBack={() => handleBackTask()}
+              disabled={!isDirty}
+            />
+          )}
+        </div>
         <Textarea
           name="title"
           placeholder={t('tasks.form.title.label')}

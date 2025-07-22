@@ -95,26 +95,30 @@ export const Form = (properties: TFormProperties) => {
         onSubmit={onSubmit}
         className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
       >
-        {note ? (
-          <Action
-            isOwner={isOwner}
-            isEditable={isEditable}
-            isPinned={isPinned}
-            handleDelete={() => handleDeleteNote({ note })}
-            handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
-            handleShare={() => handleShareNote({ note })}
-            handleUnlink={() => handleUnlinkNote({ note })}
-            sharedCount={sharedCount}
-            handleBack={() => handleBackNote()}
-          />
-        ) : (
-          <Action
-            isLoading={isCreatePending}
-            isCreate={true}
-            handleBack={() => handleBackNote()}
-            disabled={!isDirty}
-          />
-        )}
+        <div className="sticky top-24 z-50 flex justify-center">
+          {note ? (
+            <Action
+              className="w-full"
+              isOwner={isOwner}
+              isEditable={isEditable}
+              isPinned={isPinned}
+              handleDelete={() => handleDeleteNote({ note })}
+              handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
+              handleShare={() => handleShareNote({ note })}
+              handleUnlink={() => handleUnlinkNote({ note })}
+              sharedCount={sharedCount}
+              handleBack={() => handleBackNote()}
+            />
+          ) : (
+            <Action
+              className="w-full"
+              isLoading={isCreatePending}
+              isCreate={true}
+              handleBack={() => handleBackNote()}
+              disabled={!isDirty}
+            />
+          )}
+        </div>
         <Textarea
           name="title"
           placeholder={t('notes.form.title.label')}
