@@ -44,6 +44,8 @@ export type TActionProperties = {
   isCreate?: boolean
   isLoading?: boolean
   disabled?: boolean
+  handleToggleCheckAll?: () => void
+  checkedAll?: boolean
 }
 
 export type TMenu = {

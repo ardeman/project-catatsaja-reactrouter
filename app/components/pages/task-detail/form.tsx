@@ -88,6 +88,20 @@ export const Form = (properties: TFormProperties) => {
   const watchItem = watch('item')
   const watchContent = watch('content')
 
+  const checkedAll =
+    watchContent.length > 0 &&
+    watchContent.every((item) => item.checked === true)
+
+  const handleToggleCheckAll = () => {
+    const newValue = !checkedAll
+    for (const [index, field] of fieldsContent.entries()) {
+      update(index, {
+        ...field,
+        checked: newValue,
+      })
+    }
+  }
+
   const onSubmit = handleSubmit(async (data) => {
     const { item: _item, ...payload } = data
     if (
@@ -277,6 +291,8 @@ export const Form = (properties: TFormProperties) => {
               handleUnlink={() => handleUnlinkTask({ task })}
               sharedCount={sharedCount}
               handleBack={() => handleBackTask()}
+              handleToggleCheckAll={handleToggleCheckAll}
+              checkedAll={checkedAll}
             />
           ) : (
             <Action
@@ -285,6 +301,8 @@ export const Form = (properties: TFormProperties) => {
               isCreate={true}
               handleBack={() => handleBackTask()}
               disabled={!isDirty}
+              handleToggleCheckAll={handleToggleCheckAll}
+              checkedAll={checkedAll}
             />
           )}
         </div>
