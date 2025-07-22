@@ -286,6 +286,12 @@
           "dark": "Gelap",
           "light": "Terang",
           "system": "Sistem"
+        },
+        "size": {
+          "selector": "Ukuran",
+          "small": "Kecil",
+          "medium": "Sedang",
+          "large": "Besar"
         }
       },
       "toast": {

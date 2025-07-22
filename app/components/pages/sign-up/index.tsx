@@ -9,6 +9,7 @@ import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
 import { LanguageSelector } from '~/components/base/language-selector'
 import { ModeToggle } from '~/components/base/mode-toggle'
+import { SizeToggle } from '~/components/base/size-toggle'
 import { Button as UIButton } from '~/components/ui/button'
 import {
   CardContent,
@@ -27,7 +28,7 @@ export const SignUpPage = () => {
   const { t, i18n } = useTranslation(['common', 'zod'])
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
-  const { theme } = useTheme()
+  const { theme, size } = useTheme()
   const formMethods = useForm<TSignUpRequest>({
     resolver: zodResolver(signUpSchema(t)),
     defaultValues: {
@@ -40,7 +41,7 @@ export const SignUpPage = () => {
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateRegister({ ...data, theme, language: i18n.language })
+    mutateRegister({ ...data, theme, language: i18n.language, size })
   })
   const togglePassword = () => {
     setPasswordType((previous) =>
@@ -71,6 +72,7 @@ export const SignUpPage = () => {
           <div className="flex space-x-2">
             <LanguageSelector />
             <ModeToggle />
+            <SizeToggle />
           </div>
         </div>
       </CardHeader>

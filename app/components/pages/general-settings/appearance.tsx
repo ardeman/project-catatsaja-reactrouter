@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Button } from '~/components/base/button'
 import { LanguageSelector } from '~/components/base/language-selector'
 import { ModeToggle } from '~/components/base/mode-toggle'
+import { SizeToggle } from '~/components/base/size-toggle'
 import {
   Card,
   CardContent,
@@ -22,7 +23,7 @@ import { supportedLanguages } from '~/localization/resource'
 
 export const Appearance = () => {
   const { t, i18n } = useTranslation()
-  const { theme } = useTheme()
+  const { theme, size } = useTheme()
   const { mutate, isPending } = useUpdateAppearance()
   const { data: userData } = useUserData()
 
@@ -30,12 +31,14 @@ export const Appearance = () => {
     values: {
       theme: userData?.theme ?? theme,
       language: userData?.language ?? supportedLanguages[0],
+      size: userData?.size ?? size,
     },
   })
   const { handleSubmit, watch, formState } = formMethods
 
   const watchTheme = watch('theme')
   const watchLanguage = watch('language')
+  const watchSize = watch('size')
 
   useEffect(() => {
     const root = document.documentElement
@@ -51,6 +54,14 @@ export const Appearance = () => {
       root.classList.add(value)
     }
   }, [watchTheme])
+
+  useEffect(() => {
+    const root = document.documentElement
+    let value = '100%'
+    if (watchSize === 'small') value = '87.5%'
+    else if (watchSize === 'large') value = '112.5%'
+    root.style.setProperty('--base-size', value)
+  }, [watchSize])
 
   useEffect(() => {
     if (watchLanguage && i18n.language !== watchLanguage)
@@ -92,6 +103,17 @@ export const Appearance = () => {
               name="theme"
               render={({ field }) => (
                 <ModeToggle
+                  type="radio"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <Controller
+              control={formMethods.control}
+              name="size"
+              render={({ field }) => (
+                <SizeToggle
                   type="radio"
                   value={field.value}
                   onChange={field.onChange}

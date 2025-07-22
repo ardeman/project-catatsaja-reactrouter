@@ -17,14 +17,15 @@ export const clientLoader = async () => {
 
 const Main = () => {
   const { data: userData } = useUserData()
-  const { setTheme, theme } = useTheme()
+  const { setTheme, setSize, theme, size } = useTheme()
   const { i18n } = useTranslation()
 
   useEffect(() => {
     if (userData?.theme && theme !== userData.theme) setTheme(userData.theme)
     if (userData?.language && i18n.language !== userData.language)
       i18n.changeLanguage(userData.language)
-  }, [userData, setTheme, i18n, theme])
+    if (userData?.size && size !== userData.size) setSize(userData.size)
+  }, [userData, setTheme, i18n, theme, setSize, size])
 
   return (
     <main className="flex min-h-dvh w-full flex-col">
