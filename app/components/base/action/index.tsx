@@ -7,7 +7,6 @@ import {
   Trash,
   Users,
   ListChecks,
-  ListX,
 } from 'lucide-react'
 
 import { Button } from '~/components/base/button'
@@ -47,20 +46,7 @@ export const Action = (properties: TActionProperties) => {
           containerClassName="flex-1 flex items-center"
           className={buttonClassName}
         >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-      )}
-      {isCreate && (
-        <Button
-          variant="outline"
-          containerClassName="flex-1 flex items-center"
-          className={buttonClassName}
-          type="submit"
-          isLoading={isLoading}
-          disabled={isLoading || disabled}
-        >
-          <Save className="h-4 w-4" />
-          <span className="sr-only">Submit</span>
+          <ArrowLeft />
         </Button>
       )}
       {isOwner && handleDelete && (
@@ -76,7 +62,7 @@ export const Action = (properties: TActionProperties) => {
             'text-destructive hover:bg-destructive',
           )}
         >
-          <Trash className="h-4 w-4" />
+          <Trash />
         </Button>
       )}
       {!isOwner && handleUnlink && (
@@ -92,7 +78,7 @@ export const Action = (properties: TActionProperties) => {
             'text-destructive hover:bg-destructive',
           )}
         >
-          <Eye className="h-4 w-4" />
+          <Eye />
         </Button>
       )}
       {isOwner && isEditable && handleShare && (
@@ -107,15 +93,15 @@ export const Action = (properties: TActionProperties) => {
         >
           {sharedCount ? (
             <>
-              <Users className="h-4 w-4" />
+              <Users />
               <span className="text-xs">{sharedCount}</span>
             </>
           ) : (
-            <Forward className="h-4 w-4" />
+            <Forward />
           )}
         </Button>
       )}
-      {handleToggleCheckAll && typeof checkedAll === 'boolean' && (
+      {handleToggleCheckAll && (
         <Button
           variant="outline"
           onClick={(event) => {
@@ -123,13 +109,26 @@ export const Action = (properties: TActionProperties) => {
             handleToggleCheckAll()
           }}
           containerClassName="flex-1 flex items-center"
-          className={buttonClassName}
-        >
-          {checkedAll ? (
-            <ListX className="h-4 w-4" />
-          ) : (
-            <ListChecks className="h-4 w-4" />
+          className={cn(
+            buttonClassName,
+            checkedAll ? '[&_svg]:text-primary' : '[&_svg]:hover:text-primary',
           )}
+          disabled={typeof checkedAll !== 'boolean'}
+        >
+          <ListChecks />
+        </Button>
+      )}
+      {isCreate && (
+        <Button
+          variant="outline"
+          containerClassName="flex-1 flex items-center"
+          className={buttonClassName}
+          type="submit"
+          isLoading={isLoading}
+          disabled={isLoading || disabled}
+        >
+          <Save />
+          <span className="sr-only">Submit</span>
         </Button>
       )}
       {handlePin && (
@@ -153,7 +152,7 @@ export const Action = (properties: TActionProperties) => {
               isPinned
                 ? 'rotate-45 group-hover/button:rotate-0'
                 : 'group-hover/button:rotate-45',
-              'h-4 w-4 transition-all duration-300',
+              'transition-all duration-300',
             )}
           />
         </Button>

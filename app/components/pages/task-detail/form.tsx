@@ -89,8 +89,9 @@ export const Form = (properties: TFormProperties) => {
   const watchContent = watch('content')
 
   const checkedAll =
-    watchContent.length > 0 &&
-    watchContent.every((item) => item.checked === true)
+    watchContent.length > 0
+      ? watchContent.every((item) => item.checked === true)
+      : undefined
 
   const handleToggleCheckAll = () => {
     const newValue = !checkedAll
