@@ -177,7 +177,7 @@ export const loginWithGoogle = async () => {
 }
 
 export const register = async (userData: TSignUpRequest) => {
-  const { email, password, displayName, language, theme } = userData
+  const { email, password, displayName, language, theme, size } = userData
   if (!auth || !firestore) {
     throw new Error('Firebase is not initialized.')
   }
@@ -204,6 +204,7 @@ export const register = async (userData: TSignUpRequest) => {
       email,
       language,
       theme,
+      size,
       createdAt: new Date(),
     })
   } else {

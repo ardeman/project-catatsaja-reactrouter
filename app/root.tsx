@@ -29,7 +29,7 @@ export { meta, links } from '~/lib/constants/metadata'
 
 export const HydrateFallback = () => {
   const { i18n } = useTranslation()
-  const { theme } = useTheme()
+  const { theme, size } = useTheme()
   useEffect(() => {
     const root = globalThis.document.documentElement
     root.classList.remove('light', 'dark')
@@ -45,6 +45,14 @@ export const HydrateFallback = () => {
 
     root.classList.add(theme)
   }, [theme])
+
+  useEffect(() => {
+    const root = globalThis.document.documentElement
+    let value = '100%'
+    if (size === 'small') value = '87.5%'
+    else if (size === 'large') value = '112.5%'
+    root.style.setProperty('--base-size', value)
+  }, [size])
 
   return (
     <html

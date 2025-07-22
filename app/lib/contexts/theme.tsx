@@ -7,21 +7,28 @@ import {
 } from 'react'
 
 export type Theme = 'system' | 'light' | 'dark'
+export type Size = 'small' | 'medium' | 'large'
 
 type ThemeProviderProperties = {
   children: ReactNode
   defaultTheme?: Theme
-  storageKey?: string
+  defaultSize?: Size
+  themeStorageKey?: string
+  sizeStorageKey?: string
 }
 
 type ThemeProviderState = {
   theme: Theme
+  size: Size
   setTheme: (theme: Theme) => void
+  setSize: (size: Size) => void
 }
 
 const initialState: ThemeProviderState = {
   theme: 'system',
+  size: 'medium',
   setTheme: () => null,
+  setSize: () => null,
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
@@ -29,11 +36,16 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 export const ThemeProvider = ({
   children,
   defaultTheme = 'system',
-  storageKey = 'vite-ui-theme',
+  defaultSize = 'medium',
+  themeStorageKey = 'vite-ui-theme',
+  sizeStorageKey = 'tailwind-size',
   ...properties
 }: ThemeProviderProperties) => {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
+  const [theme, setThemeState] = useState<Theme>(
+    () => (localStorage.getItem(themeStorageKey) as Theme) || defaultTheme,
+  )
+  const [size, setSizeState] = useState<Size>(
+    () => (localStorage.getItem(sizeStorageKey) as Size) || defaultSize,
   )
 
   useEffect(() => {
@@ -52,12 +64,30 @@ export const ThemeProvider = ({
     root.classList.add(theme)
   }, [theme])
 
+  useEffect(() => {
+    const root = globalThis.document.documentElement
+    let value = '100%'
+    if (size === 'small') value = '87.5%'
+    else if (size === 'large') value = '112.5%'
+    root.style.setProperty('--base-size', value)
+    root.dataset.size = size
+  }, [size])
+
+  const setTheme = (newTheme: Theme) => {
+    localStorage.setItem(themeStorageKey, newTheme)
+    setThemeState(newTheme)
+  }
+
+  const setSize = (newSize: Size) => {
+    localStorage.setItem(sizeStorageKey, newSize)
+    setSizeState(newSize)
+  }
+
   const value = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
-    },
+    size,
+    setTheme,
+    setSize,
   }
 
   return (

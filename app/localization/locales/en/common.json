@@ -286,6 +286,12 @@
           "dark": "Dark",
           "light": "Light",
           "system": "System"
+        },
+        "size": {
+          "selector": "Size",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
         }
       },
       "toast": {

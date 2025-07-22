@@ -10,6 +10,7 @@ import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
 import { LanguageSelector } from '~/components/base/language-selector'
 import { ModeToggle } from '~/components/base/mode-toggle'
+import { SizeToggle } from '~/components/base/size-toggle'
 import { Button as UIButton } from '~/components/ui/button'
 import {
   CardContent,
@@ -87,6 +88,7 @@ export const SignInPage = () => {
           <div className="flex space-x-2">
             <LanguageSelector />
             <ModeToggle />
+            <SizeToggle />
           </div>
         </div>
       </CardHeader>
