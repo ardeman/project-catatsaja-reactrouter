@@ -264,9 +264,10 @@ export const Form = (properties: TFormProperties) => {
         onSubmit={onSubmit}
         className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
       >
-        <div className="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 justify-center md:static md:transform-none">
+        <div className="sticky top-24 z-50 flex justify-center">
           {task ? (
             <Action
+              className="w-full"
               isOwner={isOwner}
               isEditable={isEditable}
               isPinned={isPinned}
@@ -279,6 +280,7 @@ export const Form = (properties: TFormProperties) => {
             />
           ) : (
             <Action
+              className="w-full"
               isLoading={isCreatePending}
               isCreate={true}
               handleBack={() => handleBackTask()}
