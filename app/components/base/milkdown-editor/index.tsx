@@ -1,6 +1,7 @@
 import { Crepe } from '@milkdown/crepe'
-import { Milkdown, useEditor } from '@milkdown/react'
-import { useEffect } from 'react'
+import { editorViewCtx } from '@milkdown/kit/core'
+import { Milkdown, useEditor, useInstance } from '@milkdown/react'
+import { useCallback } from 'react'
 import { PathValue, useFormContext } from 'react-hook-form'
 
 import { TMilkdownEditorProperties } from './type'
@@ -13,10 +14,8 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
 ) => {
   const { name, placeholder: placeholderText } = properties
   const { register, setValue, getValues } = useFormContext<TFormValues>()
-
-  useEffect(() => {
-    register(name)
-  }, [register, name])
+  const { ref } = register(name)
+  const [, getEditor] = useInstance()
 
   useEditor((root) =>
     new Crepe({
@@ -40,5 +39,33 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
     }),
   )
 
-  return <Milkdown />
+  const handleReference = useCallback(
+    (element: HTMLTextAreaElement | null) => {
+      ref(element)
+    },
+    [ref],
+  )
+
+  const handleFocus = () => {
+    const instance = getEditor()
+    if (instance?.action) {
+      instance.action((context) => {
+        const view = context.get(editorViewCtx)
+        view.focus()
+      })
+    }
+  }
+
+  return (
+    <>
+      <textarea
+        ref={handleReference}
+        tabIndex={-1}
+        aria-hidden
+        className="sr-only"
+        onFocus={handleFocus}
+      />
+      <Milkdown />
+    </>
+  )
 }

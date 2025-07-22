@@ -14,6 +14,9 @@ importers:
       '@milkdown/crepe':
         specifier: ^7.15.1
         version: 7.15.1(prosemirror-model@1.25.2)(prosemirror-state@1.4.3)(prosemirror-view@1.40.1)(typescript@5.8.3)
+      '@milkdown/kit':
+        specifier: ^7.15.1
+        version: 7.15.1(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(typescript@5.8.3)
       '@milkdown/react':
         specifier: ^7.15.1
         version: 7.15.1(@codemirror/language@6.11.2)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)(prosemirror-model@1.25.2)(prosemirror-state@1.4.3)(prosemirror-view@1.40.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
