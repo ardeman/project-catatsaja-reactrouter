@@ -48,13 +48,11 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
             const isBackspace = event.key === 'Backspace'
             const isArrowUp = event.key === 'ArrowUp'
             const isEmpty = view.state.doc.textContent.length === 0
-            const atFirstLine = !view.state.doc
-              .textBetween(0, view.state.selection.from)
-              .includes('\n')
+            const atStart = view.state.selection.from === 1
             if (isBackspace && isEmpty) {
               event.preventDefault()
               setFocus(previousName)
-            } else if (isArrowUp && atFirstLine) {
+            } else if (isArrowUp && atStart) {
               event.preventDefault()
               setFocus(previousName)
             }
