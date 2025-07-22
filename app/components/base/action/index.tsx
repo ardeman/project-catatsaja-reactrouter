@@ -111,7 +111,9 @@ export const Action = (properties: TActionProperties) => {
           containerClassName="flex-1 flex items-center"
           className={cn(
             buttonClassName,
-            checkedAll ? '[&_svg]:text-primary' : '[&_svg]:hover:text-primary',
+            checkedAll
+              ? '[&_svg]:text-primary [&_svg]:hover:text-foreground'
+              : '[&_svg]:hover:text-primary',
           )}
           disabled={typeof checkedAll !== 'boolean'}
         >
@@ -142,16 +144,14 @@ export const Action = (properties: TActionProperties) => {
           className={cn(
             buttonClassName,
             isPinned
-              ? 'text-primary hover:text-muted-foreground sm:opacity-100'
-              : 'text-muted-foreground hover:text-primary sm:opacity-0',
+              ? 'text-primary sm:opacity-100'
+              : 'hover:text-primary sm:opacity-0',
             'group/button',
           )}
         >
           <Pin
             className={cn(
-              isPinned
-                ? 'rotate-45 group-hover/button:rotate-0'
-                : 'group-hover/button:rotate-45',
+              isPinned ? 'rotate-45' : '',
               'transition-all duration-300',
             )}
           />
