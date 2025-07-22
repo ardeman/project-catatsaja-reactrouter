@@ -19,7 +19,7 @@ export const useDeleteTask = () => {
       const { isPinned: _isPinned, id: _id, ...data } = task
       await deleteTask(task)
       toast({
-        description: t('notes.toast.deleted'),
+        description: t('tasks.toast.deleted'),
         action: (
           <ToastAction
             altText="Undo"

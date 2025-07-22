@@ -10,10 +10,12 @@ import { Checkbox } from '~/components/base/checkbox'
 import { Textarea } from '~/components/base/textarea'
 import { useTask } from '~/components/pages/tasks'
 import { Button } from '~/components/ui/button'
+import { ToastAction } from '~/components/ui/toast'
 import { auth } from '~/lib/configs/firebase'
 import { useCreateTask } from '~/lib/hooks/use-create-task'
 import { useDebounce } from '~/lib/hooks/use-debounce'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { toast } from '~/lib/hooks/use-toast'
 import { useUpdateTask } from '~/lib/hooks/use-update-task'
 import { TTaskForm } from '~/lib/types/task'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -80,6 +82,7 @@ export const Form = (properties: TFormProperties) => {
     remove,
     update,
     move,
+    insert,
   } = useFieldArray({
     control: control,
     name: 'content',
@@ -101,6 +104,22 @@ export const Form = (properties: TFormProperties) => {
         checked: newValue,
       })
     }
+  }
+
+  const handleRemoveItem = (index: number) => {
+    const item = watchContent[index]
+    remove(index)
+    toast({
+      description: t('tasks.toast.itemDeleted', { item: item.item }),
+      action: (
+        <ToastAction
+          altText="Undo"
+          onClick={() => insert(index, item)}
+        >
+          {t('form.undo')}
+        </ToastAction>
+      ),
+    })
   }
 
   const onSubmit = handleSubmit(async (data) => {
@@ -177,7 +196,7 @@ export const Form = (properties: TFormProperties) => {
       setSelectedEdit(undefined)
       const isRemoving = item.length === 0
       if (isRemoving) {
-        remove(index)
+        handleRemoveItem(index)
       } else {
         update(index, {
           ...field,
@@ -188,7 +207,7 @@ export const Form = (properties: TFormProperties) => {
     }
     if (isBackspace && item.length === 0) {
       event.preventDefault()
-      remove(index)
+      handleRemoveItem(index)
       focusPreviousUnchecked(index)
     }
     if (isArrowUp) {
@@ -390,7 +409,7 @@ export const Form = (properties: TFormProperties) => {
                             selectedEdit === index ? 'hidden' : '',
                           )}
                           type="button"
-                          onClick={() => remove(index)}
+                          onClick={() => handleRemoveItem(index)}
                         >
                           <Trash />
                         </Button>

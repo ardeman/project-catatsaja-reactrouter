@@ -140,7 +140,8 @@
       "deleted": "Task deleted successfully",
       "created": "Task created successfully",
       "unlinked": "Task unlinked successfully",
-      "notFound": "Task not found or you don't have access"
+      "notFound": "Task not found or you don't have access",
+      "itemDeleted": "{{item}} removed"
     }
   },
   "finances": {
