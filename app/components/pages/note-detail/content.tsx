@@ -52,8 +52,8 @@ export const Content = () => {
       }
 
       if (
-        selectedConfirmation?.kind === 'delete' &&
-        selectedConfirmation.detail.id === note
+        ['delete', 'unlink'].includes(selectedConfirmation?.kind || '') &&
+        selectedConfirmation?.detail.id === note
       ) {
         navigate('/notes', { replace: true })
         return

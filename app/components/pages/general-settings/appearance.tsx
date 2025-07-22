@@ -18,6 +18,7 @@ import { useTheme } from '~/lib/contexts/theme'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateAppearance } from '~/lib/hooks/use-update-appearance'
 import { TUpdateAppearanceRequest } from '~/lib/types/settings'
+import { supportedLanguages } from '~/localization/resource'
 
 export const Appearance = () => {
   const { t, i18n } = useTranslation()
@@ -28,7 +29,7 @@ export const Appearance = () => {
   const formMethods = useForm<TUpdateAppearanceRequest>({
     values: {
       theme: userData?.theme ?? theme,
-      language: userData?.language ?? i18n.language,
+      language: userData?.language ?? supportedLanguages[0],
     },
   })
   const { handleSubmit, watch, formState } = formMethods

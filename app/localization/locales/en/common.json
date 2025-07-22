@@ -120,6 +120,7 @@
     "toast": {
       "deleted": "Note deleted successfully",
       "created": "Note created successfully",
+      "unlinked": "Note unlinked successfully",
       "notFound": "Note not found or you don't have access"
     }
   },
@@ -138,6 +139,7 @@
     "toast": {
       "deleted": "Task deleted successfully",
       "created": "Task created successfully",
+      "unlinked": "Task unlinked successfully",
       "notFound": "Task not found or you don't have access"
     }
   },

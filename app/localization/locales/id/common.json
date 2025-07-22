@@ -120,6 +120,7 @@
     "toast": {
       "deleted": "Catatan berhasil dihapus",
       "created": "Catatan berhasil dibuat",
+      "unlinked": "Catatan berhasil diputuskan",
       "notFound": "Catatan tidak ditemukan atau Anda tidak memiliki akses"
     }
   },
@@ -138,6 +139,7 @@
     "toast": {
       "deleted": "Tugas berhasil dihapus",
       "created": "Tugas berhasil dibuat",
+      "unlinked": "Tugas berhasil diputuskan",
       "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses"
     }
   },

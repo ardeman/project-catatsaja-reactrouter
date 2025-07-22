@@ -36,8 +36,8 @@ service cloud.firestore {
     match /notes/{noteId} {
       allow delete: if isOwner(resource.data.owner);
       allow create: if isRegistered();
-      allow read: if canRead(resource.data.permissions.read);
-      allow write: if canWrite(resource.data.permissions.write);
+      allow read, write: if canRead(resource.data.permissions.read);
+      // allow write: if canWrite(resource.data.permissions.write);
     }
 
     match /tasks/{taskId} {
@@ -50,8 +50,8 @@ service cloud.firestore {
     match /money-logs/{moneyLogId} {
       allow delete: if isOwner(resource.data.owner);
       allow create: if isRegistered();
-      allow read: if canRead(resource.data.permissions.read);
-      allow write: if canWrite(resource.data.permissions.write);
+      allow read, write: if canRead(resource.data.permissions.read);
+      // allow write: if canWrite(resource.data.permissions.write);
     }
   }
 }
