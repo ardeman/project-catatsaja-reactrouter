@@ -1,4 +1,5 @@
 import { Crepe } from '@milkdown/crepe'
+import { editorViewCtx } from '@milkdown/kit/core'
 import { Milkdown, useEditor, useInstance } from '@milkdown/react'
 import { useCallback } from 'react'
 import { PathValue, useFormContext } from 'react-hook-form'
@@ -46,9 +47,12 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
   )
 
   const handleFocus = () => {
-    const instance = getEditor() as unknown as { view?: { focus: () => void; hasFocus: () => boolean } }
-    if (instance?.view && !instance.view.hasFocus()) {
-      instance.view.focus()
+    const instance = getEditor()
+    if (instance?.action) {
+      instance.action((context) => {
+        const view = context.get(editorViewCtx)
+        view.focus()
+      })
     }
   }
 
