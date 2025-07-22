@@ -137,6 +137,7 @@ export const Form = (properties: TFormProperties) => {
           key={selectedNote?.id ?? 'create'}
           name="content"
           placeholder={t('notes.form.content.label')}
+          previousName="title"
         />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
