@@ -1,3 +1,4 @@
+import tailwindTypography from '@tailwindcss/typography'
 import type { Config } from 'tailwindcss'
 import tailwindCssAnimate from 'tailwindcss-animate'
 
@@ -65,7 +66,17 @@ export default {
           '5': 'hsl(var(--chart-5))',
         },
       },
+      typography: () => ({
+        zinc: {
+          css: {
+            '--tw-prose-body': 'hsl(var(--foreground))',
+            '--tw-prose-links': 'hsl(var(--primary))',
+            '--tw-prose-counters': 'hsl(var(--foreground))',
+            '--tw-prose-bullets': 'hsl(var(--foreground))',
+          },
+        },
+      }),
     },
   },
-  plugins: [tailwindCssAnimate],
+  plugins: [tailwindCssAnimate, tailwindTypography],
 } satisfies Config
