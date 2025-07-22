@@ -127,6 +127,41 @@ export const Form = (properties: TFormProperties) => {
     condition: !!selectedTask,
   })
 
+  const focusNextUnchecked = (start: number) => {
+    const nextIndex = fieldsContent
+      .map((field, index) => ({ field, index }))
+      .slice(start)
+      .find(({ field }) => field.checked === false)?.index
+
+    if (nextIndex === undefined) {
+      setSelectedEdit(undefined)
+      setFocus('item')
+    } else {
+      setSelectedEdit(nextIndex)
+      requestAnimationFrame(() => {
+        setFocus(`content.${nextIndex}.item`)
+      })
+    }
+  }
+
+  const focusPreviousUnchecked = (start: number) => {
+    const previousIndex = [...fieldsContent]
+      .slice(0, start)
+      .map((field, index) => ({ field, index }))
+      .reverse()
+      .find(({ field }) => field.checked === false)?.index
+
+    if (previousIndex === undefined) {
+      setSelectedEdit(undefined)
+      setFocus('title')
+    } else {
+      setSelectedEdit(previousIndex)
+      requestAnimationFrame(() => {
+        setFocus(`content.${previousIndex}.item`)
+      })
+    }
+  }
+
   const handleContentKeyDown = (
     event: React.KeyboardEvent<HTMLTextAreaElement>,
     index: number,
@@ -140,7 +175,8 @@ export const Form = (properties: TFormProperties) => {
     if (isEnter) {
       event.preventDefault()
       setSelectedEdit(undefined)
-      if (item.length === 0) {
+      const isRemoving = item.length === 0
+      if (isRemoving) {
         remove(index)
       } else {
         update(index, {
@@ -148,47 +184,20 @@ export const Form = (properties: TFormProperties) => {
           item: item,
         })
       }
-      setFocus('item')
+      focusNextUnchecked(isRemoving ? index : index + 1)
     }
     if (isBackspace && item.length === 0) {
       event.preventDefault()
       remove(index)
-      setFocus('item')
+      focusPreviousUnchecked(index)
     }
     if (isArrowUp) {
       event.preventDefault()
-      const previousIndex = [...fieldsContent]
-        .slice(0, index)
-        .map((field, index) => ({ field, index }))
-        .reverse()
-        .find(({ field }) => field.checked === false)?.index
-
-      if (previousIndex === undefined) {
-        setSelectedEdit(undefined)
-        setFocus('title')
-      } else {
-        setSelectedEdit(previousIndex)
-        requestAnimationFrame(() => {
-          setFocus(`content.${previousIndex}.item`)
-        })
-      }
+      focusPreviousUnchecked(index)
     }
     if (isArrowDown) {
       event.preventDefault()
-      const nextIndex = fieldsContent
-        .map((field, index) => ({ field, index }))
-        .slice(index + 1)
-        .find(({ field }) => field.checked === false)?.index
-
-      if (nextIndex === undefined) {
-        setSelectedEdit(undefined)
-        setFocus('item')
-      } else {
-        setSelectedEdit(nextIndex)
-        requestAnimationFrame(() => {
-          setFocus(`content.${nextIndex}.item`)
-        })
-      }
+      focusNextUnchecked(index + 1)
     }
   }
 
@@ -196,12 +205,6 @@ export const Form = (properties: TFormProperties) => {
     event: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
     const contentLength = fieldsContent.length
-    const index =
-      [...fieldsContent]
-        .map((field, index) => ({ field, index }))
-        .reverse()
-        .find(({ field }) => field.checked === false)?.index ??
-      contentLength - 1
     const isEnter = event.key === 'Enter'
     const isBackspace = event.key === 'Backspace'
     const isArrowUp = event.key === 'ArrowUp'
@@ -221,27 +224,11 @@ export const Form = (properties: TFormProperties) => {
     }
     if (isBackspace && watchItem.length === 0) {
       event.preventDefault()
-      if (contentLength > 0) {
-        setSelectedEdit(index)
-        requestAnimationFrame(() => {
-          setFocus(`content.${index}.item`)
-        })
-      } else {
-        setSelectedEdit(undefined)
-        setFocus('title')
-      }
+      focusPreviousUnchecked(fieldsContent.length)
     }
     if (isArrowUp) {
       event.preventDefault()
-      if (contentLength > 0) {
-        setSelectedEdit(index)
-        requestAnimationFrame(() => {
-          setFocus(`content.${index}.item`)
-        })
-      } else {
-        setSelectedEdit(undefined)
-        setFocus('title')
-      }
+      focusPreviousUnchecked(fieldsContent.length)
     }
   }
 
