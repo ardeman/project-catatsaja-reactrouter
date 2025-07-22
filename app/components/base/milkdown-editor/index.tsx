@@ -12,8 +12,9 @@ import '~/styles/crepe.css'
 export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
   properties: TMilkdownEditorProperties<TFormValues>,
 ) => {
-  const { name, placeholder: placeholderText } = properties
-  const { register, setValue, getValues } = useFormContext<TFormValues>()
+  const { name, placeholder: placeholderText, previousName } = properties
+  const { register, setValue, getValues, setFocus } =
+    useFormContext<TFormValues>()
   const { ref } = register(name)
   const [, getEditor] = useInstance()
 
@@ -36,6 +37,32 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
           shouldDirty: true,
         })
       })
+      if (previousName) {
+        listener.mounted((context) => {
+          const view = context.get(editorViewCtx)
+          const dom = (root as HTMLElement).querySelector<HTMLElement>(
+            '.ProseMirror',
+          )
+          if (!dom) return
+          const handler = (event: KeyboardEvent) => {
+            const isBackspace = event.key === 'Backspace'
+            const isArrowUp = event.key === 'ArrowUp'
+            const isEmpty = view.state.doc.textContent.length === 0
+            const atStart = view.state.selection.from === 1
+            if (isBackspace && isEmpty) {
+              event.preventDefault()
+              setFocus(previousName)
+            } else if (isArrowUp && atStart) {
+              event.preventDefault()
+              setFocus(previousName)
+            }
+          }
+          dom.addEventListener('keydown', handler as EventListener)
+          listener.destroy(() => {
+            dom.removeEventListener('keydown', handler as EventListener)
+          })
+        })
+      }
     }),
   )
 

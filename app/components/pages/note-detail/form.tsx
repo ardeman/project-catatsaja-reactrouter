@@ -67,7 +67,6 @@ export const Form = (properties: TFormProperties) => {
     setFocus,
   } = formMethods
   const watchTitle = watch('title')
-  const watchContent = watch('content')
 
   const onSubmit = handleSubmit(async (data) => {
     if ((data.title.length === 0 && data.content.length === 0) || !isDirty) {
@@ -85,7 +84,7 @@ export const Form = (properties: TFormProperties) => {
 
   useDebounce({
     trigger: () => onSubmit(),
-    watch: [watchTitle, watchContent],
+    watch: [watchTitle],
     condition: !!selectedNote,
   })
 
@@ -137,6 +136,7 @@ export const Form = (properties: TFormProperties) => {
           key={selectedNote?.id ?? 'create'}
           name="content"
           placeholder={t('notes.form.content.label')}
+          previousName="title"
         />
       </form>
       <span className="flex justify-center text-xs text-muted-foreground">
