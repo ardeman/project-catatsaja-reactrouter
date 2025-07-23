@@ -35,6 +35,7 @@
     "firestore",
     "navs",
     "reactrouter",
+    "Rootlayout",
     "shadcn",
     "VITE"
   ],

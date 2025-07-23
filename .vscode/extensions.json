@@ -7,6 +7,8 @@
     "vivaxy.vscode-conventional-commits",
     "bradlc.vscode-tailwindcss",
     "usernamehw.errorlens",
-    "formulahendry.auto-close-tag"
+    "formulahendry.auto-close-tag",
+    "christian-kohler.npm-intellisense",
+    "eamodio.gitlens"
   ]
 }
