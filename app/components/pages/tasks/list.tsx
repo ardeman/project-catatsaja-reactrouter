@@ -1,9 +1,12 @@
+import { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { useIntersectionObserver } from 'usehooks-ts'
 
 import { Button } from '~/components/base/button'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
+import { useGetTasksPaginated } from '~/lib/hooks/use-get-tasks-paginated'
 import { useShareTask } from '~/lib/hooks/use-share-task'
 import {
   THandleDeletePermission,
@@ -27,15 +30,29 @@ export const List = () => {
     setOpenShare,
     selectedTask,
   } = useTask()
-  const { data: tasksData } = useGetTasks()
-  const pinnedTasks = tasksData?.filter((task) => task.isPinned)
-  const regularTasks = tasksData?.filter((task) => !task.isPinned)
+  const {
+    data: paginatedTasks,
+    loadMore,
+    hasMore,
+    isLoading,
+  } = useGetTasksPaginated()
+  const { data: allTasks } = useGetTasks()
+  const [intersectionReference, isIntersecting] = useIntersectionObserver({})
+  const pinnedTasks = allTasks?.filter((task) => task.isPinned)
+  const regularTasks = paginatedTasks?.filter((task) => !task.isPinned)
+  const combinedTasks = [...(pinnedTasks || []), ...(regularTasks || [])]
   const { mutate: mutateShare } = useShareTask()
+
+  useEffect(() => {
+    if (isIntersecting && hasMore && !isLoading) {
+      void loadMore()
+    }
+  }, [isIntersecting, hasMore, isLoading, loadMore])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
       ...parameters,
-      task: tasksData?.find((task) => task.id === selectedTask?.id),
+      task: combinedTasks.find((task) => task.id === selectedTask?.id),
     } as TTaskPermissionRequest
     mutateShare(data)
   }
@@ -44,7 +61,7 @@ export const List = () => {
     const data = {
       ...parameters,
       permission: 'delete',
-      task: tasksData?.find((note) => note.id === selectedTask?.id),
+      task: combinedTasks.find((note) => note.id === selectedTask?.id),
     } as TTaskPermissionRequest
     mutateShare(data)
   }
@@ -90,6 +107,10 @@ export const List = () => {
             />
           ))}
       </div>
+      <div
+        ref={intersectionReference}
+        className="h-1"
+      />
 
       <Modal
         open={openConfirmation}
@@ -122,12 +143,12 @@ export const List = () => {
       >
         <Share
           write={
-            tasksData?.find((task) => task.id === selectedTask?.id)?.permissions
-              ?.write || []
+            combinedTasks.find((task) => task.id === selectedTask?.id)
+              ?.permissions?.write || []
           }
           read={
-            tasksData?.find((note) => note.id === selectedTask?.id)?.permissions
-              ?.read || []
+            combinedTasks.find((note) => note.id === selectedTask?.id)
+              ?.permissions?.read || []
           }
           handleShare={handleShare}
           handleUnshare={handleUnshare}

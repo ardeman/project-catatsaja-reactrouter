@@ -1,11 +1,13 @@
 import Masonry from 'masonry-layout'
 import { useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { useIntersectionObserver } from 'usehooks-ts'
 
 import { Button } from '~/components/base/button'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useGetNotes } from '~/lib/hooks/use-get-notes'
+import { useGetNotesPaginated } from '~/lib/hooks/use-get-notes-paginated'
 import { useShareNote } from '~/lib/hooks/use-share-note'
 import {
   THandleDeletePermission,
@@ -28,17 +30,31 @@ export const List = () => {
     selectedNote,
     handleCreateNote,
   } = useNote()
-  const { data: notesData } = useGetNotes()
+  const {
+    data: paginatedNotes,
+    loadMore,
+    hasMore,
+    isLoading,
+  } = useGetNotesPaginated()
+  const { data: allNotes } = useGetNotes()
+  const [intersectionReference, isIntersecting] = useIntersectionObserver({})
   const masonryReferencePinned = useRef(null)
   const masonryReferenceRegular = useRef(null)
-  const pinnedNotes = notesData?.filter((note) => note.isPinned)
-  const regularNotes = notesData?.filter((note) => !note.isPinned)
+  const pinnedNotes = allNotes?.filter((note) => note.isPinned)
+  const regularNotes = paginatedNotes?.filter((note) => !note.isPinned)
+  const combinedNotes = [...(pinnedNotes || []), ...(regularNotes || [])]
   const { mutate: mutateShare } = useShareNote()
+
+  useEffect(() => {
+    if (isIntersecting && hasMore && !isLoading) {
+      void loadMore()
+    }
+  }, [isIntersecting, hasMore, isLoading, loadMore])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
       ...parameters,
-      note: notesData?.find((note) => note.id === selectedNote?.id),
+      note: combinedNotes.find((note) => note.id === selectedNote?.id),
     } as TNotePermissionRequest
     mutateShare(data)
   }
@@ -47,7 +63,7 @@ export const List = () => {
     const data = {
       ...parameters,
       permission: 'delete',
-      note: notesData?.find((note) => note.id === selectedNote?.id),
+      note: combinedNotes.find((note) => note.id === selectedNote?.id),
     } as TNotePermissionRequest
     mutateShare(data)
   }
@@ -75,7 +91,7 @@ export const List = () => {
         regular.layout()
       }
     }
-  }, [notesData])
+  }, [paginatedNotes, allNotes])
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -126,6 +142,10 @@ export const List = () => {
             ))}
         </div>
       </div>
+      <div
+        ref={intersectionReference}
+        className="h-1"
+      />
 
       <Modal
         open={openConfirmation}
@@ -161,12 +181,12 @@ export const List = () => {
       >
         <Share
           write={
-            notesData?.find((note) => note.id === selectedNote?.id)?.permissions
-              ?.write || []
+            combinedNotes.find((note) => note.id === selectedNote?.id)
+              ?.permissions?.write || []
           }
           read={
-            notesData?.find((note) => note.id === selectedNote?.id)?.permissions
-              ?.read || []
+            combinedNotes.find((note) => note.id === selectedNote?.id)
+              ?.permissions?.read || []
           }
           handleShare={handleShare}
           handleUnshare={handleUnshare}
