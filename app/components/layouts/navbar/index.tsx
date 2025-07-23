@@ -16,7 +16,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '~/components/ui/popover'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useLogout } from '~/lib/hooks/use-logout'
 import { toast } from '~/lib/hooks/use-toast'
@@ -63,11 +67,11 @@ export const Navbar = (properties: TProperties) => {
       )}
     >
       <Navigation className="hidden flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
-      <Sheet
+      <Popover
         open={open}
         onOpenChange={setOpen}
       >
-        <SheetTrigger asChild>
+        <PopoverTrigger asChild>
           <Button
             variant="outline"
             size="icon"
@@ -76,14 +80,17 @@ export const Navbar = (properties: TProperties) => {
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
-        </SheetTrigger>
-        <SheetContent side="left">
+        </PopoverTrigger>
+        <PopoverContent
+          sideOffset={8}
+          className="w-screen p-4 backdrop-blur supports-[backdrop-filter]:bg-background/20 md:hidden"
+        >
           <Navigation
-            className="grid"
+            className="grid gap-4"
             onLinkClick={() => setOpen(false)}
           />
-        </SheetContent>
-      </Sheet>
+        </PopoverContent>
+      </Popover>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <FormProvider {...formMethods}>
           <form
@@ -115,7 +122,10 @@ export const Navbar = (properties: TProperties) => {
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent
+            align="end"
+            className="backdrop-blur supports-[backdrop-filter]:bg-background/20"
+          >
             <DropdownMenuLabel>
               {userData?.displayName || userData?.email}
             </DropdownMenuLabel>
