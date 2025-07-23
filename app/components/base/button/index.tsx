@@ -17,12 +17,12 @@ export const Button = (properties: TButtonProperties) => {
     variant,
   } = properties
   return (
-    <div className={cn('grid space-y-1', containerClassName)}>
+    <div className={cn(containerClassName, 'grid space-y-1')}>
       <UIButton
         variant={variant}
         onClick={onClick}
         type={type}
-        className={cn('flex items-center justify-center gap-2', className)}
+        className={cn(className, 'flex items-center justify-center gap-2')}
         disabled={disabled}
       >
         <Loader2 className={isLoading ? 'animate-spin' : 'hidden'} />

@@ -6,6 +6,7 @@
     "wayou.vscode-todo-highlight",
     "vivaxy.vscode-conventional-commits",
     "bradlc.vscode-tailwindcss",
-    "usernamehw.errorlens"
+    "usernamehw.errorlens",
+    "formulahendry.auto-close-tag"
   ]
 }

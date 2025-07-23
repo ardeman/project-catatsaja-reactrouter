@@ -4,6 +4,7 @@ import { Outlet } from 'react-router'
 
 import { fetchUserData } from '~/apis/firestore/user'
 import { Navbar } from '~/components/layouts/navbar'
+import { ScrollArea } from '~/components/ui/scroll-area'
 import { useTheme } from '~/lib/contexts/theme'
 import { useUserData } from '~/lib/hooks/use-get-user'
 
@@ -28,10 +29,12 @@ const Main = () => {
   }, [userData, setTheme, i18n, theme, setSize, size])
 
   return (
-    <main className="flex min-h-dvh w-full flex-col">
-      <Navbar />
-      <Outlet />
-    </main>
+    <ScrollArea className="flex h-dvh w-full">
+      <main className="flex min-h-dvh flex-col">
+        <Navbar />
+        <Outlet />
+      </main>
+    </ScrollArea>
   )
 }
 

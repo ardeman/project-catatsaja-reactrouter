@@ -30,9 +30,12 @@ export const Action = (properties: TActionProperties) => {
     disabled = false,
     handleToggleCheckAll,
     checkedAll,
+    buttonClassName: buttonClassNameProperty,
   } = properties
-  const buttonClassName =
-    'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0'
+  const buttonClassName = cn(
+    'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0',
+    buttonClassNameProperty,
+  )
 
   return (
     <div className={cn(className, 'flex justify-between gap-1')}>

@@ -289,6 +289,7 @@ export const Form = (properties: TFormProperties) => {
           {task ? (
             <Action
               className="w-full"
+              buttonClassName="supports-[backdrop-filter]:bg-accent/20 backdrop-blur"
               isOwner={isOwner}
               isEditable={isEditable}
               isPinned={isPinned}
@@ -304,6 +305,7 @@ export const Form = (properties: TFormProperties) => {
           ) : (
             <Action
               className="w-full"
+              buttonClassName="supports-[backdrop-filter]:bg-accent/20 backdrop-blur"
               isLoading={isCreatePending}
               isCreate={true}
               handleBack={() => handleBackTask()}
