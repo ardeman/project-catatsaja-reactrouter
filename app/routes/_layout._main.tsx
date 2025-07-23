@@ -30,7 +30,7 @@ const Main = () => {
 
   return (
     <ScrollArea className="flex h-dvh w-full">
-      <main className="flex min-h-dvh flex-col">
+      <main className="flex min-h-dvh w-screen flex-col">
         <Navbar />
         <Outlet />
       </main>
