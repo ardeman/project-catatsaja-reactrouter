@@ -1,11 +1,12 @@
 import Masonry from 'masonry-layout'
 import { useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { useIntersectionObserver } from 'usehooks-ts'
 
 import { Button } from '~/components/base/button'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
-import { useGetNotes } from '~/lib/hooks/use-get-notes'
+import { useGetNotesPaginated } from '~/lib/hooks/use-get-notes-paginated'
 import { useShareNote } from '~/lib/hooks/use-share-note'
 import {
   THandleDeletePermission,
@@ -28,12 +29,20 @@ export const List = () => {
     selectedNote,
     handleCreateNote,
   } = useNote()
-  const { data: notesData } = useGetNotes()
+  const { data: notesData, loadMore, hasMore, isLoading } =
+    useGetNotesPaginated()
+  const [intersectionReference, isIntersecting] = useIntersectionObserver({})
   const masonryReferencePinned = useRef(null)
   const masonryReferenceRegular = useRef(null)
   const pinnedNotes = notesData?.filter((note) => note.isPinned)
   const regularNotes = notesData?.filter((note) => !note.isPinned)
   const { mutate: mutateShare } = useShareNote()
+
+  useEffect(() => {
+    if (isIntersecting && hasMore && !isLoading) {
+      void loadMore()
+    }
+  }, [isIntersecting, hasMore, isLoading, loadMore])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
@@ -126,6 +135,7 @@ export const List = () => {
             ))}
         </div>
       </div>
+      <div ref={intersectionReference} className="h-1" />
 
       <Modal
         open={openConfirmation}

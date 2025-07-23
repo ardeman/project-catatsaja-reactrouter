@@ -1,9 +1,11 @@
+import { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { useIntersectionObserver } from 'usehooks-ts'
 
 import { Button } from '~/components/base/button'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
-import { useGetTasks } from '~/lib/hooks/use-get-tasks'
+import { useGetTasksPaginated } from '~/lib/hooks/use-get-tasks-paginated'
 import { useShareTask } from '~/lib/hooks/use-share-task'
 import {
   THandleDeletePermission,
@@ -27,10 +29,18 @@ export const List = () => {
     setOpenShare,
     selectedTask,
   } = useTask()
-  const { data: tasksData } = useGetTasks()
+  const { data: tasksData, loadMore, hasMore, isLoading } =
+    useGetTasksPaginated()
+  const [intersectionReference, isIntersecting] = useIntersectionObserver({})
   const pinnedTasks = tasksData?.filter((task) => task.isPinned)
   const regularTasks = tasksData?.filter((task) => !task.isPinned)
   const { mutate: mutateShare } = useShareTask()
+
+  useEffect(() => {
+    if (isIntersecting && hasMore && !isLoading) {
+      void loadMore()
+    }
+  }, [isIntersecting, hasMore, isLoading, loadMore])
 
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
@@ -90,6 +100,7 @@ export const List = () => {
             />
           ))}
       </div>
+      <div ref={intersectionReference} className="h-1" />
 
       <Modal
         open={openConfirmation}
