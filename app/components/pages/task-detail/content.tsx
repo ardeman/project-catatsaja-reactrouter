@@ -7,7 +7,7 @@ import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useTask } from '~/components/pages/tasks'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
-import { useGetTasks } from '~/lib/hooks/use-get-tasks'
+import { useGetTask } from '~/lib/hooks/use-get-task'
 import { useLogout } from '~/lib/hooks/use-logout'
 import { useShareTask } from '~/lib/hooks/use-share-task'
 import { toast } from '~/lib/hooks/use-toast'
@@ -23,7 +23,9 @@ export const Content = () => {
   const { task } = useParams()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { data: tasks } = useGetTasks()
+  const { data: taskData, isLoading: taskIsLoading } = useGetTask(
+    task === 'create' ? undefined : task,
+  )
   const { data: user, isLoading: userIsLoading } = useAuthUser()
   const { mutate: mutateLogout } = useLogout()
   const {
@@ -38,37 +40,37 @@ export const Content = () => {
   } = useTask()
   const { mutate: mutateShare } = useShareTask()
 
-  const current = tasks?.find((n) => n.id === task)
+  useEffect(() => {
+    if (taskData) setSelectedTask(taskData)
+  }, [taskData, setSelectedTask])
 
   useEffect(() => {
-    if (current) setSelectedTask(current)
-  }, [current, setSelectedTask])
-
-  useEffect(() => {
-    if (tasks && task !== 'create' && !current) {
-      if (!user && !userIsLoading) {
-        mutateLogout()
-        return
-      }
-
-      if (
-        ['delete', 'unlink'].includes(selectedConfirmation?.kind || '') &&
-        selectedConfirmation?.detail.id === task
-      ) {
-        navigate('/tasks', { replace: true })
-        return
-      }
-
-      toast({
-        variant: 'destructive',
-        description: t('tasks.toast.notFound'),
-      })
-      navigate('/tasks/create', { replace: true })
+    if (taskIsLoading || task === 'create' || taskData) {
+      return
     }
+
+    if (!user && !userIsLoading) {
+      mutateLogout()
+      return
+    }
+
+    if (
+      ['delete', 'unlink'].includes(selectedConfirmation?.kind || '') &&
+      selectedConfirmation?.detail.id === task
+    ) {
+      navigate('/tasks', { replace: true })
+      return
+    }
+
+    toast({
+      variant: 'destructive',
+      description: t('tasks.toast.notFound'),
+    })
+    navigate('/tasks/create', { replace: true })
   }, [
-    tasks,
+    taskData,
+    taskIsLoading,
     task,
-    current,
     navigate,
     t,
     user,
@@ -80,7 +82,7 @@ export const Content = () => {
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
       ...parameters,
-      task: tasks?.find((n) => n.id === selectedTask?.id),
+      task: taskData,
     } as TTaskPermissionRequest
     mutateShare(data)
   }
@@ -89,12 +91,12 @@ export const Content = () => {
     const data = {
       ...parameters,
       permission: 'delete',
-      task: tasks?.find((n) => n.id === selectedTask?.id),
+      task: taskData,
     } as TTaskPermissionRequest
     mutateShare(data)
   }
 
-  if (!tasks)
+  if (taskIsLoading)
     return (
       <LoadingScreen
         isLoading
@@ -104,7 +106,7 @@ export const Content = () => {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-      <Form tasks={tasks} />
+      <Form task={taskData} />
       <Modal
         open={openConfirmation}
         setOpen={setOpenConfirmation}
@@ -135,14 +137,8 @@ export const Content = () => {
       >
         <Share
           path={`/tasks/${selectedTask?.id}`}
-          write={
-            tasks?.find((n) => n.id === selectedTask?.id)?.permissions?.write ||
-            []
-          }
-          read={
-            tasks?.find((n) => n.id === selectedTask?.id)?.permissions?.read ||
-            []
-          }
+          write={taskData?.permissions?.write || []}
+          read={taskData?.permissions?.read || []}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />
