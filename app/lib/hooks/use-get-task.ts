@@ -10,7 +10,12 @@ export const useGetTask = (id?: string) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (!firestore || !id) return
+    if (!firestore || !id) {
+      setData(undefined)
+      setIsLoading(false)
+      return
+    }
+    setIsLoading(true)
     const database = firestore
     let unsubscribe: () => void
 
