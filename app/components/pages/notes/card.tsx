@@ -47,11 +47,14 @@ export const Card = (properties: TCardProperties) => {
 
   return (
     <UICard
-      className={cn(className, 'group/card relative mb-4 w-full sm:max-w-xs')}
+      className={cn(
+        className,
+        'group/card relative mb-4 w-full overflow-hidden sm:max-w-xs',
+      )}
       onClick={() => handleOpenNote(note)}
     >
       <Action
-        className="absolute bottom-1 left-1 right-1"
+        className="absolute bottom-1 left-1 right-1 z-20"
         isOwner={isOwner}
         isEditable={isEditable}
         isPinned={isPinned}
@@ -73,10 +76,11 @@ export const Card = (properties: TCardProperties) => {
         {note.title && <CardTitle className="text-xl">{note.title}</CardTitle>}
       </CardHeader>
       {note.content && (
-        <CardContent>
+        <CardContent className="max-h-96 overflow-hidden">
           <Markdown className="whitespace-pre-wrap break-words text-sm">
             {note.content}
           </Markdown>
+          <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-12 w-full bg-gradient-to-b from-transparent to-background" />
         </CardContent>
       )}
     </UICard>
