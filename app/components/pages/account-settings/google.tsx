@@ -44,7 +44,7 @@ export const Google = (properties: TProperties) => {
   }
 
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardHeader>
         <CardTitle className="flex items-center space-x-1">
           {t('settings.google.title')}
@@ -59,7 +59,7 @@ export const Google = (properties: TProperties) => {
       </CardHeader>
       <CardContent>
         <Button
-          containerClassName="w-full sm:w-fit"
+          containerClassName="w-full sm:w-fit min-w-20 overflow-auto"
           variant="outline"
           onClick={handleLinkGoogle}
           disabled={disabled || !!userGoogleProvider}
