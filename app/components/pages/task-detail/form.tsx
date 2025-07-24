@@ -25,7 +25,7 @@ import { taskSchema } from '~/lib/validations/task'
 import { TFormProperties } from './type'
 
 export const Form = (properties: TFormProperties) => {
-  const { tasks } = properties
+  const { task } = properties
   const { t, i18n } = useTranslation()
   const {
     selectedTask,
@@ -35,7 +35,6 @@ export const Form = (properties: TFormProperties) => {
     handleUnlinkTask,
     handleBackTask,
   } = useTask()
-  const task = tasks?.find((n) => n.id === selectedTask?.id)
   const dateLabel = task
     ? getDateLabel({
         updatedAt: task.updatedAt?.seconds,

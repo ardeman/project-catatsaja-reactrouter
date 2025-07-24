@@ -19,7 +19,7 @@ import { noteSchema } from '~/lib/validations/note'
 import { TFormProperties } from './type'
 
 export const Form = (properties: TFormProperties) => {
-  const { notes } = properties
+  const { note } = properties
   const { t, i18n } = useTranslation()
   const {
     selectedNote,
@@ -29,7 +29,6 @@ export const Form = (properties: TFormProperties) => {
     handleUnlinkNote,
     handleBackNote,
   } = useNote()
-  const note = notes?.find((n) => n.id === selectedNote?.id)
   const dateLabel = note
     ? getDateLabel({
         updatedAt: note.updatedAt?.seconds,
