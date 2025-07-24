@@ -11,7 +11,7 @@ export const FinancesPage = () => {
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <Button
         containerClassName="flex fixed bottom-4 md:top-16 z-50 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8 h-fit"
-        className="w-full backdrop-blur supports-[backdrop-filter]:bg-primary/70 supports-[backdrop-filter]:hover:bg-primary"
+        className="w-full backdrop-blur hover:bg-primary supports-[backdrop-filter]:bg-primary/70"
       >
         <Link to="/finances/create">{t('finances.add')}</Link>
       </Button>
