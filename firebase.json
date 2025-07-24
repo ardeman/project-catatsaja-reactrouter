@@ -11,6 +11,11 @@
         "source": "**",
         "destination": "/index.html"
       }
-    ]
+    ],
+    "server": {
+      "headers": {
+        "Cross-Origin-Opener-Policy": "same-origin-allow-popups"
+      }
+    }
   }
 }
