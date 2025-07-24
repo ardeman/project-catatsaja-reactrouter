@@ -77,9 +77,9 @@ export const Card = (properties: TCardProperties) => {
         <CardContent className="flex flex-col gap-1">
           {task.content
             .filter((_, index) => index < 2)
-            .map((item) => (
+            .map((item, index) => (
               <div
-                key={item.sequence}
+                key={index}
                 className="flex items-center gap-2"
               >
                 <Checkbox checked={item.checked} />

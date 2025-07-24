@@ -223,7 +223,6 @@ export const Form = (properties: TFormProperties) => {
   const handleNewItemKeyDown = (
     event: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
-    const contentLength = fieldsContent.length
     const isEnter = event.key === 'Enter'
     const isBackspace = event.key === 'Backspace'
     const isArrowUp = event.key === 'ArrowUp'
@@ -232,7 +231,6 @@ export const Form = (properties: TFormProperties) => {
       setSelectedEdit(undefined)
       if (watchItem.length === 0) return
       append({
-        sequence: contentLength,
         checked: false,
         item: watchItem,
       })
@@ -262,15 +260,11 @@ export const Form = (properties: TFormProperties) => {
     if (lines.length > 1) {
       event.preventDefault()
       setSelectedEdit(undefined)
-      const base = fieldsContent.length
-      let index = 0
       for (const line of lines) {
         append({
-          sequence: base + index,
           checked: false,
           item: line,
         })
-        index += 1
       }
       setValue('item', '')
       requestAnimationFrame(() => {
@@ -344,13 +338,6 @@ export const Form = (properties: TFormProperties) => {
                   checked: checked as boolean,
                 })
               }}
-              leftNode={
-                <input
-                  type="hidden"
-                  name={`content.${index}.sequence`}
-                  value={index}
-                />
-              }
               label={
                 selectedEdit === index ? (
                   ''
