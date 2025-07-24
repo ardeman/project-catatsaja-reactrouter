@@ -27,19 +27,26 @@ export const useGetNote = (id?: string) => {
         return
       }
       const reference = doc(database, 'notes', id)
-      unsubscribe = onSnapshot(reference, (snap) => {
-        if (snap.exists()) {
-          const noteData = snap.data()
-          setData({
-            ...noteData,
-            id: snap.id,
-            isPinned: noteData.pinnedBy?.includes(user.uid),
-          } as TNoteResponse)
-        } else {
+      unsubscribe = onSnapshot(
+        reference,
+        (snap) => {
+          if (snap.exists()) {
+            const noteData = snap.data()
+            setData({
+              ...noteData,
+              id: snap.id,
+              isPinned: noteData.pinnedBy?.includes(user.uid),
+            } as TNoteResponse)
+          } else {
+            setData(undefined)
+          }
+          setIsLoading(false)
+        },
+        () => {
           setData(undefined)
-        }
-        setIsLoading(false)
-      })
+          setIsLoading(false)
+        },
+      )
     }
 
     void listen()
