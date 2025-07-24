@@ -27,19 +27,26 @@ export const useGetTask = (id?: string) => {
         return
       }
       const reference = doc(database, 'tasks', id)
-      unsubscribe = onSnapshot(reference, (snap) => {
-        if (snap.exists()) {
-          const taskData = snap.data()
-          setData({
-            ...taskData,
-            id: snap.id,
-            isPinned: taskData.pinnedBy?.includes(user.uid),
-          } as TTaskResponse)
-        } else {
+      unsubscribe = onSnapshot(
+        reference,
+        (snap) => {
+          if (snap.exists()) {
+            const taskData = snap.data()
+            setData({
+              ...taskData,
+              id: snap.id,
+              isPinned: taskData.pinnedBy?.includes(user.uid),
+            } as TTaskResponse)
+          } else {
+            setData(undefined)
+          }
+          setIsLoading(false)
+        },
+        () => {
           setData(undefined)
-        }
-        setIsLoading(false)
-      })
+          setIsLoading(false)
+        },
+      )
     }
 
     void listen()
