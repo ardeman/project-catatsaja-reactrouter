@@ -160,6 +160,7 @@ export const List = () => {
         }
       >
         <Share
+          path={`/notes/${selectedNote?.id}`}
           write={
             notesData?.find((note) => note.id === selectedNote?.id)?.permissions
               ?.write || []

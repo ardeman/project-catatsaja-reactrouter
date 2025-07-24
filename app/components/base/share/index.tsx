@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BookUser, CircleUser, Trash } from 'lucide-react'
+import { BookUser, CircleUser, Trash, Copy as CopyIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Input } from '~/components/base/input'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
+import { Input as UIInput } from '~/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -27,7 +28,7 @@ import {
 import { shareSchema } from '~/lib/validations/common'
 
 export const Share = (properties: TPermissions) => {
-  const { write, read, handleShare, handleUnshare } = properties
+  const { write, read, handleShare, handleUnshare, path } = properties
   const [disabled, setDisabled] = useState(false)
   const [email, setEmail] = useState('')
   const { t } = useTranslation(['common', 'zod'])
@@ -38,6 +39,8 @@ export const Share = (properties: TPermissions) => {
     defaultValues: { user: '' },
   })
   const { handleSubmit, getValues, setValue } = formMethods
+  const [copied, setCopied] = useState(false)
+  const currentLink = `${globalThis.location.origin}${path}`
 
   const onSubmit = handleSubmit(async (data) => {
     setEmail(data.user)
@@ -76,12 +79,42 @@ export const Share = (properties: TPermissions) => {
     setValue('user', '')
   }
 
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(currentLink)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      // Optionally handle error
+    }
+  }
+
   return (
     <FormProvider {...formMethods}>
       <form
         onSubmit={onSubmit}
         className="group/form is-shown min-w-0 space-y-4"
       >
+        {/* Current Link and Copy Button */}
+        <div className="relative flex items-center gap-2">
+          <UIInput
+            type="text"
+            name="currentLink"
+            defaultValue={currentLink}
+            readOnly
+            className="flex-1 pr-10"
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={handleCopyLink}
+            size="icon"
+            className="absolute right-3.5 h-4 w-4"
+          >
+            {copied ? <CopyIcon className="text-primary" /> : <CopyIcon />}
+          </Button>
+        </div>
+        {/* End Current Link and Copy Button */}
         <Input
           type="search"
           name="user"

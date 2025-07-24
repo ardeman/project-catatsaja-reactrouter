@@ -134,6 +134,7 @@ export const Content = () => {
         }
       >
         <Share
+          path={`/tasks/${selectedTask?.id}`}
           write={
             tasks?.find((n) => n.id === selectedTask?.id)?.permissions?.write ||
             []

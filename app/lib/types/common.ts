@@ -22,6 +22,7 @@ export type TPermissions = {
   write: string[]
   handleShare: (parameters: THandleSetPermission) => void
   handleUnshare: (parameters: Pick<THandleDeletePermission, 'uid'>) => void
+  path?: string
 }
 
 export type TParametersPermission = Pick<TPermissions, 'write'> &

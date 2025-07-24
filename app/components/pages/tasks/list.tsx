@@ -121,6 +121,7 @@ export const List = () => {
         }
       >
         <Share
+          path={`/tasks/${selectedTask?.id}`}
           write={
             tasksData?.find((task) => task.id === selectedTask?.id)?.permissions
               ?.write || []

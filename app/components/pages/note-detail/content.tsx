@@ -137,6 +137,7 @@ export const Content = () => {
         }
       >
         <Share
+          path={`/notes/${selectedNote?.id}`}
           write={
             notes?.find((n) => n.id === selectedNote?.id)?.permissions?.write ||
             []
