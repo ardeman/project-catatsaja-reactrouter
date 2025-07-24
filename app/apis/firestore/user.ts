@@ -3,7 +3,7 @@ import {
   GoogleAuthProvider,
   sendEmailVerification,
   signInWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
   updateProfile as updateProfileAuth,
 } from 'firebase/auth'
 import {
@@ -42,7 +42,15 @@ export const fetchUserData = async () => {
   const snap = await getDoc(reference)
 
   if (!snap.exists()) {
-    throw new Error('User data not found in Firestore.')
+    const newUser = {
+      displayName: user.displayName ?? '',
+      email: user.email ?? '',
+      photoURL: user.photoURL || '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    await setDoc(reference, newUser)
+    return { ...newUser, uid: user.uid } as unknown as TUserResponse
   }
 
   const data = snap.data()
@@ -155,25 +163,8 @@ export const loginWithGoogle = async () => {
     throw new Error('Firebase is not initialized.')
   }
 
-  // Sign in with Google
-  const result = await signInWithPopup(auth, provider)
-  const user = result.user
-
-  if (user) {
-    // Check if user exists in Firestore
-    const reference = doc(firestore, 'users', user.uid)
-    const snap = await getDoc(reference)
-
-    // If user data doesn't exist, store it
-    if (!snap.exists()) {
-      await setDoc(reference, {
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL || '',
-        createdAt: new Date(),
-      })
-    }
-  }
+  // Sign in with Google using redirect
+  await signInWithRedirect(auth, provider)
 }
 
 export const register = async (userData: TSignUpRequest) => {
