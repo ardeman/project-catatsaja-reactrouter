@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 
@@ -44,8 +44,14 @@ export const Content = () => {
     if (taskData) setSelectedTask(taskData)
   }, [taskData, setSelectedTask])
 
+  const previousLoading = useRef(taskIsLoading)
+
   useEffect(() => {
-    if (taskIsLoading || task === 'create' || taskData) {
+    const hasFinishedLoading = previousLoading.current && !taskIsLoading
+    previousLoading.current = taskIsLoading
+    if (!hasFinishedLoading) return
+
+    if (task === 'create' || taskData) {
       return
     }
 

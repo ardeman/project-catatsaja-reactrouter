@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 
@@ -44,8 +44,14 @@ export const Content = () => {
     if (noteData) setSelectedNote(noteData)
   }, [noteData, setSelectedNote])
 
+  const previousLoading = useRef(noteIsLoading)
+
   useEffect(() => {
-    if (noteIsLoading || note === 'create' || noteData) {
+    const hasFinishedLoading = previousLoading.current && !noteIsLoading
+    previousLoading.current = noteIsLoading
+    if (!hasFinishedLoading) return
+
+    if (note === 'create' || noteData) {
       return
     }
 
