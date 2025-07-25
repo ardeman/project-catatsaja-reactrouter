@@ -36,12 +36,20 @@ export const Currency = () => {
 
   const formMethods = useForm<TUpdateCurrencyRequest>({
     resolver: zodResolver(currencySettingSchema()),
-    values: {
+    defaultValues: {
       numberFormat: userData?.numberFormat ?? numberFormat,
       currencies: userData?.currencies ?? currencies,
       defaultCurrency: userData?.defaultCurrency ?? defaultCurrency,
     },
   })
+
+  useEffect(() => {
+    formMethods.reset({
+      numberFormat: userData?.numberFormat ?? numberFormat,
+      currencies: userData?.currencies ?? currencies,
+      defaultCurrency: userData?.defaultCurrency ?? defaultCurrency,
+    })
+  }, [userData, numberFormat, currencies, defaultCurrency, formMethods])
 
   const { handleSubmit, watch, control, formState } = formMethods
 
@@ -78,9 +86,7 @@ export const Currency = () => {
     <Card>
       <CardHeader>
         <CardTitle>{t('settings.currency.title')}</CardTitle>
-        <CardDescription>
-          {t('settings.currency.description')}
-        </CardDescription>
+        <CardDescription>{t('settings.currency.description')}</CardDescription>
       </CardHeader>
       <FormProvider {...formMethods}>
         <form onSubmit={onSubmit}>
@@ -98,7 +104,10 @@ export const Currency = () => {
             </div>
             <div className="space-y-2">
               {fields.map((field, index) => (
-                <div key={field.id} className="flex items-end gap-2">
+                <div
+                  key={field.id}
+                  className="flex items-end gap-2"
+                >
                   <Input<TUpdateCurrencyRequest>
                     name={`currencies.${index}.code` as const}
                     label={t('settings.currency.form.currency.code')}
