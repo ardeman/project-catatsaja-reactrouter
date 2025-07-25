@@ -9,9 +9,10 @@ import { TProperties } from './type'
 
 export const LoadingSpinner = (properties: TProperties) => {
   const { classname } = properties
-  const [counter, setCounter] = useState(getRandomIndex(icons.length, -1))
+  const [counter, setCounter] = useState(0)
 
   useEffect(() => {
+    setCounter(getRandomIndex(icons.length, -1))
     // Change the icon at the end of each animation cycle
     const interval = setInterval(() => {
       setCounter((previousCounter) =>

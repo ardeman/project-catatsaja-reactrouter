@@ -319,5 +319,9 @@
         "linked": "Terhubung ke <strong>{{email}}</strong>"
       }
     }
+  },
+  "notFound": {
+    "title": "Halaman Tidak Ditemukan",
+    "description": "Maaf, halaman yang Anda cari tidak ditemukan."
   }
 }
