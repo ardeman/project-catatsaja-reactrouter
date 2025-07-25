@@ -18,7 +18,8 @@
     "signOut": "Keluar",
     "search": {
       "placeholder": "Cari"
-    }
+    },
+    "currency": "Mata Uang"
   },
   "form": {
     "save": "Simpan",
@@ -145,6 +146,7 @@
     }
   },
   "finances": {
+    "title": "Keuangan",
     "add": "Buat Baru",
     "form": {
       "add": "Tambah Item",
@@ -318,6 +320,14 @@
         "link": "Hubungkan akun Google anda",
         "linked": "Terhubung ke <strong>{{email}}</strong>"
       }
+    },
+    "currencyFormat": {
+      "title": "Format Mata Uang",
+      "description": "Atur format mata uang Anda."
+    },
+    "manageCurrencies": {
+      "title": "Kelola Mata Uang",
+      "description": "Kelola mata uang Anda."
     }
   },
   "notFound": {

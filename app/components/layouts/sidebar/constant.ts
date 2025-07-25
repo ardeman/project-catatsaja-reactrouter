@@ -9,4 +9,8 @@ export const settings = (t: TFunction) => [
     name: t('navigation.account'),
     href: '/settings/account',
   },
+  {
+    name: t('navigation.currency'),
+    href: '/settings/currency',
+  },
 ]

@@ -18,7 +18,8 @@
     "signOut": "Sign Out",
     "search": {
       "placeholder": "Search"
-    }
+    },
+    "currency": "Currency"
   },
   "form": {
     "save": "Save",
@@ -145,6 +146,7 @@
     }
   },
   "finances": {
+    "title": "Finance",
     "add": "Create New",
     "form": {
       "add": "Add Item",
@@ -318,6 +320,14 @@
         "link": "Link your Google account",
         "linked": "Linked to <strong>{{email}}</strong>"
       }
+    },
+    "currencyFormat": {
+      "title": "Currency Format",
+      "description": "Set your currency format."
+    },
+    "manageCurrencies": {
+      "title": "Manage Currencies",
+      "description": "Manage your currencies."
     }
   },
   "notFound": {
