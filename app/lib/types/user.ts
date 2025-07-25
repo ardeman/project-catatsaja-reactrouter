@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 import { Theme, Size } from '~/lib/contexts/theme'
 import { TTime } from '~/lib/types/common'
+import { TCurrency } from '~/lib/types/settings'
 import { emailSchema, signInSchema, signUpSchema } from '~/lib/validations/user'
 
 export type TSignInRequest = z.infer<ReturnType<typeof signInSchema>>
@@ -22,6 +23,7 @@ export type TUserResponse = {
   createdAt: TTime
   updatedAt: TTime
   defaultCurrency?: string
+  currencies?: TCurrency[]
   numberFormat?: string
   language?: string
   theme?: Theme

@@ -299,6 +299,20 @@
         "updated": "Pengaturan tampilan berhasil diperbarui."
       }
     },
+    "currency": {
+      "title": "Mata Uang",
+      "description": "Kelola mata uang dan format.",
+      "form": {
+        "locale": { "selector": "Format Angka" },
+        "default": { "selector": "Mata Uang Default" },
+        "currency": {
+          "code": "Kode",
+          "digits": "Digit"
+        },
+        "add": "Tambah mata uang"
+      },
+      "toast": { "updated": "Pengaturan mata uang berhasil diperbarui." }
+    },
     "email": {
       "title": "Perbarui alamat email",
       "description": "Perbarui alamat email Anda.",
