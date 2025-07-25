@@ -4,6 +4,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
 import { LoadingSpinner } from '~/components/base/loading-spinner'
 import { Rootlayout } from '~/components/layouts/root'
+import { CurrencyProvider } from '~/lib/contexts/currency'
 import { FirebaseProvider } from '~/lib/contexts/firebase'
 import { ThemeProvider, useTheme } from '~/lib/contexts/theme'
 
@@ -17,9 +18,11 @@ const App = () => {
   return (
     <FirebaseProvider>
       <ThemeProvider>
-        <Rootlayout>
-          <Outlet />
-        </Rootlayout>
+        <CurrencyProvider>
+          <Rootlayout>
+            <Outlet />
+          </Rootlayout>
+        </CurrencyProvider>
       </ThemeProvider>
     </FirebaseProvider>
   )

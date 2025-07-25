@@ -299,6 +299,20 @@
         "updated": "Appearance updated successfully."
       }
     },
+    "currency": {
+      "title": "Currency",
+      "description": "Manage your currencies and formatting.",
+      "form": {
+        "locale": { "selector": "Locale" },
+        "default": { "selector": "Default Currency" },
+        "currency": {
+          "code": "Code",
+          "digits": "Digits"
+        },
+        "add": "Add currency"
+      },
+      "toast": { "updated": "Currency settings updated." }
+    },
     "email": {
       "title": "Change email address",
       "description": "Update your email address.",

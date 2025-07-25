@@ -5,6 +5,7 @@ import { Outlet } from 'react-router'
 import { fetchUserData } from '~/apis/firestore/user'
 import { Navbar } from '~/components/layouts/navbar'
 import { ScrollArea } from '~/components/ui/scroll-area'
+import { useCurrency } from '~/lib/contexts/currency'
 import { useTheme } from '~/lib/contexts/theme'
 import { useUserData } from '~/lib/hooks/use-get-user'
 
@@ -19,6 +20,8 @@ export const clientLoader = async () => {
 const Main = () => {
   const { data: userData } = useUserData()
   const { setTheme, setSize, theme, size } = useTheme()
+  const { setNumberFormat, setCurrencies, setDefaultCurrency, numberFormat } =
+    useCurrency()
   const { i18n } = useTranslation()
 
   useEffect(() => {
@@ -26,7 +29,26 @@ const Main = () => {
     if (userData?.language && i18n.language !== userData.language)
       i18n.changeLanguage(userData.language)
     if (userData?.size && size !== userData.size) setSize(userData.size)
-  }, [userData, setTheme, i18n, theme, setSize, size])
+    if (
+      userData?.numberFormat &&
+      numberFormat !== userData.numberFormat
+    )
+      setNumberFormat(userData.numberFormat)
+    if (userData?.currencies) setCurrencies(userData.currencies)
+    if (userData?.defaultCurrency)
+      setDefaultCurrency(userData.defaultCurrency)
+  }, [
+    userData,
+    setTheme,
+    i18n,
+    theme,
+    setSize,
+    size,
+    setNumberFormat,
+    setCurrencies,
+    setDefaultCurrency,
+    numberFormat,
+  ])
 
   return (
     <ScrollArea className="flex h-dvh w-full">

@@ -10,3 +10,14 @@ export type TUpdateAppearanceRequest = {
   language: string
   size: Size
 }
+
+export type TCurrency = {
+  code: string
+  digits: number
+}
+
+export type TUpdateCurrencyRequest = {
+  numberFormat: string
+  currencies: TCurrency[]
+  defaultCurrency: string
+}
