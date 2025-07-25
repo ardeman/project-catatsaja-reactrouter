@@ -49,7 +49,7 @@ export const Currency = () => {
       currencies: userData?.currencies ?? currencies,
       defaultCurrency: userData?.defaultCurrency ?? defaultCurrency,
     })
-  }, [userData, numberFormat, currencies, defaultCurrency, formMethods])
+  }, [userData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { handleSubmit, watch, control, formState } = formMethods
 
