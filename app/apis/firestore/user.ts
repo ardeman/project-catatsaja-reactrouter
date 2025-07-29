@@ -96,7 +96,6 @@ export const fetchUsers = async () => {
 }
 
 export const updateProfile = async (userData: TUpdateProfileRequest) => {
-  const { ...rest } = userData
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
@@ -105,7 +104,7 @@ export const updateProfile = async (userData: TUpdateProfileRequest) => {
   }
   const reference = doc(firestore, 'users', auth?.currentUser.uid)
   return await updateDoc(reference, {
-    ...rest,
+    ...userData,
     updatedAt: new Date(),
   })
 }

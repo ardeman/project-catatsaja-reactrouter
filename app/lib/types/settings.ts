@@ -1,21 +1,21 @@
 import { z } from 'zod'
 
 import { Theme, Size } from '~/lib/contexts/theme'
-import { generalSettingSchema } from '~/lib/validations/settings'
+import {
+  generalSettingSchema,
+  currencyFormatSchema,
+} from '~/lib/validations/settings'
 
-export type TUpdateProfileRequest = z.infer<typeof generalSettingSchema>
+export type TUpdateProfileRequest = z.infer<
+  ReturnType<typeof generalSettingSchema>
+>
 
 export type TUpdateAppearanceRequest = {
   theme: Theme
-  language: string
   size: Size
+  language: string
 }
 
-export type TCurrencyFormatRequest = {
-  thousandSeparator: string
-  decimalSeparator: string
-  minimumFractionDigits: number
-  currencyPlacement: 'before' | 'after'
-  currencyType: 'symbol' | 'code'
-  addSpace: boolean
-}
+export type TCurrencyFormatRequest = z.infer<
+  ReturnType<typeof currencyFormatSchema>
+>
