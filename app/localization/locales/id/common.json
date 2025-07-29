@@ -406,6 +406,10 @@
         "isDefault": {
           "label": "Atur sebagai Default",
           "hint": "Mata uang ini akan digunakan sebagai default untuk transaksi baru"
+        },
+        "details": {
+          "maxDecimals": "Maksimal Desimal",
+          "latestRate": "Nilai Tukar Terbaru"
         }
       },
       "button": {

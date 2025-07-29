@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Edit, Plus, Trash2 } from 'lucide-react'
-import { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { ChevronDown, ChevronUp, Edit, Plus, Trash2 } from 'lucide-react'
+import React, { useState } from 'react'
+import { useForm, FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
@@ -35,6 +35,7 @@ import { useDeleteCurrency } from '~/lib/hooks/use-delete-currency'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useUpdateCurrency } from '~/lib/hooks/use-update-currency'
 import { TCurrency, TCreateCurrencyRequest } from '~/lib/types/settings'
+import { cn } from '~/lib/utils/shadcn'
 import { currencySchema } from '~/lib/validations/settings'
 
 import { useCurrencySettings } from './context'
@@ -48,6 +49,7 @@ export const ManageCurrencies = () => {
   const [deletingCurrency, setDeletingCurrency] = useState<TCurrency | null>(
     null,
   )
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
   const { data: currencies = [], isLoading } = useGetCurrencies()
   const { mutate: createCurrency, isPending: isCreating } = useCreateCurrency()
@@ -104,6 +106,16 @@ export const ManageCurrencies = () => {
   const handleCloseDeleteDialog = () => {
     setIsDeleteDialogOpen(false)
     setDeletingCurrency(null)
+  }
+
+  const toggleExpandedRow = (currencyId: string) => {
+    const newExpandedRows = new Set(expandedRows)
+    if (newExpandedRows.has(currencyId)) {
+      newExpandedRows.delete(currencyId)
+    } else {
+      newExpandedRows.add(currencyId)
+    }
+    setExpandedRows(newExpandedRows)
   }
 
   const onSubmit = handleSubmit(async (data) => {
@@ -163,52 +175,127 @@ export const ManageCurrencies = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Symbol</TableHead>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Max Decimals</TableHead>
-                  <TableHead>Latest Rate</TableHead>
-                  <TableHead>Default</TableHead>
+                  <TableHead className="w-1/3 md:w-auto">Code</TableHead>
+                  <TableHead className="hidden w-auto md:table-cell">
+                    Symbol
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    Max Decimals
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    Latest Rate
+                  </TableHead>
+                  <TableHead className="hidden w-auto md:table-cell">
+                    Default
+                  </TableHead>
                   <TableHead className="w-[100px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {currencies.map((currency: TCurrency) => (
-                  <TableRow key={currency.id}>
-                    <TableCell className="font-medium">
-                      {currency.symbol}
-                    </TableCell>
-                    <TableCell>{currency.code}</TableCell>
-                    <TableCell>{currency.maximumFractionDigits}</TableCell>
-                    <TableCell>{currency.latestRate}</TableCell>
-                    <TableCell>
-                      {currency.isDefault ? (
-                        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                          Default
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
+                {currencies.map((currency: TCurrency) => {
+                  const isExpanded = expandedRows.has(currency.id!)
+                  return (
+                    <React.Fragment key={currency.id}>
+                      <TableRow>
+                        <TableCell>
+                          <span>{currency.code}</span>{' '}
+                          <span
+                            className={cn(
+                              'inline-block text-xs md:hidden',
+                              currency.isDefault
+                                ? 'font-bold text-primary'
+                                : '',
+                            )}
+                          >
+                            ({currency.symbol})
+                          </span>
+                        </TableCell>
+                        <TableCell className="hidden font-medium md:table-cell">
+                          {currency.symbol}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {currency.maximumFractionDigits}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {currency.latestRate}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {currency.isDefault ? (
+                            <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
+                              Default
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 md:gap-2">
+                            <Button
+                              variant="ghost"
+                              onClick={() => toggleExpandedRow(currency.id!)}
+                              disabled={disabled}
+                              className="md:hidden"
+                            >
+                              {isExpanded ? (
+                                <ChevronUp className="h-3 w-3" />
+                              ) : (
+                                <ChevronDown className="h-3 w-3" />
+                              )}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              onClick={() => handleOpenDialog(currency)}
+                              disabled={disabled}
+                            >
+                              <Edit className="h-3 w-3 md:h-4 md:w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              onClick={() => handleOpenDeleteDialog(currency)}
+                              disabled={disabled}
+                            >
+                              <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      {isExpanded && (
+                        <TableRow className="md:hidden">
+                          <TableCell
+                            {...({
+                              colSpan: 6,
+                            } as React.HTMLAttributes<HTMLTableCellElement>)}
+                          >
+                            <div className="flex flex-col gap-4 p-4">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-muted-foreground">
+                                  {t(
+                                    'settings.manageCurrencies.form.details.maxDecimals',
+                                  )}
+                                  :
+                                </span>
+                                <span className="text-sm">
+                                  {currency.maximumFractionDigits}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-muted-foreground">
+                                  {t(
+                                    'settings.manageCurrencies.form.details.latestRate',
+                                  )}
+                                  :
+                                </span>
+                                <span className="text-sm">
+                                  {currency.latestRate}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                        </TableRow>
                       )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleOpenDialog(currency)}
-                          disabled={disabled}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleOpenDeleteDialog(currency)}
-                          disabled={disabled}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                    </React.Fragment>
+                  )
+                })}
               </TableBody>
             </Table>
           )}

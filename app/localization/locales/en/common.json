@@ -406,6 +406,10 @@
         "isDefault": {
           "label": "Set as Default",
           "hint": "This currency will be used as the default for new transactions"
+        },
+        "details": {
+          "maxDecimals": "Max Decimals",
+          "latestRate": "Latest Rate"
         }
       },
       "button": {
