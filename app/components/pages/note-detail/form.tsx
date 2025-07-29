@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { MilkdownEditor } from '~/components/base/milkdown-editor'
+import { Modal } from '~/components/base/modal'
 import { Textarea } from '~/components/base/textarea'
 import { useNote } from '~/components/pages/notes'
 import { auth } from '~/lib/configs/firebase'
@@ -68,6 +70,16 @@ export const Form = (properties: TFormProperties) => {
   const watchTitle = watch('title')
   const watchContent = watch('content')
 
+  const [openBack, setOpenBack] = useState(false)
+
+  const handleBack = () => {
+    if (!selectedNote && isDirty) {
+      setOpenBack(true)
+      return
+    }
+    handleBackNote()
+  }
+
   const onSubmit = handleSubmit(async (data) => {
     if ((data.title.length === 0 && data.content.length === 0) || !isDirty) {
       return
@@ -107,7 +119,7 @@ export const Form = (properties: TFormProperties) => {
               handleShare={() => handleShareNote({ note })}
               handleUnlink={() => handleUnlinkNote({ note })}
               sharedCount={sharedCount}
-              handleBack={() => handleBackNote()}
+              handleBack={handleBackNote}
             />
           ) : (
             <Action
@@ -115,7 +127,7 @@ export const Form = (properties: TFormProperties) => {
               buttonClassName="supports-[backdrop-filter]:bg-accent/20 backdrop-blur"
               isLoading={isCreatePending}
               isCreate={true}
-              handleBack={() => handleBackNote()}
+              handleBack={handleBack}
               disabled={!isDirty}
             />
           )}
@@ -150,6 +162,21 @@ export const Form = (properties: TFormProperties) => {
               : `(${t('form.permissions.readOnly')})`)}
         </span>
       </span>
+      <Modal
+        open={openBack}
+        setOpen={setOpenBack}
+        handleConfirm={handleBackNote}
+        variant="destructive"
+        title={
+          <Trans
+            i18nKey="form.back"
+            values={{ item: t('notes.title') }}
+            components={{ span: <span className="text-primary" /> }}
+          />
+        }
+      >
+        <></>
+      </Modal>
     </FormProvider>
   )
 }

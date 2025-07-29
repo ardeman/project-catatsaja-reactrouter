@@ -30,6 +30,7 @@
     "confirm": "Confirm",
     "undo": "Undo",
     "openPage": "Open Page",
+    "back": "Discard this <span>{{item}}</span>?",
     "permissions": {
       "select": "Choose permissions",
       "readOnly": "Read only",
