@@ -1,249 +1,344 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BadgeAlert, BadgeCheck } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Edit, Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useRevalidator } from 'react-router'
 
 import { Button } from '~/components/base/button'
+import { Checkbox } from '~/components/base/checkbox'
 import { Input } from '~/components/base/input'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '~/components/ui/card'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '~/components/ui/tooltip'
-import { useAuthUser } from '~/lib/hooks/use-auth-user'
-import { useEmailVerification } from '~/lib/hooks/use-email-verification'
-import { useResetPassword } from '~/lib/hooks/use-reset-password'
-import { useUpdateEmail } from '~/lib/hooks/use-update-email'
-import { TEmailRequest } from '~/lib/types/user'
-import { cn } from '~/lib/utils/shadcn'
-import { emailSchema } from '~/lib/validations/user'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '~/components/ui/dialog'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '~/components/ui/table'
+import { useCreateCurrency } from '~/lib/hooks/use-create-currency'
+import { useDeleteCurrency } from '~/lib/hooks/use-delete-currency'
+import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
+import { useUpdateCurrency } from '~/lib/hooks/use-update-currency'
+import { TCurrency, TCreateCurrencyRequest } from '~/lib/types/settings'
+import { currencySchema } from '~/lib/validations/settings'
 
 import { useCurrencySettings } from './context'
 
 export const ManageCurrencies = () => {
   const { disabled, setDisabled } = useCurrencySettings()
   const { t } = useTranslation()
-  const [timerEmailVerify, setTimerEmailVerify] = useState<number>()
-  const [timerUpdateEmail, setTimerUpdateEmail] = useState<number>()
-  const [timerSetPassword, setTimerSetPassword] = useState<number>()
-  const { revalidate } = useRevalidator()
-  const { data: authData } = useAuthUser()
-  const formMethods = useForm<TEmailRequest>({
-    resolver: zodResolver(emailSchema(t)),
-    values: {
-      email: authData?.email || '',
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingCurrency, setEditingCurrency] = useState<TCurrency | null>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [deletingCurrency, setDeletingCurrency] = useState<TCurrency | null>(
+    null,
+  )
+
+  const { data: currencies = [], isLoading } = useGetCurrencies()
+  const { mutate: createCurrency, isPending: isCreating } = useCreateCurrency()
+  const { mutate: updateCurrency, isPending: isUpdating } = useUpdateCurrency()
+  const { mutate: deleteCurrency, isPending: isDeleting } = useDeleteCurrency()
+
+  const formMethods = useForm<TCreateCurrencyRequest>({
+    resolver: zodResolver(currencySchema(t)),
+    defaultValues: {
+      symbol: '',
+      code: '',
+      maximumFractionDigits: 2,
+      latestRate: 1,
+      isDefault: false,
     },
   })
-  const userPasswordProvider = authData?.providerData.find(
-    (provider) => provider.providerId === 'password',
-  )
-  const { handleSubmit, watch, formState } = formMethods
-  const watchEmail = watch('email')
 
-  const {
-    mutate: mutateUpdateEmail,
-    isPending: isUpdateEmailPending,
-    isSuccess: isUpdateEmailSuccess,
-    isError: isUpdateEmailError,
-  } = useUpdateEmail()
+  const { handleSubmit, reset, formState } = formMethods
+
+  const handleOpenDialog = (currency?: TCurrency) => {
+    if (currency) {
+      setEditingCurrency(currency)
+      reset({
+        symbol: currency.symbol,
+        code: currency.code,
+        maximumFractionDigits: currency.maximumFractionDigits,
+        latestRate: currency.latestRate,
+        isDefault: currency.isDefault || false,
+      })
+    } else {
+      setEditingCurrency(null)
+      reset({
+        symbol: '',
+        code: '',
+        maximumFractionDigits: 2,
+        latestRate: 1,
+        isDefault: false,
+      })
+    }
+    setIsDialogOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false)
+    setEditingCurrency(null)
+    reset()
+  }
+
+  const handleOpenDeleteDialog = (currency: TCurrency) => {
+    setDeletingCurrency(currency)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const handleCloseDeleteDialog = () => {
+    setIsDeleteDialogOpen(false)
+    setDeletingCurrency(null)
+  }
 
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateUpdateEmail(data)
+
+    if (editingCurrency) {
+      updateCurrency({
+        id: editingCurrency.id!,
+        ...data,
+      })
+    } else {
+      createCurrency(data)
+    }
+
+    handleCloseDialog()
   })
 
-  useEffect(() => {
-    if (isUpdateEmailSuccess || isUpdateEmailError) {
-      setDisabled(false)
+  const handleDelete = () => {
+    if (deletingCurrency) {
+      setDisabled(true)
+      deleteCurrency(deletingCurrency.id!)
+      handleCloseDeleteDialog()
     }
-    if (isUpdateEmailSuccess) {
-      setTimerUpdateEmail(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdateEmailSuccess, isUpdateEmailError])
-
-  useEffect(() => {
-    if (timerUpdateEmail === 0) {
-      setTimerUpdateEmail(undefined)
-      revalidate()
-    } else if (timerUpdateEmail) {
-      const timer = setTimeout(() => {
-        setTimerUpdateEmail((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerUpdateEmail])
-
-  const {
-    mutate: mutateSendEmailVerification,
-    isPending: isSendEmailVerificationPending,
-    isSuccess: isSendEmailVerificationSuccess,
-    isError: isSendEmailVerificationError,
-  } = useEmailVerification()
-
-  const handleSendEmailVerification = () => {
-    mutateSendEmailVerification()
-    setDisabled(true)
   }
 
-  useEffect(() => {
-    if (isSendEmailVerificationSuccess || isSendEmailVerificationError) {
-      setDisabled(false)
-    }
-    if (isSendEmailVerificationSuccess) {
-      setTimerEmailVerify(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSendEmailVerificationSuccess, isSendEmailVerificationError])
-
-  useEffect(() => {
-    if (timerEmailVerify === 0) {
-      setTimerEmailVerify(undefined)
-      revalidate()
-    } else if (timerEmailVerify) {
-      const timer = setTimeout(() => {
-        setTimerEmailVerify((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerEmailVerify])
-
-  const {
-    mutate: mutateSetPassword,
-    isPending: isSetPasswordPending,
-    isSuccess: isSetPasswordSuccess,
-    isError: isSetPasswordError,
-  } = useResetPassword()
-
-  useEffect(() => {
-    if (isSetPasswordSuccess || isSetPasswordError) {
-      setDisabled(false)
-    }
-    if (isSetPasswordSuccess) {
-      setTimerSetPassword(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSetPasswordSuccess, isSetPasswordError])
-
-  useEffect(() => {
-    if (timerSetPassword === 0) {
-      setTimerSetPassword(undefined)
-      revalidate()
-    } else if (timerSetPassword) {
-      const timer = setTimeout(() => {
-        setTimerSetPassword((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerSetPassword])
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t('settings.manageCurrencies.title')}</CardTitle>
-        <CardDescription>
-          {t('settings.manageCurrencies.description')}
-        </CardDescription>
-      </CardHeader>
-      <FormProvider {...formMethods}>
-        <form onSubmit={onSubmit}>
-          <CardContent className="flex items-end space-x-4">
-            <Input
-              label={t('auth.form.email.label')}
-              name="email"
-              disabled={
-                disabled || !authData?.emailVerified || !userPasswordProvider
-              }
-              placeholder={t('auth.form.email.placeholder')}
-              className="w-full"
-              rightNode={({ className }) =>
-                watchEmail === authData?.email && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        {authData?.emailVerified ? (
-                          <BadgeCheck
-                            className={cn(
-                              className,
-                              'text-green-500 hover:cursor-help',
-                            )}
-                          />
-                        ) : (
-                          <BadgeAlert
-                            className={cn(
-                              className,
-                              'text-destructive hover:cursor-help',
-                            )}
-                          />
-                        )}
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {authData?.emailVerified
-                          ? t('settings.email.tooltip.verified')
-                          : t('settings.email.tooltip.unverified')}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )
-              }
-            />
-            {!authData?.emailVerified && (
-              <Button
-                className="w-fit"
-                disabled={disabled || !!timerEmailVerify}
-                type="button"
-                isLoading={isSendEmailVerificationPending}
-                onClick={handleSendEmailVerification}
-              >
-                {t('settings.email.button.verify')}{' '}
-                {timerEmailVerify && `(${timerEmailVerify})`}
-              </Button>
-            )}
-            {!userPasswordProvider && (
-              <Button
-                className="w-fit"
-                disabled={disabled || !!timerSetPassword}
-                type="button"
-                isLoading={isSetPasswordPending}
-                onClick={() => mutateSetPassword()}
-              >
-                {t('settings.email.button.setPassword')}{' '}
-                {timerSetPassword && `(${timerSetPassword})`}
-              </Button>
-            )}
-          </CardContent>
-          <CardFooter className="space-x-4 border-t px-6 py-4">
+    <>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('settings.manageCurrencies.title')}</CardTitle>
+              <CardDescription>
+                {t('settings.manageCurrencies.description')}
+              </CardDescription>
+            </div>
             <Button
-              disabled={
-                isUpdateEmailPending ||
-                disabled ||
-                !authData?.emailVerified ||
-                !!timerUpdateEmail ||
-                !userPasswordProvider ||
-                !formState.isDirty
-              }
-              isLoading={isUpdateEmailPending}
-              type="submit"
+              onClick={() => handleOpenDialog()}
+              disabled={disabled}
+              className="flex items-center gap-2"
             >
-              {t('form.save')} {timerUpdateEmail && `(${timerUpdateEmail})`}
+              <Plus className="h-4 w-4" />
+              {t('settings.manageCurrencies.button.add')}
             </Button>
-          </CardFooter>
-        </form>
-      </FormProvider>
-    </Card>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-muted-foreground">Loading currencies...</div>
+            </div>
+          ) : currencies.length === 0 ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-muted-foreground">No currencies found.</div>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Symbol</TableHead>
+                  <TableHead>Code</TableHead>
+                  <TableHead>Max Decimals</TableHead>
+                  <TableHead>Latest Rate</TableHead>
+                  <TableHead>Default</TableHead>
+                  <TableHead className="w-[100px]">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {currencies.map((currency: TCurrency) => (
+                  <TableRow key={currency.id}>
+                    <TableCell className="font-medium">
+                      {currency.symbol}
+                    </TableCell>
+                    <TableCell>{currency.code}</TableCell>
+                    <TableCell>{currency.maximumFractionDigits}</TableCell>
+                    <TableCell>{currency.latestRate}</TableCell>
+                    <TableCell>
+                      {currency.isDefault ? (
+                        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                          Default
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          onClick={() => handleOpenDialog(currency)}
+                          disabled={disabled}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => handleOpenDeleteDialog(currency)}
+                          disabled={disabled}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Add/Edit Currency Dialog */}
+      <Dialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingCurrency
+                ? t('settings.manageCurrencies.button.edit')
+                : t('settings.manageCurrencies.button.add')}
+            </DialogTitle>
+            <DialogDescription>
+              {editingCurrency ? 'Edit currency details' : 'Add a new currency'}
+            </DialogDescription>
+          </DialogHeader>
+          <FormProvider {...formMethods}>
+            <form onSubmit={onSubmit}>
+              <div className="grid gap-4 py-4">
+                <Input
+                  label={t('settings.manageCurrencies.form.symbol.label')}
+                  name="symbol"
+                  placeholder={t(
+                    'settings.manageCurrencies.form.symbol.placeholder',
+                  )}
+                  disabled={disabled || isCreating || isUpdating}
+                />
+                <Input
+                  label={t('settings.manageCurrencies.form.code.label')}
+                  name="code"
+                  placeholder={t(
+                    'settings.manageCurrencies.form.code.placeholder',
+                  )}
+                  disabled={disabled || isCreating || isUpdating}
+                />
+                <Input
+                  label={t(
+                    'settings.manageCurrencies.form.maximumFractionDigits.label',
+                  )}
+                  name="maximumFractionDigits"
+                  type="number"
+                  placeholder={t(
+                    'settings.manageCurrencies.form.maximumFractionDigits.placeholder',
+                  )}
+                  disabled={disabled || isCreating || isUpdating}
+                />
+                <Input
+                  label={t('settings.manageCurrencies.form.latestRate.label')}
+                  name="latestRate"
+                  type="number"
+                  step="0.01"
+                  placeholder={t(
+                    'settings.manageCurrencies.form.latestRate.placeholder',
+                  )}
+                  disabled={disabled || isCreating || isUpdating}
+                />
+                <Checkbox
+                  name="isDefault"
+                  label={t('settings.manageCurrencies.form.isDefault.label')}
+                  hint={t('settings.manageCurrencies.form.isDefault.hint')}
+                  disabled={disabled || isCreating || isUpdating}
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCloseDialog}
+                  disabled={isCreating || isUpdating}
+                >
+                  {t('settings.manageCurrencies.button.cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={
+                    disabled || isCreating || isUpdating || !formState.isDirty
+                  }
+                  isLoading={isCreating || isUpdating}
+                >
+                  {t('settings.manageCurrencies.button.save')}
+                </Button>
+              </DialogFooter>
+            </form>
+          </FormProvider>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {t('settings.manageCurrencies.button.delete')}
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete the currency &quot;
+              {deletingCurrency?.symbol} ({deletingCurrency?.code})&quot;? This
+              action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCloseDeleteDialog}
+              disabled={isDeleting}
+            >
+              {t('settings.manageCurrencies.button.cancel')}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={disabled || isDeleting}
+              isLoading={isDeleting}
+            >
+              {t('settings.manageCurrencies.button.delete')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

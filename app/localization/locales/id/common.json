@@ -385,7 +385,49 @@
     },
     "manageCurrencies": {
       "title": "Kelola Mata Uang",
-      "description": "Kelola mata uang Anda."
+      "description": "Kelola mata uang Anda.",
+      "form": {
+        "symbol": {
+          "label": "Simbol",
+          "placeholder": "contoh, $"
+        },
+        "code": {
+          "label": "Kode",
+          "placeholder": "contoh, USD"
+        },
+        "maximumFractionDigits": {
+          "label": "Maksimal Desimal",
+          "placeholder": "contoh, 2"
+        },
+        "latestRate": {
+          "label": "Nilai Tukar Terbaru",
+          "placeholder": "contoh, 1.00"
+        },
+        "isDefault": {
+          "label": "Atur sebagai Default",
+          "hint": "Mata uang ini akan digunakan sebagai default untuk transaksi baru"
+        }
+      },
+      "button": {
+        "add": "Tambah Mata Uang",
+        "edit": "Edit Mata Uang",
+        "delete": "Hapus Mata Uang",
+        "save": "Simpan Mata Uang",
+        "cancel": "Batal"
+      },
+      "toast": {
+        "created": "Mata uang berhasil dibuat.",
+        "updated": "Mata uang berhasil diperbarui.",
+        "deleted": "Mata uang berhasil dihapus."
+      },
+      "validation": {
+        "symbol": {
+          "required": "Simbol wajib diisi."
+        },
+        "code": {
+          "required": "Kode wajib diisi."
+        }
+      }
     },
     "validation": {
       "displayName": {

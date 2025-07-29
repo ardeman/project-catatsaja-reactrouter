@@ -385,7 +385,49 @@
     },
     "manageCurrencies": {
       "title": "Manage Currencies",
-      "description": "Manage your currencies."
+      "description": "Manage your currencies.",
+      "form": {
+        "symbol": {
+          "label": "Symbol",
+          "placeholder": "e.g., $"
+        },
+        "code": {
+          "label": "Code",
+          "placeholder": "e.g., USD"
+        },
+        "maximumFractionDigits": {
+          "label": "Maximum Decimal Places",
+          "placeholder": "e.g., 2"
+        },
+        "latestRate": {
+          "label": "Latest Rate",
+          "placeholder": "e.g., 1.00"
+        },
+        "isDefault": {
+          "label": "Set as Default",
+          "hint": "This currency will be used as the default for new transactions"
+        }
+      },
+      "button": {
+        "add": "Add Currency",
+        "edit": "Edit Currency",
+        "delete": "Delete Currency",
+        "save": "Save Currency",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "created": "Currency created successfully.",
+        "updated": "Currency updated successfully.",
+        "deleted": "Currency deleted successfully."
+      },
+      "validation": {
+        "symbol": {
+          "required": "Symbol is required."
+        },
+        "code": {
+          "required": "Code is required."
+        }
+      }
     },
     "validation": {
       "displayName": {

@@ -16,6 +16,7 @@ export type TProperties<TFormValues extends FieldValues> = {
   maxLength?: number
   min?: string | number
   max?: string | number
+  step?: string | number
   className?: HTMLAttributes<HTMLInputElement>['className']
   labelClassName?: HTMLAttributes<HTMLLabelElement>['className']
   containerClassName?: HTMLAttributes<HTMLDivElement>['className']

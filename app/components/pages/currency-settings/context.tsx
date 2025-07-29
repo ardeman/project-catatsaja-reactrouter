@@ -5,6 +5,7 @@ import {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from 'react'
 
 interface CurrencySettingsContextType {
@@ -32,6 +33,16 @@ export const CurrencySettingsProvider = ({
   children: ReactNode
 }) => {
   const [disabled, setDisabled] = useState(false)
+
+  // Reset disabled state after a delay
+  useEffect(() => {
+    if (disabled) {
+      const timer = setTimeout(() => {
+        setDisabled(false)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [disabled])
 
   return (
     <CurrencySettingsContext.Provider value={{ disabled, setDisabled }}>

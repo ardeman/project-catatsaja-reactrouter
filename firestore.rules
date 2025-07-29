@@ -25,6 +25,10 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuthenticated();
       allow write: if isOwner(userId);
+      
+      match /currencies/{currencyId} {
+        allow read, write: if isOwner(userId);
+      }
     }
 
     match /groups/{groupId} {
