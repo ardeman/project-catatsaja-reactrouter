@@ -14,10 +14,10 @@ import { appName } from '~/lib/constants/metadata'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { useLinkGoogle } from '~/lib/hooks/use-link-google'
 
-import { TProperties } from './type'
+import { useAccountSettings } from './context'
 
-export const Google = (properties: TProperties) => {
-  const { disabled, setDisabled } = properties
+export const Google = () => {
+  const { disabled, setDisabled } = useAccountSettings()
   const { t } = useTranslation()
   const { data: authData } = useAuthUser()
   const userGoogleProvider = authData?.providerData.find(

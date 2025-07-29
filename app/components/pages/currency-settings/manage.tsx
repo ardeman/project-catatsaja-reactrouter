@@ -29,10 +29,10 @@ import { TEmailRequest } from '~/lib/types/user'
 import { cn } from '~/lib/utils/shadcn'
 import { emailSchema } from '~/lib/validations/user'
 
-import { TProperties } from './type'
+import { useCurrencySettings } from './context'
 
-export const ManageCurrencies = (properties: TProperties) => {
-  const { disabled, setDisabled } = properties
+export const ManageCurrencies = () => {
+  const { disabled, setDisabled } = useCurrencySettings()
   const { t } = useTranslation()
   const [timerEmailVerify, setTimerEmailVerify] = useState<number>()
   const [timerUpdateEmail, setTimerUpdateEmail] = useState<number>()
