@@ -2,11 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Edit, Trash, ChevronUp, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { Checkbox } from '~/components/base/checkbox'
+import { Modal } from '~/components/base/modal'
 import { Textarea } from '~/components/base/textarea'
 import { useTask } from '~/components/pages/tasks'
 import { Button } from '~/components/ui/button'
@@ -89,6 +90,16 @@ export const Form = (properties: TFormProperties) => {
   const watchTitle = watch('title')
   const watchItem = watch('item')
   const watchContent = watch('content')
+
+  const [openBack, setOpenBack] = useState(false)
+
+  const handleBack = () => {
+    if (!selectedTask && isDirty) {
+      setOpenBack(true)
+      return
+    }
+    handleBackTask()
+  }
 
   const checkedAll =
     watchContent.length > 0
@@ -291,7 +302,7 @@ export const Form = (properties: TFormProperties) => {
               handleShare={() => handleShareTask({ task })}
               handleUnlink={() => handleUnlinkTask({ task })}
               sharedCount={sharedCount}
-              handleBack={() => handleBackTask()}
+              handleBack={handleBackTask}
               handleToggleCheckAll={handleToggleCheckAll}
               checkedAll={checkedAll}
             />
@@ -301,7 +312,7 @@ export const Form = (properties: TFormProperties) => {
               buttonClassName="supports-[backdrop-filter]:bg-accent/20 backdrop-blur"
               isLoading={isCreatePending}
               isCreate={true}
-              handleBack={() => handleBackTask()}
+              handleBack={handleBack}
               disabled={!isDirty}
               handleToggleCheckAll={handleToggleCheckAll}
               checkedAll={checkedAll}
@@ -477,6 +488,21 @@ export const Form = (properties: TFormProperties) => {
               : `(${t('form.permissions.readOnly')})`)}
         </span>
       </span>
+      <Modal
+        open={openBack}
+        setOpen={setOpenBack}
+        handleConfirm={handleBackTask}
+        variant="destructive"
+        title={
+          <Trans
+            i18nKey="form.back"
+            values={{ item: t('tasks.title') }}
+            components={{ span: <span className="text-primary" /> }}
+          />
+        }
+      >
+        <></>
+      </Modal>
     </FormProvider>
   )
 }

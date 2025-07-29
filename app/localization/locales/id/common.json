@@ -30,6 +30,7 @@
     "confirm": "Iya",
     "undo": "Batal",
     "openPage": "Buka Halaman",
+    "back": "Batalkan <span>{{item}}</span> ini?",
     "permissions": {
       "select": "Pilih izin",
       "readOnly": "Hanya baca",
