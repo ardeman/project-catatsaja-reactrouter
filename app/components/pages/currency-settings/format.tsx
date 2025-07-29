@@ -1,9 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BadgeAlert, BadgeCheck } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useRevalidator } from 'react-router'
 
 import { Button } from '~/components/base/button'
 import { Input } from '~/components/base/input'
@@ -15,141 +12,40 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '~/components/ui/tooltip'
-import { useAuthUser } from '~/lib/hooks/use-auth-user'
-import { useEmailVerification } from '~/lib/hooks/use-email-verification'
-import { useResetPassword } from '~/lib/hooks/use-reset-password'
-import { useUpdateEmail } from '~/lib/hooks/use-update-email'
-import { TEmailRequest } from '~/lib/types/user'
-import { cn } from '~/lib/utils/shadcn'
-import { emailSchema } from '~/lib/validations/user'
+import { Label } from '~/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
+import { useUserData } from '~/lib/hooks/use-get-user'
+import { useUpdateCurrencyFormat } from '~/lib/hooks/use-update-currency-format'
+import { TCurrencyFormatRequest } from '~/lib/types/settings'
+import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
+import { currencyFormatSchema } from '~/lib/validations/settings'
 
 import { useCurrencySettings } from './context'
 
 export const CurrencyFormat = () => {
   const { disabled, setDisabled } = useCurrencySettings()
   const { t } = useTranslation()
-  const [timerEmailVerify, setTimerEmailVerify] = useState<number>()
-  const [timerUpdateEmail, setTimerUpdateEmail] = useState<number>()
-  const [timerSetPassword, setTimerSetPassword] = useState<number>()
-  const { revalidate } = useRevalidator()
-  const { data: authData } = useAuthUser()
-  const formMethods = useForm<TEmailRequest>({
-    resolver: zodResolver(emailSchema(t)),
-    values: {
-      email: authData?.email || '',
-    },
-  })
-  const userPasswordProvider = authData?.providerData.find(
-    (provider) => provider.providerId === 'password',
-  )
-  const { handleSubmit, watch, formState } = formMethods
-  const watchEmail = watch('email')
+  const { data: userData } = useUserData()
+  const { mutate, isPending } = useUpdateCurrencyFormat()
 
-  const {
-    mutate: mutateUpdateEmail,
-    isPending: isUpdateEmailPending,
-    isSuccess: isUpdateEmailSuccess,
-    isError: isUpdateEmailError,
-  } = useUpdateEmail()
+  const defaultValues = userData?.currencyFormat || getDefaultCurrencyFormat()
+
+  const formMethods = useForm<TCurrencyFormatRequest>({
+    resolver: zodResolver(currencyFormatSchema(t)),
+    values: defaultValues,
+  })
+
+  const { handleSubmit, watch, formState } = formMethods
+  const watchAll = watch()
+
+  // Preview amount
+  const previewAmount = 1_234_567
 
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateUpdateEmail(data)
+    await mutate(data)
+    setDisabled(false)
   })
-
-  useEffect(() => {
-    if (isUpdateEmailSuccess || isUpdateEmailError) {
-      setDisabled(false)
-    }
-    if (isUpdateEmailSuccess) {
-      setTimerUpdateEmail(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdateEmailSuccess, isUpdateEmailError])
-
-  useEffect(() => {
-    if (timerUpdateEmail === 0) {
-      setTimerUpdateEmail(undefined)
-      revalidate()
-    } else if (timerUpdateEmail) {
-      const timer = setTimeout(() => {
-        setTimerUpdateEmail((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerUpdateEmail])
-
-  const {
-    mutate: mutateSendEmailVerification,
-    isPending: isSendEmailVerificationPending,
-    isSuccess: isSendEmailVerificationSuccess,
-    isError: isSendEmailVerificationError,
-  } = useEmailVerification()
-
-  const handleSendEmailVerification = () => {
-    mutateSendEmailVerification()
-    setDisabled(true)
-  }
-
-  useEffect(() => {
-    if (isSendEmailVerificationSuccess || isSendEmailVerificationError) {
-      setDisabled(false)
-    }
-    if (isSendEmailVerificationSuccess) {
-      setTimerEmailVerify(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSendEmailVerificationSuccess, isSendEmailVerificationError])
-
-  useEffect(() => {
-    if (timerEmailVerify === 0) {
-      setTimerEmailVerify(undefined)
-      revalidate()
-    } else if (timerEmailVerify) {
-      const timer = setTimeout(() => {
-        setTimerEmailVerify((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerEmailVerify])
-
-  const {
-    mutate: mutateSetPassword,
-    isPending: isSetPasswordPending,
-    isSuccess: isSetPasswordSuccess,
-    isError: isSetPasswordError,
-  } = useResetPassword()
-
-  useEffect(() => {
-    if (isSetPasswordSuccess || isSetPasswordError) {
-      setDisabled(false)
-    }
-    if (isSetPasswordSuccess) {
-      setTimerSetPassword(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSetPasswordSuccess, isSetPasswordError])
-
-  useEffect(() => {
-    if (timerSetPassword === 0) {
-      setTimerSetPassword(undefined)
-      revalidate()
-    } else if (timerSetPassword) {
-      const timer = setTimeout(() => {
-        setTimerSetPassword((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerSetPassword])
 
   return (
     <Card>
@@ -161,85 +57,175 @@ export const CurrencyFormat = () => {
       </CardHeader>
       <FormProvider {...formMethods}>
         <form onSubmit={onSubmit}>
-          <CardContent className="flex items-end space-x-4">
-            <Input
-              label={t('auth.form.email.label')}
-              name="email"
-              disabled={
-                disabled || !authData?.emailVerified || !userPasswordProvider
-              }
-              placeholder={t('auth.form.email.placeholder')}
-              className="w-full"
-              rightNode={({ className }) =>
-                watchEmail === authData?.email && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        {authData?.emailVerified ? (
-                          <BadgeCheck
-                            className={cn(
-                              className,
-                              'text-green-500 hover:cursor-help',
-                            )}
-                          />
-                        ) : (
-                          <BadgeAlert
-                            className={cn(
-                              className,
-                              'text-destructive hover:cursor-help',
-                            )}
-                          />
-                        )}
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {authData?.emailVerified
-                          ? t('settings.email.tooltip.verified')
-                          : t('settings.email.tooltip.unverified')}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )
-              }
-            />
-            {!authData?.emailVerified && (
-              <Button
-                className="w-fit"
-                disabled={disabled || !!timerEmailVerify}
-                type="button"
-                isLoading={isSendEmailVerificationPending}
-                onClick={handleSendEmailVerification}
-              >
-                {t('settings.email.button.verify')}{' '}
-                {timerEmailVerify && `(${timerEmailVerify})`}
-              </Button>
-            )}
-            {!userPasswordProvider && (
-              <Button
-                className="w-fit"
-                disabled={disabled || !!timerSetPassword}
-                type="button"
-                isLoading={isSetPasswordPending}
-                onClick={() => mutateSetPassword()}
-              >
-                {t('settings.email.button.setPassword')}{' '}
-                {timerSetPassword && `(${timerSetPassword})`}
-              </Button>
-            )}
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <Input
+                label={t(
+                  'settings.currencyFormat.form.thousandSeparator.label',
+                )}
+                name="thousandSeparator"
+                placeholder={t(
+                  'settings.currencyFormat.form.thousandSeparator.placeholder',
+                )}
+                className="w-full"
+              />
+              <Input
+                label={t('settings.currencyFormat.form.decimalSeparator.label')}
+                name="decimalSeparator"
+                placeholder={t(
+                  'settings.currencyFormat.form.decimalSeparator.placeholder',
+                )}
+                className="w-full"
+              />
+              <Input
+                label={t(
+                  'settings.currencyFormat.form.minimumFractionDigits.label',
+                )}
+                name="minimumFractionDigits"
+                type="number"
+                min="0"
+                max="10"
+                placeholder={t(
+                  'settings.currencyFormat.form.minimumFractionDigits.placeholder',
+                )}
+                className="w-full"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label>
+                  {t('settings.currencyFormat.form.currencyPlacement.label')}
+                </Label>
+                <Controller
+                  control={formMethods.control}
+                  name="currencyPlacement"
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value="before"
+                          id="before"
+                        />
+                        <Label htmlFor="before">
+                          {t(
+                            'settings.currencyFormat.form.currencyPlacement.before',
+                          )}
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value="after"
+                          id="after"
+                        />
+                        <Label htmlFor="after">
+                          {t(
+                            'settings.currencyFormat.form.currencyPlacement.after',
+                          )}
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>
+                  {t('settings.currencyFormat.form.currencyType.label')}
+                </Label>
+                <Controller
+                  control={formMethods.control}
+                  name="currencyType"
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value="symbol"
+                          id="symbol"
+                        />
+                        <Label htmlFor="symbol">
+                          {t(
+                            'settings.currencyFormat.form.currencyType.symbol',
+                          )}
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value="code"
+                          id="code"
+                        />
+                        <Label htmlFor="code">
+                          {t('settings.currencyFormat.form.currencyType.code')}
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>
+                  {t('settings.currencyFormat.form.addSpace.label')}
+                </Label>
+                <Controller
+                  control={formMethods.control}
+                  name="addSpace"
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={(value) =>
+                        field.onChange(value === 'true')
+                      }
+                      value={field.value ? 'true' : 'false'}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value="true"
+                          id="addSpaceYes"
+                        />
+                        <Label htmlFor="addSpaceYes">{t('form.yes')}</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value="false"
+                          id="addSpaceNo"
+                        />
+                        <Label htmlFor="addSpaceNo">{t('form.no')}</Label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Preview Section */}
+            <div className="rounded-lg border p-4">
+              <Label className="text-sm font-medium">
+                {t('settings.currencyFormat.preview.label')}
+              </Label>
+              <div className="mt-2 font-mono text-lg">
+                {t('settings.currencyFormat.preview.example', {
+                  amount: formatCurrency(previewAmount, watchAll),
+                })}
+              </div>
+            </div>
           </CardContent>
-          <CardFooter className="space-x-4 border-t px-6 py-4">
+          <CardFooter className="border-t px-6 py-4">
             <Button
-              disabled={
-                isUpdateEmailPending ||
-                disabled ||
-                !authData?.emailVerified ||
-                !!timerUpdateEmail ||
-                !userPasswordProvider ||
-                !formState.isDirty
-              }
-              isLoading={isUpdateEmailPending}
+              className="w-fit"
+              isLoading={isPending}
+              disabled={isPending || disabled || !formState.isDirty}
               type="submit"
             >
-              {t('form.save')} {timerUpdateEmail && `(${timerUpdateEmail})`}
+              {t('form.save')}
             </Button>
           </CardFooter>
         </form>

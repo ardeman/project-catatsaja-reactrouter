@@ -23,7 +23,7 @@ export const Profile = () => {
   const [disabled, setDisabled] = useState(false)
   const { data: userData } = useUserData()
   const formMethods = useForm<TUpdateProfileRequest>({
-    resolver: zodResolver(generalSettingSchema),
+    resolver: zodResolver(generalSettingSchema(t)),
     values: {
       displayName: userData?.displayName || '',
     },

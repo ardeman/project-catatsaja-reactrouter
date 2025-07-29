@@ -1,5 +1,7 @@
 import { TFunction } from 'i18next'
 
+import { TCurrencyFormatRequest } from '~/lib/types/settings'
+
 export const extractPathSegment = (path: string) => {
   // Split the path into segments
   const segments = path.split('/').filter(Boolean)
@@ -53,3 +55,60 @@ const formatDate = ({
     hour: '2-digit',
     minute: '2-digit',
   })
+
+export const formatCurrency = (
+  amount: number,
+  format: TCurrencyFormatRequest,
+): string => {
+  // Format the number with the specified decimal places
+  const formattedNumber = amount.toLocaleString('en-US', {
+    minimumFractionDigits: format.minimumFractionDigits,
+    useGrouping: false, // We'll handle grouping manually
+  })
+
+  // Split the number into integer and decimal parts
+  const [integerPart, decimalPart] = formattedNumber.split('.')
+
+  // Add thousand separators to the integer part
+  const addThousandSeparators = (
+    number_: string,
+    separator: string,
+  ): string => {
+    return number_.replaceAll(/\B(?=(\d{3})+(?!\d))/g, separator)
+  }
+
+  let result = addThousandSeparators(integerPart, format.thousandSeparator)
+
+  // Add decimal part if it exists
+  if (decimalPart !== undefined) {
+    result += format.decimalSeparator + decimalPart
+  }
+
+  // Use default values for currency code and symbol
+  const currencyCode = 'IDR'
+  const currencySymbol = 'Rp'
+
+  // Determine the currency text to use
+  const currencyText =
+    format.currencyType === 'code' ? currencyCode : currencySymbol
+
+  // Add space if requested
+  const space = format.addSpace ? ' ' : ''
+
+  // Add currency based on placement
+  result =
+    format.currencyPlacement === 'before'
+      ? `${currencyText}${space}${result}`
+      : `${result}${space}${currencyText}`
+
+  return result
+}
+
+export const getDefaultCurrencyFormat = (): TCurrencyFormatRequest => ({
+  thousandSeparator: ',',
+  decimalSeparator: '.',
+  minimumFractionDigits: 2,
+  currencyPlacement: 'before',
+  currencyType: 'symbol',
+  addSpace: false,
+})

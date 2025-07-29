@@ -10,3 +10,12 @@ export type TUpdateAppearanceRequest = {
   language: string
   size: Size
 }
+
+export type TCurrencyFormatRequest = {
+  thousandSeparator: string
+  decimalSeparator: string
+  minimumFractionDigits: number
+  currencyPlacement: 'before' | 'after'
+  currencyType: 'symbol' | 'code'
+  addSpace: boolean
+}

@@ -36,6 +36,9 @@ export const SignUpPage = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      language: i18n.language,
+      theme,
+      size,
     },
   })
   const { handleSubmit } = formMethods

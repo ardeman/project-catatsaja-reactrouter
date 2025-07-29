@@ -31,6 +31,8 @@
     "undo": "Undo",
     "openPage": "Open Page",
     "back": "Discard this <span>{{item}}</span>?",
+    "yes": "Yes",
+    "no": "No",
     "permissions": {
       "select": "Choose permissions",
       "readOnly": "Read only",
@@ -85,10 +87,7 @@
         "label": "Password"
       },
       "confirmPassword": {
-        "label": "Confirm Password",
-        "errors": {
-          "passwordMismatch": "Passwords do not match"
-        }
+        "label": "Confirm Password"
       },
       "forgotPassword": {
         "label": "Forgot password?"
@@ -106,6 +105,11 @@
       "updateEmail": "Please check your email to verify the new email address.",
       "profileUpdated": "Your profile has been updated successfully.",
       "photoUpdated": "Your profile photo has been updated."
+    },
+    "validation": {
+      "confirmPassword": {
+        "passwordMismatch": "Passwords do not match"
+      }
     }
   },
   "notes": {
@@ -324,11 +328,69 @@
     },
     "currencyFormat": {
       "title": "Currency Format",
-      "description": "Set your currency format."
+      "description": "Set your currency format.",
+      "form": {
+        "thousandSeparator": {
+          "label": "Thousand Separator",
+          "placeholder": "e.g., ,"
+        },
+        "decimalSeparator": {
+          "label": "Decimal Separator",
+          "placeholder": "e.g., ."
+        },
+        "minimumFractionDigits": {
+          "label": "Minimum Decimal Places",
+          "placeholder": "e.g., 2"
+        },
+        "currencyCode": {
+          "label": "Currency Code",
+          "placeholder": "e.g., USD"
+        },
+        "currencySymbol": {
+          "label": "Currency Symbol",
+          "placeholder": "e.g., $"
+        },
+        "currencyPlacement": {
+          "label": "Currency Placement",
+          "before": "Before amount",
+          "after": "After amount"
+        },
+        "currencyType": {
+          "label": "Currency Type",
+          "symbol": "Currency symbol",
+          "code": "Currency code"
+        },
+        "addSpace": {
+          "label": "Add space"
+        }
+      },
+      "preview": {
+        "label": "Preview",
+        "example": "{{amount}}"
+      },
+      "toast": {
+        "updated": "Currency format updated successfully."
+      },
+      "validation": {
+        "thousandSeparator": {
+          "required": "Thousand separator is required."
+        },
+        "decimalSeparator": {
+          "required": "Decimal separator is required."
+        },
+        "separators": {
+          "same": "Thousand separator and decimal separator cannot be the same."
+        }
+      }
     },
     "manageCurrencies": {
       "title": "Manage Currencies",
       "description": "Manage your currencies."
+    },
+    "validation": {
+      "displayName": {
+        "required": "Display name is required."
+      }
     }
   },
   "notFound": {

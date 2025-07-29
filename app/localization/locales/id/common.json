@@ -31,6 +31,8 @@
     "undo": "Batal",
     "openPage": "Buka Halaman",
     "back": "Batalkan <span>{{item}}</span> ini?",
+    "yes": "Ya",
+    "no": "Tidak",
     "permissions": {
       "select": "Pilih izin",
       "readOnly": "Hanya baca",
@@ -85,10 +87,7 @@
         "label": "Kata Sandi"
       },
       "confirmPassword": {
-        "label": "Konfirmasi Kata Sandi",
-        "errors": {
-          "passwordMismatch": "Kata sandi tidak cocok"
-        }
+        "label": "Konfirmasi Kata Sandi"
       },
       "forgotPassword": {
         "label": "Lupa kata sandi?"
@@ -106,6 +105,11 @@
       "updateEmail": "Silakan cek email Anda untuk verifikasi alamat email baru.",
       "profileUpdated": "Profil Anda telah diperbarui.",
       "photoUpdated": "Foto profil Anda telah diperbarui."
+    },
+    "validation": {
+      "confirmPassword": {
+        "passwordMismatch": "Kata sandi tidak cocok"
+      }
     }
   },
   "notes": {
@@ -324,11 +328,69 @@
     },
     "currencyFormat": {
       "title": "Format Mata Uang",
-      "description": "Atur format mata uang Anda."
+      "description": "Atur format mata uang Anda.",
+      "form": {
+        "thousandSeparator": {
+          "label": "Pemisah Ribuan",
+          "placeholder": "contoh: ,"
+        },
+        "decimalSeparator": {
+          "label": "Pemisah Desimal",
+          "placeholder": "contoh: ."
+        },
+        "minimumFractionDigits": {
+          "label": "Desimal Minimum",
+          "placeholder": "contoh: 2"
+        },
+        "currencyCode": {
+          "label": "Kode Mata Uang",
+          "placeholder": "contoh: IDR"
+        },
+        "currencySymbol": {
+          "label": "Simbol Mata Uang",
+          "placeholder": "contoh: Rp"
+        },
+        "currencyPlacement": {
+          "label": "Posisi Mata Uang",
+          "before": "Sebelum jumlah",
+          "after": "Setelah jumlah"
+        },
+        "currencyType": {
+          "label": "Jenis Mata Uang",
+          "symbol": "Simbol mata uang",
+          "code": "Kode mata uang"
+        },
+        "addSpace": {
+          "label": "Tambah spasi"
+        }
+      },
+      "preview": {
+        "label": "Pratinjau",
+        "example": "{{amount}}"
+      },
+      "toast": {
+        "updated": "Format mata uang berhasil diperbarui."
+      },
+      "validation": {
+        "thousandSeparator": {
+          "required": "Pemisah ribuan wajib diisi."
+        },
+        "decimalSeparator": {
+          "required": "Pemisah desimal wajib diisi."
+        },
+        "separators": {
+          "same": "Pemisah ribuan dan pemisah desimal tidak boleh sama."
+        }
+      }
     },
     "manageCurrencies": {
       "title": "Kelola Mata Uang",
       "description": "Kelola mata uang Anda."
+    },
+    "validation": {
+      "displayName": {
+        "required": "Nama tampilan wajib diisi."
+      }
     }
   },
   "notFound": {

@@ -4,8 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "pnpm install && pnpm validate && node ./scripts/generate-manifest.mjs && cross-env NODE_ENV=production react-router build",
-    "dev": "pnpm install && react-router dev",
+    "build": "node ./scripts/generate-manifest.mjs && NODE_ENV=production react-router build",
+    "dev": "react-router dev",
     "lint": "eslint .",
     "generate:manifest": "node ./scripts/generate-manifest.mjs",
     "preview": "vite preview",
@@ -71,7 +71,6 @@
     "@typescript-eslint/eslint-plugin": "^8.34.1",
     "@typescript-eslint/parser": "^8.34.1",
     "autoprefixer": "^10.4.19",
-    "cross-env": "^7.0.3",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^4.4.3",

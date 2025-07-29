@@ -30,9 +30,12 @@ export const signUpSchema = (t: TFunction) =>
       email: emailValidation(t),
       password: passwordValidation(t),
       confirmPassword: passwordValidation(t),
+      language: z.string(),
+      theme: z.enum(['light', 'dark', 'system'] as const),
+      size: z.enum(['small', 'medium', 'large'] as const),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: t('auth.form.confirmPassword.errors.passwordMismatch'),
+      message: t('auth.validation.confirmPassword.passwordMismatch'),
       path: ['confirmPassword'],
     })
 

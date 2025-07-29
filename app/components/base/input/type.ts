@@ -14,6 +14,8 @@ export type TProperties<TFormValues extends FieldValues> = {
   onClick?: MouseEventHandler<HTMLInputElement>
   hint?: ReactNode
   maxLength?: number
+  min?: string | number
+  max?: string | number
   className?: HTMLAttributes<HTMLInputElement>['className']
   labelClassName?: HTMLAttributes<HTMLLabelElement>['className']
   containerClassName?: HTMLAttributes<HTMLDivElement>['className']
