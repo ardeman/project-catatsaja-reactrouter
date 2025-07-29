@@ -1,10 +1,4 @@
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy,
-  getDocs,
-} from 'firebase/firestore'
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 
 import { auth, firestore } from '~/lib/configs/firebase'
@@ -29,27 +23,25 @@ export const useGetCurrencies = () => {
       }
 
       try {
-        // First, check if the collection exists and has documents
         const currenciesReference = collection(
           database,
           'users',
           user.uid,
           'currencies',
         )
-        const initialSnapshot = await getDocs(currenciesReference)
 
-        if (initialSnapshot.empty) {
-          // If collection is empty, set data to empty array and stop loading
-          setData([])
-          setIsLoading(false)
-          return
+        // Try with orderBy first, fallback to simple query if it fails
+        let currenciesQuery
+        try {
+          currenciesQuery = query(
+            currenciesReference,
+            orderBy('createdAt', 'desc'),
+          )
+        } catch (orderByError) {
+          // eslint-disable-next-line no-console
+          console.warn('OrderBy failed, using simple query:', orderByError)
+          currenciesQuery = query(currenciesReference)
         }
-
-        // If collection has documents, set up the listener
-        const currenciesQuery = query(
-          currenciesReference,
-          orderBy('createdAt', 'desc'),
-        )
 
         unsubscribe = onSnapshot(
           currenciesQuery,
@@ -73,7 +65,7 @@ export const useGetCurrencies = () => {
         )
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Error checking currencies collection:', error)
+        console.error('Error setting up currencies listener:', error)
         setData([])
         setIsLoading(false)
       }

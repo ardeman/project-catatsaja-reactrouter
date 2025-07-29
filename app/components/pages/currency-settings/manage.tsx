@@ -185,9 +185,6 @@ export const ManageCurrencies = () => {
                   <TableHead className="hidden md:table-cell">
                     Latest Rate
                   </TableHead>
-                  <TableHead className="hidden w-auto md:table-cell">
-                    Default
-                  </TableHead>
                   <TableHead className="w-[100px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -204,13 +201,20 @@ export const ManageCurrencies = () => {
                               'inline-block text-xs md:hidden',
                               currency.isDefault
                                 ? 'font-bold text-primary'
-                                : '',
+                                : 'text-muted-foreground',
                             )}
                           >
                             ({currency.symbol})
                           </span>
                         </TableCell>
-                        <TableCell className="hidden font-medium md:table-cell">
+                        <TableCell
+                          className={cn(
+                            'hidden font-medium md:table-cell',
+                            currency.isDefault
+                              ? 'font-bold text-primary'
+                              : 'text-muted-foreground',
+                          )}
+                        >
                           {currency.symbol}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
@@ -218,15 +222,6 @@ export const ManageCurrencies = () => {
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           {currency.latestRate}
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {currency.isDefault ? (
-                            <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
-                              Default
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1 md:gap-2">
@@ -401,7 +396,7 @@ export const ManageCurrencies = () => {
             </DialogTitle>
             <DialogDescription>
               Are you sure you want to delete the currency &quot;
-              {deletingCurrency?.symbol} ({deletingCurrency?.code})&quot;? This
+              {deletingCurrency?.code} ({deletingCurrency?.symbol})&quot;? This
               action cannot be undone.
             </DialogDescription>
           </DialogHeader>
