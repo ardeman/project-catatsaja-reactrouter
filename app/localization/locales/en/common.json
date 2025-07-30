@@ -392,7 +392,7 @@
         "code": "Code",
         "symbol": "Symbol",
         "maxDecimals": "Max. Decimals",
-        "latestRate": "Latest Rate",
+        "rate": "Exchange Rate",
         "actions": "Actions"
       },
       "status": {
@@ -417,8 +417,8 @@
           "label": "Max. Decimals",
           "placeholder": "e.g., 2"
         },
-        "latestRate": {
-          "label": "Latest Rate",
+        "rate": {
+          "label": "Exchange Rate",
           "placeholder": "e.g., 1.00"
         },
         "isDefault": {

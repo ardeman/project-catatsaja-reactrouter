@@ -60,6 +60,6 @@ export const currencySchema = (t: TFunction, minFractionDigits: number = 0) =>
         ),
       })
       .max(10),
-    latestRate: z.coerce.number().min(0),
+    rate: z.coerce.number().min(0),
     isDefault: z.boolean().default(false),
   })

@@ -392,7 +392,7 @@
         "code": "Kode",
         "symbol": "Simbol",
         "maxDecimals": "Maks. Desimal",
-        "latestRate": "Nilai Tukar Terbaru",
+        "rate": "Nilai Tukar",
         "actions": "Aksi"
       },
       "status": {
@@ -417,8 +417,8 @@
           "label": "Maks. Desimal",
           "placeholder": "contoh, 2"
         },
-        "latestRate": {
-          "label": "Nilai Tukar Terbaru",
+        "rate": {
+          "label": "Nilai Tukar",
           "placeholder": "contoh, 1.00"
         },
         "isDefault": {

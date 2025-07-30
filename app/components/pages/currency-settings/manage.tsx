@@ -68,7 +68,7 @@ export const ManageCurrencies = () => {
       if (!a.isDefault && b.isDefault) return 1
 
       // Then sort by latest rate ascending
-      return a.latestRate - b.latestRate
+      return a.rate - b.rate
     })
   }, [currencies])
   const { mutate: createCurrency, isPending: isCreating } = useCreateCurrency()
@@ -81,7 +81,7 @@ export const ManageCurrencies = () => {
       symbol: '',
       code: '',
       maximumFractionDigits: Math.max(2, currentMinimumFractionDigits),
-      latestRate: 1,
+      rate: 1,
       isDefault: false,
     },
   })
@@ -92,7 +92,7 @@ export const ManageCurrencies = () => {
   // Set latest rate to 1 when default is checked
   React.useEffect(() => {
     if (isDefault) {
-      setValue('latestRate', 1)
+      setValue('rate', 1)
     }
   }, [isDefault, setValue])
 
@@ -103,7 +103,7 @@ export const ManageCurrencies = () => {
         symbol: currency.symbol,
         code: currency.code,
         maximumFractionDigits: currency.maximumFractionDigits,
-        latestRate: currency.latestRate,
+        rate: currency.rate,
         isDefault: currency.isDefault || false,
       })
     } else {
@@ -114,7 +114,7 @@ export const ManageCurrencies = () => {
         symbol: '',
         code: '',
         maximumFractionDigits: 2,
-        latestRate: 1,
+        rate: 1,
         isDefault: isFirstCurrency,
       })
     }
@@ -221,7 +221,7 @@ export const ManageCurrencies = () => {
                     {t('settings.manageCurrencies.table.maxDecimals')}
                   </TableHead>
                   <TableHead className="hidden md:table-cell">
-                    {t('settings.manageCurrencies.table.latestRate')}
+                    {t('settings.manageCurrencies.table.rate')}
                   </TableHead>
                   <TableHead className="w-[100px]">
                     {t('settings.manageCurrencies.table.actions')}
@@ -261,7 +261,7 @@ export const ManageCurrencies = () => {
                           {currency.maximumFractionDigits}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          {currency.latestRate}
+                          {currency.rate}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1 md:gap-2">
@@ -316,13 +316,11 @@ export const ManageCurrencies = () => {
                               <div className="flex items-center gap-2">
                                 <span className="text-sm font-medium text-muted-foreground">
                                   {t(
-                                    'settings.manageCurrencies.form.latestRate.label',
+                                    'settings.manageCurrencies.form.rate.label',
                                   )}
                                   :
                                 </span>
-                                <span className="text-sm">
-                                  {currency.latestRate}
-                                </span>
+                                <span className="text-sm">{currency.rate}</span>
                               </div>
                             </div>
                           </TableCell>
@@ -386,12 +384,12 @@ export const ManageCurrencies = () => {
                   disabled={disabled || isCreating || isUpdating}
                 />
                 <Input
-                  label={t('settings.manageCurrencies.form.latestRate.label')}
-                  name="latestRate"
+                  label={t('settings.manageCurrencies.form.rate.label')}
+                  name="rate"
                   type="number"
                   step="0.01"
                   placeholder={t(
-                    'settings.manageCurrencies.form.latestRate.placeholder',
+                    'settings.manageCurrencies.form.rate.placeholder',
                   )}
                   disabled={disabled || isCreating || isUpdating || isDefault}
                 />

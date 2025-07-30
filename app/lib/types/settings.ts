@@ -27,7 +27,7 @@ export type TCreateCurrencyRequest = {
   symbol: string
   code: string
   maximumFractionDigits: number
-  latestRate: number
+  rate: number
   isDefault?: boolean
 }
 
