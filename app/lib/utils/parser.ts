@@ -90,10 +90,15 @@ export const formatCurrency = ({
     maximumFractionDigits,
   )
 
-  const formattedNumber = amount.toLocaleString('en-US', {
+  // Use floor instead of rounding for currency formatting
+  const flooredAmount =
+    Math.floor(amount * Math.pow(10, actualMaxFractionDigits)) /
+    Math.pow(10, actualMaxFractionDigits)
+
+  const formattedNumber = flooredAmount.toLocaleString('en-US', {
     minimumFractionDigits: actualMinFractionDigits,
     maximumFractionDigits: actualMaxFractionDigits,
-    useGrouping: false, // We'll handle grouping manually
+    useGrouping: false,
   })
 
   // Split the number into integer and decimal parts
