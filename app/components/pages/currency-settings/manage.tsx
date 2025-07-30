@@ -178,7 +178,7 @@ export const ManageCurrencies = () => {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <div>
+            <div className="flex flex-col space-y-1.5">
               <CardTitle>{t('settings.manageCurrencies.title')}</CardTitle>
               <CardDescription>
                 {t('settings.manageCurrencies.description')}

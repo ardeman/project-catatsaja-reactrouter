@@ -308,7 +308,7 @@
     },
     "email": {
       "title": "Change email address",
-      "description": "Update your email address.",
+      "description": "Update your email address for account authentication and notifications.",
       "tooltip": {
         "verified": "Email verified",
         "unverified": "Email not verified"
@@ -328,7 +328,7 @@
     },
     "currencyFormat": {
       "title": "Currency Format",
-      "description": "Set your currency format.",
+      "description": "Configure how currency amounts are displayed throughout the application.",
       "form": {
         "thousandSeparator": {
           "label": "Thousand Separator",
@@ -387,7 +387,7 @@
     },
     "manageCurrencies": {
       "title": "Manage Currencies",
-      "description": "Manage your currencies.",
+      "description": "Add, edit, and configure currencies for your financial transactions.",
       "table": {
         "code": "Code",
         "symbol": "Symbol",

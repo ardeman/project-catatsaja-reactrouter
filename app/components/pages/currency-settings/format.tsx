@@ -48,8 +48,8 @@ export const CurrencyFormat = () => {
   const watchAll = watch()
 
   // Preview amount
-  const previewAmount = 1_234_567
-  const previewAmountWithDecimal = 1_234_567.891
+  const previewAmount = 12_345_678
+  const previewAmountWithDecimal = 12_345_678.987_654_321
 
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)

@@ -308,7 +308,7 @@
     },
     "email": {
       "title": "Perbarui alamat email",
-      "description": "Perbarui alamat email Anda.",
+      "description": "Perbarui alamat email untuk autentikasi akun dan notifikasi.",
       "tooltip": {
         "verified": "Email terverifikasi",
         "unverified": "Email belum terverifikasi"
@@ -328,7 +328,7 @@
     },
     "currencyFormat": {
       "title": "Format Mata Uang",
-      "description": "Atur format mata uang Anda.",
+      "description": "Atur cara tampilan jumlah mata uang di seluruh aplikasi.",
       "form": {
         "thousandSeparator": {
           "label": "Pemisah Ribuan",
@@ -387,7 +387,7 @@
     },
     "manageCurrencies": {
       "title": "Kelola Mata Uang",
-      "description": "Kelola mata uang Anda.",
+      "description": "Tambah, edit, dan atur mata uang untuk transaksi keuangan Anda.",
       "table": {
         "code": "Kode",
         "symbol": "Simbol",
