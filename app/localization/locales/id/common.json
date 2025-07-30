@@ -365,8 +365,7 @@
         }
       },
       "preview": {
-        "label": "Pratinjau",
-        "example": "{{amount}}"
+        "label": "Pratinjau"
       },
       "toast": {
         "updated": "Format mata uang berhasil diperbarui."

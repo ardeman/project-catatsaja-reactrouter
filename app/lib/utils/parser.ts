@@ -77,16 +77,12 @@ export const formatCurrency = ({
   // Use default currency settings if found, otherwise use fallback values
   const currencyCode = defaultCurrency?.code || 'IDR'
   const currencySymbol = defaultCurrency?.symbol || 'Rp'
-  const maximumFractionDigits = defaultCurrency?.maximumFractionDigits || 2
-
-  // Format the number with the specified decimal places, but respect the currency's maximumFractionDigits
-  const actualFractionDigits = Math.min(
-    format.minimumFractionDigits,
-    maximumFractionDigits,
-  )
+  const maximumFractionDigits =
+    defaultCurrency?.maximumFractionDigits ?? format.minimumFractionDigits
 
   const formattedNumber = amount.toLocaleString('en-US', {
-    minimumFractionDigits: actualFractionDigits,
+    minimumFractionDigits: format.minimumFractionDigits,
+    maximumFractionDigits,
     useGrouping: false, // We'll handle grouping manually
   })
 

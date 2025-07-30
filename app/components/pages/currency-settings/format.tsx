@@ -49,6 +49,7 @@ export const CurrencyFormat = () => {
 
   // Preview amount
   const previewAmount = 1_234_567
+  const previewAmountWithDecimal = 1_234_567.891
 
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
@@ -221,12 +222,16 @@ export const CurrencyFormat = () => {
                 {t('settings.currencyFormat.preview.label')}
               </Label>
               <div className="mt-2 font-mono text-lg">
-                {t('settings.currencyFormat.preview.example', {
-                  amount: formatCurrency({
-                    amount: previewAmount,
-                    format: watchAll,
-                    currencies,
-                  }),
+                {formatCurrency({
+                  amount: previewAmount,
+                  format: watchAll,
+                  currencies,
+                })}
+                <br />
+                {formatCurrency({
+                  amount: previewAmountWithDecimal,
+                  format: watchAll,
+                  currencies,
                 })}
               </div>
             </div>

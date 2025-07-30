@@ -365,8 +365,7 @@
         }
       },
       "preview": {
-        "label": "Preview",
-        "example": "{{amount}}"
+        "label": "Preview"
       },
       "toast": {
         "updated": "Currency format updated successfully."
