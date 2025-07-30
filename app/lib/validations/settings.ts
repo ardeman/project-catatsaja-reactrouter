@@ -26,11 +26,13 @@ export const currencyFormatSchema = (
       }),
       minimumFractionDigits: z.coerce
         .number()
-        .min(0)
-        .max(maxFractionDigitsMin, {
+        .min(0, {
+          message: t('zod:errors.too_small.number.inclusive', { minimum: 0 }),
+        })
+        .max(Math.min(10, maxFractionDigitsMin), {
           message: t(
             'settings.currencyFormat.validation.minimumFractionDigits.max',
-            { max: maxFractionDigitsMin },
+            { max: Math.min(10, maxFractionDigitsMin) },
           ),
         }),
       currencyPlacement: z.enum(['before', 'after']),
@@ -59,7 +61,11 @@ export const currencySchema = (t: TFunction, minFractionDigits: number = 0) =>
           { min: minFractionDigits },
         ),
       })
-      .max(10),
-    rate: z.coerce.number().min(0),
+      .max(10, {
+        message: t('zod:errors.too_big.number.inclusive', { maximum: 10 }),
+      }),
+    rate: z.coerce.number().min(0, {
+      message: t('zod:errors.too_small.number.inclusive', { minimum: 0 }),
+    }),
     isDefault: z.boolean().default(false),
   })

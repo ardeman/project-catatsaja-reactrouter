@@ -84,13 +84,23 @@ export const formatCurrency = ({
     defaultCurrency?.maximumFractionDigits ?? format.minimumFractionDigits
 
   // Ensure minimumFractionDigits doesn't exceed maximumFractionDigits
+  // Also ensure both values are within valid range (0-10) for toLocaleString
+  const validMinFractionDigits = Math.max(
+    0,
+    Math.min(10, format.minimumFractionDigits),
+  )
+  const validMaxFractionDigits = Math.max(
+    0,
+    Math.min(10, maximumFractionDigits),
+  )
+
   const actualMinFractionDigits = Math.min(
-    format.minimumFractionDigits,
-    maximumFractionDigits,
+    validMinFractionDigits,
+    validMaxFractionDigits,
   )
   const actualMaxFractionDigits = Math.max(
     actualMinFractionDigits,
-    maximumFractionDigits,
+    validMaxFractionDigits,
   )
 
   // Use floor instead of rounding for currency formatting

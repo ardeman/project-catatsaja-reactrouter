@@ -92,8 +92,6 @@ export const CurrencyFormat = () => {
                 )}
                 name="minimumFractionDigits"
                 type="number"
-                min="0"
-                max="10"
                 placeholder={t(
                   'settings.currencyFormat.form.minimumFractionDigits.placeholder',
                 )}
