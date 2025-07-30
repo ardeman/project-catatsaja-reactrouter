@@ -36,6 +36,7 @@ import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateCurrency } from '~/lib/hooks/use-update-currency'
 import { TCurrency, TCreateCurrencyRequest } from '~/lib/types/settings'
+import { getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { currencySchema } from '~/lib/validations/settings'
 
@@ -58,7 +59,8 @@ export const ManageCurrencies = () => {
   // Get current currency format settings
   const currentCurrencyFormat = userData?.currencyFormat
   const currentMinimumFractionDigits =
-    currentCurrencyFormat?.minimumFractionDigits || 0
+    currentCurrencyFormat?.minimumFractionDigits ??
+    getDefaultCurrencyFormat().minimumFractionDigits
 
   // Sort currencies: default first, then by latest rate ascending
   const sortedCurrencies = React.useMemo(() => {
@@ -357,18 +359,18 @@ export const ManageCurrencies = () => {
             <form onSubmit={onSubmit}>
               <div className="grid gap-4 py-4">
                 <Input
-                  label={t('settings.manageCurrencies.form.symbol.label')}
-                  name="symbol"
-                  placeholder={t(
-                    'settings.manageCurrencies.form.symbol.placeholder',
-                  )}
-                  disabled={disabled || isCreating || isUpdating}
-                />
-                <Input
                   label={t('settings.manageCurrencies.form.code.label')}
                   name="code"
                   placeholder={t(
                     'settings.manageCurrencies.form.code.placeholder',
+                  )}
+                  disabled={disabled || isCreating || isUpdating}
+                />
+                <Input
+                  label={t('settings.manageCurrencies.form.symbol.label')}
+                  name="symbol"
+                  placeholder={t(
+                    'settings.manageCurrencies.form.symbol.placeholder',
                   )}
                   disabled={disabled || isCreating || isUpdating}
                 />

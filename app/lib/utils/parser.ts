@@ -80,9 +80,19 @@ export const formatCurrency = ({
   const maximumFractionDigits =
     defaultCurrency?.maximumFractionDigits ?? format.minimumFractionDigits
 
-  const formattedNumber = amount.toLocaleString('en-US', {
-    minimumFractionDigits: format.minimumFractionDigits,
+  // Ensure minimumFractionDigits doesn't exceed maximumFractionDigits
+  const actualMinFractionDigits = Math.min(
+    format.minimumFractionDigits,
     maximumFractionDigits,
+  )
+  const actualMaxFractionDigits = Math.max(
+    actualMinFractionDigits,
+    maximumFractionDigits,
+  )
+
+  const formattedNumber = amount.toLocaleString('en-US', {
+    minimumFractionDigits: actualMinFractionDigits,
+    maximumFractionDigits: actualMaxFractionDigits,
     useGrouping: false, // We'll handle grouping manually
   })
 
