@@ -222,7 +222,11 @@ export const CurrencyFormat = () => {
               </Label>
               <div className="mt-2 font-mono text-lg">
                 {t('settings.currencyFormat.preview.example', {
-                  amount: formatCurrency(previewAmount, watchAll),
+                  amount: formatCurrency({
+                    amount: previewAmount,
+                    format: watchAll,
+                    currencies,
+                  }),
                 })}
               </div>
             </div>

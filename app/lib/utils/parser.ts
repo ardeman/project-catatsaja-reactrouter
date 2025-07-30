@@ -1,6 +1,6 @@
 import { TFunction } from 'i18next'
 
-import { TCurrencyFormatRequest } from '~/lib/types/settings'
+import { TCurrencyFormatRequest, TCurrency } from '~/lib/types/settings'
 
 export const extractPathSegment = (path: string) => {
   // Split the path into segments
@@ -12,7 +12,13 @@ export const extractPathSegment = (path: string) => {
   return desiredSegment
 }
 
-export const getRandomIndex = (arrayLength: number, currentIndex: number) => {
+export const getRandomIndex = ({
+  arrayLength,
+  currentIndex,
+}: {
+  arrayLength: number
+  currentIndex: number
+}) => {
   let randomIndex = Math.floor(Math.random() * arrayLength)
   // Ensure the random index is not the same as the current one
   while (randomIndex === currentIndex) {
@@ -56,13 +62,31 @@ const formatDate = ({
     minute: '2-digit',
   })
 
-export const formatCurrency = (
-  amount: number,
-  format: TCurrencyFormatRequest,
-): string => {
-  // Format the number with the specified decimal places
+export const formatCurrency = ({
+  amount,
+  format,
+  currencies,
+}: {
+  amount: number
+  format: TCurrencyFormatRequest
+  currencies?: TCurrency[]
+}): string => {
+  // Find the default currency from the currencies list
+  const defaultCurrency = currencies?.find((currency) => currency.isDefault)
+
+  // Use default currency settings if found, otherwise use fallback values
+  const currencyCode = defaultCurrency?.code || 'IDR'
+  const currencySymbol = defaultCurrency?.symbol || 'Rp'
+  const maximumFractionDigits = defaultCurrency?.maximumFractionDigits || 2
+
+  // Format the number with the specified decimal places, but respect the currency's maximumFractionDigits
+  const actualFractionDigits = Math.min(
+    format.minimumFractionDigits,
+    maximumFractionDigits,
+  )
+
   const formattedNumber = amount.toLocaleString('en-US', {
-    minimumFractionDigits: format.minimumFractionDigits,
+    minimumFractionDigits: actualFractionDigits,
     useGrouping: false, // We'll handle grouping manually
   })
 
@@ -83,10 +107,6 @@ export const formatCurrency = (
   if (decimalPart !== undefined) {
     result += format.decimalSeparator + decimalPart
   }
-
-  // Use default values for currency code and symbol
-  const currencyCode = 'IDR'
-  const currencySymbol = 'Rp'
 
   // Determine the currency text to use
   const currencyText =

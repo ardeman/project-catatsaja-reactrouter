@@ -12,11 +12,14 @@ export const LoadingSpinner = (properties: TProperties) => {
   const [counter, setCounter] = useState(0)
 
   useEffect(() => {
-    setCounter(getRandomIndex(icons.length, -1))
+    setCounter(getRandomIndex({ arrayLength: icons.length, currentIndex: -1 }))
     // Change the icon at the end of each animation cycle
     const interval = setInterval(() => {
       setCounter((previousCounter) =>
-        getRandomIndex(icons.length, previousCounter),
+        getRandomIndex({
+          arrayLength: icons.length,
+          currentIndex: previousCounter,
+        }),
       )
     }, 3000) // Keep this at 3000ms
 
