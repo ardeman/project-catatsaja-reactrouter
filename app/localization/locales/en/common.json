@@ -393,6 +393,7 @@
         "symbol": "Symbol",
         "maxDecimals": "Max. Decimals",
         "rate": "Exchange Rate",
+        "preview": "Preview",
         "actions": "Actions"
       },
       "status": {

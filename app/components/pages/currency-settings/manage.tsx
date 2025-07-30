@@ -36,7 +36,7 @@ import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateCurrency } from '~/lib/hooks/use-update-currency'
 import { TCurrency, TCreateCurrencyRequest } from '~/lib/types/settings'
-import { getDefaultCurrencyFormat } from '~/lib/utils/parser'
+import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { currencySchema } from '~/lib/validations/settings'
 
@@ -175,6 +175,9 @@ export const ManageCurrencies = () => {
     }
   }
 
+  // Preview amount
+  const previewAmount = 1234.123_456_789
+
   return (
     <>
       <Card>
@@ -225,6 +228,9 @@ export const ManageCurrencies = () => {
                   <TableHead className="hidden md:table-cell">
                     {t('settings.manageCurrencies.table.rate')}
                   </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    {t('settings.manageCurrencies.table.preview')}
+                  </TableHead>
                   <TableHead className="w-[100px]">
                     {t('settings.manageCurrencies.table.actions')}
                   </TableHead>
@@ -265,6 +271,15 @@ export const ManageCurrencies = () => {
                         <TableCell className="hidden md:table-cell">
                           {currency.rate}
                         </TableCell>
+                        <TableCell className="hidden font-mono md:table-cell">
+                          {formatCurrency({
+                            amount: previewAmount,
+                            format:
+                              currentCurrencyFormat ||
+                              getDefaultCurrencyFormat(),
+                            currency: currency,
+                          })}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1 md:gap-2">
                             <Button
@@ -303,7 +318,7 @@ export const ManageCurrencies = () => {
                               colSpan: 6,
                             } as React.HTMLAttributes<HTMLTableCellElement>)}
                           >
-                            <div className="flex flex-col gap-4 p-4">
+                            <div className="flex flex-col gap-1">
                               <div className="flex items-center gap-2">
                                 <span className="text-sm font-medium text-muted-foreground">
                                   {t(
@@ -323,6 +338,21 @@ export const ManageCurrencies = () => {
                                   :
                                 </span>
                                 <span className="text-sm">{currency.rate}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-muted-foreground">
+                                  {t('settings.manageCurrencies.table.preview')}
+                                  :
+                                </span>
+                                <span className="font-mono text-sm">
+                                  {formatCurrency({
+                                    amount: previewAmount,
+                                    format:
+                                      currentCurrencyFormat ||
+                                      getDefaultCurrencyFormat(),
+                                    currency: currency,
+                                  })}
+                                </span>
                               </div>
                             </div>
                           </TableCell>

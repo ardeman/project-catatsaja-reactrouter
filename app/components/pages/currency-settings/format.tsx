@@ -49,7 +49,6 @@ export const CurrencyFormat = () => {
 
   // Preview amount
   const previewAmount = 12_345_678
-  const previewAmountWithDecimal = 12_345_678.987_654_321
 
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
@@ -224,12 +223,6 @@ export const CurrencyFormat = () => {
               <div className="mt-2 font-mono text-lg">
                 {formatCurrency({
                   amount: previewAmount,
-                  format: watchAll,
-                  currencies,
-                })}
-                <br />
-                {formatCurrency({
-                  amount: previewAmountWithDecimal,
                   format: watchAll,
                   currencies,
                 })}

@@ -393,6 +393,7 @@
         "symbol": "Simbol",
         "maxDecimals": "Maks. Desimal",
         "rate": "Nilai Tukar",
+        "preview": "Pratinjau",
         "actions": "Aksi"
       },
       "status": {

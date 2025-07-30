@@ -66,13 +66,16 @@ export const formatCurrency = ({
   amount,
   format,
   currencies,
+  currency,
 }: {
   amount: number
   format: TCurrencyFormatRequest
   currencies?: TCurrency[]
+  currency?: TCurrency
 }): string => {
   // Find the default currency from the currencies list
-  const defaultCurrency = currencies?.find((currency) => currency.isDefault)
+  const defaultCurrency =
+    currency || currencies?.find((currency) => currency.isDefault)
 
   // Use default currency settings if found, otherwise use fallback values
   const currencyCode = defaultCurrency?.code || 'IDR'
