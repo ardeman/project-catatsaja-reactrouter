@@ -33,6 +33,7 @@ import {
 import { useCreateCurrency } from '~/lib/hooks/use-create-currency'
 import { useDeleteCurrency } from '~/lib/hooks/use-delete-currency'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
+import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateCurrency } from '~/lib/hooks/use-update-currency'
 import { TCurrency, TCreateCurrencyRequest } from '~/lib/types/settings'
 import { cn } from '~/lib/utils/shadcn'
@@ -43,6 +44,7 @@ import { useCurrencySettings } from './context'
 export const ManageCurrencies = () => {
   const { disabled, setDisabled } = useCurrencySettings()
   const { t } = useTranslation()
+  const { data: userData } = useUserData()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCurrency, setEditingCurrency] = useState<TCurrency | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -52,22 +54,47 @@ export const ManageCurrencies = () => {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
   const { data: currencies = [], isLoading } = useGetCurrencies()
+
+  // Get current currency format settings
+  const currentCurrencyFormat = userData?.currencyFormat
+  const currentMinimumFractionDigits =
+    currentCurrencyFormat?.minimumFractionDigits || 0
+
+  // Sort currencies: default first, then by latest rate ascending
+  const sortedCurrencies = React.useMemo(() => {
+    return [...currencies].sort((a, b) => {
+      // Default currency should be first
+      if (a.isDefault && !b.isDefault) return -1
+      if (!a.isDefault && b.isDefault) return 1
+
+      // Then sort by latest rate ascending
+      return a.latestRate - b.latestRate
+    })
+  }, [currencies])
   const { mutate: createCurrency, isPending: isCreating } = useCreateCurrency()
   const { mutate: updateCurrency, isPending: isUpdating } = useUpdateCurrency()
   const { mutate: deleteCurrency, isPending: isDeleting } = useDeleteCurrency()
 
   const formMethods = useForm<TCreateCurrencyRequest>({
-    resolver: zodResolver(currencySchema(t)),
+    resolver: zodResolver(currencySchema(t, currentMinimumFractionDigits)),
     defaultValues: {
       symbol: '',
       code: '',
-      maximumFractionDigits: 2,
+      maximumFractionDigits: Math.max(2, currentMinimumFractionDigits),
       latestRate: 1,
       isDefault: false,
     },
   })
 
-  const { handleSubmit, reset, formState } = formMethods
+  const { handleSubmit, reset, formState, watch, setValue } = formMethods
+  const isDefault = watch('isDefault')
+
+  // Set latest rate to 1 when default is checked
+  React.useEffect(() => {
+    if (isDefault) {
+      setValue('latestRate', 1)
+    }
+  }, [isDefault, setValue])
 
   const handleOpenDialog = (currency?: TCurrency) => {
     if (currency) {
@@ -81,12 +108,14 @@ export const ManageCurrencies = () => {
       })
     } else {
       setEditingCurrency(null)
+      // First currency added should be default
+      const isFirstCurrency = currencies.length === 0
       reset({
         symbol: '',
         code: '',
         maximumFractionDigits: 2,
         latestRate: 1,
-        isDefault: false,
+        isDefault: isFirstCurrency,
       })
     }
     setIsDialogOpen(true)
@@ -99,6 +128,9 @@ export const ManageCurrencies = () => {
   }
 
   const handleOpenDeleteDialog = (currency: TCurrency) => {
+    if (currency.isDefault) {
+      return // Prevent opening delete dialog for default currency
+    }
     setDeletingCurrency(currency)
     setIsDeleteDialogOpen(true)
   }
@@ -165,31 +197,39 @@ export const ManageCurrencies = () => {
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="text-muted-foreground">Loading currencies...</div>
+              <div className="text-muted-foreground">
+                {t('settings.manageCurrencies.status.loading')}
+              </div>
             </div>
-          ) : currencies.length === 0 ? (
+          ) : sortedCurrencies.length === 0 ? (
             <div className="flex items-center justify-center py-8">
-              <div className="text-muted-foreground">No currencies found.</div>
+              <div className="text-muted-foreground">
+                {t('settings.manageCurrencies.status.empty')}
+              </div>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-1/3 md:w-auto">Code</TableHead>
+                  <TableHead className="w-1/3 md:w-auto">
+                    {t('settings.manageCurrencies.table.code')}
+                  </TableHead>
                   <TableHead className="hidden w-auto md:table-cell">
-                    Symbol
+                    {t('settings.manageCurrencies.table.symbol')}
                   </TableHead>
                   <TableHead className="hidden md:table-cell">
-                    Max Decimals
+                    {t('settings.manageCurrencies.table.maxDecimals')}
                   </TableHead>
                   <TableHead className="hidden md:table-cell">
-                    Latest Rate
+                    {t('settings.manageCurrencies.table.latestRate')}
                   </TableHead>
-                  <TableHead className="w-[100px]">Actions</TableHead>
+                  <TableHead className="w-[100px]">
+                    {t('settings.manageCurrencies.table.actions')}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {currencies.map((currency: TCurrency) => {
+                {sortedCurrencies.map((currency: TCurrency) => {
                   const isExpanded = expandedRows.has(currency.id!)
                   return (
                     <React.Fragment key={currency.id}>
@@ -247,7 +287,7 @@ export const ManageCurrencies = () => {
                             <Button
                               variant="ghost"
                               onClick={() => handleOpenDeleteDialog(currency)}
-                              disabled={disabled}
+                              disabled={disabled || currency.isDefault}
                             >
                               <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
                             </Button>
@@ -265,7 +305,7 @@ export const ManageCurrencies = () => {
                               <div className="flex items-center gap-2">
                                 <span className="text-sm font-medium text-muted-foreground">
                                   {t(
-                                    'settings.manageCurrencies.form.details.maxDecimals',
+                                    'settings.manageCurrencies.form.maximumFractionDigits.label',
                                   )}
                                   :
                                 </span>
@@ -276,7 +316,7 @@ export const ManageCurrencies = () => {
                               <div className="flex items-center gap-2">
                                 <span className="text-sm font-medium text-muted-foreground">
                                   {t(
-                                    'settings.manageCurrencies.form.details.latestRate',
+                                    'settings.manageCurrencies.form.latestRate.label',
                                   )}
                                   :
                                 </span>
@@ -310,7 +350,9 @@ export const ManageCurrencies = () => {
                 : t('settings.manageCurrencies.button.add')}
             </DialogTitle>
             <DialogDescription>
-              {editingCurrency ? 'Edit currency details' : 'Add a new currency'}
+              {editingCurrency
+                ? t('settings.manageCurrencies.dialog.editDescription')
+                : t('settings.manageCurrencies.dialog.addDescription')}
             </DialogDescription>
           </DialogHeader>
           <FormProvider {...formMethods}>
@@ -351,13 +393,20 @@ export const ManageCurrencies = () => {
                   placeholder={t(
                     'settings.manageCurrencies.form.latestRate.placeholder',
                   )}
-                  disabled={disabled || isCreating || isUpdating}
+                  disabled={disabled || isCreating || isUpdating || isDefault}
                 />
                 <Checkbox
                   name="isDefault"
                   label={t('settings.manageCurrencies.form.isDefault.label')}
                   hint={t('settings.manageCurrencies.form.isDefault.hint')}
-                  disabled={disabled || isCreating || isUpdating}
+                  disabled={
+                    disabled ||
+                    isCreating ||
+                    isUpdating ||
+                    (editingCurrency?.isDefault &&
+                      currencies.filter((c) => c.isDefault).length === 1) ||
+                    (!editingCurrency && currencies.length === 0) // First currency is readonly
+                  }
                 />
               </div>
               <DialogFooter>
@@ -395,9 +444,10 @@ export const ManageCurrencies = () => {
               {t('settings.manageCurrencies.button.delete')}
             </DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete the currency &quot;
-              {deletingCurrency?.code} ({deletingCurrency?.symbol})&quot;? This
-              action cannot be undone.
+              {t('settings.manageCurrencies.dialog.deleteDescription', {
+                code: deletingCurrency?.code,
+                symbol: deletingCurrency?.symbol,
+              })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

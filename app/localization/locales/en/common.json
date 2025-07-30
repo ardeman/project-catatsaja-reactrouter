@@ -339,7 +339,7 @@
           "placeholder": "e.g., ."
         },
         "minimumFractionDigits": {
-          "label": "Minimum Decimal Places",
+          "label": "Min. Decimals",
           "placeholder": "e.g., 2"
         },
         "currencyCode": {
@@ -378,6 +378,9 @@
         "decimalSeparator": {
           "required": "Decimal separator is required."
         },
+        "minimumFractionDigits": {
+          "max": "Min. decimals cannot be larger than {{max}} (smallest max. decimals from existing currencies)"
+        },
         "separators": {
           "same": "Thousand separator and decimal separator cannot be the same."
         }
@@ -386,6 +389,22 @@
     "manageCurrencies": {
       "title": "Manage Currencies",
       "description": "Manage your currencies.",
+      "table": {
+        "code": "Code",
+        "symbol": "Symbol",
+        "maxDecimals": "Max. Decimals",
+        "latestRate": "Latest Rate",
+        "actions": "Actions"
+      },
+      "status": {
+        "loading": "Loading currencies...",
+        "empty": "No currencies found."
+      },
+      "dialog": {
+        "editDescription": "Edit currency details",
+        "addDescription": "Add a new currency",
+        "deleteDescription": "Are you sure you want to delete the currency \"{{code}} ({{symbol}})\"? This action cannot be undone."
+      },
       "form": {
         "symbol": {
           "label": "Symbol",
@@ -396,7 +415,7 @@
           "placeholder": "e.g., USD"
         },
         "maximumFractionDigits": {
-          "label": "Maximum Decimal Places",
+          "label": "Max. Decimals",
           "placeholder": "e.g., 2"
         },
         "latestRate": {
@@ -406,10 +425,6 @@
         "isDefault": {
           "label": "Set as Default",
           "hint": "This currency will be used as the default for new transactions"
-        },
-        "details": {
-          "maxDecimals": "Max Decimals",
-          "latestRate": "Latest Rate"
         }
       },
       "button": {
@@ -422,7 +437,10 @@
       "toast": {
         "created": "Currency created successfully.",
         "updated": "Currency updated successfully.",
-        "deleted": "Currency deleted successfully."
+        "deleted": "Currency deleted successfully.",
+        "createError": "Failed to create currency.",
+        "updateError": "Failed to update currency.",
+        "deleteError": "Failed to delete currency."
       },
       "validation": {
         "symbol": {
@@ -430,6 +448,9 @@
         },
         "code": {
           "required": "Code is required."
+        },
+        "maximumFractionDigits": {
+          "min": "Max. decimals must be at least {{min}} (min. decimals from current currency format)"
         }
       }
     },

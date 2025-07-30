@@ -339,7 +339,7 @@
           "placeholder": "contoh: ."
         },
         "minimumFractionDigits": {
-          "label": "Desimal Minimum",
+          "label": "Min. Desimal",
           "placeholder": "contoh: 2"
         },
         "currencyCode": {
@@ -378,6 +378,9 @@
         "decimalSeparator": {
           "required": "Pemisah desimal wajib diisi."
         },
+        "minimumFractionDigits": {
+          "max": "Min. desimal tidak boleh lebih besar dari {{max}} (maks. desimal terkecil dari mata uang yang ada)"
+        },
         "separators": {
           "same": "Pemisah ribuan dan pemisah desimal tidak boleh sama."
         }
@@ -386,6 +389,22 @@
     "manageCurrencies": {
       "title": "Kelola Mata Uang",
       "description": "Kelola mata uang Anda.",
+      "table": {
+        "code": "Kode",
+        "symbol": "Simbol",
+        "maxDecimals": "Maks. Desimal",
+        "latestRate": "Nilai Tukar Terbaru",
+        "actions": "Aksi"
+      },
+      "status": {
+        "loading": "Memuat mata uang...",
+        "empty": "Tidak ada mata uang ditemukan."
+      },
+      "dialog": {
+        "editDescription": "Edit detail mata uang",
+        "addDescription": "Tambah mata uang baru",
+        "deleteDescription": "Apakah Anda yakin ingin menghapus mata uang \"{{code}} ({{symbol}})\"? Tindakan ini tidak dapat dibatalkan."
+      },
       "form": {
         "symbol": {
           "label": "Simbol",
@@ -396,7 +415,7 @@
           "placeholder": "contoh, USD"
         },
         "maximumFractionDigits": {
-          "label": "Maksimal Desimal",
+          "label": "Maks. Desimal",
           "placeholder": "contoh, 2"
         },
         "latestRate": {
@@ -406,10 +425,6 @@
         "isDefault": {
           "label": "Atur sebagai Default",
           "hint": "Mata uang ini akan digunakan sebagai default untuk transaksi baru"
-        },
-        "details": {
-          "maxDecimals": "Maksimal Desimal",
-          "latestRate": "Nilai Tukar Terbaru"
         }
       },
       "button": {
@@ -422,7 +437,10 @@
       "toast": {
         "created": "Mata uang berhasil dibuat.",
         "updated": "Mata uang berhasil diperbarui.",
-        "deleted": "Mata uang berhasil dihapus."
+        "deleted": "Mata uang berhasil dihapus.",
+        "createError": "Gagal membuat mata uang.",
+        "updateError": "Gagal memperbarui mata uang.",
+        "deleteError": "Gagal menghapus mata uang."
       },
       "validation": {
         "symbol": {
@@ -430,6 +448,9 @@
         },
         "code": {
           "required": "Kode wajib diisi."
+        },
+        "maximumFractionDigits": {
+          "min": "Maks. desimal harus minimal {{min}} (min. desimal dari format mata uang saat ini)"
         }
       }
     },

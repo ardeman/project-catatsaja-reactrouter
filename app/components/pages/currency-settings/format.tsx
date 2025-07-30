@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import React from 'react'
 import { FormProvider, useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -14,6 +15,7 @@ import {
 } from '~/components/ui/card'
 import { Label } from '~/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
+import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateCurrencyFormat } from '~/lib/hooks/use-update-currency-format'
 import { TCurrencyFormatRequest } from '~/lib/types/settings'
@@ -26,12 +28,19 @@ export const CurrencyFormat = () => {
   const { disabled, setDisabled } = useCurrencySettings()
   const { t } = useTranslation()
   const { data: userData } = useUserData()
+  const { data: currencies = [] } = useGetCurrencies()
   const { mutate, isPending } = useUpdateCurrencyFormat()
 
   const defaultValues = userData?.currencyFormat || getDefaultCurrencyFormat()
 
+  // Get minimum maximumFractionDigits from existing currencies
+  const minMaximumFractionDigits = React.useMemo(() => {
+    if (currencies.length === 0) return 10 // Default to 10 if no currencies exist
+    return Math.min(...currencies.map((c) => c.maximumFractionDigits))
+  }, [currencies])
+
   const formMethods = useForm<TCurrencyFormatRequest>({
-    resolver: zodResolver(currencyFormatSchema(t)),
+    resolver: zodResolver(currencyFormatSchema(t, minMaximumFractionDigits)),
     values: defaultValues,
   })
 

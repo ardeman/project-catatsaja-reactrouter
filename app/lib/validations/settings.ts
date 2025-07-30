@@ -8,7 +8,10 @@ export const generalSettingSchema = (t: TFunction) =>
     }),
   })
 
-export const currencyFormatSchema = (t: TFunction) =>
+export const currencyFormatSchema = (
+  t: TFunction,
+  maxFractionDigitsMin: number = 0,
+) =>
   z
     .object({
       thousandSeparator: z.string().min(1, {
@@ -21,7 +24,15 @@ export const currencyFormatSchema = (t: TFunction) =>
           'settings.currencyFormat.validation.decimalSeparator.required',
         ),
       }),
-      minimumFractionDigits: z.coerce.number().min(0).max(10),
+      minimumFractionDigits: z.coerce
+        .number()
+        .min(0)
+        .max(maxFractionDigitsMin, {
+          message: t(
+            'settings.currencyFormat.validation.minimumFractionDigits.max',
+            { max: maxFractionDigitsMin },
+          ),
+        }),
       currencyPlacement: z.enum(['before', 'after']),
       currencyType: z.enum(['symbol', 'code']),
       addSpace: z.boolean(),
@@ -31,16 +42,24 @@ export const currencyFormatSchema = (t: TFunction) =>
       path: ['decimalSeparator'],
     })
 
-export const currencySchema = (t: TFunction) =>
+export const currencySchema = (t: TFunction, minFractionDigits: number = 0) =>
   z.object({
     id: z.string().optional(),
     symbol: z.string().min(1, {
-      message: t('settings.currency.validation.symbol.required'),
+      message: t('settings.manageCurrencies.validation.symbol.required'),
     }),
     code: z.string().min(1, {
-      message: t('settings.currency.validation.code.required'),
+      message: t('settings.manageCurrencies.validation.code.required'),
     }),
-    maximumFractionDigits: z.coerce.number().min(0).max(10),
+    maximumFractionDigits: z.coerce
+      .number()
+      .min(minFractionDigits, {
+        message: t(
+          'settings.manageCurrencies.validation.maximumFractionDigits.min',
+          { min: minFractionDigits },
+        ),
+      })
+      .max(10),
     latestRate: z.coerce.number().min(0),
     isDefault: z.boolean().default(false),
   })
