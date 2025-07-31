@@ -216,22 +216,22 @@ export const ManageCurrencies = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-1/3 md:w-auto">
+                  <TableHead className="h-10 w-1/3 md:w-auto">
                     {t('settings.manageCurrencies.table.code')}
                   </TableHead>
-                  <TableHead className="hidden w-auto md:table-cell">
+                  <TableHead className="hidden h-10 w-auto md:table-cell">
                     {t('settings.manageCurrencies.table.symbol')}
                   </TableHead>
-                  <TableHead className="hidden md:table-cell">
+                  <TableHead className="hidden h-10 md:table-cell">
                     {t('settings.manageCurrencies.table.maxDecimals')}
                   </TableHead>
-                  <TableHead className="hidden md:table-cell">
+                  <TableHead className="hidden h-10 md:table-cell">
                     {t('settings.manageCurrencies.table.rate')}
                   </TableHead>
-                  <TableHead className="hidden md:table-cell">
+                  <TableHead className="hidden h-10 md:table-cell">
                     {t('settings.manageCurrencies.table.preview')}
                   </TableHead>
-                  <TableHead className="w-[100px]">
+                  <TableHead className="h-10 w-[100px]">
                     {t('settings.manageCurrencies.table.actions')}
                   </TableHead>
                 </TableRow>
@@ -242,7 +242,7 @@ export const ManageCurrencies = () => {
                   return (
                     <React.Fragment key={currency.id}>
                       <TableRow>
-                        <TableCell>
+                        <TableCell className="py-0">
                           <span>{currency.code}</span>{' '}
                           <span
                             className={cn(
@@ -257,7 +257,7 @@ export const ManageCurrencies = () => {
                         </TableCell>
                         <TableCell
                           className={cn(
-                            'hidden font-medium md:table-cell',
+                            'hidden py-0 font-medium md:table-cell',
                             currency.isDefault
                               ? 'font-bold text-primary'
                               : 'text-muted-foreground',
@@ -265,13 +265,13 @@ export const ManageCurrencies = () => {
                         >
                           {currency.symbol}
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">
+                        <TableCell className="hidden py-0 md:table-cell">
                           {currency.maximumFractionDigits}
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">
+                        <TableCell className="hidden py-0 md:table-cell">
                           {currency.rate}
                         </TableCell>
-                        <TableCell className="hidden font-mono md:table-cell">
+                        <TableCell className="hidden py-0 font-mono md:table-cell">
                           {formatCurrency({
                             amount: previewAmount,
                             format:
@@ -280,7 +280,7 @@ export const ManageCurrencies = () => {
                             currency: currency,
                           })}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="py-0">
                           <div className="flex items-center gap-1 md:gap-2">
                             <Button
                               variant="ghost"
