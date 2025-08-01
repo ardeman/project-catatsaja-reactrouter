@@ -120,7 +120,7 @@ export const Form = (properties: TFormProperties) => {
     const item = watchContent[index]
     remove(index)
     toast({
-      description: t('tasks.toast.itemDeleted', { item: item.item }),
+      description: t('toast.itemDeleted', { item: item.item }),
       action: (
         <ToastAction
           altText="Undo"

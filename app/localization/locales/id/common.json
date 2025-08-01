@@ -43,6 +43,9 @@
       "placeholder": "Masukkan email pengguna"
     }
   },
+  "toast": {
+    "itemDeleted": "{{item}} dihapus"
+  },
   "auth": {
     "signIn": {
       "title": "Masuk",
@@ -146,8 +149,7 @@
       "deleted": "Tugas berhasil dihapus",
       "created": "Tugas berhasil dibuat",
       "unlinked": "Tugas berhasil diputuskan",
-      "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses",
-      "itemDeleted": "{{item}} dihapus"
+      "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses"
     }
   },
   "finances": {
@@ -258,6 +260,12 @@
           "description": "Diluar kategori yang tersedia"
         }
       }
+    },
+    "toast": {
+      "deleted": "Keuangan berhasil dihapus",
+      "created": "Keuangan berhasil dibuat",
+      "unlinked": "Keuangan berhasil diputuskan",
+      "notFound": "Keuangan tidak ditemukan atau Anda tidak memiliki akses"
     }
   },
   "about": {

@@ -43,6 +43,9 @@
       "placeholder": "Enter user email"
     }
   },
+  "toast": {
+    "itemDeleted": "{{item}} removed"
+  },
   "auth": {
     "signIn": {
       "title": "Sign In",
@@ -146,8 +149,7 @@
       "deleted": "Task deleted successfully",
       "created": "Task created successfully",
       "unlinked": "Task unlinked successfully",
-      "notFound": "Task not found or you don't have access",
-      "itemDeleted": "{{item}} removed"
+      "notFound": "Task not found or you don't have access"
     }
   },
   "finances": {
@@ -258,6 +260,12 @@
           "description": "Outside available categories"
         }
       }
+    },
+    "toast": {
+      "deleted": "Finance deleted successfully",
+      "created": "Finance created successfully",
+      "unlinked": "Finance unlinked successfully",
+      "notFound": "Finance not found or you don't have access"
     }
   },
   "about": {
