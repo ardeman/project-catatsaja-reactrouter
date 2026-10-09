@@ -34,6 +34,7 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 - **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and a profile photo through Gravatar.
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
+- **Landing page:** what the app does, with previews of a note and a checklist, in both languages and themes; signed-in visitors go straight to their notes.
 - **App:** installable web app (manifest and icons), about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
 
 ## Roadmap
@@ -61,7 +62,7 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 
 ## Tech stack
 
-The app is a single-page app (`ssr: false`) on Firebase Auth and Cloud Firestore, hosted on Firebase Hosting.
+The app is a single-page app (`ssr: false`) on Firebase Auth and Cloud Firestore, hosted on Firebase Hosting. The public pages (landing, about, privacy, terms) are also rendered to HTML at build time (`prerender` in `react-router.config.ts`) so search engines and link previews can read them.
 
 | Item             | Value                                                                 |
 | ---------------- | --------------------------------------------------------------------- |
@@ -137,6 +138,8 @@ Commit subjects use `type(scope)!: description`, with optional scope and `!` for
 ## Deployment
 
 Every push to `main` runs `.github/workflows/firebase-remix.yml`: install, `pnpm validate`, build with the secrets above, and deploy `build/client` to the live channel of Firebase Hosting. It can also be started by hand from the Actions tab. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
+
+Hosting (`firebase.json`) serves the prerendered pages as files and every other path `__spa-fallback.html`, without trailing slashes. Pages are sent with `Cache-Control: no-cache` and the hashed files in `/assets/` are cached for a year, so a deploy never leaves browsers with pages that point at deleted files. To try the production build with these rules locally: `pnpm build && npx firebase-tools emulators:start --only hosting` (port 5000 is often taken on macOS; it moves to the next free one).
 
 ## Project layout
 

@@ -29,6 +29,7 @@ A change is done only when the **Checks** command in `README.md` passes. If you 
 - Tailwind 4's `space-y-*` adds a bottom margin, which does nothing on an inline element such as a `<label>`. For a stack that starts with a label, use `[&>:not([hidden])~:not([hidden])]:mt-*` (the v3 rule, as in `app/components/base/input/`); elsewhere prefer `flex`/`grid` with `gap-*`.
 - User-facing text goes in both `app/localization/locales/en/` and `id/` (`common.json`, validation messages in `zod.json`); never hardcode strings.
 - Read environment variables only through `app/lib/utils/environment.ts`.
+- Public pages (`publicPages` in `app/lib/configs/page.ts`, and `prerender` in `react-router.config.ts`) are rendered at build time in English and must not wait for Firebase Auth or touch browser APIs (`window`, `localStorage`, `document`) while rendering; do that in effects. A new public page goes in both lists.
 
 ## Guardrails
 
@@ -58,3 +59,5 @@ Record architectural choices here as one line each: date, decision, reason.
 - 2026-10-09: Firestore rules check each kind of update on shared documents separately. Before, anyone with read access could write, so read-only sharing was not enforced.
 - 2026-10-09: The share dialog loads only the profiles of the people an item is shared with (by id, 30 per query). It used to read the whole `users` collection.
 - 2026-10-09: Sign-up writes the profile before sending the verification email, and signing in recreates a missing profile: a failed email had left accounts without one, unable to create anything or be found for sharing.
+- 2026-10-09: The landing page and the other public pages are prerendered (React Router `prerender` with `ssr: false`) so search engines and link previews can read them; everything else stays client-only via `__spa-fallback.html`. They hydrate in the build language and then switch to the saved one (`app/entry.client.tsx`), so the text matches during hydration; an inline script applies the saved theme before the first paint.
+- 2026-10-09: Hosting sends pages with `Cache-Control: no-cache` and `/assets/` as immutable for a year. With Firebase's default one-hour caching, a deploy left browsers with cached pages pointing at deleted asset files.
