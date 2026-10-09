@@ -46,7 +46,7 @@ export const LandingPage = () => {
             <img
               src={appleIcon}
               alt=""
-              className="size-8 rounded-lg"
+              className="size-8"
             />
             {appName}
           </Link>
