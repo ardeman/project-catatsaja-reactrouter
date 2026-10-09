@@ -42,9 +42,10 @@ listenForInstallPrompt()
 // Offline start and the full install experience; production builds only, so
 // development always loads fresh files.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  globalThis.addEventListener('load', () => {
-    void navigator.serviceWorker.register('/sw.js')
-  })
+  const register = () => void navigator.serviceWorker.register('/sw.js')
+  // This script is loaded dynamically, often after the page's load event.
+  if (document.readyState === 'complete') register()
+  else globalThis.addEventListener('load', register, { once: true })
 }
 
 async function hydrate() {
