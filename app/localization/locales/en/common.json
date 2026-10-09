@@ -603,9 +603,24 @@
   "install": {
     "button": "Install app",
     "instructions": {
-      "title": "Install Catat Saja",
-      "share": "Tap the Share button in your browser.",
-      "add": "Choose \"Add to Home Screen\", then tap Add."
+      "title": "Install Catat Saja"
+    },
+    "steps": {
+      "appleMobile": {
+        "share": "Tap the Share button in your browser.",
+        "add": "Choose \"Add to Home Screen\", then tap Add."
+      },
+      "safariMac": {
+        "dock": "In the menu bar, choose File, then \"Add to Dock\"."
+      },
+      "chromium": {
+        "addressBar": "Click the install icon at the right end of the address bar.",
+        "menu": "Or open the browser menu and choose \"Install Catat Saja\" (on phones: \"Add to Home screen\")."
+      },
+      "firefoxAndroid": {
+        "menu": "Open the browser menu.",
+        "install": "Choose \"Install\"."
+      }
     }
   }
 }

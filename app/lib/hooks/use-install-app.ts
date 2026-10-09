@@ -1,9 +1,13 @@
 import { useSyncExternalStore } from 'react'
 
 // Chrome, Edge and Android fire `beforeinstallprompt` when the app can be
-// installed; the app keeps it to show its own Install button. Safari on
-// iPhone and iPad has no such event: people install with Share → Add to
-// Home Screen, so the button shows those steps instead.
+// installed; the app keeps it to show the browser's own install prompt.
+// Elsewhere (Safari, Firefox on Android, Chrome before it offers the
+// prompt) the Install button shows the browser's own steps instead.
+
+// Which steps to show when there is no install prompt.
+export type TInstallSteps =
+  'appleMobile' | 'safariMac' | 'chromium' | 'firefoxAndroid'
 
 type TBeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>
@@ -41,10 +45,23 @@ const isStandalone = () =>
   globalThis.matchMedia('(display-mode: standalone)').matches ||
   (navigator as Navigator & { standalone?: boolean }).standalone === true
 
-const isAppleMobile = () =>
-  /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+// null: this browser can't install web apps (e.g. Firefox on desktop).
+const detectSteps = (): TInstallSteps | null => {
+  const agent = navigator.userAgent
   // iPadOS reports itself as a Mac.
-  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  const isAppleMobile =
+    /iphone|ipad|ipod/i.test(agent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  if (isAppleMobile) return 'appleMobile'
+  if (/firefox/i.test(agent)) {
+    return /android/i.test(agent) ? 'firefoxAndroid' : null
+  }
+  if (/chrome|chromium|crios|edg|opr|samsungbrowser/i.test(agent)) {
+    return 'chromium'
+  }
+  if (/macintosh/i.test(agent) && /safari/i.test(agent)) return 'safariMac'
+  return null
+}
 
 export const useInstallApp = () => {
   // Pages rendered at build time hide the button until the browser says
@@ -55,11 +72,7 @@ export const useInstallApp = () => {
     () => false,
   )
   const standalone = useSyncExternalStore(noSubscribe, isStandalone, () => true)
-  const appleMobile = useSyncExternalStore(
-    noSubscribe,
-    isAppleMobile,
-    () => false,
-  )
+  const steps = useSyncExternalStore(noSubscribe, detectSteps, () => null)
 
   const install = async () => {
     if (!installPrompt) return
@@ -72,9 +85,9 @@ export const useInstallApp = () => {
 
   return {
     // Whether to offer installing at all.
-    canInstall: !standalone && (canPrompt || appleMobile),
-    // No prompt available: show the Add to Home Screen steps instead.
-    needsInstructions: !canPrompt && appleMobile,
+    canInstall: !standalone && (canPrompt || steps !== null),
+    // No prompt available: show these steps instead.
+    steps: canPrompt ? null : steps,
     install,
   }
 }

@@ -97,19 +97,20 @@ export const LandingPage = () => {
               >
                 <Link to="/auth/sign-in">{t('landing.signIn')}</Link>
               </Button>
+              <InstallApp>
+                {({ onClick, label, icon }) => (
+                  <Button
+                    size="lg"
+                    variant="ghost"
+                    className="gap-2"
+                    onClick={onClick}
+                  >
+                    {icon}
+                    {label}
+                  </Button>
+                )}
+              </InstallApp>
             </div>
-            <InstallApp>
-              {({ onClick, label, icon }) => (
-                <Button
-                  variant="link"
-                  className="h-auto gap-2 px-0 text-muted-foreground"
-                  onClick={onClick}
-                >
-                  {icon}
-                  {label}
-                </Button>
-              )}
-            </InstallApp>
           </div>
           <div className="relative mx-auto h-[26rem] w-full max-w-md lg:h-96">
             <NotePreview className="absolute top-0 left-0 -rotate-3 sm:left-4" />

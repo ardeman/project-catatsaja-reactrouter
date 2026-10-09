@@ -1,9 +1,36 @@
-import { Download, SquarePlus, Share } from 'lucide-react'
+import {
+  AppWindow,
+  Download,
+  EllipsisVertical,
+  LucideIcon,
+  Share,
+  SquarePlus,
+} from 'lucide-react'
 import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Modal } from '~/components/base/modal'
-import { useInstallApp } from '~/lib/hooks/use-install-app'
+import { TInstallSteps, useInstallApp } from '~/lib/hooks/use-install-app'
+
+// The browser's own way to install, for browsers without an install prompt.
+const stepsByBrowser: Record<
+  TInstallSteps,
+  { icon: LucideIcon; key: string }[]
+> = {
+  appleMobile: [
+    { icon: Share, key: 'appleMobile.share' },
+    { icon: SquarePlus, key: 'appleMobile.add' },
+  ],
+  safariMac: [{ icon: AppWindow, key: 'safariMac.dock' }],
+  chromium: [
+    { icon: Download, key: 'chromium.addressBar' },
+    { icon: EllipsisVertical, key: 'chromium.menu' },
+  ],
+  firefoxAndroid: [
+    { icon: EllipsisVertical, key: 'firefoxAndroid.menu' },
+    { icon: Download, key: 'firefoxAndroid.install' },
+  ],
+}
 
 type TProperties = {
   // Renders the trigger (a button, a menu item…) with the click handler.
@@ -15,18 +42,18 @@ type TProperties = {
 }
 
 // Offers to install the app: the browser's own prompt where there is one,
-// otherwise (iPhone, iPad) the Add to Home Screen steps. Renders nothing
-// when the app is already installed or can't be installed.
+// otherwise the steps for this browser. Renders nothing when the app is
+// already installed or this browser can't install it.
 export const InstallApp = (properties: TProperties) => {
   const { children } = properties
   const { t } = useTranslation()
-  const { canInstall, needsInstructions, install } = useInstallApp()
+  const { canInstall, steps, install } = useInstallApp()
   const [isOpen, setIsOpen] = useState(false)
 
   if (!canInstall) return null
 
   const handleClick = () => {
-    if (needsInstructions) {
+    if (steps) {
       setIsOpen(true)
       return
     }
@@ -46,14 +73,16 @@ export const InstallApp = (properties: TProperties) => {
         title={t('install.instructions.title')}
       >
         <ol className="grid gap-3 text-sm">
-          <li className="flex items-center gap-3">
-            <Share className="size-5 shrink-0 text-primary" />
-            {t('install.instructions.share')}
-          </li>
-          <li className="flex items-center gap-3">
-            <SquarePlus className="size-5 shrink-0 text-primary" />
-            {t('install.instructions.add')}
-          </li>
+          {steps &&
+            stepsByBrowser[steps].map(({ icon: Icon, key }) => (
+              <li
+                key={key}
+                className="flex items-center gap-3"
+              >
+                <Icon className="size-5 shrink-0 text-primary" />
+                {t(`install.steps.${key}`)}
+              </li>
+            ))}
         </ol>
       </Modal>
     </>

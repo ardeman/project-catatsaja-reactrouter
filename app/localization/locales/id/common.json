@@ -603,9 +603,24 @@
   "install": {
     "button": "Pasang aplikasi",
     "instructions": {
-      "title": "Pasang Catat Saja",
-      "share": "Ketuk tombol Bagikan di browser.",
-      "add": "Pilih \"Tambahkan ke Layar Utama\", lalu ketuk Tambah."
+      "title": "Pasang Catat Saja"
+    },
+    "steps": {
+      "appleMobile": {
+        "share": "Ketuk tombol Bagikan di browser.",
+        "add": "Pilih \"Tambahkan ke Layar Utama\", lalu ketuk Tambah."
+      },
+      "safariMac": {
+        "dock": "Di bar menu, pilih File, lalu \"Tambahkan ke Dock\"."
+      },
+      "chromium": {
+        "addressBar": "Klik ikon pasang di ujung kanan bar alamat.",
+        "menu": "Atau buka menu browser dan pilih \"Pasang Catat Saja\" (di ponsel: \"Tambahkan ke Layar utama\")."
+      },
+      "firefoxAndroid": {
+        "menu": "Buka menu browser.",
+        "install": "Pilih \"Pasang\"."
+      }
     }
   }
 }

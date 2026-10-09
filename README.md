@@ -35,7 +35,7 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
 - **Landing page:** what the app does, with previews of a note and a checklist, in both languages and themes; signed-in visitors go straight to their notes.
-- **App:** installable as a standalone app ("Install app" on the landing page and in the account menu; Add to Home Screen steps on iPhone and iPad), opens offline, a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
+- **App:** installable as a standalone app ("Install app" on the landing page and in the account menu: the browser's install prompt, or the right steps for Safari, Firefox on Android and Chrome before it offers the prompt), opens offline, a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
 
 ## Roadmap
 
