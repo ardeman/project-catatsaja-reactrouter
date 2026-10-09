@@ -144,7 +144,9 @@ export const Form = (properties: TFormProperties) => {
     if (isCreating.current || (!title && storedContent.length === 0)) return
     isCreating.current = true
     const reference = await mutateCreateTask({ title, content: storedContent })
-    isCreating.current = false
+    // Stays set after success: the page switches to the new item and this
+    // form unmounts, which must not create it a second time.
+    if (!reference) isCreating.current = false
     return reference
   }
 
