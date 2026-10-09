@@ -9,6 +9,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { InstallApp } from '~/components/base/install-app'
 import { LanguageSelector } from '~/components/base/language-selector'
 import { ModeToggle } from '~/components/base/mode-toggle'
 import { AboutFooter } from '~/components/layouts/about-footer'
@@ -97,6 +98,18 @@ export const LandingPage = () => {
                 <Link to="/auth/sign-in">{t('landing.signIn')}</Link>
               </Button>
             </div>
+            <InstallApp>
+              {({ onClick, label, icon }) => (
+                <Button
+                  variant="link"
+                  className="h-auto gap-2 px-0 text-muted-foreground"
+                  onClick={onClick}
+                >
+                  {icon}
+                  {label}
+                </Button>
+              )}
+            </InstallApp>
           </div>
           <div className="relative mx-auto h-[26rem] w-full max-w-md lg:h-96">
             <NotePreview className="absolute top-0 left-0 -rotate-3 sm:left-4" />

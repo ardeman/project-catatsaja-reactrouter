@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 
 import { Input } from '~/components/base/input'
+import { InstallApp } from '~/components/base/install-app'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import {
@@ -125,7 +126,7 @@ export const Navbar = (properties: TProperties) => {
                   <CircleUser />
                 </AvatarFallback>
               </Avatar>
-              <span className="sr-only">Toggle user menu</span>
+              <span className="sr-only">{t('navigation.userMenu')}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -169,6 +170,20 @@ export const Navbar = (properties: TProperties) => {
                 </DropdownMenuItem>
               </Link>
             ))}
+            <InstallApp>
+              {({ onClick, label, icon }) => (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={onClick}
+                    className="cursor-pointer gap-2"
+                  >
+                    {icon}
+                    {label}
+                  </DropdownMenuItem>
+                </>
+              )}
+            </InstallApp>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleLogout}

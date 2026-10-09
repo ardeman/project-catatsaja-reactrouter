@@ -19,7 +19,8 @@
     "search": {
       "placeholder": "Cari"
     },
-    "currency": "Mata uang"
+    "currency": "Mata uang",
+    "userMenu": "Menu akun"
   },
   "form": {
     "save": "Simpan",
@@ -597,6 +598,14 @@
       "new": "Baru",
       "improved": "Lebih baik",
       "fixed": "Diperbaiki"
+    }
+  },
+  "install": {
+    "button": "Pasang aplikasi",
+    "instructions": {
+      "title": "Pasang Catat Saja",
+      "share": "Ketuk tombol Bagikan di browser.",
+      "add": "Pilih \"Tambahkan ke Layar Utama\", lalu ketuk Tambah."
     }
   }
 }

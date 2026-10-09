@@ -37,6 +37,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Install Catat Saja as an app on your phone or computer: use "Install app" on the home page or in the account menu. It opens in its own window and starts even without a connection.',
+          id: 'Pasang Catat Saja sebagai aplikasi di ponsel atau komputer: pakai "Pasang aplikasi" di halaman utama atau menu akun. Aplikasi terbuka di jendelanya sendiri dan tetap bisa dibuka tanpa koneksi.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'This changelog.',
           id: 'Halaman catatan perubahan ini.',
         },

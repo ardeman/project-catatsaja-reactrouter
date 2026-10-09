@@ -35,7 +35,7 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
 - **Landing page:** what the app does, with previews of a note and a checklist, in both languages and themes; signed-in visitors go straight to their notes.
-- **App:** installable web app (manifest and icons), a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
+- **App:** installable as a standalone app ("Install app" on the landing page and in the account menu; Add to Home Screen steps on iPhone and iPad), opens offline, a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
 
 ## Roadmap
 
@@ -104,19 +104,19 @@ Variables are read in one place, `app/lib/utils/environment.ts`.
 
 ## Commands
 
-| Task                                                                      | Command                            |
-| ------------------------------------------------------------------------- | ---------------------------------- |
-| Install dependencies                                                      | `pnpm install`                     |
-| Dev server                                                                | `pnpm dev`                         |
-| Lint                                                                      | `pnpm lint`                        |
-| Typecheck (generates route types first)                                   | `pnpm typecheck`                   |
-| Unused files, exports and dependencies                                    | `pnpm knip`                        |
-| Format                                                                    | `pnpm format`                      |
-| Regenerate `public/site.webmanifest` from `app/lib/constants/metadata.ts` | `pnpm generate:manifest`           |
-| Production build (includes the manifest)                                  | `pnpm build`                       |
-| Preview the production build                                              | `pnpm preview`                     |
-| Deploy Firestore rules and indexes                                        | `firebase deploy --only firestore` |
-| Reinstall Git hooks                                                       | `pnpm prepare`                     |
+| Task                                                                                                          | Command                            |
+| ------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Install dependencies                                                                                          | `pnpm install`                     |
+| Dev server                                                                                                    | `pnpm dev`                         |
+| Lint                                                                                                          | `pnpm lint`                        |
+| Typecheck (generates route types first)                                                                       | `pnpm typecheck`                   |
+| Unused files, exports and dependencies                                                                        | `pnpm knip`                        |
+| Format                                                                                                        | `pnpm format`                      |
+| Regenerate `public/site.webmanifest` from `scripts/generate-manifest.mjs` and `app/lib/constants/metadata.ts` | `pnpm generate:manifest`           |
+| Production build (includes the manifest)                                                                      | `pnpm build`                       |
+| Preview the production build                                                                                  | `pnpm preview`                     |
+| Deploy Firestore rules and indexes                                                                            | `firebase deploy --only firestore` |
+| Reinstall Git hooks                                                                                           | `pnpm prepare`                     |
 
 **Checks** — run before every commit and pull request. It must pass with no errors:
 
@@ -139,7 +139,9 @@ Commit subjects use `type(scope)!: description`, with optional scope and `!` for
 
 Every push to `main` runs `.github/workflows/firebase-remix.yml`: install, `pnpm validate`, build with the secrets above, and deploy `build/client` to the live channel of Firebase Hosting. It can also be started by hand from the Actions tab. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
 
-Hosting (`firebase.json`) serves the prerendered pages as files and every other path `__spa-fallback.html`, without trailing slashes. Pages are sent with `Cache-Control: no-cache` and the hashed files in `/assets/` are cached for a year, so a deploy never leaves browsers with pages that point at deleted files. To try the production build with these rules locally: `pnpm build && npx firebase-tools emulators:start --only hosting` (port 5000 is often taken on macOS; it moves to the next free one).
+Hosting (`firebase.json`) serves the prerendered pages as files and every other path `__spa-fallback.html`, without trailing slashes. Pages are sent with `Cache-Control: no-cache` and the hashed files in `/assets/` are cached for a year, so a deploy never leaves browsers with pages that point at deleted files.
+
+The service worker (`public/sw.js`, registered in production builds only) caches the app shell, the public pages and the files they load, so the installed app starts offline. Pages are fetched from the network first, so an online visit always gets the latest deploy; Firebase and Firestore requests are not touched. To try the production build with these rules locally: `pnpm build && npx firebase-tools emulators:start --only hosting` (port 5000 is often taken on macOS; it moves to the next free one).
 
 ## Project layout
 
@@ -168,7 +170,7 @@ app/
   content/            changelog.ts: release notes for /changelog, in both languages
   localization/       i18next setup; locales/<en|id>/common.json and zod.json
   styles/             tailwind.css (Tailwind 4 config: theme, plugins, colours), Milkdown editor theme
-public/               Icons and site.webmanifest (generated)
+public/               Icons (maskable ones for Android), site.webmanifest (generated), sw.js (service worker)
 scripts/              generate-manifest.mjs
 firestore.rules       Security rules (owner and read/write permission lists)
 firestore.indexes.json

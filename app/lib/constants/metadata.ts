@@ -1,4 +1,4 @@
-import { LinksFunction, MetaFunction } from 'react-router'
+import { LinksFunction, MetaDescriptor, MetaFunction } from 'react-router'
 
 export const appName = 'Catat Saja'
 // Where people write about their data (privacy policy).
@@ -7,24 +7,46 @@ export const appleIcon = '/apple-touch-icon.png'
 const shortcutIcon = '/android-chrome-512x512.png'
 const favicon = '/favicon.ico'
 const author = 'Ardeman'
-const themeColor = 'hsl(47.9, 95.8%, 53.1%)'
+// Browser and installed-app bars match the page background.
+export const themeColor = '#ffffff'
+const themeColorDark = '#0c0a09'
+export const appDescription =
+  'Write notes, keep checklists and share them with the people you choose. Finances are coming soon.'
 const manifest = '/site.webmanifest'
 export const githubUser = 'ardeman'
 export const githubRepo = 'project-catatsaja-reactrouter'
 
-export const meta: MetaFunction = () => [
-  { title: appName },
-  {
-    name: 'description',
-    content:
-      'Write notes, keep checklists and share them with the people you choose. Finances are coming soon.',
-  },
+// Tags every page needs; a route's own `meta` replaces the root's, so
+// routes with their own meta add these through `withAppMeta`.
+const appMeta: MetaDescriptor[] = [
   { name: 'author', content: author },
   {
     name: 'theme-color',
     content: themeColor,
+    media: '(prefers-color-scheme: light)',
   },
+  {
+    name: 'theme-color',
+    content: themeColorDark,
+    media: '(prefers-color-scheme: dark)',
+  },
+  // Installed on an iPhone or iPad home screen, open without browser bars.
+  { name: 'mobile-web-app-capable', content: 'yes' },
+  { name: 'apple-mobile-web-app-capable', content: 'yes' },
+  { name: 'apple-mobile-web-app-title', content: appName },
+  { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
 ]
+
+export const withAppMeta = (routeMeta: MetaDescriptor[]): MetaDescriptor[] => [
+  ...routeMeta,
+  ...appMeta,
+]
+
+export const meta: MetaFunction = () =>
+  withAppMeta([
+    { title: appName },
+    { name: 'description', content: appDescription },
+  ])
 
 export const links: LinksFunction = () => [
   { rel: 'icon', href: favicon },

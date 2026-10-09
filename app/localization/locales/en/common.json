@@ -19,7 +19,8 @@
     "search": {
       "placeholder": "Search"
     },
-    "currency": "Currency"
+    "currency": "Currency",
+    "userMenu": "Account menu"
   },
   "form": {
     "save": "Save",
@@ -597,6 +598,14 @@
       "new": "New",
       "improved": "Improved",
       "fixed": "Fixed"
+    }
+  },
+  "install": {
+    "button": "Install app",
+    "instructions": {
+      "title": "Install Catat Saja",
+      "share": "Tap the Share button in your browser.",
+      "add": "Choose \"Add to Home Screen\", then tap Add."
     }
   }
 }

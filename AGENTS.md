@@ -30,7 +30,9 @@ A change is done only when the **Checks** command in `README.md` passes. If you 
 - User-facing text goes in both `app/localization/locales/en/` and `id/` (`common.json`, validation messages in `zod.json`); never hardcode strings.
 - When a change people can notice is released, add it to `app/content/changelog.ts` in both languages: plain words about what changed for them, tagged new, improved or fixed. Group changes released together under one date.
 - Read environment variables only through `app/lib/utils/environment.ts`.
-- Public pages (`publicPages` in `app/lib/configs/page.ts`, and `prerender` in `react-router.config.ts`) are rendered at build time in English and must not wait for Firebase Auth or touch browser APIs (`window`, `localStorage`, `document`) while rendering; do that in effects. A new public page goes in both lists.
+- Public pages (`publicPages` in `app/lib/configs/page.ts`, and `prerender` in `react-router.config.ts`) are rendered at build time in English and must not wait for Firebase Auth or touch browser APIs (`window`, `localStorage`, `document`) while rendering; do that in effects. A new public page goes in both lists and in `PUBLIC_PAGES` in `public/sw.js`.
+- `public/sw.js` must never serve an outdated app while online: pages stay network-first, and it leaves cross-origin requests (Firebase, Firestore) alone. When you change what it caches or how, bump the cache names (`pages-v1`, `assets-v1`) so old caches are dropped.
+- Installing: the manifest comes from `scripts/generate-manifest.mjs` (run by `pnpm build`); app-wide meta tags come from `withAppMeta` (`app/lib/constants/metadata.ts`), which a route with its own `meta` must use.
 
 ## Guardrails
 
@@ -62,3 +64,4 @@ Record architectural choices here as one line each: date, decision, reason.
 - 2026-10-09: Sign-up writes the profile before sending the verification email, and signing in recreates a missing profile: a failed email had left accounts without one, unable to create anything or be found for sharing.
 - 2026-10-09: The landing page and the other public pages are prerendered (React Router `prerender` with `ssr: false`) so search engines and link previews can read them; everything else stays client-only via `__spa-fallback.html`. They hydrate in the build language and then switch to the saved one (`app/entry.client.tsx`), so the text matches during hydration; an inline script applies the saved theme before the first paint.
 - 2026-10-09: Hosting sends pages with `Cache-Control: no-cache` and `/assets/` as immutable for a year. With Firebase's default one-hour caching, a deploy left browsers with cached pages pointing at deleted asset files.
+- 2026-10-09: Installable as a standalone app: a full manifest (start at `/notes`, maskable icons, shortcuts), Install buttons from `useInstallApp` (the browser prompt, or Add to Home Screen steps on iPhone and iPad), and a small hand-written service worker for offline start. No PWA library: the app needs only a shell cache, and a hand-written worker keeps the caching rules visible.

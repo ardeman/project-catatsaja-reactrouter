@@ -12,6 +12,7 @@ import { I18nextProvider, initReactI18next } from 'react-i18next'
 import { HydratedRouter } from 'react-router/dom'
 
 import { publicPages } from './lib/configs/page'
+import { listenForInstallPrompt } from './lib/hooks/use-install-app'
 import i18n from './localization/i18n'
 import { resources } from './localization/resource'
 
@@ -34,6 +35,16 @@ const SavedLanguage = (
     }
   }, [language])
   return children
+}
+
+listenForInstallPrompt()
+
+// Offline start and the full install experience; production builds only, so
+// development always loads fresh files.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  globalThis.addEventListener('load', () => {
+    void navigator.serviceWorker.register('/sw.js')
+  })
 }
 
 async function hydrate() {
