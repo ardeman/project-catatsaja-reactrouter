@@ -27,8 +27,10 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 **Done**
 
 - **Notes:** rich Markdown editor (Milkdown) with live preview cards, pinning, autosave, and a page per note.
-- **Tasks:** checklists with autosave, add-by-paste (one item per line), reordering, check all, undo after removing an item, and an item counter.
-- **Sharing:** find users by email and give them read or write access to a note or task; copy a link; shared items update in real time; a reader can remove a shared item from their own list.
+- **Tasks:** checklists with add-by-paste (one item per line), tap an item to edit it, reordering, check all, undo after removing an item, and completed items grouped at the bottom.
+- **Saving:** notes and tasks save as you type and when you leave the page, with a "Saving… / Saved" status; a new note or task is kept when you leave it.
+- **Search:** the search bar filters the notes or tasks list by title and content.
+- **Sharing:** find users by email and give them read or write access to a note or task; read-only is enforced by the database rules; copy a link; undo removing someone; shared items update in real time; a reader can remove a shared item from their own list.
 - **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and a profile photo through Gravatar.
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
@@ -54,6 +56,7 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 - [ ] Turn back on the ESLint rules that the 2026-10-09 upgrade switched off, and fix what they find (`eslint.config.mjs`).
 - [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
 - [ ] TypeScript 7, once typescript-eslint supports it.
+- [ ] Stop signed-in users from listing every profile: the rules still allow reading the whole `users` collection, which the email lookup for sharing needs. An email-lookup document per user (or a Cloud Function) would allow only exact lookups.
 - [ ] Pass `ref` as a prop instead of `forwardRef` in `app/components/ui/` (React 19 style, before React removes `forwardRef`).
 
 ## Tech stack
