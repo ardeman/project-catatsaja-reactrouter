@@ -52,18 +52,16 @@ export const LandingPage = () => {
           </Link>
           <LanguageSelector />
           <ModeToggle />
+          {/* Returning users sign in from here; new ones have the hero's button. */}
           <Button
             asChild
             variant="ghost"
             className="hidden sm:inline-flex"
           >
-            <Link to="/auth/sign-in">{t('landing.signIn')}</Link>
-          </Button>
-          <Button
-            asChild
-            className="h-8 px-3 text-xs sm:h-9 sm:px-4 sm:text-sm"
-          >
             <Link to="/auth/sign-up">{t('landing.getStarted')}</Link>
+          </Button>
+          <Button asChild>
+            <Link to="/auth/sign-in">{t('landing.signIn')}</Link>
           </Button>
         </div>
       </header>
