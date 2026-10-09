@@ -1,3 +1,4 @@
+import { fixupConfigRules, fixupPluginRules } from '@eslint/compat'
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
@@ -17,8 +18,10 @@ export default tseslint.config(
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
-      jsxA11y.flatConfigs.recommended,
-      importPlugin.flatConfigs.recommended,
+      ...fixupConfigRules([
+        jsxA11y.flatConfigs.recommended,
+        importPlugin.flatConfigs.recommended,
+      ]),
       eslintPluginUnicorn.configs.recommended,
       eslintConfigPrettier,
     ],
@@ -30,7 +33,7 @@ export default tseslint.config(
     },
     plugins: {
       'react-hooks': reactHooks,
-      react: reactPlugin,
+      react: fixupPluginRules(reactPlugin),
       '@tanstack/query': pluginQuery,
       'unused-imports': unusedImports,
     },
@@ -64,6 +67,34 @@ export default tseslint.config(
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/no-useless-promise-resolve-reject': 'off',
       'unicorn/no-null': 'off',
+      // Added to the recommended sets by eslint-plugin-unicorn 77 and
+      // eslint-plugin-react-hooks 7; off until the code is migrated.
+      'unicorn/default-export-style': 'off',
+      'unicorn/prefer-early-return': 'off',
+      'unicorn/no-unnecessary-global-this': 'off',
+      'unicorn/prefer-simple-condition-first': 'off',
+      'unicorn/no-declarations-before-early-exit': 'off',
+      'unicorn/no-array-sort': 'off',
+      'unicorn/max-nested-calls': 'off',
+      'unicorn/consistent-boolean-name': 'off',
+      'unicorn/prefer-split-limit': 'off',
+      'unicorn/prefer-minimal-ternary': 'off',
+      'unicorn/no-top-level-side-effects': 'off',
+      'unicorn/no-top-level-assignment-in-function': 'off',
+      'unicorn/no-duplicate-logical-operands': 'off',
+      'unicorn/prefer-ternary': 'off',
+      'unicorn/prefer-combined-guards': 'off',
+      'unicorn/prefer-else-if': 'off',
+      'unicorn/no-duplicate-if-branches': 'off',
+      'unicorn/numeric-separators-style': 'off',
+      'unicorn/no-array-reverse': 'off',
+      'unicorn/prefer-array-last-methods': 'off',
+      'unicorn/no-asterisk-prefix-in-documentation-comments': 'off',
+      'unicorn/prefer-top-level-await': 'off',
+      'unicorn/name-replacements': 'off',
+      'unicorn/no-unsafe-string-replacement': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/incompatible-library': 'off',
       'jsx-a11y/no-static-element-interactions': 'off',
       'jsx-a11y/click-events-have-key-events': 'off',
       'no-console': 'error',

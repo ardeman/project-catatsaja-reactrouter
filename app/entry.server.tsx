@@ -173,7 +173,7 @@ async function handleBrowserRequest(
 }
 
 process.on('unhandledRejection', (reason: unknown, p: Promise<unknown>) => {
-  let stack = ''
+  let stack: string
 
   if (reason instanceof Error && reason.stack) {
     stack = reason.stack
