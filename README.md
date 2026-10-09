@@ -8,22 +8,71 @@
   </a>
 </p>
 
-Catat Saja is a web app for notes, tasks and finances, in English and Bahasa Indonesia. Notes and tasks can be pinned and shared with other users; finances use currencies the user sets up, with their own formatting.
+**Catat Saja** ("just write it down") is a personal productivity web app for notes, tasks and finances, in English and Bahasa Indonesia. Live at [catatsaja.ardeman.com](https://catatsaja.ardeman.com).
 
-It is a React Router 7 single-page app (`ssr: false`) backed by Firebase Auth and Cloud Firestore, and hosted on Firebase Hosting.
+## Objective
 
-| Item             | Value                                                       |
-| ---------------- | ----------------------------------------------------------- |
-| Node.js          | 22.11.0 (`.nvmrc`; `engines` allows >= 20)                  |
-| Package manager  | pnpm 9.14.4 (`packageManager` in `package.json`)            |
-| UI               | Tailwind CSS 3, shadcn/ui (`new-york`, Radix), lucide icons |
-| Forms            | react-hook-form + zod                                       |
-| i18n             | i18next / remix-i18next, languages `en` and `id`            |
-| Firebase project | `catat-saja`                                                |
+One simple, private place to write things down and keep track of them:
+
+- **Capture quickly:** a note or a checklist is one tap away, saves itself as you type, and works on a phone as well as on a desktop.
+- **Share when needed:** any note or task can be shared with other users, read-only or editable, and updates show up for everyone in real time.
+- **Track money in one place:** record income and expenses in several currencies, converted with your own rates and formatted the way you read numbers.
+
+## Status
+
+Notes, tasks, sharing, accounts and currency settings are done and live. **Finances is in progress:** the data layer and routes exist, but the list and detail screens are placeholders. See the [Roadmap](#roadmap).
+
+## Features
+
+**Done**
+
+- **Notes:** rich Markdown editor (Milkdown) with live preview cards, pinning, autosave, and a page per note.
+- **Tasks:** checklists with autosave, add-by-paste (one item per line), reordering, check all, undo after removing an item, and an item counter.
+- **Sharing:** find users by email and give them read or write access to a note or task; copy a link; shared items update in real time; a reader can remove a shared item from their own list.
+- **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and a profile photo through Gravatar.
+- **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
+- **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
+- **App:** installable web app (manifest and icons), about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
+
+## Roadmap
+
+**In progress: Finances**
+
+- [x] Firestore data layer (create, update, pin, share, unlink, delete), routes and translations
+- [x] Validation for a finance (title) and its entries (date, description, quantity, amount, currency, rate, total, category, income or expense)
+- [ ] Finances list with cards, pinning and sharing, like notes and tasks
+- [ ] Finance page: edit the title, and add, edit and remove entries
+- [ ] Totals per finance, converted to the default currency with your rates and currency format
+
+**Planned**
+
+- [ ] Gemini integration: the API key is set up in `.env.example` and the deploy workflow, but no feature uses it yet and its scope is not decided.
+
+**Technical**
+
+- [ ] Automated tests (there are none yet).
+- [ ] Turn back on the ESLint rules that the 2026-10-09 upgrade switched off, and fix what they find (`eslint.config.mjs`).
+- [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
+- [ ] TypeScript 7, once typescript-eslint supports it.
+- [ ] Pass `ref` as a prop instead of `forwardRef` in `app/components/ui/` (React 19 style, before React removes `forwardRef`).
+
+## Tech stack
+
+The app is a single-page app (`ssr: false`) on Firebase Auth and Cloud Firestore, hosted on Firebase Hosting.
+
+| Item             | Value                                                                 |
+| ---------------- | --------------------------------------------------------------------- |
+| Node.js          | 24 LTS (`.nvmrc`)                                                     |
+| Package manager  | pnpm 12 through Corepack (`packageManager` in `package.json`)         |
+| Framework        | React 19, React Router 8, Vite 8, TypeScript 6                        |
+| UI               | Tailwind CSS 4, shadcn/ui (`new-york`, Radix), lucide icons, Milkdown |
+| Forms            | react-hook-form + Zod 4                                               |
+| i18n             | i18next / react-i18next, languages `en` and `id`                      |
+| Firebase project | `catat-saja`                                                          |
 
 ## Getting started
 
-Prerequisites: Node.js and pnpm at the versions above, and [firebase-tools](https://firebase.google.com/docs/cli) (v13 or later).
+Prerequisites: Node.js 24 with Corepack enabled (`corepack enable`, which provides the pinned pnpm), and [firebase-tools](https://firebase.google.com/docs/cli).
 
 ```sh
 git clone https://github.com/ardeman/project-catatsaja-reactrouter.git
@@ -34,6 +83,8 @@ firebase login
 firebase deploy --only firestore   # rules and indexes
 pnpm dev               # http://localhost:5173
 ```
+
+pnpm refuses package versions published less than a day ago (its `minimumReleaseAge` default), so a brand-new release can only be installed the next day. Dependency install scripts run only when allowed in `pnpm-workspace.yaml` (`allowBuilds`).
 
 ### Environment variables
 
@@ -94,7 +145,7 @@ app/
                         _layout._home.*   public pages (about, privacy, terms)
                         _layout.auth.*    sign in, sign up, forgot password
                         _layout._main.*   signed-in app (notes, tasks, finances, settings)
-  apis/firestore/     Firestore reads and writes per collection (note, task, user, currency)
+  apis/firestore/     Firestore reads and writes per collection (note, task, finance, user, currency)
   components/
     ui/               shadcn/ui primitives (generated)
     base/             Shared app components built on ui/
@@ -109,7 +160,7 @@ app/
     validations/      zod schemas per domain
     utils/            Environment, parsers, auth helpers, cn()
   localization/       i18next setup; locales/<en|id>/common.json and zod.json
-  styles/             Tailwind and global CSS, Milkdown editor theme
+  styles/             tailwind.css (Tailwind 4 config: theme, plugins, colours), Milkdown editor theme
 public/               Icons and site.webmanifest (generated)
 scripts/              generate-manifest.mjs
 firestore.rules       Security rules (owner and read/write permission lists)
@@ -120,12 +171,12 @@ firestore.indexes.json
 
 Each topic has one home. Update that file instead of copying its content somewhere else.
 
-| File                     | Audience                                         | Owns                                                       |
-| ------------------------ | ------------------------------------------------ | ---------------------------------------------------------- |
-| `README.md`              | Everyone                                         | Overview, setup, environment, commands, deployment, layout |
-| `AGENTS.md`              | AI coding agents (and humans who want the rules) | Definition of done, conventions, guardrails, decisions     |
-| `CLAUDE.md`, `GEMINI.md` | Claude Code, Gemini CLI                          | Only an import of `AGENTS.md`                              |
-| `LICENSE`                | Everyone                                         | Terms for using the code (MIT)                             |
+| File                     | Audience                                         | Owns                                                              |
+| ------------------------ | ------------------------------------------------ | ----------------------------------------------------------------- |
+| `README.md`              | Everyone                                         | Objective, features, roadmap, setup, commands, deployment, layout |
+| `AGENTS.md`              | AI coding agents (and humans who want the rules) | Definition of done, conventions, guardrails, decisions            |
+| `CLAUDE.md`, `GEMINI.md` | Claude Code, Gemini CLI                          | Only an import of `AGENTS.md`                                     |
+| `LICENSE`                | Everyone                                         | Terms for using the code (MIT)                                    |
 
 Codex, Cursor, GitHub Copilot and other agents that follow the [AGENTS.md](https://agents.md) convention read `AGENTS.md` directly.
 
