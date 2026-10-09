@@ -34,6 +34,10 @@ export const createFinance = async (data: TCreateFinanceRequest) => {
   })
 }
 
+/**
+ * Used by the finance forms, which are still placeholders.
+ * @public
+ */
 export const updateFinance = async (data: TUpdateFinanceRequest) => {
   const { id, ...rest } = data
   if (!firestore) {
@@ -107,6 +111,10 @@ export const unlinkFinance = async (finance: TFinanceResponse) => {
   })
 }
 
+/**
+ * Used by the finance forms, which are still placeholders.
+ * @public
+ */
 export const setFinancePermission = async (form: TFinancePermissionRequest) => {
   const { finance, uid, permission } = form
   const readPermission = new Set(finance.permissions?.read || [])

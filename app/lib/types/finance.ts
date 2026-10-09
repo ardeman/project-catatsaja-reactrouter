@@ -1,14 +1,18 @@
 import { z } from 'zod'
 
-import { financeSchema } from '~/lib/validations/finance'
+import { itemSchema, titleSchema } from '~/lib/validations/finance'
 
 import { THandleSetPermission, TPermissions, TTime } from './common'
 
-export type TFinanceForm = z.infer<ReturnType<typeof financeSchema>>
+type TFinanceTitleForm = z.infer<ReturnType<typeof titleSchema>>
 
-export type TCreateFinanceRequest = Omit<TFinanceForm, 'item'>
+type TFinanceItemForm = z.infer<ReturnType<typeof itemSchema>>
 
-export type TUpdateFinanceRequest = { id: string } & Omit<TFinanceForm, 'item'>
+export type TFinanceForm = TFinanceTitleForm & { content: TFinanceItemForm[] }
+
+export type TCreateFinanceRequest = TFinanceForm
+
+export type TUpdateFinanceRequest = { id: string } & TFinanceForm
 
 export type TPinFinanceRequest = {
   finance: TFinanceResponse

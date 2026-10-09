@@ -147,4 +147,8 @@ const useFinance = () => {
   return context
 }
 
-export { FinanceProvider, useFinance }
+export {
+  FinanceProvider,
+  // Used by the finance forms, which are still placeholders.
+  /** @public */ useFinance,
+}

@@ -15,6 +15,10 @@ export type TFinanceConfirmation = {
   detail: TFinanceResponse
 }
 
+/**
+ * Used by the finance forms, which are still placeholders.
+ * @public
+ */
 export type TCardProperties = {
   finance: TFinanceResponse
   className?: HTMLAttributes<HTMLDivElement>['className']
