@@ -11,7 +11,7 @@ export const AboutFooter = () => {
   const { pathname } = useLocation()
 
   return (
-    <div className="mt-2 flex w-full items-center justify-center text-center text-xs text-muted-foreground">
+    <div className="mt-2 flex w-full flex-wrap items-center justify-center gap-y-1 px-4 text-center text-xs text-muted-foreground">
       {homeMenus(t).map((menu, index) => (
         <div
           key={index}
@@ -20,7 +20,7 @@ export const AboutFooter = () => {
           <Link
             to={menu.href}
             className={cn(
-              'hover:underline',
+              'whitespace-nowrap hover:underline',
               menu.name === appName ? 'text-primary' : '',
               menu.href === pathname ? 'text-foreground' : '',
             )}

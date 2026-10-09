@@ -12,16 +12,16 @@ export const userMenus = (t: TFunction): TMenu[] => [
     name: t('navigation.reportIssues'),
     href: `https://github.com/${githubUser}/${githubRepo}/issues`,
   },
-  {
-    name: t('navigation.changelog'),
-    href: '/changelog',
-  },
 ]
 
 export const aboutMenus = (t: TFunction): TMenu[] => [
   {
     name: t('navigation.about'),
     href: '/about',
+  },
+  {
+    name: t('navigation.changelog'),
+    href: '/changelog',
   },
   {
     name: t('navigation.privacyPolicy'),
