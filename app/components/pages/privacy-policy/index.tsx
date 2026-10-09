@@ -1,15 +1,40 @@
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
+
+import { contactEmail } from '~/lib/constants/metadata'
+
+const paragraphs = ['collect', 'use', 'storage', 'sharing', 'analytics']
 
 export const PrivacyPolicyPage = () => {
   const { t } = useTranslation()
   return (
     <div className="mx-auto grid min-h-fit max-w-md gap-4 p-4 md:gap-8 md:p-8">
-      <h1 className="text-3xl font-semibold">
-        {t('navigation.privacyPolicy')}
-      </h1>
-      <p>{t('privacyPolicy.paragraph1')}</p>
-      <p>{t('privacyPolicy.paragraph2')}</p>
-      <p>{t('privacyPolicy.paragraph3')}</p>
+      <div className="grid gap-1">
+        <h1 className="text-3xl font-semibold">
+          {t('navigation.privacyPolicy')}
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {t('privacyPolicy.updated')}
+        </p>
+      </div>
+      {paragraphs.map((key) => (
+        <p key={key}>{t(`privacyPolicy.${key}`)}</p>
+      ))}
+      <p>
+        <Trans
+          i18nKey="privacyPolicy.contact"
+          values={{ email: contactEmail }}
+          components={{
+            a: (
+              <a
+                href={`mailto:${contactEmail}`}
+                className="text-primary underline underline-offset-4"
+              >
+                {contactEmail}
+              </a>
+            ),
+          }}
+        />
+      </p>
     </div>
   )
 }

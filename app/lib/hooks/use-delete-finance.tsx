@@ -23,7 +23,7 @@ export const useDeleteFinance = () => {
         description: t('finances.toast.deleted'),
         action: (
           <ToastAction
-            altText="Undo"
+            altText={t('form.undo')}
             onClick={() => mutateCreateFinance(data)}
           >
             {t('form.undo')}

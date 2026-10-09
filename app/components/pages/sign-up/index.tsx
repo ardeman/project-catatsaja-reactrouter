@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeClosed } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { Button } from '~/components/base/button'
@@ -19,6 +19,7 @@ import {
   CardTitle,
   Card,
 } from '~/components/ui/card'
+import { appName } from '~/lib/constants/metadata'
 import { useTheme } from '~/lib/contexts/theme'
 import { useRegister } from '~/lib/hooks/use-register'
 import { TSignUpRequest } from '~/lib/types/user'
@@ -70,7 +71,13 @@ export const SignUpPage = () => {
         <div className="flex items-center justify-between">
           <div className="grid">
             <CardTitle className="text-2xl">{t('auth.signUp.title')}</CardTitle>
-            <CardDescription>{t('auth.signUp.description')}</CardDescription>
+            <CardDescription>
+              <Trans
+                i18nKey="auth.signUp.description"
+                values={{ appName }}
+                components={{ span: <strong className="text-primary" /> }}
+              />
+            </CardDescription>
           </div>
           <div className="flex space-x-2">
             <LanguageSelector />

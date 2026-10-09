@@ -91,7 +91,7 @@ export const ForgotPasswordPage: FC = () => {
             <Input
               label={t('auth.form.email.label')}
               name="email"
-              placeholder="you@me.com"
+              placeholder={t('auth.form.email.placeholder')}
               required
               disabled={disabled}
             />

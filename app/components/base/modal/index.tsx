@@ -128,6 +128,7 @@ const Drawer = (parameters: TParameters) => {
     handleConfirm,
     variant,
   } = parameters
+  const { t } = useTranslation()
   return (
     <UIDrawer
       repositionInputs={false}
@@ -154,11 +155,11 @@ const Drawer = (parameters: TParameters) => {
                 variant={variant}
                 onClick={handleConfirm}
               >
-                Confirm
+                {t('form.confirm')}
               </Button>
             )}
             <DrawerClose asChild>
-              <Button variant="outline">Close</Button>
+              <Button variant="outline">{t('actions.close')}</Button>
             </DrawerClose>
           </DrawerFooter>
         </div>

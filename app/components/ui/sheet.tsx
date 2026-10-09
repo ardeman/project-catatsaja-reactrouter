@@ -2,6 +2,7 @@ import * as SheetPrimitive from '@radix-ui/react-dialog'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { X } from 'lucide-react'
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/lib/utils/shadcn'
 
@@ -52,6 +53,12 @@ interface SheetContentProperties
     React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {}
 
+// Screen-reader label for the close button, in the current language.
+const CloseLabel = () => {
+  const { t } = useTranslation()
+  return <span className="sr-only">{t('actions.close')}</span>
+}
+
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProperties
@@ -65,7 +72,7 @@ const SheetContent = React.forwardRef<
     >
       <SheetPrimitive.Close className="absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-secondary">
         <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
+        <CloseLabel />
       </SheetPrimitive.Close>
       {children}
     </SheetPrimitive.Content>

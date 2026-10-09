@@ -1,6 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/lib/utils/shadcn'
 
@@ -27,6 +28,12 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+// Screen-reader label for the close button, in the current language.
+const CloseLabel = () => {
+  const { t } = useTranslation()
+  return <span className="sr-only">{t('actions.close')}</span>
+}
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
@@ -44,7 +51,7 @@ const DialogContent = React.forwardRef<
       {children}
       <DialogPrimitive.Close className="absolute top-2.5 right-2.5 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
         <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
+        <CloseLabel />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>

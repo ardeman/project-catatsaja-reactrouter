@@ -16,7 +16,7 @@
     "not_multiple_of": "Number must be a multiple of {{multipleOf}}",
     "not_finite": "Number must be finite",
     "invalid_string": {
-      "email": "Invalid {{validation}}",
+      "email": "Enter a valid {{validation}}",
       "url": "Invalid {{validation}}",
       "uuid": "Invalid {{validation}}",
       "cuid": "Invalid {{validation}}",
@@ -33,12 +33,12 @@
       },
       "string": {
         "exact": "String must contain exactly {{minimum}} character(s)",
-        "inclusive": "String must contain at least {{minimum}} character(s)",
+        "inclusive": "Must be at least {{minimum}} characters",
         "not_inclusive": "String must contain over {{minimum}} character(s)"
       },
       "number": {
         "exact": "Number must be exactly {{minimum}}",
-        "inclusive": "Number must be greater than or equal to {{minimum}}",
+        "inclusive": "Must be {{minimum}} or more",
         "not_inclusive": "Number must be greater than {{minimum}}"
       },
       "set": {
@@ -65,7 +65,7 @@
       },
       "number": {
         "exact": "Number must be exactly {{maximum}}",
-        "inclusive": "Number must be less than or equal to {{maximum}}",
+        "inclusive": "Must be {{maximum}} or less",
         "not_inclusive": "Number must be less than {{maximum}}"
       },
       "set": {

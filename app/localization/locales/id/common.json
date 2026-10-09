@@ -10,30 +10,28 @@
     "settings": "Pengaturan",
     "general": "Umum",
     "account": "Akun",
-    "reportIssues": "Laporkan Masalah",
-    "changelog": "Catatan Perubahan",
-    "about": "Tentang Aplikasi",
-    "privacyPolicy": "Kebijakan Privasi",
-    "termsOfService": "Syarat Layanan",
+    "reportIssues": "Laporkan masalah",
+    "changelog": "Catatan perubahan",
+    "about": "Tentang aplikasi",
+    "privacyPolicy": "Kebijakan privasi",
+    "termsOfService": "Syarat layanan",
     "signOut": "Keluar",
     "search": {
       "placeholder": "Cari"
     },
-    "currency": "Mata Uang"
+    "currency": "Mata uang"
   },
   "form": {
     "save": "Simpan",
-    "cancel": "Batal",
     "delete": "Hapus <span>{{item}}</span> ini?",
-    "unlink": "Putuskan hubungan <span>{{item}}</span> ini?",
+    "unlink": "Hapus <span>{{item}}</span> ini dari daftarmu?",
     "share": "Bagikan <span>{{item}}</span> ini",
-    "confirm": "Iya",
-    "undo": "Batal",
-    "openPage": "Buka Halaman",
+    "confirm": "Ya",
+    "undo": "Urungkan",
     "yes": "Ya",
     "no": "Tidak",
     "permissions": {
-      "select": "Pilih izin",
+      "select": "Pilih akses",
       "readOnly": "Hanya baca",
       "write": "Baca dan tulis",
       "shared": "Dibagikan",
@@ -41,7 +39,7 @@
       "removed": "{{email}} tidak lagi punya akses"
     },
     "user": {
-      "placeholder": "Masukkan email pengguna"
+      "placeholder": "Masukkan alamat email"
     },
     "copyLink": "Salin tautan",
     "linkCopied": "Tautan disalin",
@@ -67,7 +65,7 @@
     },
     "signUp": {
       "title": "Daftar",
-      "description": "Buat akun",
+      "description": "Buat akun untuk mulai memakai <span>{{appName}}</span>.",
       "form": {
         "switch": {
           "label": "Sudah punya akun?",
@@ -76,8 +74,8 @@
       }
     },
     "forgotPassword": {
-      "title": "Lupa Kata Sandi",
-      "description": "Masukkan email Anda untuk reset kata sandi",
+      "title": "Lupa kata sandi",
+      "description": "Masukkan email-mu dan kami akan mengirim tautan untuk mengatur ulang kata sandi.",
       "form": {
         "switch": {
           "label": "Kembali ke",
@@ -87,18 +85,18 @@
     },
     "form": {
       "displayName": {
-        "label": "Nama Tampilan",
-        "placeholder": "Masukkan nama tampilan Anda"
+        "label": "Nama tampilan",
+        "placeholder": "Namamu"
       },
       "email": {
         "label": "Email",
-        "placeholder": "kamu@aku.com"
+        "placeholder": "kamu@contoh.com"
       },
       "password": {
-        "label": "Kata Sandi"
+        "label": "Kata sandi"
       },
       "confirmPassword": {
-        "label": "Konfirmasi Kata Sandi"
+        "label": "Konfirmasi kata sandi"
       },
       "forgotPassword": {
         "label": "Lupa kata sandi?"
@@ -109,13 +107,13 @@
       }
     },
     "toast": {
-      "verificationSent": "Email verifikasi telah dikirim.",
-      "resetPassword": "Email reset kata sandi telah dikirim.",
-      "linkGoogle": "Akun Google Anda telah terhubung.",
-      "emailVerify": "Silakan cek email Anda untuk verifikasi akun.",
-      "updateEmail": "Silakan cek email Anda untuk verifikasi alamat email baru.",
-      "profileUpdated": "Profil Anda telah diperbarui.",
-      "photoUpdated": "Foto profil Anda telah diperbarui."
+      "verificationSent": "Email verifikasi sudah dikirim.",
+      "resetPassword": "Email untuk mengatur ulang kata sandi sudah dikirim.",
+      "linkGoogle": "Akun Google-mu sudah terhubung.",
+      "emailVerify": "Cek email-mu untuk memverifikasi akun.",
+      "updateEmail": "Cek email barumu untuk mengonfirmasi perubahan.",
+      "profileUpdated": "Profil diperbarui.",
+      "photoUpdated": "Foto profil diperbarui."
     },
     "validation": {
       "confirmPassword": {
@@ -124,8 +122,8 @@
     }
   },
   "notes": {
-    "title": "Catatan",
-    "add": "Buat Baru",
+    "title": "catatan",
+    "add": "Catatan baru",
     "form": {
       "title": {
         "label": "Judul"
@@ -135,10 +133,10 @@
       }
     },
     "toast": {
-      "deleted": "Catatan berhasil dihapus",
-      "created": "Catatan berhasil dibuat",
-      "unlinked": "Catatan berhasil diputuskan",
-      "notFound": "Catatan tidak ditemukan atau Anda tidak memiliki akses"
+      "deleted": "Catatan dihapus",
+      "created": "Catatan dibuat",
+      "unlinked": "Catatan dihapus dari daftarmu",
+      "notFound": "Catatan ini tidak ada atau tidak dibagikan denganmu"
     },
     "untitled": "Catatan tanpa judul",
     "empty": {
@@ -147,27 +145,27 @@
     }
   },
   "tasks": {
-    "title": "Tugas",
-    "add": "Buat Baru",
-    "more": "... {{number}} lagi",
+    "title": "tugas",
+    "add": "Tugas baru",
+    "more": "+{{number}} lagi",
     "form": {
       "title": {
         "label": "Judul"
       },
       "placeholder": {
-        "label": "Tambah Item"
+        "label": "Tambah item"
       },
       "item": {
         "label": "Item"
       }
     },
     "toast": {
-      "deleted": "Tugas berhasil dihapus",
-      "created": "Tugas berhasil dibuat",
-      "unlinked": "Tugas berhasil diputuskan",
-      "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses"
+      "deleted": "Tugas dihapus",
+      "created": "Tugas dibuat",
+      "unlinked": "Tugas dihapus dari daftarmu",
+      "notFound": "Tugas ini tidak ada atau tidak dibagikan denganmu"
     },
-    "untitled": "Daftar tanpa judul",
+    "untitled": "Tugas tanpa judul",
     "completed": "Selesai ({{count}} dari {{total}})",
     "progress": "{{done}} dari {{total}} selesai",
     "empty": {
@@ -176,10 +174,10 @@
     }
   },
   "finances": {
-    "title": "Keuangan",
-    "add": "Buat Baru",
+    "title": "keuangan",
+    "add": "Buat baru",
     "form": {
-      "add": "Tambah Item",
+      "add": "Tambah item",
       "title": {
         "label": "Judul"
       },
@@ -190,10 +188,10 @@
         "label": "Jumlah"
       },
       "currency": {
-        "label": "Mata Uang"
+        "label": "Mata uang"
       },
       "rate": {
-        "label": "Nilai Tukar"
+        "label": "Kurs"
       },
       "type": {
         "label": "Tipe",
@@ -203,20 +201,20 @@
       "category": {
         "label": "Kategori",
         "fnb": {
-          "label": "Makanan & Minuman",
+          "label": "Makanan & minuman",
           "description": "Restoran, kafe, jajan"
         },
         "groceries": {
-          "label": "Groceries",
+          "label": "Kebutuhan dapur",
           "description": "Bahan makanan, kebutuhan rumah, kebutuhan sehari-hari"
         },
         "shopping": {
-          "label": "Shopping",
+          "label": "Belanja",
           "description": "Pakaian, kosmetik, gadget & elektronik"
         },
         "emoney": {
-          "label": "Top Up E-Money",
-          "description": "GoPay, OVO, DANA, ShopeePay, LinkAja"
+          "label": "Isi ulang e-wallet",
+          "description": "GoPay, OVO, DANA, ShopeePay, dan e-wallet lain"
         },
         "transport": {
           "label": "Transportasi",
@@ -251,7 +249,7 @@
           "description": "Deposito, reksa dana, obligasi, saham, emas"
         },
         "education": {
-          "label": "Edukasi",
+          "label": "Pendidikan",
           "description": "Uang sekolah/kuliah, kursus, buku"
         },
         "family": {
@@ -263,12 +261,12 @@
           "description": "Cicilan, pinjaman online, kartu kredit"
         },
         "fees": {
-          "label": "Biaya-biaya",
+          "label": "Biaya",
           "description": "Biaya admin, pajak"
         },
         "otherExpenses": {
-          "label": "Uang Keluar",
-          "description": "Diluar kategori yang tersedia"
+          "label": "Pengeluaran lainnya",
+          "description": "Di luar kategori yang ada"
         },
         "income": {
           "label": "Pendapatan",
@@ -279,39 +277,43 @@
           "description": "Bunga tabungan, hasil investasi"
         },
         "otherIncome": {
-          "label": "Uang Masuk",
-          "description": "Diluar kategori yang tersedia"
+          "label": "Pemasukan lainnya",
+          "description": "Di luar kategori yang ada"
         }
       }
     },
     "toast": {
-      "deleted": "Keuangan berhasil dihapus",
-      "created": "Keuangan berhasil dibuat",
-      "unlinked": "Keuangan berhasil diputuskan",
-      "notFound": "Keuangan tidak ditemukan atau Anda tidak memiliki akses"
+      "deleted": "Dihapus",
+      "created": "Dibuat",
+      "unlinked": "Dihapus dari daftarmu",
+      "notFound": "Ini tidak ada atau tidak dibagikan denganmu"
     }
   },
   "about": {
-    "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi yang membantu Anda mengelola tugas, catatan, dan keuangan dalam satu tempat."
+    "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi untuk catatan dan daftar tugas. Fitur keuangan segera hadir."
   },
   "privacyPolicy": {
-    "paragraph1": "Kami mengumpulkan alamat email yang Anda berikan saat masuk. Informasi ini hanya digunakan untuk mengautentikasi Anda dan menyimpan catatan, tugas, serta catatan keuangan Anda.",
-    "paragraph2": "Konten Anda disimpan di layanan Firebase milik Google dan tunduk pada praktik keamanan dan privasi Google. Kami tidak menjual atau membagikan data pribadi Anda kepada pihak lain.",
-    "paragraph3": "Analitik anonim secara agregat dapat digunakan untuk meningkatkan aplikasi. Hubungi kami kapan saja jika Anda ingin menghapus akun beserta datanya."
+    "updated": "Terakhir diperbarui: 9 Oktober 2026",
+    "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, dan pengaturan yang kamu buat.",
+    "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
+    "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google.",
+    "sharing": "Saat kamu membagikan catatan atau tugas, orang yang kamu bagikan bisa melihat isinya. Nama, alamat email, dan fotomu bisa dilihat oleh pengguna lain yang sudah masuk, agar mereka bisa menemukanmu untuk berbagi.",
+    "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, bukan isi catatan atau tugasmu.",
+    "contact": "Untuk meminta salinan datamu, atau menghapus akun beserta semua isinya, kirim email ke <a>{{email}}</a>."
   },
   "termsOfService": {
-    "paragraph1": "Dengan mengakses <span>{{appName}}</span>, Anda setuju untuk menggunakan aplikasi ini secara legal dan bertanggung jawab.",
-    "paragraph2": "Layanan diberikan apa adanya tanpa jaminan dan kami dapat menangguhkan akun Anda jika disalahgunakan atau terjadi masalah keamanan.",
-    "paragraph3": "Kami dapat mengubah syarat ini kapan saja dan penggunaan berkelanjutan berarti Anda menerima perubahan tersebut."
+    "paragraph1": "Dengan mengakses <span>{{appName}}</span>, kamu setuju untuk menggunakan aplikasi ini secara legal dan bertanggung jawab.",
+    "paragraph2": "Layanan diberikan apa adanya tanpa jaminan, dan kami dapat menangguhkan akun jika disalahgunakan atau terjadi masalah keamanan.",
+    "paragraph3": "Kami dapat mengubah syarat ini kapan saja; dengan tetap memakai aplikasi, kamu menerima perubahan tersebut."
   },
   "settings": {
     "profile": {
       "title": "Profil",
-      "description": "Perbarui informasi profil Anda."
+      "description": "Perbarui informasi profilmu."
     },
     "photo": {
-      "title": "Foto Profil",
-      "description": "Perbarui foto profil Anda."
+      "title": "Foto profil",
+      "description": "Perbarui foto profilmu."
     },
     "appearance": {
       "title": "Tampilan",
@@ -334,60 +336,60 @@
         }
       },
       "toast": {
-        "updated": "Pengaturan tampilan berhasil diperbarui."
+        "updated": "Tampilan diperbarui."
       }
     },
     "email": {
-      "title": "Perbarui alamat email",
-      "description": "Perbarui alamat email untuk autentikasi akun dan notifikasi.",
+      "title": "Ubah alamat email",
+      "description": "Ubah alamat email untuk masuk dan menerima notifikasi.",
       "tooltip": {
         "verified": "Email terverifikasi",
         "unverified": "Email belum terverifikasi"
       },
       "button": {
-        "verify": "Verifikasi Email",
-        "setPassword": "Atur Kata Sandi"
+        "verify": "Verifikasi email",
+        "setPassword": "Atur kata sandi"
       }
     },
     "google": {
       "title": "Hubungkan akun Google",
-      "description": "Setelah menghubungkan akun Google, Anda dapat masuk ke <span>{{appName}}</span> dengan akun Google, sebagai tambahan dari email dan kata sandi Anda.",
+      "description": "Setelah akun Google-mu terhubung, kamu bisa masuk ke <span>{{appName}}</span> dengan Google, selain dengan email dan kata sandi.",
       "button": {
-        "link": "Hubungkan akun Google anda",
+        "link": "Hubungkan akun Google-mu",
         "linked": "Terhubung ke <strong>{{email}}</strong>"
       }
     },
     "currencyFormat": {
-      "title": "Format Mata Uang",
-      "description": "Atur cara tampilan jumlah mata uang di seluruh aplikasi.",
+      "title": "Format mata uang",
+      "description": "Atur cara jumlah uang ditampilkan di seluruh aplikasi.",
       "form": {
         "thousandSeparator": {
-          "label": "Pemisah Ribuan",
+          "label": "Pemisah ribuan",
           "placeholder": "contoh: ,"
         },
         "decimalSeparator": {
-          "label": "Pemisah Desimal",
+          "label": "Pemisah desimal",
           "placeholder": "contoh: ."
         },
         "minimumFractionDigits": {
-          "label": "Min. Desimal",
+          "label": "Min. desimal",
           "placeholder": "contoh: 2"
         },
         "currencyCode": {
-          "label": "Kode Mata Uang",
+          "label": "Kode mata uang",
           "placeholder": "contoh: IDR"
         },
         "currencySymbol": {
-          "label": "Simbol Mata Uang",
+          "label": "Simbol mata uang",
           "placeholder": "contoh: Rp"
         },
         "currencyPlacement": {
-          "label": "Posisi Mata Uang",
+          "label": "Posisi mata uang",
           "before": "Sebelum jumlah",
           "after": "Setelah jumlah"
         },
         "currencyType": {
-          "label": "Jenis Mata Uang",
+          "label": "Tampilkan mata uang sebagai",
           "symbol": "Simbol mata uang",
           "code": "Kode mata uang"
         },
@@ -399,101 +401,101 @@
         "label": "Pratinjau"
       },
       "toast": {
-        "updated": "Format mata uang berhasil diperbarui."
+        "updated": "Format mata uang diperbarui."
       },
       "validation": {
         "thousandSeparator": {
-          "required": "Pemisah ribuan wajib diisi."
+          "required": "Isi pemisah ribuan."
         },
         "decimalSeparator": {
-          "required": "Pemisah desimal wajib diisi."
+          "required": "Isi pemisah desimal."
         },
         "minimumFractionDigits": {
-          "max": "Min. desimal tidak boleh lebih besar dari {{max}} (maks. desimal terkecil dari mata uang yang ada)"
+          "max": "Tidak boleh lebih dari {{max}}, yaitu maks. desimal terkecil di antara mata uangmu."
         },
         "separators": {
-          "same": "Pemisah ribuan dan pemisah desimal tidak boleh sama."
+          "same": "Pemisah ribuan dan pemisah desimal harus berbeda."
         }
       }
     },
     "manageCurrencies": {
-      "title": "Kelola Mata Uang",
-      "description": "Tambah, edit, dan atur mata uang untuk transaksi keuangan Anda.",
+      "title": "Kelola mata uang",
+      "description": "Tambah, ubah, dan atur mata uang yang kamu pakai.",
       "table": {
         "code": "Kode",
         "symbol": "Simbol",
-        "maxDecimals": "Maks. Desimal",
-        "rate": "Nilai Tukar",
+        "maxDecimals": "Maks. desimal",
+        "rate": "Kurs",
         "preview": "Pratinjau",
         "actions": "Aksi"
       },
       "status": {
-        "loading": "Memuat mata uang...",
-        "empty": "Tidak ada mata uang ditemukan."
+        "loading": "Memuat mata uang…",
+        "empty": "Belum ada mata uang."
       },
       "dialog": {
-        "editDescription": "Edit detail mata uang",
+        "editDescription": "Ubah detail mata uang",
         "addDescription": "Tambah mata uang baru",
-        "deleteDescription": "Apakah Anda yakin ingin menghapus mata uang \"{{code}} ({{symbol}})\"? Tindakan ini tidak dapat dibatalkan."
+        "deleteDescription": "Hapus mata uang \"{{code}} ({{symbol}})\"? Ini tidak bisa dibatalkan."
       },
       "form": {
         "symbol": {
           "label": "Simbol",
-          "placeholder": "contoh, $"
+          "placeholder": "contoh: $"
         },
         "code": {
           "label": "Kode",
-          "placeholder": "contoh, USD"
+          "placeholder": "contoh: USD"
         },
         "maximumFractionDigits": {
-          "label": "Maks. Desimal",
-          "placeholder": "contoh, 2"
+          "label": "Maks. desimal",
+          "placeholder": "contoh: 2"
         },
         "rate": {
-          "label": "Nilai Tukar",
-          "placeholder": "contoh, 1.00"
+          "label": "Kurs",
+          "placeholder": "contoh: 1.00"
         },
         "isDefault": {
-          "label": "Atur sebagai Default",
-          "hint": "Mata uang ini akan digunakan sebagai default untuk transaksi baru"
+          "label": "Jadikan default",
+          "hint": "Entri baru memakai mata uang ini kecuali kamu memilih yang lain."
         }
       },
       "button": {
-        "add": "Tambah Mata Uang",
-        "edit": "Edit Mata Uang",
-        "delete": "Hapus Mata Uang",
-        "save": "Simpan Mata Uang",
+        "add": "Tambah mata uang",
+        "edit": "Ubah mata uang",
+        "delete": "Hapus mata uang",
+        "save": "Simpan mata uang",
         "cancel": "Batal"
       },
       "toast": {
-        "created": "Mata uang berhasil dibuat.",
-        "updated": "Mata uang berhasil diperbarui.",
-        "deleted": "Mata uang berhasil dihapus.",
+        "created": "Mata uang ditambahkan.",
+        "updated": "Mata uang diperbarui.",
+        "deleted": "Mata uang dihapus.",
         "createError": "Gagal membuat mata uang.",
         "updateError": "Gagal memperbarui mata uang.",
         "deleteError": "Gagal menghapus mata uang."
       },
       "validation": {
         "symbol": {
-          "required": "Simbol wajib diisi."
+          "required": "Isi simbol."
         },
         "code": {
-          "required": "Kode wajib diisi."
+          "required": "Isi kode."
         },
         "maximumFractionDigits": {
-          "min": "Maks. desimal harus minimal {{min}} (min. desimal dari format mata uang saat ini)"
+          "min": "Minimal {{min}}, sesuai min. desimal di format mata uangmu."
         }
       }
     },
     "validation": {
       "displayName": {
-        "required": "Nama tampilan wajib diisi."
+        "required": "Isi nama tampilan."
       }
     }
   },
   "notFound": {
-    "title": "Halaman Tidak Ditemukan",
-    "description": "Maaf, halaman yang Anda cari tidak ditemukan."
+    "title": "Halaman tidak ditemukan",
+    "description": "Maaf, halaman yang kamu cari tidak ada."
   },
   "errors": {
     "permissionDenied": "Kamu tidak punya izin untuk melakukan itu.",
@@ -523,7 +525,8 @@
     "unpin": "Lepas sematan",
     "moveUp": "Pindah ke atas",
     "moveDown": "Pindah ke bawah",
-    "sharedWith_one": "Dibagikan dengan {{count}} orang"
+    "sharedWith_one": "Dibagikan dengan {{count}} orang",
+    "close": "Tutup"
   },
   "collection": {
     "pinned": "Disematkan",

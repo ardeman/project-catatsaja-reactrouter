@@ -10,12 +10,12 @@
     "settings": "Settings",
     "general": "General",
     "account": "Account",
-    "reportIssues": "Report Issues",
+    "reportIssues": "Report issues",
     "changelog": "Changelog",
     "about": "About",
-    "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service",
-    "signOut": "Sign Out",
+    "privacyPolicy": "Privacy policy",
+    "termsOfService": "Terms of service",
+    "signOut": "Sign out",
     "search": {
       "placeholder": "Search"
     },
@@ -23,17 +23,15 @@
   },
   "form": {
     "save": "Save",
-    "cancel": "Cancel",
     "delete": "Delete this <span>{{item}}</span>?",
-    "unlink": "Unlink this <span>{{item}}</span>?",
+    "unlink": "Remove this <span>{{item}}</span> from your list?",
     "share": "Share this <span>{{item}}</span>",
     "confirm": "Confirm",
     "undo": "Undo",
-    "openPage": "Open Page",
     "yes": "Yes",
     "no": "No",
     "permissions": {
-      "select": "Choose permissions",
+      "select": "Choose access",
       "readOnly": "Read only",
       "write": "Read and write",
       "shared": "Shared",
@@ -41,7 +39,7 @@
       "removed": "{{email}} no longer has access"
     },
     "user": {
-      "placeholder": "Enter user email"
+      "placeholder": "Enter an email address"
     },
     "copyLink": "Copy link",
     "linkCopied": "Link copied",
@@ -56,49 +54,49 @@
   },
   "auth": {
     "signIn": {
-      "title": "Sign In",
+      "title": "Sign in",
       "description": "to continue to <span>{{appName}}</span>.",
       "form": {
         "switch": {
           "label": "Don't have an account?",
-          "link": "Sign Up"
+          "link": "Sign up"
         }
       }
     },
     "signUp": {
-      "title": "Sign Up",
-      "description": "Create an account.",
+      "title": "Sign up",
+      "description": "Create an account to start using <span>{{appName}}</span>.",
       "form": {
         "switch": {
           "label": "Already have an account?",
-          "link": "Sign In"
+          "link": "Sign in"
         }
       }
     },
     "forgotPassword": {
-      "title": "Forgot Password",
-      "description": "Enter your email to reset password.",
+      "title": "Forgot password",
+      "description": "Enter your email and we'll send you a link to reset your password.",
       "form": {
         "switch": {
           "label": "Back to",
-          "link": "Sign In"
+          "link": "Sign in"
         }
       }
     },
     "form": {
       "displayName": {
-        "label": "Display Name",
-        "placeholder": "Enter your display name"
+        "label": "Display name",
+        "placeholder": "Your name"
       },
       "email": {
         "label": "Email",
-        "placeholder": "you@me.com"
+        "placeholder": "you@example.com"
       },
       "password": {
         "label": "Password"
       },
       "confirmPassword": {
-        "label": "Confirm Password"
+        "label": "Confirm password"
       },
       "forgotPassword": {
         "label": "Forgot password?"
@@ -109,23 +107,23 @@
       }
     },
     "toast": {
-      "verificationSent": "Verification email has been sent successfully.",
-      "resetPassword": "Password reset email has been sent.",
-      "linkGoogle": "Your Google account has been linked successfully.",
-      "emailVerify": "Please check your email to verify your account.",
-      "updateEmail": "Please check your email to verify the new email address.",
-      "profileUpdated": "Your profile has been updated successfully.",
-      "photoUpdated": "Your profile photo has been updated."
+      "verificationSent": "Verification email sent.",
+      "resetPassword": "Password reset email sent.",
+      "linkGoogle": "Your Google account is now linked.",
+      "emailVerify": "Check your email to verify your account.",
+      "updateEmail": "Check your new email address to confirm the change.",
+      "profileUpdated": "Profile updated.",
+      "photoUpdated": "Profile photo updated."
     },
     "validation": {
       "confirmPassword": {
-        "passwordMismatch": "Passwords do not match"
+        "passwordMismatch": "Passwords don't match"
       }
     }
   },
   "notes": {
-    "title": "Note",
-    "add": "Create New",
+    "title": "note",
+    "add": "New note",
     "form": {
       "title": {
         "label": "Title"
@@ -135,10 +133,10 @@
       }
     },
     "toast": {
-      "deleted": "Note deleted successfully",
-      "created": "Note created successfully",
-      "unlinked": "Note unlinked successfully",
-      "notFound": "Note not found or you don't have access"
+      "deleted": "Note deleted",
+      "created": "Note created",
+      "unlinked": "Note removed from your list",
+      "notFound": "This note doesn't exist or isn't shared with you"
     },
     "untitled": "Untitled note",
     "empty": {
@@ -147,27 +145,27 @@
     }
   },
   "tasks": {
-    "title": "Task",
-    "add": "Create New",
-    "more": "... {{number}} more",
+    "title": "task",
+    "add": "New task",
+    "more": "+{{number}} more",
     "form": {
       "title": {
         "label": "Title"
       },
       "placeholder": {
-        "label": "Add Item"
+        "label": "Add item"
       },
       "item": {
         "label": "Item"
       }
     },
     "toast": {
-      "deleted": "Task deleted successfully",
-      "created": "Task created successfully",
-      "unlinked": "Task unlinked successfully",
-      "notFound": "Task not found or you don't have access"
+      "deleted": "Task deleted",
+      "created": "Task created",
+      "unlinked": "Task removed from your list",
+      "notFound": "This task doesn't exist or isn't shared with you"
     },
-    "untitled": "Untitled list",
+    "untitled": "Untitled task",
     "completed": "Completed ({{count}} of {{total}})",
     "progress": "{{done}} of {{total}} done",
     "empty": {
@@ -176,10 +174,10 @@
     }
   },
   "finances": {
-    "title": "Finance",
-    "add": "Create New",
+    "title": "finance",
+    "add": "Create new",
     "form": {
-      "add": "Add Item",
+      "add": "Add item",
       "title": {
         "label": "Title"
       },
@@ -193,7 +191,7 @@
         "label": "Currency"
       },
       "rate": {
-        "label": "Exchange Rate"
+        "label": "Exchange rate"
       },
       "type": {
         "label": "Type",
@@ -203,7 +201,7 @@
       "category": {
         "label": "Category",
         "fnb": {
-          "label": "Food & Beverage",
+          "label": "Food & drinks",
           "description": "Restaurant, cafe, snacks"
         },
         "groceries": {
@@ -215,8 +213,8 @@
           "description": "Clothing, cosmetics, gadgets & electronics"
         },
         "emoney": {
-          "label": "Top Up E-Money",
-          "description": "Digital wallets"
+          "label": "E-wallet top-up",
+          "description": "GoPay, OVO, DANA, ShopeePay and other e-wallets"
         },
         "transport": {
           "label": "Transportation",
@@ -267,8 +265,8 @@
           "description": "Admin fees, taxes"
         },
         "otherExpenses": {
-          "label": "Other Expenses",
-          "description": "Outside available categories"
+          "label": "Other expenses",
+          "description": "Anything that doesn't fit another category"
         },
         "income": {
           "label": "Income",
@@ -279,30 +277,34 @@
           "description": "Savings interest, investment returns"
         },
         "otherIncome": {
-          "label": "Other Income",
-          "description": "Outside available categories"
+          "label": "Other income",
+          "description": "Anything that doesn't fit another category"
         }
       }
     },
     "toast": {
-      "deleted": "Finance deleted successfully",
-      "created": "Finance created successfully",
-      "unlinked": "Finance unlinked successfully",
-      "notFound": "Finance not found or you don't have access"
+      "deleted": "Deleted",
+      "created": "Created",
+      "unlinked": "Removed from your list",
+      "notFound": "This doesn't exist or isn't shared with you"
     }
   },
   "about": {
-    "description": "<span>{{appName}}</span> is a personal productivity application that helps you manage tasks, notes, and finances in one place."
+    "description": "<span>{{appName}}</span> is a personal productivity app for notes and checklists. Finances are coming soon."
   },
   "privacyPolicy": {
-    "paragraph1": "We collect the email address you provide when signing in. This information is used only to authenticate you and to store your notes, tasks, and financial entries.",
-    "paragraph2": "Your content is saved in Google’s Firebase services and is subject to Google’s security and privacy practices. We never sell or share your personal data with other parties.",
-    "paragraph3": "Aggregated, anonymous analytics may be used to improve the application. Contact us at any time if you wish to remove your account and associated data."
+    "updated": "Last updated: 9 October 2026",
+    "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks and settings you create.",
+    "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
+    "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices.",
+    "sharing": "When you share a note or task, the people you share it with see its content. Your name, email address and photo are visible to other signed-in users, so they can find you to share with you.",
+    "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, not the content of your notes or tasks.",
+    "contact": "To get a copy of your data, or to delete your account and everything in it, email <a>{{email}}</a>."
   },
   "termsOfService": {
     "paragraph1": "By accessing <span>{{appName}}</span> you agree to use the application legally and responsibly.",
-    "paragraph2": "The service is provided as is without warranties and we may suspend accounts for misuse or security issues.",
-    "paragraph3": "We may modify these terms at any time and continued use signifies acceptance of any changes."
+    "paragraph2": "The service is provided as is, without warranties, and we may suspend accounts for misuse or security issues.",
+    "paragraph3": "We may change these terms at any time; continuing to use the app means you accept the changes."
   },
   "settings": {
     "profile": {
@@ -310,7 +312,7 @@
       "description": "Update your profile information."
     },
     "photo": {
-      "title": "Profile Photo",
+      "title": "Profile photo",
       "description": "Update your profile picture."
     },
     "appearance": {
@@ -334,60 +336,60 @@
         }
       },
       "toast": {
-        "updated": "Appearance updated successfully."
+        "updated": "Appearance updated."
       }
     },
     "email": {
       "title": "Change email address",
-      "description": "Update your email address for account authentication and notifications.",
+      "description": "Change the email address you sign in with and get notifications at.",
       "tooltip": {
         "verified": "Email verified",
         "unverified": "Email not verified"
       },
       "button": {
-        "verify": "Verify Email",
-        "setPassword": "Set Password"
+        "verify": "Verify email",
+        "setPassword": "Set password"
       }
     },
     "google": {
       "title": "Link Google account",
-      "description": "After linking your Google account, you can sign in to <span>{{appName}}</span> with your Google account, in addition to your email and password.",
+      "description": "Once your Google account is linked, you can sign in to <span>{{appName}}</span> with Google as well as with your email and password.",
       "button": {
         "link": "Link your Google account",
         "linked": "Linked to <strong>{{email}}</strong>"
       }
     },
     "currencyFormat": {
-      "title": "Currency Format",
-      "description": "Configure how currency amounts are displayed throughout the application.",
+      "title": "Currency format",
+      "description": "Choose how amounts are shown throughout the app.",
       "form": {
         "thousandSeparator": {
-          "label": "Thousand Separator",
+          "label": "Thousands separator",
           "placeholder": "e.g., ,"
         },
         "decimalSeparator": {
-          "label": "Decimal Separator",
+          "label": "Decimal separator",
           "placeholder": "e.g., ."
         },
         "minimumFractionDigits": {
-          "label": "Min. Decimals",
+          "label": "Min. decimals",
           "placeholder": "e.g., 2"
         },
         "currencyCode": {
-          "label": "Currency Code",
+          "label": "Currency code",
           "placeholder": "e.g., USD"
         },
         "currencySymbol": {
-          "label": "Currency Symbol",
+          "label": "Currency symbol",
           "placeholder": "e.g., $"
         },
         "currencyPlacement": {
-          "label": "Currency Placement",
+          "label": "Currency position",
           "before": "Before amount",
           "after": "After amount"
         },
         "currencyType": {
-          "label": "Currency Type",
+          "label": "Show currency as",
           "symbol": "Currency symbol",
           "code": "Currency code"
         },
@@ -399,42 +401,42 @@
         "label": "Preview"
       },
       "toast": {
-        "updated": "Currency format updated successfully."
+        "updated": "Currency format updated."
       },
       "validation": {
         "thousandSeparator": {
-          "required": "Thousand separator is required."
+          "required": "Enter a thousands separator."
         },
         "decimalSeparator": {
-          "required": "Decimal separator is required."
+          "required": "Enter a decimal separator."
         },
         "minimumFractionDigits": {
-          "max": "Min. decimals cannot be larger than {{max}} (smallest max. decimals from existing currencies)"
+          "max": "Can't be more than {{max}}, the lowest max. decimals among your currencies."
         },
         "separators": {
-          "same": "Thousand separator and decimal separator cannot be the same."
+          "same": "The thousands and decimal separators must be different."
         }
       }
     },
     "manageCurrencies": {
-      "title": "Manage Currencies",
-      "description": "Add, edit, and configure currencies for your financial transactions.",
+      "title": "Manage currencies",
+      "description": "Add, edit and set up the currencies you use.",
       "table": {
         "code": "Code",
         "symbol": "Symbol",
-        "maxDecimals": "Max. Decimals",
-        "rate": "Exchange Rate",
+        "maxDecimals": "Max. decimals",
+        "rate": "Exchange rate",
         "preview": "Preview",
         "actions": "Actions"
       },
       "status": {
-        "loading": "Loading currencies...",
-        "empty": "No currencies found."
+        "loading": "Loading currencies…",
+        "empty": "No currencies yet."
       },
       "dialog": {
         "editDescription": "Edit currency details",
         "addDescription": "Add a new currency",
-        "deleteDescription": "Are you sure you want to delete the currency \"{{code}} ({{symbol}})\"? This action cannot be undone."
+        "deleteDescription": "Delete the currency \"{{code}} ({{symbol}})\"? This can't be undone."
       },
       "form": {
         "symbol": {
@@ -446,54 +448,54 @@
           "placeholder": "e.g., USD"
         },
         "maximumFractionDigits": {
-          "label": "Max. Decimals",
+          "label": "Max. decimals",
           "placeholder": "e.g., 2"
         },
         "rate": {
-          "label": "Exchange Rate",
+          "label": "Exchange rate",
           "placeholder": "e.g., 1.00"
         },
         "isDefault": {
-          "label": "Set as Default",
-          "hint": "This currency will be used as the default for new transactions"
+          "label": "Set as default",
+          "hint": "New entries use this currency unless you pick another."
         }
       },
       "button": {
-        "add": "Add Currency",
-        "edit": "Edit Currency",
-        "delete": "Delete Currency",
-        "save": "Save Currency",
+        "add": "Add currency",
+        "edit": "Edit currency",
+        "delete": "Delete currency",
+        "save": "Save currency",
         "cancel": "Cancel"
       },
       "toast": {
-        "created": "Currency created successfully.",
-        "updated": "Currency updated successfully.",
-        "deleted": "Currency deleted successfully.",
-        "createError": "Failed to create currency.",
-        "updateError": "Failed to update currency.",
-        "deleteError": "Failed to delete currency."
+        "created": "Currency added.",
+        "updated": "Currency updated.",
+        "deleted": "Currency deleted.",
+        "createError": "Couldn't add the currency.",
+        "updateError": "Couldn't update the currency.",
+        "deleteError": "Couldn't delete the currency."
       },
       "validation": {
         "symbol": {
-          "required": "Symbol is required."
+          "required": "Enter a symbol."
         },
         "code": {
-          "required": "Code is required."
+          "required": "Enter a code."
         },
         "maximumFractionDigits": {
-          "min": "Max. decimals must be at least {{min}} (min. decimals from current currency format)"
+          "min": "Must be at least {{min}}, the min. decimals in your currency format."
         }
       }
     },
     "validation": {
       "displayName": {
-        "required": "Display name is required."
+        "required": "Enter a display name."
       }
     }
   },
   "notFound": {
-    "title": "Page Not Found",
-    "description": "Sorry, the page you are looking for does not exist."
+    "title": "Page not found",
+    "description": "Sorry, this page doesn't exist."
   },
   "errors": {
     "permissionDenied": "You don't have permission to do that.",
@@ -523,7 +525,8 @@
     "pin": "Pin",
     "unpin": "Unpin",
     "moveUp": "Move up",
-    "moveDown": "Move down"
+    "moveDown": "Move down",
+    "close": "Close"
   },
   "collection": {
     "pinned": "Pinned",

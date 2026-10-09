@@ -23,7 +23,7 @@ export const useDeleteNote = () => {
         description: t('notes.toast.deleted'),
         action: (
           <ToastAction
-            altText="Undo"
+            altText={t('form.undo')}
             onClick={() => mutateCreateNote(data)}
           >
             {t('form.undo')}

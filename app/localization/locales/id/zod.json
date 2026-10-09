@@ -16,7 +16,7 @@
     "not_multiple_of": "Angka harus merupakan kelipatan dari {{multipleOf}}",
     "not_finite": "Angka harus berhingga",
     "invalid_string": {
-      "email": "Format {{validation}} tidak valid",
+      "email": "Masukkan {{validation}} yang valid",
       "url": "Format {{validation}} tidak valid",
       "uuid": "Format {{validation}} tidak valid",
       "cuid": "Format {{validation}} tidak valid",
@@ -33,12 +33,12 @@
       },
       "string": {
         "exact": "String harus {{minimum}} karakter",
-        "inclusive": "String harus minimal {{minimum}} karakter",
+        "inclusive": "Minimal {{minimum}} karakter",
         "not_inclusive": "String harus lebih dari {{minimum}} karakter"
       },
       "number": {
         "exact": "Angka harus bernilai {{minimum}}",
-        "inclusive": "Angka harus lebih atau sama dengan dari {{minimum}}",
+        "inclusive": "Minimal {{minimum}}",
         "not_inclusive": "Angka harus lebih dari {{minimum}}"
       },
       "set": {
@@ -65,7 +65,7 @@
       },
       "number": {
         "exact": "Angka harus bernilai {{maximum}}",
-        "inclusive": "Angka harus kurang atau sama dengan dari {{maximum}}",
+        "inclusive": "Maksimal {{maximum}}",
         "not_inclusive": "Angka harus kurang dari {{maximum}}"
       },
       "set": {

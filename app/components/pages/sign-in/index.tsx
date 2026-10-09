@@ -101,7 +101,7 @@ export const SignInPage = () => {
             <Input
               label={t('auth.form.email.label')}
               name="email"
-              placeholder="you@me.com"
+              placeholder={t('auth.form.email.placeholder')}
               autoFocus // eslint-disable-line jsx-a11y/no-autofocus
               required
               disabled={disabled}

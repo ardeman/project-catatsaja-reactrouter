@@ -1,6 +1,8 @@
 import { LinksFunction, MetaFunction } from 'react-router'
 
 export const appName = 'Catat Saja'
+// Where people write about their data (privacy policy).
+export const contactEmail = 'mail@ardeman.com'
 export const appleIcon = '/apple-touch-icon.png'
 const shortcutIcon = '/android-chrome-512x512.png'
 const favicon = '/favicon.ico'
@@ -15,7 +17,7 @@ export const meta: MetaFunction = () => [
   {
     name: 'description',
     content:
-      'A personal productivity application that helps you manage tasks, notes, and finances in one place.',
+      'Write notes, keep checklists and share them with the people you choose. Finances are coming soon.',
   },
   { name: 'author', content: author },
   {

@@ -23,7 +23,7 @@ export const useDeleteTask = () => {
         description: t('tasks.toast.deleted'),
         action: (
           <ToastAction
-            altText="Undo"
+            altText={t('form.undo')}
             onClick={() => mutateCreateTask(data)}
           >
             {t('form.undo')}

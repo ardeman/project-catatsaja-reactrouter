@@ -57,7 +57,7 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 - [ ] Turn back on the ESLint rules that the 2026-10-09 upgrade switched off, and fix what they find (`eslint.config.mjs`).
 - [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
 - [ ] TypeScript 7, once typescript-eslint supports it.
-- [ ] Stop signed-in users from listing every profile: the rules still allow reading the whole `users` collection, which the email lookup for sharing needs. An email-lookup document per user (or a Cloud Function) would allow only exact lookups.
+- [ ] Stop signed-in users from listing every profile: the rules still allow reading the whole `users` collection, which the email lookup for sharing needs. An email-lookup document per user (or a Cloud Function) would allow only exact lookups. When this is done, update the sharing paragraph of the privacy policy (`privacyPolicy.sharing`).
 - [ ] Pass `ref` as a prop instead of `forwardRef` in `app/components/ui/` (React 19 style, before React removes `forwardRef`).
 
 ## Tech stack
