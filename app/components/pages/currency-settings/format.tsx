@@ -18,7 +18,10 @@ import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateCurrencyFormat } from '~/lib/hooks/use-update-currency-format'
-import { TCurrencyFormatRequest } from '~/lib/types/settings'
+import {
+  TCurrencyFormatForm,
+  TCurrencyFormatRequest,
+} from '~/lib/types/settings'
 import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { currencyFormatSchema } from '~/lib/validations/settings'
 
@@ -39,7 +42,11 @@ export const CurrencyFormat = () => {
     return Math.min(...currencies.map((c) => c.maximumFractionDigits))
   }, [currencies])
 
-  const formMethods = useForm<TCurrencyFormatRequest>({
+  const formMethods = useForm<
+    TCurrencyFormatForm,
+    unknown,
+    TCurrencyFormatRequest
+  >({
     resolver: zodResolver(currencyFormatSchema(t, minMaximumFractionDigits)),
     values: defaultValues,
   })
@@ -221,7 +228,12 @@ export const CurrencyFormat = () => {
               <div className="mt-2 font-mono text-lg">
                 {formatCurrency({
                   amount: previewAmount,
-                  format: watchAll,
+                  format: {
+                    ...watchAll,
+                    minimumFractionDigits: Number(
+                      watchAll.minimumFractionDigits,
+                    ),
+                  },
                   currencies,
                 })}
               </div>

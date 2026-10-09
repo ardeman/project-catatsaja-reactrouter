@@ -62,7 +62,7 @@ export const Navbar = (properties: TProperties) => {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b border-border/40 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/20 md:px-6',
+        'sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b border-border/40 bg-background/95 px-4 backdrop-blur-sm supports-backdrop-filter:bg-background/20 md:px-6',
         className,
       )}
     >
@@ -83,7 +83,7 @@ export const Navbar = (properties: TProperties) => {
         </PopoverTrigger>
         <PopoverContent
           sideOffset={8}
-          className="w-screen p-4 backdrop-blur supports-[backdrop-filter]:bg-background/20 md:hidden"
+          className="w-screen p-4 backdrop-blur-sm supports-backdrop-filter:bg-background/20 md:hidden"
         >
           <Navigation
             className="grid gap-4"
@@ -124,7 +124,7 @@ export const Navbar = (properties: TProperties) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="backdrop-blur supports-[backdrop-filter]:bg-background/20"
+            className="backdrop-blur-sm supports-backdrop-filter:bg-background/20"
           >
             <DropdownMenuLabel>
               {userData?.displayName || userData?.email}

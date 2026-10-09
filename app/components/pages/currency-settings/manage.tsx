@@ -35,7 +35,11 @@ import { useDeleteCurrency } from '~/lib/hooks/use-delete-currency'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateCurrency } from '~/lib/hooks/use-update-currency'
-import { TCurrency, TCreateCurrencyRequest } from '~/lib/types/settings'
+import {
+  TCurrency,
+  TCurrencyForm,
+  TCreateCurrencyRequest,
+} from '~/lib/types/settings'
 import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { currencySchema } from '~/lib/validations/settings'
@@ -77,7 +81,7 @@ export const ManageCurrencies = () => {
   const { mutate: updateCurrency, isPending: isUpdating } = useUpdateCurrency()
   const { mutate: deleteCurrency, isPending: isDeleting } = useDeleteCurrency()
 
-  const formMethods = useForm<TCreateCurrencyRequest>({
+  const formMethods = useForm<TCurrencyForm, unknown, TCreateCurrencyRequest>({
     resolver: zodResolver(currencySchema(t, currentMinimumFractionDigits)),
     defaultValues: {
       symbol: '',

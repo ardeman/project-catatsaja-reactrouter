@@ -42,7 +42,9 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn('space-y-1', className)}>
+        <FormItem
+          className={cn('[&>:not([hidden])~:not([hidden])]:mt-1', className)}
+        >
           {label && (
             <FormLabel
               htmlFor={id}

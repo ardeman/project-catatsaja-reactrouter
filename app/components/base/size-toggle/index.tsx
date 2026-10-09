@@ -51,7 +51,7 @@ const Radio = (parameters: TParameters) => {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-1">
+    <div className="[&>:not([hidden])~:not([hidden])]:mt-1">
       <Label>{t('settings.appearance.form.size.selector')}</Label>
       <Slot>
         <RadioGroup
@@ -62,7 +62,7 @@ const Radio = (parameters: TParameters) => {
           {sizeOptions(t).map((option) => (
             <div
               key={option.value}
-              className="flex items-center space-x-3 space-y-0"
+              className="flex items-center space-y-0 space-x-3"
             >
               <Slot>
                 <RadioGroupItem

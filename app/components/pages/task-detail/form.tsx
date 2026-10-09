@@ -293,7 +293,7 @@ export const Form = (properties: TFormProperties) => {
           {task ? (
             <Action
               className="w-full"
-              buttonClassName="supports-[backdrop-filter]:bg-accent/20 backdrop-blur"
+              buttonClassName="supports-backdrop-filter:bg-accent/20 backdrop-blur-sm"
               isOwner={isOwner}
               isEditable={isEditable}
               isPinned={isPinned}
@@ -309,7 +309,7 @@ export const Form = (properties: TFormProperties) => {
           ) : (
             <Action
               className="w-full"
-              buttonClassName="supports-[backdrop-filter]:bg-accent/20 backdrop-blur"
+              buttonClassName="supports-backdrop-filter:bg-accent/20 backdrop-blur-sm"
               isLoading={isCreatePending}
               isCreate={true}
               handleBack={handleBack}
@@ -322,7 +322,7 @@ export const Form = (properties: TFormProperties) => {
         <Textarea
           name="title"
           placeholder={t('tasks.form.title.label')}
-          inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-0"
+          inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
           autoFocus={!selectedTask} // eslint-disable-line jsx-a11y/no-autofocus
           rows={1}
           onKeyDown={(event) => {
@@ -373,7 +373,7 @@ export const Form = (properties: TFormProperties) => {
                           'flex-1',
                           selectedEdit === index ? '' : 'hidden',
                         )}
-                        inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
+                        inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-fit"
                         rows={1}
                         readOnly={task && !isEditable}
                         onKeyDown={(event) =>
@@ -456,7 +456,7 @@ export const Form = (properties: TFormProperties) => {
           name={`item`}
           placeholder={t('tasks.form.placeholder.label')}
           containerClassName={cn('flex-1', task && !isEditable ? 'hidden' : '')}
-          inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-fit"
+          inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-fit"
           rows={1}
           readOnly={task && !isEditable}
           onKeyDown={handleNewItemKeyDown}

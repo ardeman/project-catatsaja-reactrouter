@@ -65,7 +65,7 @@ export const SignUpPage = () => {
   }, [isRegisterError])
 
   return (
-    <Card className="relative min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-sm">
+    <Card className="relative min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-xs">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="grid">

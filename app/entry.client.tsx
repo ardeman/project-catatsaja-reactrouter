@@ -18,7 +18,7 @@ async function hydrate() {
       resources,
       detection: {
         // Here only enable htmlTag detection, we'll detect the language only
-        // server-side with remix-i18next, by using the `<html lang>` attribute
+        // on the server (app/localization/i18next.server.ts), by using the `<html lang>` attribute
         // we can communicate to the client the language detected server-side
         order: ['cookie', 'htmlTag'],
         // Because we only use htmlTag, there's no reason to cache the language

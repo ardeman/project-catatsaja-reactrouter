@@ -72,7 +72,7 @@ export const SignInPage = () => {
   }, [isLoginError, isLoginGoogleError])
 
   return (
-    <Card className="relative mt-1 min-h-fit w-full max-w-md rounded-md border shadow-sm md:mt-0">
+    <Card className="relative mt-1 min-h-fit w-full max-w-md rounded-md border shadow-xs md:mt-0">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="grid">

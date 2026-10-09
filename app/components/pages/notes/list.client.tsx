@@ -81,7 +81,7 @@ export const List = () => {
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <Button
         containerClassName="flex fixed bottom-4 md:top-16 z-50 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8 h-fit"
-        className="w-full backdrop-blur hover:bg-primary supports-[backdrop-filter]:bg-primary/70"
+        className="w-full backdrop-blur-sm hover:bg-primary supports-backdrop-filter:bg-primary/70"
         onClick={handleCreateNote}
       >
         {t('notes.add')}
@@ -89,7 +89,7 @@ export const List = () => {
       <div className="flex justify-center md:mt-16">
         <div
           ref={masonryReferencePinned}
-          className="masonry-grid mx-auto max-w-screen-2xl"
+          className="masonry-grid mx-auto max-w-(--breakpoint-2xl)"
         >
           {pinnedNotes
             ?.sort(
@@ -109,7 +109,7 @@ export const List = () => {
       <div className="flex justify-center pb-9 md:pb-0">
         <div
           ref={masonryReferenceRegular}
-          className="masonry-grid mx-auto max-w-screen-2xl"
+          className="masonry-grid mx-auto max-w-(--breakpoint-2xl)"
         >
           {regularNotes
             ?.sort(

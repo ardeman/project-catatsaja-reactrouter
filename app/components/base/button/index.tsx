@@ -17,7 +17,7 @@ export const Button = (properties: TButtonProperties) => {
     variant,
   } = properties
   return (
-    <div className={cn(containerClassName, 'grid space-y-1')}>
+    <div className={cn(containerClassName, 'grid gap-1')}>
       <UIButton
         variant={variant}
         onClick={onClick}

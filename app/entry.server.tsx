@@ -16,7 +16,7 @@ import { ServerRouter } from 'react-router'
 import type { EntryContext } from 'react-router'
 
 import i18n from './localization/i18n'
-import i18next from './localization/i18next.server'
+import { getLocale, getRouteNamespaces } from './localization/i18next.server'
 import { resources } from './localization/resource'
 
 const ABORT_DELAY = 5000
@@ -49,8 +49,8 @@ async function handleBotRequest(
   reactRouterContext: EntryContext,
 ) {
   const instance = createInstance()
-  const lng = await i18next.getLocale(request)
-  const ns = i18next.getRouteNamespaces(reactRouterContext)
+  const lng = getLocale(request)
+  const ns = getRouteNamespaces(reactRouterContext)
 
   await instance
     .use(initReactI18next) // Tell our instance to use react-i18next
@@ -114,8 +114,8 @@ async function handleBrowserRequest(
   reactRouterContext: EntryContext,
 ) {
   const instance = createInstance()
-  const lng = await i18next.getLocale(request)
-  const ns = i18next.getRouteNamespaces(reactRouterContext)
+  const lng = getLocale(request)
+  const ns = getRouteNamespaces(reactRouterContext)
 
   await instance
     .use(initReactI18next) // Tell our instance to use react-i18next

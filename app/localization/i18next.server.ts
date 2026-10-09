@@ -1,26 +1,24 @@
-import Backend from 'i18next-fs-backend'
-import { RemixI18Next } from 'remix-i18next/server'
+import type { EntryContext } from 'react-router'
 
 import i18n from './i18n'
 
-const i18next = new RemixI18Next({
-  detection: {
-    supportedLanguages: i18n.supportedLngs,
-    fallbackLanguage: i18n.fallbackLng,
-    async findLocale(request) {
-      const langFromCookie = request.headers
-        .get('cookie')
-        ?.split(';')
-        .find((c) => c.includes('i18next'))
-        ?.split('=')[1]
+// The language saved by the client's language detector (`lookupCookie`).
+export const getLocale = (request: Request) => {
+  const langFromCookie = request.headers
+    .get('cookie')
+    ?.split(';')
+    .map((cookie) => cookie.trim().split('='))
+    .find(([name]) => name === 'i18next')?.[1]
 
-      return langFromCookie ?? i18n.fallbackLng
-    },
-  },
-  i18next: {
-    ...i18n,
-  },
-  plugins: [Backend],
-})
+  return (
+    i18n.supportedLngs.find((lang) => lang === langFromCookie) ??
+    i18n.fallbackLng
+  )
+}
 
-export default i18next
+// The namespaces the matched routes ask for in `handle.i18n`.
+export const getRouteNamespaces = (context: EntryContext) =>
+  Object.values(context.routeModules).flatMap((module) => {
+    const handle = module?.handle as { i18n?: string | string[] } | undefined
+    return handle?.i18n ?? []
+  })

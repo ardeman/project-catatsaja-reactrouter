@@ -51,7 +51,7 @@ const Radio = (parameters: TParameters) => {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-1">
+    <div className="[&>:not([hidden])~:not([hidden])]:mt-1">
       <Label>{t('settings.appearance.form.theme.selector')}</Label>
       <Slot>
         <RadioGroup
@@ -62,7 +62,7 @@ const Radio = (parameters: TParameters) => {
           {themeOptions(t).map((option) => (
             <div
               key={option.value}
-              className="flex items-center space-x-3 space-y-0"
+              className="flex items-center space-y-0 space-x-3"
             >
               <Slot>
                 <RadioGroupItem
@@ -95,8 +95,8 @@ const Dropdown = (parameters: TParameters) => {
           variant="outline"
           size="icon"
         >
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
           <span className="sr-only">
             {t('settings.appearance.form.theme.selector')}
           </span>

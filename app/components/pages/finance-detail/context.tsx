@@ -139,7 +139,11 @@ const FinanceProvider = (properties: PropsWithChildren) => {
   )
 }
 
-const useFinance = () => {
+/**
+ * Used by the finance forms, which are still placeholders.
+ * @public
+ */
+export const useFinance = () => {
   const context = useContext(FinanceContext)
   if (context === undefined) {
     throw new Error('useFinance must be used within a FinanceProvider')
@@ -147,8 +151,4 @@ const useFinance = () => {
   return context
 }
 
-export {
-  FinanceProvider,
-  // Used by the finance forms, which are still placeholders.
-  /** @public */ useFinance,
-}
+export { FinanceProvider }

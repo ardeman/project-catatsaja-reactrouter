@@ -148,7 +148,7 @@ const Drawer = (parameters: TParameters) => {
             </DrawerDescription>
           </DrawerHeader>
           <div className="grid gap-2 p-4">{children}</div>
-          <DrawerFooter className="pb-6 pt-2">
+          <DrawerFooter className="pt-2 pb-6">
             {handleConfirm && (
               <Button
                 variant={variant}

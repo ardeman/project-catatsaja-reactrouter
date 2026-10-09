@@ -40,7 +40,9 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn('space-y-1', className)}>
+        <FormItem
+          className={cn('[&>:not([hidden])~:not([hidden])]:mt-1', className)}
+        >
           <div className={cn('flex items-center gap-2', containerClassName)}>
             {LeftNode && LeftNode}
             <FormControl>

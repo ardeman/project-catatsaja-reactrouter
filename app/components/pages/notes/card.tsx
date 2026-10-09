@@ -54,7 +54,7 @@ export const Card = (properties: TCardProperties) => {
       onClick={() => handleOpenNote(note)}
     >
       <Action
-        className="absolute bottom-1 left-1 right-1 z-20"
+        className="absolute right-1 bottom-1 left-1 z-20"
         isOwner={isOwner}
         isEditable={isEditable}
         isPinned={isPinned}
@@ -77,10 +77,10 @@ export const Card = (properties: TCardProperties) => {
       </CardHeader>
       {note.content && (
         <CardContent className="max-h-96 overflow-hidden">
-          <Markdown className="whitespace-pre-wrap break-words text-sm">
+          <Markdown className="text-sm wrap-break-word whitespace-pre-wrap">
             {note.content}
           </Markdown>
-          <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-12 w-full bg-gradient-to-b from-transparent to-background" />
+          <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-12 w-full bg-linear-to-b from-transparent to-background" />
         </CardContent>
       )}
     </UICard>

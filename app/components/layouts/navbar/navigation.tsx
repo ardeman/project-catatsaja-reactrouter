@@ -17,7 +17,7 @@ export const Navigation = (properties: TProperties) => {
       <Link
         to="#"
         onClick={onLinkClick}
-        className="flex items-center gap-2 whitespace-nowrap text-lg font-semibold md:text-base"
+        className="flex items-center gap-2 text-lg font-semibold whitespace-nowrap md:text-base"
       >
         <div className="relative h-6 w-6">
           <img

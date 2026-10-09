@@ -21,7 +21,13 @@ export type TCurrencyFormatRequest = z.infer<
   ReturnType<typeof currencyFormatSchema>
 >
 
+export type TCurrencyFormatForm = z.input<
+  ReturnType<typeof currencyFormatSchema>
+>
+
 export type TCurrency = z.infer<ReturnType<typeof currencySchema>>
+
+export type TCurrencyForm = z.input<ReturnType<typeof currencySchema>>
 
 export type TCreateCurrencyRequest = {
   symbol: string

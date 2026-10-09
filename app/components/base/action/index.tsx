@@ -33,7 +33,7 @@ export const Action = (properties: TActionProperties) => {
     buttonClassName: buttonClassNameProperty,
   } = properties
   const buttonClassName = cn(
-    'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0',
+    'h-5 w-full rounded-full bg-accent p-0 text-muted-foreground opacity-100 ring-offset-background transition-all duration-300 group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none sm:opacity-0',
     buttonClassNameProperty,
   )
 
@@ -115,8 +115,8 @@ export const Action = (properties: TActionProperties) => {
           className={cn(
             buttonClassName,
             checkedAll
-              ? '[&_svg]:text-primary [&_svg]:hover:text-foreground'
-              : '[&_svg]:hover:text-primary',
+              ? '[&_svg]:text-primary hover:[&_svg]:text-foreground'
+              : 'hover:[&_svg]:text-primary',
           )}
           disabled={typeof checkedAll !== 'boolean'}
         >

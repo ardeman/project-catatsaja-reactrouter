@@ -52,7 +52,7 @@ export const Card = (properties: TCardProperties) => {
       onClick={() => handleOpenTask(task)}
     >
       <Action
-        className="absolute bottom-1 left-1 right-1"
+        className="absolute right-1 bottom-1 left-1"
         isOwner={isOwner}
         isEditable={isEditable}
         isPinned={isPinned}

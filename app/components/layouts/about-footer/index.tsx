@@ -28,7 +28,7 @@ export const AboutFooter = () => {
             {menu.name}
           </Link>
           {index < homeMenus(t).length - 1 && (
-            <span className="pointer-events-none select-none px-1 sm:px-2">
+            <span className="pointer-events-none px-1 select-none sm:px-2">
               ·
             </span>
           )}

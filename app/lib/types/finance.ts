@@ -8,7 +8,7 @@ type TFinanceTitleForm = z.infer<ReturnType<typeof titleSchema>>
 
 type TFinanceItemForm = z.infer<ReturnType<typeof itemSchema>>
 
-export type TFinanceForm = TFinanceTitleForm & { content: TFinanceItemForm[] }
+type TFinanceForm = TFinanceTitleForm & { content: TFinanceItemForm[] }
 
 export type TCreateFinanceRequest = TFinanceForm
 

@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -50,14 +50,12 @@ jobs:
         uses: oven-sh/setup-bun@v2
       - name: Setup pnpm (if applicable)
         if: ${{ steps.detect-package-manager.outputs.manager == 'pnpm' }}
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.14.4
+        uses: pnpm/action-setup@v6
       - name: Setup Node (if not Bun)
         if: ${{ steps.detect-package-manager.outputs.manager != 'bun' }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '24'
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}

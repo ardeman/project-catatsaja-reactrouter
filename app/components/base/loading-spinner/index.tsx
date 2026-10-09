@@ -36,12 +36,12 @@ export const LoadingSpinner = (properties: TProperties) => {
       <div className="absolute flex h-24 w-24 flex-col items-center justify-center">
         <div
           className={cn(
-            'animate-rotate flex h-48 w-24 origin-bottom justify-center text-5xl',
+            'flex h-48 w-24 origin-bottom animate-rotate justify-center text-5xl',
           )}
         >
           <IconComponent counter={counter} />
         </div>
-        <span className="absolute bottom-0 whitespace-nowrap text-base font-semibold">
+        <span className="absolute bottom-0 text-base font-semibold whitespace-nowrap">
           {appName}
         </span>
       </div>
