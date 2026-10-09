@@ -6,6 +6,8 @@ import {
   ReactNode,
 } from 'react'
 
+import { themeColors } from '~/lib/constants/metadata'
+
 export type Theme = 'system' | 'light' | 'dark'
 export type Size = 'small' | 'medium' | 'large'
 
@@ -55,19 +57,23 @@ export const ThemeProvider = ({
   )
 
   useEffect(() => {
-    const root = globalThis.document.documentElement
-    root.classList.remove('light', 'dark')
-
-    if (theme === 'system') {
-      const systemTheme = globalThis.matchMedia('(prefers-color-scheme: dark)')
-        .matches
-        ? 'dark'
-        : 'light'
-      root.classList.add(systemTheme)
-      return
+    const query = globalThis.matchMedia('(prefers-color-scheme: dark)')
+    const apply = () => {
+      const resolved =
+        theme === 'system' ? (query.matches ? 'dark' : 'light') : theme
+      const root = globalThis.document.documentElement
+      root.classList.remove('light', 'dark')
+      root.classList.add(resolved)
+      // The browser and installed-app bars follow the app's theme.
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute('content', themeColors[resolved])
     }
-
-    root.classList.add(theme)
+    apply()
+    // In "system" mode, follow the device when it switches.
+    if (theme !== 'system') return
+    query.addEventListener('change', apply)
+    return () => query.removeEventListener('change', apply)
   }, [theme])
 
   useEffect(() => {

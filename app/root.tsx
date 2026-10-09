@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
 import { LoadingSpinner } from '~/components/base/loading-spinner'
 import { Rootlayout } from '~/components/layouts/root'
+import { ThemeHead } from '~/components/layouts/theme-head'
 import { FirebaseProvider } from '~/lib/contexts/firebase'
-import { ThemeProvider, useTheme } from '~/lib/contexts/theme'
+import { ThemeProvider } from '~/lib/contexts/theme'
 
 import '~/styles/globals.css'
 
@@ -27,37 +27,16 @@ const App = () => {
 
 export { meta, links } from '~/lib/constants/metadata'
 
+// Shown while the app starts. It runs outside ThemeProvider, so the saved
+// theme and size come from the script in ThemeHead, not from React.
 export const HydrateFallback = () => {
   const { i18n } = useTranslation()
-  const { theme, size } = useTheme()
-  useEffect(() => {
-    const root = globalThis.document.documentElement
-    root.classList.remove('light', 'dark')
-
-    if (theme === 'system') {
-      const systemTheme = globalThis.matchMedia('(prefers-color-scheme: dark)')
-        .matches
-        ? 'dark'
-        : 'light'
-      root.classList.add(systemTheme)
-      return
-    }
-
-    root.classList.add(theme)
-  }, [theme])
-
-  useEffect(() => {
-    const root = globalThis.document.documentElement
-    let value = '100%'
-    if (size === 'small') value = '87.5%'
-    else if (size === 'large') value = '112.5%'
-    root.style.setProperty('--base-size', value)
-  }, [size])
 
   return (
     <html
       lang={i18n.language}
       dir={i18n.dir()}
+      suppressHydrationWarning
     >
       <head>
         <meta charSet="utf-8" />
@@ -65,6 +44,7 @@ export const HydrateFallback = () => {
           name="viewport"
           content="width=device-width, initial-scale=1"
         />
+        <ThemeHead />
         <Meta />
         <Links />
       </head>

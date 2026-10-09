@@ -10,32 +10,13 @@ import {
 } from 'react-router'
 
 import { LoadingSpinner } from '~/components/base/loading-spinner'
+import { ThemeHead } from '~/components/layouts/theme-head'
 import { Toaster } from '~/components/ui/toaster'
 import { publicPages } from '~/lib/configs/page'
 import { useFirebase } from '~/lib/contexts/firebase'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { useIsStandalone } from '~/lib/hooks/use-install-app'
 import { middleware } from '~/lib/utils/middleware'
-
-// Runs before the first paint: the installed app skips the landing page, and
-// the saved theme and text size are applied so pages rendered at build time
-// (the landing page) don't flash the wrong theme.
-const themeScript = `(() => {
-  try {
-    // The installed app has no landing page: leave it before it paints.
-    const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true
-    if (installed && location.pathname === '/') {
-      location.replace('/notes')
-      return
-    }
-    const theme = localStorage.getItem('vite-ui-theme') || 'system'
-    const dark = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
-    document.documentElement.classList.add(dark ? 'dark' : 'light')
-    const size = localStorage.getItem('tailwind-size')
-    const sizes = { small: '87.5%', large: '112.5%' }
-    if (sizes[size]) document.documentElement.style.setProperty('--base-size', sizes[size])
-  } catch {}
-})()`
 
 export const Rootlayout = (properties: PropsWithChildren) => {
   const { children } = properties
@@ -67,7 +48,7 @@ export const Rootlayout = (properties: PropsWithChildren) => {
           name="viewport"
           content="width=device-width, initial-scale=1"
         />
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <ThemeHead />
         <Meta />
         <Links />
       </head>

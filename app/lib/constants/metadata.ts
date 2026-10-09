@@ -9,7 +9,7 @@ const favicon = '/favicon.ico'
 const author = 'Ardeman'
 // Browser and installed-app bars match the page background.
 export const themeColor = '#ffffff'
-const themeColorDark = '#0c0a09'
+export const themeColors = { light: themeColor, dark: '#0c0a09' }
 export const appDescription =
   'Write notes, keep checklists and share them with the people you choose. Finances are coming soon.'
 const manifest = '/site.webmanifest'
@@ -20,16 +20,6 @@ export const githubRepo = 'project-catatsaja-reactrouter'
 // routes with their own meta add these through `withAppMeta`.
 const appMeta: MetaDescriptor[] = [
   { name: 'author', content: author },
-  {
-    name: 'theme-color',
-    content: themeColor,
-    media: '(prefers-color-scheme: light)',
-  },
-  {
-    name: 'theme-color',
-    content: themeColorDark,
-    media: '(prefers-color-scheme: dark)',
-  },
   // Installed on an iPhone or iPad home screen, open without browser bars.
   { name: 'mobile-web-app-capable', content: 'yes' },
   { name: 'apple-mobile-web-app-capable', content: 'yes' },

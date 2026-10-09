@@ -14,6 +14,33 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-10',
+    title: { en: 'Theme fixes', id: 'Perbaikan tema' },
+    changes: [
+      {
+        kind: 'fixed',
+        text: {
+          en: 'The status bar and window bar now follow the theme you pick in the app, not only your device setting.',
+          id: 'Bar status dan bar jendela kini mengikuti tema yang kamu pilih di aplikasi, bukan hanya pengaturan perangkat.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'With the System theme, the app now switches right away when your device changes between light and dark.',
+          id: 'Dengan tema Sistem, aplikasi kini langsung berganti saat perangkatmu beralih antara terang dan gelap.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Pages no longer flash the wrong theme or text size while the app starts.',
+          id: 'Halaman tidak lagi sempat menampilkan tema atau ukuran teks yang salah saat aplikasi dibuka.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-09',
     title: {
       en: 'A home page, safer sharing and saving you can trust',
