@@ -33,6 +33,11 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
+const readStorage = (key: string) =>
+  typeof localStorage === 'undefined'
+    ? undefined
+    : localStorage.getItem(key) || undefined
+
 export const ThemeProvider = ({
   children,
   defaultTheme = 'system',
@@ -41,11 +46,12 @@ export const ThemeProvider = ({
   sizeStorageKey = 'tailwind-size',
   ...properties
 }: ThemeProviderProperties) => {
+  // The landing page is rendered at build time, where there is no storage.
   const [theme, setThemeState] = useState<Theme>(
-    () => (localStorage.getItem(themeStorageKey) as Theme) || defaultTheme,
+    () => (readStorage(themeStorageKey) as Theme | undefined) || defaultTheme,
   )
   const [size, setSizeState] = useState<Size>(
-    () => (localStorage.getItem(sizeStorageKey) as Size) || defaultSize,
+    () => (readStorage(sizeStorageKey) as Size | undefined) || defaultSize,
   )
 
   useEffect(() => {

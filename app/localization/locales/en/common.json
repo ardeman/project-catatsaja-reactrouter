@@ -537,5 +537,54 @@
       "title": "Nothing found",
       "description": "Try a different word, or clear the search."
     }
+  },
+  "landing": {
+    "signIn": "Sign in",
+    "getStarted": "Create an account",
+    "comingSoon": "Coming soon",
+    "hero": {
+      "eyebrow": "Notes · Tasks · Finances",
+      "title": "Just write it down.",
+      "description": "<span>{{appName}}</span> keeps your notes and checklists in one simple place, on your phone and your computer, and shares them with the people you choose."
+    },
+    "features": {
+      "title": "Everything you need to remember, nothing you don't",
+      "notes": {
+        "title": "Notes that format themselves",
+        "description": "Write with headings, lists and bold text as you type. Every change is saved on its own."
+      },
+      "tasks": {
+        "title": "Checklists that keep up",
+        "description": "Add items with a tap or paste a whole list at once. Finished items move out of the way."
+      },
+      "sharing": {
+        "title": "Share it your way",
+        "description": "Give someone read-only or edit access to a note or list. Changes show up for everyone right away."
+      },
+      "everywhere": {
+        "title": "Wherever you are",
+        "description": "Works in any browser and installs like an app. Light or dark, in English or Bahasa Indonesia."
+      },
+      "finances": {
+        "title": "Finances",
+        "description": "Record income and spending in any currency, converted with your own exchange rates."
+      }
+    },
+    "cta": {
+      "title": "Ready to write it down?",
+      "description": "Create an account in a minute and start your first note."
+    },
+    "preview": {
+      "note": {
+        "title": "Weekly plan",
+        "date": "Edited today",
+        "content": "- Call the bank\n- **Review** the budget\n- Book the dentist"
+      },
+      "task": {
+        "title": "Groceries",
+        "date": "Edited yesterday",
+        "items": ["Milk", "Eggs", "Bread", "Coffee beans"]
+      }
+    }
   }
 }

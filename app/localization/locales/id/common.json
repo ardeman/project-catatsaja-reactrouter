@@ -537,5 +537,54 @@
       "description": "Coba kata lain, atau hapus pencarian."
     },
     "results_one": "{{count}} hasil untuk “{{query}}”"
+  },
+  "landing": {
+    "signIn": "Masuk",
+    "getStarted": "Buat akun",
+    "comingSoon": "Segera hadir",
+    "hero": {
+      "eyebrow": "Catatan · Tugas · Keuangan",
+      "title": "Catat saja.",
+      "description": "<span>{{appName}}</span> menyimpan catatan dan daftar tugasmu di satu tempat sederhana, di ponsel maupun komputer, dan bisa dibagikan ke orang yang kamu pilih."
+    },
+    "features": {
+      "title": "Semua yang perlu kamu ingat, tanpa yang tidak perlu",
+      "notes": {
+        "title": "Catatan yang rapi dengan sendirinya",
+        "description": "Tulis judul, daftar, dan teks tebal sambil mengetik. Setiap perubahan tersimpan otomatis."
+      },
+      "tasks": {
+        "title": "Daftar tugas yang praktis",
+        "description": "Tambah item sekali ketuk atau tempel satu daftar sekaligus. Item yang selesai tersingkir dengan sendirinya."
+      },
+      "sharing": {
+        "title": "Berbagi sesukamu",
+        "description": "Beri orang lain akses hanya baca atau boleh ubah ke catatan atau daftar. Perubahan langsung terlihat oleh semua."
+      },
+      "everywhere": {
+        "title": "Di mana pun kamu berada",
+        "description": "Bisa dibuka di browser apa saja dan dipasang seperti aplikasi. Tema terang atau gelap, dalam Bahasa Indonesia atau Inggris."
+      },
+      "finances": {
+        "title": "Keuangan",
+        "description": "Catat pemasukan dan pengeluaran dalam mata uang apa pun, dengan kurs pilihanmu sendiri."
+      }
+    },
+    "cta": {
+      "title": "Siap mencatat?",
+      "description": "Buat akun dalam semenit dan mulai catatan pertamamu."
+    },
+    "preview": {
+      "note": {
+        "title": "Rencana minggu ini",
+        "date": "Diedit hari ini",
+        "content": "- Telepon bank\n- **Cek** anggaran\n- Janji ke dokter gigi"
+      },
+      "task": {
+        "title": "Belanja",
+        "date": "Diedit kemarin",
+        "items": ["Susu", "Telur", "Roti", "Biji kopi"]
+      }
+    }
   }
 }

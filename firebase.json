@@ -6,10 +6,11 @@
   "hosting": {
     "public": "build/client",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "trailingSlash": false,
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "destination": "/__spa-fallback.html"
       }
     ],
     "headers": [
@@ -19,6 +20,24 @@
           {
             "key": "Cross-Origin-Opener-Policy",
             "value": "same-origin-allow-popups"
+          }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/assets/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
           }
         ]
       }
