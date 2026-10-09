@@ -1,20 +1,37 @@
 import { useEffect, useState } from 'react'
 
-import { fetchUsers } from '~/apis/firestore/user'
+import { fetchUsersByIds } from '~/apis/firestore/user'
 import { TUserResponse } from '~/lib/types/user'
 
-export const useGetUsers = () => {
+export const useGetUsers = (uids: string[]) => {
   const [data, setData] = useState<TUserResponse[]>()
   const [isLoading, setIsLoading] = useState(true)
+  const key = [...uids].toSorted((a, b) => a.localeCompare(b)).join(',')
 
   useEffect(() => {
-    const load = async () => {
-      const result = await fetchUsers()
-      setData(result)
+    const ids = key ? key.split(',') : []
+    if (ids.length === 0) {
+      setData([])
       setIsLoading(false)
+      return
     }
-    load()
-  }, [])
+    let isCurrent = true
+    const load = async () => {
+      setIsLoading(true)
+      try {
+        const result = await fetchUsersByIds(ids)
+        if (isCurrent) setData(result)
+      } catch {
+        if (isCurrent) setData([])
+      } finally {
+        if (isCurrent) setIsLoading(false)
+      }
+    }
+    void load()
+    return () => {
+      isCurrent = false
+    }
+  }, [key])
 
   return { data, isLoading }
 }

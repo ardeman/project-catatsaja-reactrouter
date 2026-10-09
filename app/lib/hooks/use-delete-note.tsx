@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { deleteNote } from '~/apis/firestore/note'
 import { ToastAction } from '~/components/ui/toast'
 import { TNoteResponse } from '~/lib/types/note'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { useCreateNote } from './use-create-note'
 import { toast } from './use-toast'
@@ -30,7 +31,7 @@ export const useDeleteNote = () => {
         ),
       })
     } catch (error: unknown) {
-      const message = String(error)
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,

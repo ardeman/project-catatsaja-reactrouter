@@ -8,7 +8,7 @@ export type TNoteForm = z.infer<typeof noteSchema>
 
 export type TCreateNoteRequest = TNoteForm
 
-export type TUpdateNoteRequest = { id: string } & TNoteForm
+export type TUpdateNoteRequest = { id: string } & Partial<TNoteForm>
 
 export type TPinNoteRequest = { note: TNoteResponse; isPinned: boolean }
 

@@ -31,7 +31,6 @@ type TaskContextValue = {
   handleUnlinkTask: (properties: THandleModifyTask) => void
   handlePinTask: (properties: THandlePinTask) => void
   handleShareTask: (properties: THandleModifyTask) => void
-  handleOpenTask: (task: TTaskResponse) => void
   handleBackTask: () => void
   handleCreateTask: () => void
 }
@@ -98,10 +97,6 @@ const TaskProvider = (properties: PropsWithChildren) => {
     navigate('/tasks/create')
   }
 
-  const handleOpenTask = (task: TTaskResponse) => {
-    navigate(`/tasks/${task.id}`)
-  }
-
   const handleBackTask = () => {
     navigate('/tasks')
   }
@@ -122,7 +117,6 @@ const TaskProvider = (properties: PropsWithChildren) => {
         handleUnlinkTask,
         handlePinTask,
         handleShareTask,
-        handleOpenTask,
         handleBackTask,
         handleCreateTask,
       }}

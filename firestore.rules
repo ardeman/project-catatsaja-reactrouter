@@ -22,10 +22,64 @@ service cloud.firestore {
       return writers.hasAny([request.auth.uid])
     }
 
+    // Shared documents (notes, tasks, finances) carry an `owner` and
+    // `permissions.read` / `permissions.write` lists of user ids. Writers are
+    // also readers.
+
+    function changedKeys() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    // A new document belongs to its creator, who can read and write it.
+    function isValidNewShared() {
+      return isRegistered()
+        && request.resource.data.owner == request.auth.uid
+        && request.resource.data.permissions.read.hasAll([request.auth.uid])
+        && request.resource.data.permissions.write.hasAll([request.auth.uid]);
+    }
+
+    // The owner may change anything, including sharing, but not the owner.
+    function isOwnerUpdate() {
+      return isOwner(resource.data.owner)
+        && request.resource.data.owner == resource.data.owner;
+    }
+
+    // Writers may change the content fields only.
+    function isContentUpdate(contentKeys) {
+      return canWrite(resource.data.permissions.write)
+        && changedKeys().hasOnly(contentKeys.concat(['updatedAt']));
+    }
+
+    // Anyone with access may pin or unpin it for themselves only.
+    function isPinUpdate() {
+      let before = resource.data.get('pinnedBy', []).toSet();
+      let after = request.resource.data.get('pinnedBy', []).toSet();
+      return canRead(resource.data.permissions.read)
+        && changedKeys().hasOnly(['pinnedBy'])
+        && before.difference(after).union(after.difference(before)).hasOnly([request.auth.uid]);
+    }
+
+    // Someone it is shared with may remove themselves, and nobody else.
+    function isLeaveUpdate() {
+      let me = [request.auth.uid].toSet();
+      return canRead(resource.data.permissions.read)
+        && !isOwner(resource.data.owner)
+        && changedKeys().hasOnly(['permissions'])
+        && request.resource.data.permissions.read.toSet() == resource.data.permissions.read.toSet().difference(me)
+        && request.resource.data.permissions.write.toSet() == resource.data.permissions.write.toSet().difference(me);
+    }
+
+    function canUpdateShared(contentKeys) {
+      return isOwnerUpdate()
+        || isContentUpdate(contentKeys)
+        || isPinUpdate()
+        || isLeaveUpdate();
+    }
+
     match /users/{userId} {
       allow read: if isAuthenticated();
       allow write: if isOwner(userId);
-      
+
       match /currencies/{currencyId} {
         allow read, write: if isOwner(userId);
       }
@@ -38,24 +92,24 @@ service cloud.firestore {
     }
 
     match /notes/{noteId} {
+      allow read: if canRead(resource.data.permissions.read);
+      allow create: if isValidNewShared();
+      allow update: if canUpdateShared(['title', 'content']);
       allow delete: if isOwner(resource.data.owner);
-      allow create: if isRegistered();
-      allow read, write: if canRead(resource.data.permissions.read);
-      // allow write: if canWrite(resource.data.permissions.write);
     }
 
     match /tasks/{taskId} {
+      allow read: if canRead(resource.data.permissions.read);
+      allow create: if isValidNewShared();
+      allow update: if canUpdateShared(['title', 'content']);
       allow delete: if isOwner(resource.data.owner);
-      allow create: if isRegistered();
-      allow read, write: if canRead(resource.data.permissions.read);
-      // allow write: if canWrite(resource.data.permissions.write);
     }
 
     match /finances/{financeId} {
+      allow read: if canRead(resource.data.permissions.read);
+      allow create: if isValidNewShared();
+      allow update: if canUpdateShared(['title', 'content']);
       allow delete: if isOwner(resource.data.owner);
-      allow create: if isRegistered();
-      allow read, write: if canRead(resource.data.permissions.read);
-      // allow write: if canWrite(resource.data.permissions.write);
     }
   }
 }

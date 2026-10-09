@@ -71,7 +71,6 @@ export const pinFinance = async (data: TPinFinanceRequest) => {
   const reference = doc(firestore, 'finances', finance.id)
   return await updateDoc(reference, {
     pinnedBy: [...pinnedBy],
-    updatedAt: new Date(),
   })
 }
 
@@ -105,10 +104,7 @@ export const unlinkFinance = async (finance: TFinanceResponse) => {
   }
 
   const reference = doc(firestore, 'finances', id)
-  return await updateDoc(reference, {
-    ...data,
-    updatedAt: new Date(),
-  })
+  return await updateDoc(reference, data)
 }
 
 /**
@@ -152,8 +148,5 @@ export const setFinancePermission = async (form: TFinancePermissionRequest) => {
       write: [...writePermission],
     },
   }
-  return await updateDoc(reference, {
-    ...data,
-    updatedAt: new Date(),
-  })
+  return await updateDoc(reference, data)
 }

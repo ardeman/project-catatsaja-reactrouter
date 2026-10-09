@@ -5,10 +5,12 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   updateProfile as updateProfileAuth,
+  type User,
 } from 'firebase/auth'
 import {
   collection,
   doc,
+  documentId,
   getDoc,
   getDocs,
   query,
@@ -27,6 +29,25 @@ import { TSignInRequest, TSignUpRequest, TUserResponse } from '~/lib/types/user'
 import { waitForAuth } from '~/lib/utils/wait-for-auth'
 
 // Function to fetch user data from Firestore
+// Creates the profile document when it is missing, e.g. when sign-up stopped
+// halfway. Without it the account cannot be found for sharing or create
+// anything (the rules require it).
+const ensureUserProfile = async (user: User) => {
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  const reference = doc(firestore, 'users', user.uid)
+  const snap = await getDoc(reference)
+  if (snap.exists()) return snap
+  await setDoc(reference, {
+    displayName: user.displayName || user.email?.split('@')[0] || '',
+    email: user.email,
+    photoURL: user.photoURL || '',
+    createdAt: new Date(),
+  })
+  return await getDoc(reference)
+}
+
 export const fetchUserData = async () => {
   if (!auth) {
     throw new Error('Firebase Auth is not initialized.')
@@ -39,13 +60,7 @@ export const fetchUserData = async () => {
     throw new Error('No authenticated user found.')
   }
 
-  const reference = doc(firestore, 'users', user.uid)
-  const snap = await getDoc(reference)
-
-  if (!snap.exists()) {
-    throw new Error('User data not found in Firestore.')
-  }
-
+  const snap = await ensureUserProfile(user)
   const data = snap.data()
   return {
     ...data,
@@ -78,21 +93,28 @@ export const fetchUsersByEmail = async (email: string) => {
   })
 }
 
-export const fetchUsers = async () => {
+// Profiles of the given users only, in batches of 30 (Firestore's `in` limit).
+export const fetchUsersByIds = async (uids: string[]) => {
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-
-  const usersReference = collection(firestore, 'users')
-  const snap = await getDocs(usersReference)
-
-  return snap.docs.map((document) => {
-    const data = document.data()
-    return {
-      ...data,
-      uid: document.id,
-    } as TUserResponse
-  })
+  const database = firestore
+  const batches: string[][] = []
+  for (let index = 0; index < uids.length; index += 30) {
+    batches.push(uids.slice(index, index + 30))
+  }
+  const snaps = await Promise.all(
+    batches.map((batch) =>
+      getDocs(
+        query(collection(database, 'users'), where(documentId(), 'in', batch)),
+      ),
+    ),
+  )
+  return snaps.flatMap((snap) =>
+    snap.docs.map(
+      (document) => ({ ...document.data(), uid: document.id }) as TUserResponse,
+    ),
+  )
 }
 
 export const updateProfile = async (userData: TUpdateProfileRequest) => {
@@ -148,14 +170,12 @@ export const login = async (userData: TSignInRequest) => {
   const user = result.user
 
   if (user) {
-    // Check if user exists in Firestore
-    const reference = doc(firestore, 'users', user.uid)
-    const snap = await getDoc(reference)
+    const snap = await ensureUserProfile(user)
     const userData = snap.data()
 
     // Update the email in Firestore if it's different
     if (userData && user.email && userData.email !== user.email) {
-      return await updateDoc(reference, {
+      return await updateDoc(snap.ref, {
         email,
         updatedAt: new Date(),
       })
@@ -174,19 +194,7 @@ export const loginWithGoogle = async () => {
   const user = result.user
 
   if (user) {
-    // Check if user exists in Firestore
-    const reference = doc(firestore, 'users', user.uid)
-    const snap = await getDoc(reference)
-
-    // If user data doesn't exist, store it
-    if (!snap.exists()) {
-      await setDoc(reference, {
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL || '',
-        createdAt: new Date(),
-      })
-    }
+    await ensureUserProfile(user)
   }
 }
 
@@ -209,10 +217,7 @@ export const register = async (userData: TSignUpRequest) => {
       displayName,
     })
 
-    // Send email verification
-    await sendEmailVerification(user)
-
-    // Store user data in Firestore
+    // Store user data in Firestore first: the account is unusable without it
     await setDoc(doc(firestore, 'users', user.uid), {
       displayName,
       email,
@@ -221,6 +226,14 @@ export const register = async (userData: TSignUpRequest) => {
       size,
       createdAt: new Date(),
     })
+
+    // A failed verification email must not fail the sign-up; it can be sent
+    // again from the account settings.
+    try {
+      await sendEmailVerification(user)
+    } catch {
+      // ignored on purpose
+    }
   } else {
     throw new Error('No user is currently signed in.')
   }

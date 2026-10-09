@@ -3,7 +3,7 @@ import { CircleUser, Menu, Search } from 'lucide-react'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 
 import { Input } from '~/components/base/input'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
@@ -23,8 +23,8 @@ import {
 } from '~/components/ui/popover'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useLogout } from '~/lib/hooks/use-logout'
-import { toast } from '~/lib/hooks/use-toast'
 import { TSearchRequest } from '~/lib/types/search'
+import { extractPathSegment } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { searchSchema } from '~/lib/validations/search'
 
@@ -33,24 +33,29 @@ import { Navigation } from './navigation'
 import { TProperties } from './type'
 export { aboutMenus } from './constant'
 
+const searchableSections = new Set(['/notes', '/tasks', '/finances'])
+
 export const Navbar = (properties: TProperties) => {
   const { className } = properties
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { data: userData } = useUserData()
+  const { pathname } = useLocation()
+  const [searchParameters] = useSearchParams()
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(searchSchema),
-    defaultValues: {
-      query: '',
+    values: {
+      query: searchParameters.get('q') || '',
     },
   })
   const { handleSubmit } = formMethods
+  // Filters the list of the current section (notes when outside one).
   const onSubmit = handleSubmit(async (data) => {
-    toast({
-      title: 'Search',
-      description: <pre>{JSON.stringify(data, null, 2)}</pre>,
-    })
+    const section = extractPathSegment(pathname)
+    const list = searchableSections.has(section) ? section : '/notes'
+    const query = data.query.trim()
+    navigate(query ? `${list}?q=${encodeURIComponent(query)}` : list)
   })
   const handleLogout = () => {
     mutateLogout()
@@ -101,6 +106,7 @@ export const Navbar = (properties: TProperties) => {
               name="query"
               type="search"
               placeholder={t('navigation.search.placeholder')}
+              aria-label={t('navigation.search.placeholder')}
               inputClassName="w-full"
               leftNode={({ className }) => <Search className={className} />}
             />

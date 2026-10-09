@@ -25,11 +25,16 @@ export type TPermissions = {
   path?: string
 }
 
-export type TParametersPermission = Pick<TPermissions, 'write'> &
-  Pick<TUserResponse, 'uid' | 'displayName' | 'photoURL' | 'email'> & {
-    handleDeletePermission: (parameters: THandleDeletePermission) => void
-    handleSetPermission: (parameters: THandleSetPermission) => void
-  }
+export type TParametersPermission = Pick<
+  TUserResponse,
+  'uid' | 'displayName' | 'photoURL' | 'email'
+> & {
+  // Unset for someone found by email who has no access yet.
+  permission?: THandleSetPermission['permission']
+} & {
+  handleDeletePermission: (parameters: THandleDeletePermission) => void
+  handleSetPermission: (parameters: THandleSetPermission) => void
+}
 
 export type TActionProperties = {
   isOwner?: boolean

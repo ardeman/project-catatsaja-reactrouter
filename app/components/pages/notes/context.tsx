@@ -31,7 +31,6 @@ type NoteContextValue = {
   handleUnlinkNote: (properties: THandleModifyNote) => void
   handlePinNote: (properties: THandlePinNote) => void
   handleShareNote: (properties: THandleModifyNote) => void
-  handleOpenNote: (note: TNoteResponse) => void
   handleBackNote: () => void
   handleCreateNote: () => void
 }
@@ -98,10 +97,6 @@ const NoteProvider = (properties: PropsWithChildren) => {
     navigate('/notes/create')
   }
 
-  const handleOpenNote = (note: TNoteResponse) => {
-    navigate(`/notes/${note.id}`)
-  }
-
   const handleBackNote = () => {
     navigate('/notes')
   }
@@ -122,7 +117,6 @@ const NoteProvider = (properties: PropsWithChildren) => {
         handleUnlinkNote,
         handlePinNote,
         handleShareNote,
-        handleOpenNote,
         handleBackNote,
         handleCreateNote,
       }}

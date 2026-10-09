@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { setNotePermission } from '~/apis/firestore/note'
 import { TNotePermissionRequest } from '~/lib/types/note'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { toast } from './use-toast'
 
@@ -16,7 +17,7 @@ export const useShareNote = () => {
       await setNotePermission(data)
     } catch (error: unknown) {
       setIsError(true)
-      const message = String(error)
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,

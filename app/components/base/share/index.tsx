@@ -18,6 +18,7 @@ import {
 import { auth } from '~/lib/configs/firebase'
 import { useGetUsers } from '~/lib/hooks/use-get-users'
 import { useSearchUsers } from '~/lib/hooks/use-search-users'
+import { toast } from '~/lib/hooks/use-toast'
 import {
   THandleDeletePermission,
   THandleSetPermission,
@@ -33,13 +34,15 @@ export const Share = (properties: TPermissions) => {
   const [email, setEmail] = useState('')
   const { t } = useTranslation(['common', 'zod'])
   const { data: searchResults } = useSearchUsers(email)
-  const { data: users } = useGetUsers()
   const formMethods = useForm<TShareForm>({
     resolver: zodResolver(shareSchema(t)),
     defaultValues: { user: '' },
   })
   const { handleSubmit, getValues, setValue } = formMethods
   const [copied, setCopied] = useState(false)
+  const [removed, setRemoved] = useState<
+    { uid: string; email: string; permission: 'read' | 'write' } | undefined
+  >()
   const currentLink = `${globalThis.location.origin}${path}`
 
   const onSubmit = handleSubmit(async (data) => {
@@ -51,6 +54,12 @@ export const Share = (properties: TPermissions) => {
     () => new Set([...(read || []), ...(write || [])]),
     [read, write],
   )
+  const sharedWith = [...permissions].filter(
+    (uid) => uid !== auth?.currentUser?.uid,
+  )
+  const { data: users } = useGetUsers(sharedWith)
+  const getPermission = (uid: string) =>
+    write.includes(uid) ? 'write' : read.includes(uid) ? 'read' : undefined
 
   useEffect(() => {
     if (
@@ -68,11 +77,21 @@ export const Share = (properties: TPermissions) => {
       setValue('user', '')
       return
     }
+    const previous = getPermission(uid)
     handleUnshare({ uid })
+    // Shown inside the dialog: a modal dialog blocks toasts outside it.
+    setRemoved(previous ? { uid, email, permission: previous } : undefined)
+  }
+
+  const handleUndoRemove = () => {
+    if (!removed) return
+    handleShare({ uid: removed.uid, permission: removed.permission })
+    setRemoved(undefined)
   }
 
   const handleSetPermission = (parameters: THandleSetPermission) => {
     const { permission, uid } = parameters
+    setRemoved(undefined)
     handleShare({ uid, permission })
     setEmail('')
     setDisabled(false)
@@ -84,8 +103,9 @@ export const Share = (properties: TPermissions) => {
       await navigator.clipboard.writeText(currentLink)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
+      toast({ description: t('form.linkCopied') })
     } catch {
-      // Optionally handle error
+      toast({ variant: 'destructive', description: t('errors.unknown') })
     }
   }
 
@@ -109,7 +129,9 @@ export const Share = (properties: TPermissions) => {
             variant="ghost"
             onClick={handleCopyLink}
             size="icon"
-            className="absolute right-3.5 h-4 w-4"
+            aria-label={t('form.copyLink')}
+            title={t('form.copyLink')}
+            className="absolute right-1 size-8"
           >
             {copied ? <CopyIcon className="text-primary" /> : <CopyIcon />}
           </Button>
@@ -143,33 +165,45 @@ export const Share = (properties: TPermissions) => {
               displayName={displayName}
               uid={uid}
               email={email}
-              write={[]}
               handleDeletePermission={handleDeletePermission}
               handleSetPermission={handleSetPermission}
             />
           ))}
 
-        {[...permissions]
-          .filter((uid) => uid !== auth?.currentUser?.uid)
-          .map(
-            (uid) =>
-              users?.find((user) => user.uid === uid) && (
-                <Permission
-                  key={uid}
-                  write={write}
-                  photoURL={
-                    users.find((user) => user.uid === uid)?.photoURL || ''
-                  }
-                  displayName={
-                    users.find((user) => user.uid === uid)?.displayName || ''
-                  }
-                  email={users.find((user) => user.uid === uid)?.email || ''}
-                  uid={uid}
-                  handleDeletePermission={handleDeletePermission}
-                  handleSetPermission={handleSetPermission}
-                />
-              ),
-          )}
+        {sharedWith.map((uid) => {
+          const user = users?.find((user) => user.uid === uid)
+          if (!user) return null
+          return (
+            <Permission
+              key={uid}
+              uid={uid}
+              permission={getPermission(uid)}
+              photoURL={user.photoURL || ''}
+              displayName={user.displayName || ''}
+              email={user.email || ''}
+              handleDeletePermission={handleDeletePermission}
+              handleSetPermission={handleSetPermission}
+            />
+          )
+        })}
+        {removed && (
+          <div
+            role="status"
+            className="flex items-center justify-between gap-2 rounded-md bg-muted px-3 py-2 text-sm"
+          >
+            <span className="min-w-0 truncate">
+              {t('form.permissions.removed', { email: removed.email })}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-7 px-2"
+              onClick={handleUndoRemove}
+            >
+              {t('form.undo')}
+            </Button>
+          </div>
+        )}
       </form>
     </FormProvider>
   )
@@ -177,7 +211,7 @@ export const Share = (properties: TPermissions) => {
 
 const Permission = (parameters: TParametersPermission) => {
   const {
-    write,
+    permission = '',
     photoURL,
     displayName,
     uid,
@@ -206,9 +240,7 @@ const Permission = (parameters: TParametersPermission) => {
           onValueChange={(newValue: THandleSetPermission['permission']) =>
             handleSetPermission({ permission: newValue, uid })
           }
-          defaultValue={
-            write.length > 0 ? (write.includes(uid) ? 'write' : 'read') : ''
-          }
+          value={permission}
         >
           <SelectTrigger className="w-fit min-w-16 gap-2 [&>span]:truncate">
             <SelectValue placeholder={t('form.permissions.select')} />
@@ -223,6 +255,8 @@ const Permission = (parameters: TParametersPermission) => {
         <Button
           type="button"
           variant="outline"
+          aria-label={t('form.permissions.remove', { email })}
+          title={t('form.permissions.remove', { email })}
           onClick={() => handleDeletePermission({ uid, email })}
         >
           <Trash className="h-4 w-4" />

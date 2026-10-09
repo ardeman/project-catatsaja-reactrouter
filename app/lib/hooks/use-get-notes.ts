@@ -33,17 +33,25 @@ export const useGetNotes = () => {
         where(new FieldPath('permissions', 'read'), 'array-contains', user.uid),
       )
 
-      unsubscribe = onSnapshot(notesQuery, (snap) => {
-        const result = snap.docs.map((document) => {
-          const noteData = document.data()
-          return {
-            ...noteData,
-            id: document.id,
-            isPinned: noteData.pinnedBy?.includes(user.uid),
-          } as TNoteResponse
-        })
-        setData(result)
-      })
+      unsubscribe = onSnapshot(
+        notesQuery,
+        (snap) => {
+          const result = snap.docs.map((document) => {
+            const noteData = document.data()
+            return {
+              ...noteData,
+              id: document.id,
+              isPinned: noteData.pinnedBy?.includes(user.uid),
+            } as TNoteResponse
+          })
+          setData(result)
+          setIsLoading(false)
+        },
+        () => {
+          setData([])
+          setIsLoading(false)
+        },
+      )
     }
 
     void listen()

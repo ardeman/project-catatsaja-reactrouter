@@ -1,17 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { MilkdownEditor } from '~/components/base/milkdown-editor'
-import { Modal } from '~/components/base/modal'
+import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Textarea } from '~/components/base/textarea'
 import { useNote } from '~/components/pages/notes'
 import { auth } from '~/lib/configs/firebase'
+import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateNote } from '~/lib/hooks/use-create-note'
-import { useDebounce } from '~/lib/hooks/use-debounce'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateNote } from '~/lib/hooks/use-update-note'
 import { TNoteForm } from '~/lib/types/note'
@@ -44,6 +44,7 @@ export const Form = (properties: TFormProperties) => {
   const canWrite = note?.permissions?.write.includes(userData?.uid || '')
   const isOwner = note?.owner === userData?.uid
   const isEditable = isOwner || canWrite
+  const isReadOnly = !!note && !isEditable
   const sharedCount = new Set(
     [
       ...(note?.permissions?.read || []),
@@ -60,50 +61,67 @@ export const Form = (properties: TFormProperties) => {
       title: selectedNote?.title || '',
       content: selectedNote?.content || '',
     },
+    // Changes saved elsewhere must not overwrite what is being typed.
+    resetOptions: { keepDirtyValues: true },
   })
   const {
-    handleSubmit,
     watch,
+    getValues,
     formState: { isDirty },
     setFocus,
   } = formMethods
   const watchTitle = watch('title')
   const watchContent = watch('content')
+  const syncEditor = useRef<(() => void) | null>(null)
+  const registerSync = useCallback((sync: (() => void) | null) => {
+    syncEditor.current = sync
+  }, [])
+  const isCreating = useRef(false)
+  const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
 
-  const [openBack, setOpenBack] = useState(false)
-
-  const handleBack = () => {
-    if (!selectedNote && isDirty) {
-      setOpenBack(true)
+  // Writes only what differs from the stored note, so it is safe to call at
+  // any time (autosave, leaving the page, the Save button).
+  const save = async () => {
+    if (isReadOnly) return
+    syncEditor.current?.()
+    const data = getValues()
+    if (selectedNote) {
+      const changes: Partial<TNoteForm> = {}
+      if (data.title !== (selectedNote.title || '')) changes.title = data.title
+      if (data.content !== (selectedNote.content || ''))
+        changes.content = data.content
+      if (Object.keys(changes).length === 0) return
+      setSaveStatus('saving')
+      const isSaved = await mutateUpdateNote({
+        id: selectedNote.id,
+        ...changes,
+      })
+      setSaveStatus(isSaved ? 'saved' : 'error')
       return
     }
-    handleBackNote()
+    if (isCreating.current || (!data.title && !data.content.trim())) return
+    isCreating.current = true
+    const reference = await mutateCreateNote(data)
+    isCreating.current = false
+    return reference
   }
 
-  const onSubmit = handleSubmit(async (data) => {
-    if ((data.title.length === 0 && data.content.length === 0) || !isDirty) {
-      return
-    }
-    if (selectedNote) {
-      mutateUpdateNote({ id: selectedNote.id, ...data })
-      return
-    }
-    const reference = await mutateCreateNote(data)
-    if (reference) {
-      navigate(`/notes/${reference.id}`)
-    }
-  })
+  const handleCreate = async (event: React.FormEvent) => {
+    event.preventDefault()
+    const reference = await save()
+    if (reference) navigate(`/notes/${reference.id}`, { replace: true })
+  }
 
-  useDebounce({
-    trigger: () => onSubmit(),
+  useAutosave({
+    save,
     watch: [watchTitle, watchContent],
-    condition: !!selectedNote,
+    saveWhenIdle: !!selectedNote,
   })
 
   return (
     <FormProvider {...formMethods}>
       <form
-        onSubmit={onSubmit}
+        onSubmit={handleCreate}
         className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
       >
         <div className="sticky top-20 z-50 flex justify-center md:top-24">
@@ -127,7 +145,7 @@ export const Form = (properties: TFormProperties) => {
               buttonClassName="supports-backdrop-filter:bg-accent/20 backdrop-blur-sm"
               isLoading={isCreatePending}
               isCreate={true}
-              handleBack={handleBack}
+              handleBack={handleBackNote}
               disabled={!isDirty}
             />
           )}
@@ -144,16 +162,19 @@ export const Form = (properties: TFormProperties) => {
               setFocus('content')
             }
           }}
-          readOnly={note && !isEditable}
+          readOnly={isReadOnly}
         />
         <MilkdownEditor
           key={selectedNote?.id ?? 'create'}
           name="content"
           placeholder={t('notes.form.content.label')}
           previousName="title"
+          readOnly={isReadOnly}
+          value={selectedNote?.content}
+          registerSync={registerSync}
         />
       </form>
-      <span className="flex justify-center text-xs text-muted-foreground">
+      <span className="flex justify-center gap-2 text-xs text-muted-foreground">
         <span>
           {dateLabel}{' '}
           {note &&
@@ -161,22 +182,8 @@ export const Form = (properties: TFormProperties) => {
               ? !isOwner && `(${t('form.permissions.shared')})`
               : `(${t('form.permissions.readOnly')})`)}
         </span>
+        <SaveStatus status={saveStatus} />
       </span>
-      <Modal
-        open={openBack}
-        setOpen={setOpenBack}
-        handleConfirm={handleBackNote}
-        variant="destructive"
-        title={
-          <Trans
-            i18nKey="form.back"
-            values={{ item: t('notes.title') }}
-            components={{ span: <span className="text-primary" /> }}
-          />
-        }
-      >
-        <></>
-      </Modal>
     </FormProvider>
   )
 }

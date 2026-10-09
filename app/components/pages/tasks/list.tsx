@@ -1,6 +1,7 @@
+import { ListTodo } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { Button } from '~/components/base/button'
+import { Collection } from '~/components/base/collection'
 import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
@@ -10,7 +11,6 @@ import {
   THandleSetPermission,
 } from '~/lib/types/common'
 import { TTaskPermissionRequest } from '~/lib/types/task'
-import { cn } from '~/lib/utils/shadcn'
 
 import { Card } from './card'
 import { useTask } from './context'
@@ -27,9 +27,7 @@ export const List = () => {
     setOpenShare,
     selectedTask,
   } = useTask()
-  const { data: tasksData } = useGetTasks()
-  const pinnedTasks = tasksData?.filter((task) => task.isPinned)
-  const regularTasks = tasksData?.filter((task) => !task.isPinned)
+  const { data: tasksData, isLoading } = useGetTasks()
   const { mutate: mutateShare } = useShareTask()
 
   const handleShare = (parameters: THandleSetPermission) => {
@@ -50,47 +48,29 @@ export const List = () => {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-      <Button
-        containerClassName="flex fixed bottom-4 md:top-16 z-50 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8 h-fit"
-        className="w-full backdrop-blur-sm hover:bg-primary supports-backdrop-filter:bg-primary/70"
-        onClick={handleCreateTask}
-      >
-        {t('tasks.add')}
-      </Button>
-      <div className="justify-left grid gap-x-4 sm:grid-cols-2 md:mt-16 lg:grid-cols-4 xl:grid-cols-6">
-        {pinnedTasks
-          ?.sort(
-            (a, b) =>
-              (b.updatedAt?.seconds || b.createdAt?.seconds || 0) -
-              (a.updatedAt?.seconds || a.createdAt?.seconds || 0),
+    <>
+      <Collection
+        items={tasksData}
+        isLoading={isLoading}
+        layout="masonry"
+        icon={ListTodo}
+        emptyTitle={t('tasks.empty.title')}
+        emptyDescription={t('tasks.empty.description')}
+        createLabel={t('tasks.add')}
+        onCreate={handleCreateTask}
+        getSearchText={(task) =>
+          [task.title, ...(task.content || []).map((item) => item.item)].join(
+            ' ',
           )
-          ?.map((task) => (
-            <Card
-              task={task}
-              key={task.id}
-            />
-          ))}
-      </div>
-      <div
-        className={cn(
-          'justify-left grid gap-x-4 pb-9 sm:grid-cols-2 md:pb-0 lg:grid-cols-4 xl:grid-cols-6',
+        }
+        renderCard={(task, className) => (
+          <Card
+            task={task}
+            key={task.id}
+            className={className}
+          />
         )}
-      >
-        {regularTasks
-          ?.sort(
-            (a, b) =>
-              (b.updatedAt?.seconds || b.createdAt?.seconds || 0) -
-              (a.updatedAt?.seconds || a.createdAt?.seconds || 0),
-          )
-          ?.map((task) => (
-            <Card
-              task={task}
-              key={task.id}
-            />
-          ))}
-      </div>
-
+      />
       <Modal
         open={openConfirmation}
         setOpen={setOpenConfirmation}
@@ -134,6 +114,6 @@ export const List = () => {
           handleUnshare={handleUnshare}
         />
       </Modal>
-    </div>
+    </>
   )
 }

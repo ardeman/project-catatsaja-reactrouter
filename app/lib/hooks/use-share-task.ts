@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { setTaskPermission } from '~/apis/firestore/task'
 import { TTaskPermissionRequest } from '~/lib/types/task'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { toast } from './use-toast'
 
@@ -16,7 +17,7 @@ export const useShareTask = () => {
       await setTaskPermission(data)
     } catch (error: unknown) {
       setIsError(true)
-      const message = String(error)
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,

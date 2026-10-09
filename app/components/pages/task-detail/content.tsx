@@ -72,7 +72,7 @@ export const Content = () => {
       variant: 'destructive',
       description: t('tasks.toast.notFound'),
     })
-    navigate('/tasks/create', { replace: true })
+    navigate('/tasks', { replace: true })
   }, [
     taskData,
     taskIsLoading,

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { Markdown } from '~/components/base/markdown'
@@ -20,13 +21,8 @@ import { TCardProperties } from './type'
 export const Card = (properties: TCardProperties) => {
   const { note, className } = properties
   const { t, i18n } = useTranslation()
-  const {
-    handleDeleteNote,
-    handlePinNote,
-    handleShareNote,
-    handleUnlinkNote,
-    handleOpenNote,
-  } = useNote()
+  const { handleDeleteNote, handlePinNote, handleShareNote, handleUnlinkNote } =
+    useNote()
   const { data: userData } = useUserData()
   const isPinned = note.isPinned
   const canWrite = note.permissions?.write?.includes(userData?.uid || '')
@@ -49,9 +45,8 @@ export const Card = (properties: TCardProperties) => {
     <UICard
       className={cn(
         className,
-        'group/card relative mb-4 w-full overflow-hidden sm:max-w-xs',
+        'group/card relative mb-4 w-full overflow-hidden pb-9 focus-within:ring-2 focus-within:ring-ring sm:w-80 sm:pb-0',
       )}
-      onClick={() => handleOpenNote(note)}
     >
       <Action
         className="absolute right-1 bottom-1 left-1 z-20"
@@ -73,7 +68,17 @@ export const Card = (properties: TCardProperties) => {
               : t('form.permissions.readOnly')}
           </span>
         </CardDescription>
-        {note.title && <CardTitle className="text-xl">{note.title}</CardTitle>}
+        <CardTitle className="text-xl">
+          {/* Covers the whole card; the action buttons sit above it. */}
+          <Link
+            to={`/notes/${note.id}`}
+            className="outline-hidden after:absolute after:inset-0 after:z-10"
+          >
+            {note.title || (
+              <span className="sr-only">{t('notes.untitled')}</span>
+            )}
+          </Link>
+        </CardTitle>
       </CardHeader>
       {note.content && (
         <CardContent className="max-h-96 overflow-hidden">

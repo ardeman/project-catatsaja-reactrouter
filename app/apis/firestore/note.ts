@@ -67,7 +67,6 @@ export const pinNote = async (data: TPinNoteRequest) => {
   const reference = doc(firestore, 'notes', note.id)
   return await updateDoc(reference, {
     pinnedBy: [...pinnedBy],
-    updatedAt: new Date(),
   })
 }
 
@@ -101,10 +100,7 @@ export const unlinkNote = async (note: TNoteResponse) => {
   }
 
   const reference = doc(firestore, 'notes', id)
-  return await updateDoc(reference, {
-    ...data,
-    updatedAt: new Date(),
-  })
+  return await updateDoc(reference, data)
 }
 
 export const setNotePermission = async (form: TNotePermissionRequest) => {
@@ -144,8 +140,5 @@ export const setNotePermission = async (form: TNotePermissionRequest) => {
       write: [...writePermission],
     },
   }
-  return await updateDoc(reference, {
-    ...data,
-    updatedAt: new Date(),
-  })
+  return await updateDoc(reference, data)
 }

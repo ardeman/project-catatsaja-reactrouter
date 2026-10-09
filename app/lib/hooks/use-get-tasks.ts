@@ -33,17 +33,25 @@ export const useGetTasks = () => {
         where(new FieldPath('permissions', 'read'), 'array-contains', user.uid),
       )
 
-      unsubscribe = onSnapshot(tasksQuery, (snap) => {
-        const result = snap.docs.map((document) => {
-          const taskData = document.data()
-          return {
-            ...taskData,
-            id: document.id,
-            isPinned: taskData.pinnedBy?.includes(user.uid),
-          } as TTaskResponse
-        })
-        setData(result)
-      })
+      unsubscribe = onSnapshot(
+        tasksQuery,
+        (snap) => {
+          const result = snap.docs.map((document) => {
+            const taskData = document.data()
+            return {
+              ...taskData,
+              id: document.id,
+              isPinned: taskData.pinnedBy?.includes(user.uid),
+            } as TTaskResponse
+          })
+          setData(result)
+          setIsLoading(false)
+        },
+        () => {
+          setData([])
+          setIsLoading(false)
+        },
+      )
     }
 
     void listen()

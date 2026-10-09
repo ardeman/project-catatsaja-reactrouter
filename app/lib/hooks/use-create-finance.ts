@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { createFinance } from '~/apis/firestore/finance'
 import { TCreateFinanceRequest } from '~/lib/types/finance'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { toast } from './use-toast'
 
@@ -22,7 +23,7 @@ export const useCreateFinance = () => {
       return reference
     } catch (error: unknown) {
       setIsError(true)
-      const message = String(error)
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,

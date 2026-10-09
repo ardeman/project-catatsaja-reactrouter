@@ -8,7 +8,9 @@ export type TTaskForm = z.infer<ReturnType<typeof taskSchema>>
 
 export type TCreateTaskRequest = Omit<TTaskForm, 'item'>
 
-export type TUpdateTaskRequest = { id: string } & Omit<TTaskForm, 'item'>
+export type TUpdateTaskRequest = { id: string } & Partial<
+  Omit<TTaskForm, 'item'>
+>
 
 export type TPinTaskRequest = { task: TTaskResponse; isPinned: boolean }
 

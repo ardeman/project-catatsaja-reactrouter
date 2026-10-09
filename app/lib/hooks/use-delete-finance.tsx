@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { deleteFinance } from '~/apis/firestore/finance'
 import { ToastAction } from '~/components/ui/toast'
 import { TFinanceResponse } from '~/lib/types/finance'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { useCreateFinance } from './use-create-finance'
 import { toast } from './use-toast'
@@ -30,7 +31,7 @@ export const useDeleteFinance = () => {
         ),
       })
     } catch (error: unknown) {
-      const message = String(error)
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,

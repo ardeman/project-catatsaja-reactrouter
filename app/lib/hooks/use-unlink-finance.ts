@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { unlinkFinance } from '~/apis/firestore/finance'
 import { TFinanceResponse } from '~/lib/types/finance'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { toast } from './use-toast'
 
@@ -21,7 +22,7 @@ export const useUnlinkFinance = () => {
       })
     } catch (error: unknown) {
       setIsError(true)
-      const message = String(error)
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,

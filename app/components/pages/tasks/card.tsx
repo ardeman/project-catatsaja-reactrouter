@@ -1,4 +1,6 @@
+import { Circle, CircleCheck } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import {
@@ -8,8 +10,6 @@ import {
   CardTitle,
   CardContent,
 } from '~/components/ui/card'
-import { Checkbox } from '~/components/ui/checkbox'
-import { Label } from '~/components/ui/label'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -21,13 +21,8 @@ import { TCardProperties } from './type'
 export const Card = (properties: TCardProperties) => {
   const { task, className } = properties
   const { t, i18n } = useTranslation()
-  const {
-    handleDeleteTask,
-    handlePinTask,
-    handleShareTask,
-    handleUnlinkTask,
-    handleOpenTask,
-  } = useTask()
+  const { handleDeleteTask, handlePinTask, handleShareTask, handleUnlinkTask } =
+    useTask()
   const { data: userData } = useUserData()
   const isPinned = task.isPinned
   const canWrite = task.permissions?.write?.includes(userData?.uid || '')
@@ -39,6 +34,10 @@ export const Card = (properties: TCardProperties) => {
     t,
     locale: i18n.language,
   })
+  const preview = [
+    ...(task.content || []).filter((item) => !item.checked),
+    ...(task.content || []).filter((item) => item.checked),
+  ].slice(0, 3)
   const sharedCount = new Set(
     [
       ...(task.permissions?.read || []),
@@ -48,11 +47,13 @@ export const Card = (properties: TCardProperties) => {
 
   return (
     <UICard
-      className={cn(className, 'group/card relative mb-4 w-full')}
-      onClick={() => handleOpenTask(task)}
+      className={cn(
+        className,
+        'group/card relative mb-4 w-full overflow-hidden pb-9 focus-within:ring-2 focus-within:ring-ring sm:w-80 sm:pb-0',
+      )}
     >
       <Action
-        className="absolute right-1 bottom-1 left-1"
+        className="absolute right-1 bottom-1 left-1 z-20"
         isOwner={isOwner}
         isEditable={isEditable}
         isPinned={isPinned}
@@ -71,40 +72,52 @@ export const Card = (properties: TCardProperties) => {
               : t('form.permissions.readOnly')}
           </span>
         </CardDescription>
-        {task.title && <CardTitle className="text-xl">{task.title}</CardTitle>}
+        <CardTitle className="text-xl">
+          {/* Covers the whole card; the action buttons sit above it. */}
+          <Link
+            to={`/tasks/${task.id}`}
+            className="outline-hidden after:absolute after:inset-0 after:z-10"
+          >
+            {task.title || (
+              <span className="sr-only">{t('tasks.untitled')}</span>
+            )}
+          </Link>
+        </CardTitle>
       </CardHeader>
-      {task.content && (
-        <CardContent className="flex flex-col gap-1">
-          {task.content
-            .filter((_, index) => index < 2)
-            .map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2"
+      {task.content && task.content.length > 0 && (
+        <CardContent className="flex flex-col gap-1 sm:pb-8">
+          {preview.map((item, index) => (
+            <div
+              key={index}
+              className="flex items-start gap-2 text-sm"
+            >
+              {item.checked ? (
+                <CircleCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+              ) : (
+                <Circle className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+              )}
+              <span
+                className={cn(
+                  'line-clamp-2 wrap-break-word',
+                  item.checked && 'text-muted-foreground line-through',
+                )}
               >
-                <Checkbox checked={item.checked} />
-                <Label
-                  className={cn(
-                    item.checked === true
-                      ? 'italic line-through opacity-50'
-                      : '',
-                  )}
-                >
-                  {item.item}
-                </Label>
-              </div>
-            ))}
-          {task.content.length > 2 && (
-            <div className="ml-6 text-xs">
-              {t('tasks.more', { number: task.content.length - 2 })}
+                {item.item}
+              </span>
+            </div>
+          ))}
+          {task.content.length > preview.length && (
+            <div className="ml-6 text-xs text-muted-foreground">
+              {t('tasks.more', {
+                number: task.content.length - preview.length,
+              })}
             </div>
           )}
-          <div className="text-xs opacity-50">
-            (
-            <span className="text-primary">
-              {task.content.filter((item) => item.checked === true).length}
-            </span>
-            /{task.content.length})
+          <div className="text-xs text-muted-foreground">
+            {t('tasks.progress', {
+              done: task.content.filter((item) => item.checked).length,
+              total: task.content.length,
+            })}
           </div>
         </CardContent>
       )}

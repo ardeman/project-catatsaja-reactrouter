@@ -1,11 +1,10 @@
-import { FirebaseError } from 'firebase/app'
 import { GoogleAuthProvider, linkWithPopup } from 'firebase/auth'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRevalidator } from 'react-router'
 
 import { auth } from '~/lib/configs/firebase'
-import { authError } from '~/lib/constants/firebase'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { toast } from './use-toast'
 
@@ -32,12 +31,7 @@ export const useLinkGoogle = () => {
       revalidate()
     } catch (error: unknown) {
       setIsError(true)
-      let message = String(error)
-      if (error instanceof FirebaseError) {
-        message =
-          authError.find((item) => item.code === error.code)?.message ||
-          error.message
-      }
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,

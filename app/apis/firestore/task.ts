@@ -67,7 +67,6 @@ export const pinTask = async (data: TPinTaskRequest) => {
   const reference = doc(firestore, 'tasks', task.id)
   return await updateDoc(reference, {
     pinnedBy: [...pinnedBy],
-    updatedAt: new Date(),
   })
 }
 
@@ -101,10 +100,7 @@ export const unlinkTask = async (task: TTaskResponse) => {
   }
 
   const reference = doc(firestore, 'tasks', id)
-  return await updateDoc(reference, {
-    ...data,
-    updatedAt: new Date(),
-  })
+  return await updateDoc(reference, data)
 }
 
 export const setTaskPermission = async (form: TTaskPermissionRequest) => {
@@ -144,8 +140,5 @@ export const setTaskPermission = async (form: TTaskPermissionRequest) => {
       write: [...writePermission],
     },
   }
-  return await updateDoc(reference, {
-    ...data,
-    updatedAt: new Date(),
-  })
+  return await updateDoc(reference, data)
 }

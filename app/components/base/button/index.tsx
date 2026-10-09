@@ -15,6 +15,8 @@ export const Button = (properties: TButtonProperties) => {
     onClick,
     containerClassName,
     variant,
+    as: _as,
+    ...rest
   } = properties
   return (
     <div className={cn(containerClassName, 'grid gap-1')}>
@@ -24,6 +26,7 @@ export const Button = (properties: TButtonProperties) => {
         type={type}
         className={cn(className, 'flex items-center justify-center gap-2')}
         disabled={disabled}
+        {...rest}
       >
         <Loader2 className={isLoading ? 'animate-spin' : 'hidden'} />
         {!isLoading && children}

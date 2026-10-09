@@ -16,6 +16,7 @@ import {
   THandleSetPermission,
 } from '~/lib/types/common'
 import { TNotePermissionRequest } from '~/lib/types/note'
+import { toPlainText } from '~/lib/utils/parser'
 
 import { Form } from './form'
 
@@ -72,7 +73,7 @@ export const Content = () => {
       variant: 'destructive',
       description: t('notes.toast.notFound'),
     })
-    navigate('/notes/create', { replace: true })
+    navigate('/notes', { replace: true })
   }, [
     noteData,
     noteIsLoading,
@@ -130,7 +131,9 @@ export const Content = () => {
           <p className="text-xl">{selectedConfirmation.detail.title}</p>
         )}
         {selectedConfirmation?.detail.content && (
-          <p>{selectedConfirmation.detail.content}</p>
+          <p className="line-clamp-3 text-muted-foreground">
+            {toPlainText(selectedConfirmation.detail.content)}
+          </p>
         )}
       </Modal>
       <Modal

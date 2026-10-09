@@ -1,6 +1,6 @@
 import {
   ArrowLeft,
-  Eye,
+  EyeOff,
   Forward,
   Pin,
   Save,
@@ -8,6 +8,7 @@ import {
   Users,
   ListChecks,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
 import { TActionProperties } from '~/lib/types/common'
@@ -32,8 +33,9 @@ export const Action = (properties: TActionProperties) => {
     checkedAll,
     buttonClassName: buttonClassNameProperty,
   } = properties
+  const { t } = useTranslation()
   const buttonClassName = cn(
-    'h-5 w-full rounded-full bg-accent p-0 text-muted-foreground opacity-100 ring-offset-background transition-all duration-300 group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none sm:opacity-0',
+    'h-8 w-full rounded-full bg-accent p-0 text-muted-foreground opacity-100 ring-offset-background transition-all duration-300 group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none sm:h-6 sm:opacity-0',
     buttonClassNameProperty,
   )
 
@@ -42,6 +44,8 @@ export const Action = (properties: TActionProperties) => {
       {handleBack && (
         <Button
           variant="outline"
+          aria-label={t('actions.back')}
+          title={t('actions.back')}
           onClick={(event) => {
             event.stopPropagation()
             handleBack()
@@ -55,6 +59,8 @@ export const Action = (properties: TActionProperties) => {
       {isOwner && handleDelete && (
         <Button
           variant="outline"
+          aria-label={t('actions.delete')}
+          title={t('actions.delete')}
           onClick={(event) => {
             event.stopPropagation()
             handleDelete()
@@ -71,6 +77,8 @@ export const Action = (properties: TActionProperties) => {
       {!isOwner && handleUnlink && (
         <Button
           variant="outline"
+          aria-label={t('actions.unlink')}
+          title={t('actions.unlink')}
           onClick={(event) => {
             event.stopPropagation()
             handleUnlink()
@@ -81,12 +89,22 @@ export const Action = (properties: TActionProperties) => {
             'text-destructive hover:bg-destructive',
           )}
         >
-          <Eye />
+          <EyeOff />
         </Button>
       )}
       {isOwner && isEditable && handleShare && (
         <Button
           variant="outline"
+          aria-label={
+            sharedCount
+              ? t('actions.sharedWith', { count: sharedCount })
+              : t('actions.share')
+          }
+          title={
+            sharedCount
+              ? t('actions.sharedWith', { count: sharedCount })
+              : t('actions.share')
+          }
           onClick={(event) => {
             event.stopPropagation()
             handleShare()
@@ -107,6 +125,10 @@ export const Action = (properties: TActionProperties) => {
       {handleToggleCheckAll && (
         <Button
           variant="outline"
+          aria-label={
+            checkedAll ? t('actions.uncheckAll') : t('actions.checkAll')
+          }
+          title={checkedAll ? t('actions.uncheckAll') : t('actions.checkAll')}
           onClick={(event) => {
             event.stopPropagation()
             handleToggleCheckAll()
@@ -129,16 +151,20 @@ export const Action = (properties: TActionProperties) => {
           containerClassName="flex-1 flex items-center"
           className={buttonClassName}
           type="submit"
+          aria-label={t('actions.save')}
+          title={t('actions.save')}
           isLoading={isLoading}
           disabled={isLoading || disabled}
         >
           <Save />
-          <span className="sr-only">Submit</span>
         </Button>
       )}
       {handlePin && (
         <Button
           variant="outline"
+          aria-label={isPinned ? t('actions.unpin') : t('actions.pin')}
+          title={isPinned ? t('actions.unpin') : t('actions.pin')}
+          aria-pressed={!!isPinned}
           onClick={(event) => {
             event.stopPropagation()
             handlePin()

@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { pinNote } from '~/apis/firestore/note'
 import { TPinNoteRequest } from '~/lib/types/note'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { toast } from './use-toast'
 
@@ -16,7 +17,7 @@ export const usePinNote = () => {
       await pinNote(data)
     } catch (error: unknown) {
       setIsError(true)
-      const message = String(error)
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,

@@ -1,5 +1,6 @@
 import { type VariantProps } from 'class-variance-authority'
 import {
+  AriaAttributes,
   ElementType,
   HTMLAttributes,
   MouseEventHandler,
@@ -18,4 +19,5 @@ export type TButtonProperties<T extends ElementType = 'button'> = {
   isLoading?: boolean
   as?: T
   variant?: VariantProps<typeof variantClassName>['variant']
-}
+  title?: string
+} & AriaAttributes

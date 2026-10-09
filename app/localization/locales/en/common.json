@@ -30,17 +30,25 @@
     "confirm": "Confirm",
     "undo": "Undo",
     "openPage": "Open Page",
-    "back": "Discard this <span>{{item}}</span>?",
     "yes": "Yes",
     "no": "No",
     "permissions": {
       "select": "Choose permissions",
       "readOnly": "Read only",
       "write": "Read and write",
-      "shared": "Shared"
+      "shared": "Shared",
+      "remove": "Remove {{email}}",
+      "removed": "{{email}} no longer has access"
     },
     "user": {
       "placeholder": "Enter user email"
+    },
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied",
+    "status": {
+      "saving": "Saving…",
+      "saved": "Saved",
+      "error": "Couldn't save"
     }
   },
   "toast": {
@@ -131,6 +139,11 @@
       "created": "Note created successfully",
       "unlinked": "Note unlinked successfully",
       "notFound": "Note not found or you don't have access"
+    },
+    "untitled": "Untitled note",
+    "empty": {
+      "title": "No notes yet",
+      "description": "Write down ideas, plans or anything you want to remember."
     }
   },
   "tasks": {
@@ -143,6 +156,9 @@
       },
       "placeholder": {
         "label": "Add Item"
+      },
+      "item": {
+        "label": "Item"
       }
     },
     "toast": {
@@ -150,6 +166,13 @@
       "created": "Task created successfully",
       "unlinked": "Task unlinked successfully",
       "notFound": "Task not found or you don't have access"
+    },
+    "untitled": "Untitled list",
+    "completed": "Completed ({{count}} of {{total}})",
+    "progress": "{{done}} of {{total}} done",
+    "empty": {
+      "title": "No tasks yet",
+      "description": "Make a checklist for shopping, chores or anything with steps."
     }
   },
   "finances": {
@@ -273,7 +296,7 @@
   },
   "privacyPolicy": {
     "paragraph1": "We collect the email address you provide when signing in. This information is used only to authenticate you and to store your notes, tasks, and financial entries.",
-    "paragraph2": "Your content is saved in Google\u2019s Firebase services and is subject to Google\u2019s security and privacy practices. We never sell or share your personal data with other parties.",
+    "paragraph2": "Your content is saved in Google’s Firebase services and is subject to Google’s security and privacy practices. We never sell or share your personal data with other parties.",
     "paragraph3": "Aggregated, anonymous analytics may be used to improve the application. Contact us at any time if you wish to remove your account and associated data."
   },
   "termsOfService": {
@@ -471,5 +494,48 @@
   "notFound": {
     "title": "Page Not Found",
     "description": "Sorry, the page you are looking for does not exist."
+  },
+  "errors": {
+    "permissionDenied": "You don't have permission to do that.",
+    "notFound": "It no longer exists.",
+    "offline": "Can't reach the server. Check your connection and try again.",
+    "tooManyRequests": "Too many attempts. Wait a moment and try again.",
+    "invalidCredential": "The email or password is incorrect.",
+    "invalidEmail": "That email address is not valid.",
+    "emailInUse": "An account with this email already exists. Sign in instead.",
+    "weakPassword": "Choose a stronger password.",
+    "recentLogin": "Please sign in again to do this.",
+    "popupClosed": "The sign-in window was closed before finishing.",
+    "credentialInUse": "This account is already linked to another user.",
+    "unknown": "Something went wrong. Please try again."
+  },
+  "actions": {
+    "back": "Back",
+    "delete": "Delete",
+    "deleteItem": "Delete item",
+    "unlink": "Remove from my list",
+    "share": "Share",
+    "sharedWith_one": "Shared with {{count}} person",
+    "sharedWith_other": "Shared with {{count}} people",
+    "checkAll": "Check all",
+    "uncheckAll": "Uncheck all",
+    "save": "Save",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
+  },
+  "collection": {
+    "pinned": "Pinned",
+    "others": "Others"
+  },
+  "search": {
+    "results_one": "{{count}} result for “{{query}}”",
+    "results_other": "{{count}} results for “{{query}}”",
+    "clear": "Clear search",
+    "empty": {
+      "title": "Nothing found",
+      "description": "Try a different word, or clear the search."
+    }
   }
 }

@@ -12,6 +12,15 @@ export const extractPathSegment = (path: string) => {
   return desiredSegment
 }
 
+// A short plain-text preview of Markdown, for confirmations and search.
+export const toPlainText = (markdown: string) =>
+  markdown
+    .replaceAll(/!?\[([^\]]*)\]\([^)]*\)/g, '$1') // links and images
+    .replaceAll(/^\s{0,3}(#{1,6}|>|[-*+]|\d+\.)\s+/gm, '') // headings, quotes, lists
+    .replaceAll(/[*_~`]+/g, '') // emphasis and code marks
+    .replaceAll(/\s+/g, ' ')
+    .trim()
+
 export const getRandomIndex = ({
   arrayLength,
   currentIndex,

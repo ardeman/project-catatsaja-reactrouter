@@ -30,17 +30,25 @@
     "confirm": "Iya",
     "undo": "Batal",
     "openPage": "Buka Halaman",
-    "back": "Batalkan <span>{{item}}</span> ini?",
     "yes": "Ya",
     "no": "Tidak",
     "permissions": {
       "select": "Pilih izin",
       "readOnly": "Hanya baca",
       "write": "Baca dan tulis",
-      "shared": "Dibagikan"
+      "shared": "Dibagikan",
+      "remove": "Hapus {{email}}",
+      "removed": "{{email}} tidak lagi punya akses"
     },
     "user": {
       "placeholder": "Masukkan email pengguna"
+    },
+    "copyLink": "Salin tautan",
+    "linkCopied": "Tautan disalin",
+    "status": {
+      "saving": "Menyimpan…",
+      "saved": "Tersimpan",
+      "error": "Gagal menyimpan"
     }
   },
   "toast": {
@@ -131,6 +139,11 @@
       "created": "Catatan berhasil dibuat",
       "unlinked": "Catatan berhasil diputuskan",
       "notFound": "Catatan tidak ditemukan atau Anda tidak memiliki akses"
+    },
+    "untitled": "Catatan tanpa judul",
+    "empty": {
+      "title": "Belum ada catatan",
+      "description": "Tulis ide, rencana, atau apa saja yang ingin kamu ingat."
     }
   },
   "tasks": {
@@ -143,6 +156,9 @@
       },
       "placeholder": {
         "label": "Tambah Item"
+      },
+      "item": {
+        "label": "Item"
       }
     },
     "toast": {
@@ -150,6 +166,13 @@
       "created": "Tugas berhasil dibuat",
       "unlinked": "Tugas berhasil diputuskan",
       "notFound": "Tugas tidak ditemukan atau Anda tidak memiliki akses"
+    },
+    "untitled": "Daftar tanpa judul",
+    "completed": "Selesai ({{count}} dari {{total}})",
+    "progress": "{{done}} dari {{total}} selesai",
+    "empty": {
+      "title": "Belum ada tugas",
+      "description": "Buat daftar belanja, pekerjaan rumah, atau apa saja yang punya langkah."
     }
   },
   "finances": {
@@ -471,5 +494,48 @@
   "notFound": {
     "title": "Halaman Tidak Ditemukan",
     "description": "Maaf, halaman yang Anda cari tidak ditemukan."
+  },
+  "errors": {
+    "permissionDenied": "Kamu tidak punya izin untuk melakukan itu.",
+    "notFound": "Data ini sudah tidak ada.",
+    "offline": "Tidak bisa terhubung ke server. Periksa koneksi lalu coba lagi.",
+    "tooManyRequests": "Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.",
+    "invalidCredential": "Email atau kata sandi salah.",
+    "invalidEmail": "Alamat email tidak valid.",
+    "emailInUse": "Akun dengan email ini sudah ada. Silakan masuk.",
+    "weakPassword": "Pilih kata sandi yang lebih kuat.",
+    "recentLogin": "Silakan masuk lagi untuk melakukan ini.",
+    "popupClosed": "Jendela masuk ditutup sebelum selesai.",
+    "credentialInUse": "Akun ini sudah terhubung dengan pengguna lain.",
+    "unknown": "Terjadi kesalahan. Silakan coba lagi."
+  },
+  "actions": {
+    "back": "Kembali",
+    "delete": "Hapus",
+    "deleteItem": "Hapus item",
+    "unlink": "Hapus dari daftar saya",
+    "share": "Bagikan",
+    "sharedWith_other": "Dibagikan dengan {{count}} orang",
+    "checkAll": "Centang semua",
+    "uncheckAll": "Hapus semua centang",
+    "save": "Simpan",
+    "pin": "Sematkan",
+    "unpin": "Lepas sematan",
+    "moveUp": "Pindah ke atas",
+    "moveDown": "Pindah ke bawah",
+    "sharedWith_one": "Dibagikan dengan {{count}} orang"
+  },
+  "collection": {
+    "pinned": "Disematkan",
+    "others": "Lainnya"
+  },
+  "search": {
+    "results_other": "{{count}} hasil untuk “{{query}}”",
+    "clear": "Hapus pencarian",
+    "empty": {
+      "title": "Tidak ditemukan",
+      "description": "Coba kata lain, atau hapus pencarian."
+    },
+    "results_one": "{{count}} hasil untuk “{{query}}”"
   }
 }

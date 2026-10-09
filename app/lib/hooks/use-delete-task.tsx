@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { deleteTask } from '~/apis/firestore/task'
 import { ToastAction } from '~/components/ui/toast'
 import { TTaskResponse } from '~/lib/types/task'
+import { getErrorMessage } from '~/lib/utils/firebase-error'
 
 import { useCreateTask } from './use-create-task'
 import { toast } from './use-toast'
@@ -30,7 +31,7 @@ export const useDeleteTask = () => {
         ),
       })
     } catch (error: unknown) {
-      const message = String(error)
+      const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,
