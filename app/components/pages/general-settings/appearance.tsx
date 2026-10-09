@@ -23,7 +23,8 @@ import { supportedLanguages } from '~/localization/resource'
 
 export const Appearance = () => {
   const { t, i18n } = useTranslation()
-  const { theme, size } = useTheme()
+  const { theme, size, setTheme, setSize, previewTheme, previewSize } =
+    useTheme()
   const { mutate, isPending } = useUpdateAppearance()
   const { data: userData } = useUserData()
 
@@ -40,28 +41,23 @@ export const Appearance = () => {
   const watchLanguage = watch('language')
   const watchSize = watch('size')
 
+  // Preview the choice (page and status bar) before it is saved; leaving
+  // the page without saving goes back to the saved theme and size.
   useEffect(() => {
-    const root = document.documentElement
-    root.classList.remove('light', 'dark')
-    const value = watchTheme
-    if (value === 'system') {
-      const systemTheme = globalThis.matchMedia('(prefers-color-scheme: dark)')
-        .matches
-        ? 'dark'
-        : 'light'
-      root.classList.add(systemTheme)
-    } else {
-      root.classList.add(value)
-    }
-  }, [watchTheme])
+    previewTheme(watchTheme)
+  }, [watchTheme, previewTheme])
 
   useEffect(() => {
-    const root = document.documentElement
-    let value = '100%'
-    if (watchSize === 'small') value = '87.5%'
-    else if (watchSize === 'large') value = '112.5%'
-    root.style.setProperty('--base-size', value)
-  }, [watchSize])
+    previewSize(watchSize)
+  }, [watchSize, previewSize])
+
+  useEffect(
+    () => () => {
+      previewTheme()
+      previewSize()
+    },
+    [previewTheme, previewSize],
+  )
 
   useEffect(() => {
     if (watchLanguage && i18n.language !== watchLanguage)
@@ -69,7 +65,12 @@ export const Appearance = () => {
   }, [watchLanguage, i18n])
 
   const onSubmit = handleSubmit(async (data) => {
-    await mutate(data)
+    const isSaved = await mutate(data)
+    // Apply right away instead of waiting for the profile to reload.
+    if (isSaved) {
+      setTheme(data.theme)
+      setSize(data.size)
+    }
   })
 
   return (

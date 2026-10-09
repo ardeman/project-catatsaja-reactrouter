@@ -26,6 +26,7 @@ export const useUpdateAppearance = () => {
       })
       setIsSuccess(true)
       revalidate()
+      return true
     } catch (error: unknown) {
       setIsError(true)
       const message = getErrorMessage(error)
@@ -33,6 +34,7 @@ export const useUpdateAppearance = () => {
         variant: 'destructive',
         description: message,
       })
+      return false
     } finally {
       setIsPending(false)
     }

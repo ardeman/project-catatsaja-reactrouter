@@ -20,8 +20,8 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
-          en: 'The status bar and window bar now follow the theme you pick in the app, not only your device setting.',
-          id: 'Bar status dan bar jendela kini mengikuti tema yang kamu pilih di aplikasi, bukan hanya pengaturan perangkat.',
+          en: 'The status bar and window bar now follow the theme you pick in the app, not only your device setting. Choosing a theme in the settings shows it right away, and leaving without saving goes back to your saved theme.',
+          id: 'Bar status dan bar jendela kini mengikuti tema yang kamu pilih di aplikasi, bukan hanya pengaturan perangkat. Memilih tema di pengaturan langsung terlihat, dan keluar tanpa menyimpan akan kembali ke tema tersimpan.',
         },
       },
       {
