@@ -589,5 +589,14 @@
         "items": ["Milk", "Eggs", "Bread", "Coffee beans"]
       }
     }
+  },
+  "changelog": {
+    "description": "New features, improvements and fixes.",
+    "fullHistory": "Full development history on GitHub",
+    "kind": {
+      "new": "New",
+      "improved": "Improved",
+      "fixed": "Fixed"
+    }
   }
 }

@@ -14,7 +14,7 @@ export const userMenus = (t: TFunction): TMenu[] => [
   },
   {
     name: t('navigation.changelog'),
-    href: `https://github.com/${githubUser}/${githubRepo}/commits/main/`,
+    href: '/changelog',
   },
 ]
 

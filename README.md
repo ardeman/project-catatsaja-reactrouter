@@ -35,7 +35,7 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
 - **Landing page:** what the app does, with previews of a note and a checklist, in both languages and themes; signed-in visitors go straight to their notes.
-- **App:** installable web app (manifest and icons), about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
+- **App:** installable web app (manifest and icons), a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
 
 ## Roadmap
 
@@ -62,7 +62,7 @@ Notes, tasks, sharing, accounts and currency settings are done and live. **Finan
 
 ## Tech stack
 
-The app is a single-page app (`ssr: false`) on Firebase Auth and Cloud Firestore, hosted on Firebase Hosting. The public pages (landing, about, privacy, terms) are also rendered to HTML at build time (`prerender` in `react-router.config.ts`) so search engines and link previews can read them.
+The app is a single-page app (`ssr: false`) on Firebase Auth and Cloud Firestore, hosted on Firebase Hosting. The public pages (landing, about, privacy, terms, changelog) are also rendered to HTML at build time (`prerender` in `react-router.config.ts`) so search engines and link previews can read them.
 
 | Item             | Value                                                                 |
 | ---------------- | --------------------------------------------------------------------- |
@@ -165,6 +165,7 @@ app/
     types/            Request/response types per domain
     validations/      zod schemas per domain
     utils/            Environment, parsers, auth helpers, cn()
+  content/            changelog.ts: release notes for /changelog, in both languages
   localization/       i18next setup; locales/<en|id>/common.json and zod.json
   styles/             tailwind.css (Tailwind 4 config: theme, plugins, colours), Milkdown editor theme
 public/               Icons and site.webmanifest (generated)

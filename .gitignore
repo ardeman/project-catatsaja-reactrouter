@@ -7,3 +7,7 @@
 /build/
 
 /public/site.webmanifest
+
+# Firebase CLI / emulator logs
+firebase-debug.log
+*-debug.log

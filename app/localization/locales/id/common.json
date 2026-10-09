@@ -589,5 +589,14 @@
         "items": ["Susu", "Telur", "Roti", "Biji kopi"]
       }
     }
+  },
+  "changelog": {
+    "description": "Fitur baru, peningkatan, dan perbaikan.",
+    "fullHistory": "Riwayat pengembangan lengkap di GitHub",
+    "kind": {
+      "new": "Baru",
+      "improved": "Lebih baik",
+      "fixed": "Diperbaiki"
+    }
   }
 }

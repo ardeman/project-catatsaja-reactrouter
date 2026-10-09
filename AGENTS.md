@@ -28,6 +28,7 @@ A change is done only when the **Checks** command in `README.md` passes. If you 
 - Tailwind 4 is configured in CSS only: theme, plugins and the `dark` variant live in `app/styles/tailwind.css`. Don't add a `tailwind.config.*` or `postcss.config.*`. Other CSS files that use theme values start with `@reference './tailwind.css'` and use `--theme(...)`.
 - Tailwind 4's `space-y-*` adds a bottom margin, which does nothing on an inline element such as a `<label>`. For a stack that starts with a label, use `[&>:not([hidden])~:not([hidden])]:mt-*` (the v3 rule, as in `app/components/base/input/`); elsewhere prefer `flex`/`grid` with `gap-*`.
 - User-facing text goes in both `app/localization/locales/en/` and `id/` (`common.json`, validation messages in `zod.json`); never hardcode strings.
+- When a change people can notice is released, add it to `app/content/changelog.ts` in both languages: plain words about what changed for them, tagged new, improved or fixed. Group changes released together under one date.
 - Read environment variables only through `app/lib/utils/environment.ts`.
 - Public pages (`publicPages` in `app/lib/configs/page.ts`, and `prerender` in `react-router.config.ts`) are rendered at build time in English and must not wait for Firebase Auth or touch browser APIs (`window`, `localStorage`, `document`) while rendering; do that in effects. A new public page goes in both lists.
 
