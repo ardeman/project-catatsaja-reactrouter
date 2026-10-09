@@ -32,6 +32,7 @@ A change is done only when the **Checks** command in `README.md` passes. If you 
 - Read environment variables only through `app/lib/utils/environment.ts`.
 - Public pages (`publicPages` in `app/lib/configs/page.ts`, and `prerender` in `react-router.config.ts`) are rendered at build time in English and must not wait for Firebase Auth or touch browser APIs (`window`, `localStorage`, `document`) while rendering; do that in effects. A new public page goes in both lists and in `PUBLIC_PAGES` in `public/sw.js`.
 - `public/sw.js` must never serve an outdated app while online: pages stay network-first, and it leaves cross-origin requests (Firebase, Firestore) alone. When you change what it caches or how, bump the cache names (`pages-v1`, `assets-v1`) so old caches are dropped.
+- The installed app never shows the landing page: the inline script in `app/components/layouts/root/index.tsx` leaves `/` before the first paint, and `middleware` redirects in-app visits to it (`isStandalone`).
 - Installing: the manifest comes from `scripts/generate-manifest.mjs` (run by `pnpm build`); app-wide meta tags come from `withAppMeta` (`app/lib/constants/metadata.ts`), which a route with its own `meta` must use.
 
 ## Guardrails

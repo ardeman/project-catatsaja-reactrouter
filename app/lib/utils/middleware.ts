@@ -8,10 +8,12 @@ type TProperties = {
   navigate: NavigateFunction
   location: Location
   user?: User | null
+  // Running as the installed app: the landing page is not part of it.
+  isStandalone?: boolean
 }
 
 export const middleware = (properties: TProperties) => {
-  const { navigate, location, user } = properties
+  const { navigate, location, user, isStandalone } = properties
   const { pathname, search } = location
   const extractedPath = extractPathSegment(pathname)
 
@@ -19,12 +21,16 @@ export const middleware = (properties: TProperties) => {
     const url = `/auth/sign-in?redirect=${encodeURIComponent(
       pathname + search,
     )}`
-    return navigate(url)
+    return navigate(url, { replace: true })
+  }
+
+  if (isStandalone && pathname === '/' && !user) {
+    return navigate('/auth/sign-in', { replace: true })
   }
 
   if (authPages.has(extractedPath) && user) {
     const redirect = new URLSearchParams(search).get('redirect')
     const url = redirect || '/notes'
-    return navigate(url)
+    return navigate(url, { replace: true })
   }
 }

@@ -14,12 +14,20 @@ import { Toaster } from '~/components/ui/toaster'
 import { publicPages } from '~/lib/configs/page'
 import { useFirebase } from '~/lib/contexts/firebase'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
+import { useIsStandalone } from '~/lib/hooks/use-install-app'
 import { middleware } from '~/lib/utils/middleware'
 
-// Applies the saved theme and text size before the first paint, so pages
-// rendered at build time (the landing page) don't flash the wrong theme.
+// Runs before the first paint: the installed app skips the landing page, and
+// the saved theme and text size are applied so pages rendered at build time
+// (the landing page) don't flash the wrong theme.
 const themeScript = `(() => {
   try {
+    // The installed app has no landing page: leave it before it paints.
+    const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true
+    if (installed && location.pathname === '/') {
+      location.replace('/notes')
+      return
+    }
     const theme = localStorage.getItem('vite-ui-theme') || 'system'
     const dark = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
     document.documentElement.classList.add(dark ? 'dark' : 'light')
@@ -36,11 +44,15 @@ export const Rootlayout = (properties: PropsWithChildren) => {
   const { data: user, isLoading: userIsLoading } = useAuthUser()
   const navigate = useNavigate()
   const { i18n } = useTranslation()
+  const isStandalone = useIsStandalone()
+  const path = location.pathname.replace(/(.)\/+$/, '$1')
+  // The installed app never shows the landing page; it redirects from it.
+  const isLeavingLanding = isStandalone && path === '/'
 
   useEffect(() => {
     if (userIsLoading) return
-    middleware({ user, navigate, location })
-  }, [user, userIsLoading, navigate, location])
+    middleware({ user, navigate, location, isStandalone })
+  }, [user, userIsLoading, navigate, location, isStandalone])
 
   return (
     <html
@@ -60,8 +72,8 @@ export const Rootlayout = (properties: PropsWithChildren) => {
         <Links />
       </head>
       <body>
-        {!publicPages.has(location.pathname.replace(/(.)\/+$/, '$1')) &&
-        (isLoading || userIsLoading) ? (
+        {isLeavingLanding ||
+        (!publicPages.has(path) && (isLoading || userIsLoading)) ? (
           <LoadingSpinner />
         ) : (
           children

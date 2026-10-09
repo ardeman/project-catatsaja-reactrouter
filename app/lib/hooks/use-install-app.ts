@@ -63,6 +63,11 @@ const detectSteps = (): TInstallSteps | null => {
   return null
 }
 
+// Whether the app runs installed (its own window, no browser bars). Pages
+// rendered at build time assume a browser tab.
+export const useIsStandalone = () =>
+  useSyncExternalStore(noSubscribe, isStandalone, () => false)
+
 export const useInstallApp = () => {
   // Pages rendered at build time hide the button until the browser says
   // otherwise.
