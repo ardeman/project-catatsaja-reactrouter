@@ -413,7 +413,7 @@
         "minimumFractionDigits": {
           "label": "Min. desimal",
           "placeholder": "contoh: 2",
-          "hint": "Desimal yang selalu ditampilkan, misalnya 2 untuk 1.000,00."
+          "hint": "Desimal yang selalu ditampilkan, misalnya 2 untuk {{example}}."
         },
         "currencyCode": {
           "label": "Kode mata uang",
@@ -494,7 +494,7 @@
         "rate": {
           "label": "Kurs",
           "placeholder": "contoh: 1.00",
-          "hint": "Nilai 1 unit mata uang ini dalam mata uang default-mu, misalnya 16000 untuk USD jika default-mu IDR."
+          "hint": "Nilai 1 unit mata uang ini dalam mata uang default-mu, misalnya {{example}} untuk USD jika default-mu IDR."
         },
         "isDefault": {
           "label": "Jadikan default",

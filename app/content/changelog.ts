@@ -20,6 +20,13 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
+          en: 'Examples for exchange rates and minimum decimals now use your chosen number separators.',
+          id: 'Contoh kurs dan desimal minimum kini memakai pemisah angka yang kamu pilih.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
           en: 'Search results are no longer covered by the button for creating a note, task or finance book.',
           id: 'Hasil pencarian tidak lagi tertutup tombol untuk membuat catatan, tugas, atau buku keuangan.',
         },

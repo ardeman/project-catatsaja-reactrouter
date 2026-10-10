@@ -121,7 +121,15 @@ export const AddCurrency = (properties: TProperties) => {
               label={t('finances.addCurrency.rate', {
                 code: defaultCurrency?.code ?? '',
               })}
-              hint={t('settings.manageCurrencies.form.rate.hint')}
+              hint={t('settings.manageCurrencies.form.rate.hint', {
+                example: (16_000)
+                  .toLocaleString('en-US')
+                  .replaceAll(
+                    ',',
+                    userData?.currencyFormat?.thousandSeparator ??
+                      getDefaultCurrencyFormat().thousandSeparator,
+                  ),
+              })}
               required
             />
           )}

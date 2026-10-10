@@ -339,7 +339,15 @@ export const ManageCurrencies = () => {
                 <NumberInput
                   label={t('settings.manageCurrencies.form.rate.label')}
                   name="rate"
-                  hint={t('settings.manageCurrencies.form.rate.hint')}
+                  hint={t('settings.manageCurrencies.form.rate.hint', {
+                    example: (16_000)
+                      .toLocaleString('en-US')
+                      .replaceAll(
+                        ',',
+                        currentCurrencyFormat?.thousandSeparator ??
+                          getDefaultCurrencyFormat().thousandSeparator,
+                      ),
+                  })}
                   placeholder={t(
                     'settings.manageCurrencies.form.rate.placeholder',
                   )}

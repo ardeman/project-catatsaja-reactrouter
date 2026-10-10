@@ -413,7 +413,7 @@
         "minimumFractionDigits": {
           "label": "Min. decimals",
           "placeholder": "e.g., 2",
-          "hint": "Decimals always shown, such as 2 for 1,000.00."
+          "hint": "Decimals always shown, such as 2 for {{example}}."
         },
         "currencyCode": {
           "label": "Currency code",
@@ -494,7 +494,7 @@
         "rate": {
           "label": "Exchange rate",
           "placeholder": "e.g., 1.00",
-          "hint": "What 1 unit of this currency is worth in your default currency, e.g. 16000 for USD when your default is IDR."
+          "hint": "What 1 unit of this currency is worth in your default currency, e.g. {{example}} for USD when your default is IDR."
         },
         "isDefault": {
           "label": "Set as default",

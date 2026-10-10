@@ -170,6 +170,9 @@ export const CurrencyFormat = () => {
                 )}
                 hint={t(
                   'settings.currencyFormat.form.minimumFractionDigits.hint',
+                  {
+                    example: `1${watchAll.thousandSeparator}000${watchAll.decimalSeparator}00`,
+                  },
                 )}
                 name="minimumFractionDigits"
                 type="number"
