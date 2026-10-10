@@ -203,7 +203,7 @@
       },
       "rate": {
         "label": "1 {{from}} in {{to}}",
-        "hint": "Filled in from your currency settings; change it to the rate you actually got."
+        "hint": "From your settings. Adjust if needed."
       },
       "type": {
         "label": "Type",

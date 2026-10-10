@@ -64,12 +64,15 @@ export const DatePicker = (properties: TProperties) => {
       name={name}
       render={({ field }) => {
         const value = (field.value as string) || ''
+        const dateLabel = value
+          ? format.format(toDate(value))
+          : t('datePicker.choose')
         const choose = (next: string) => {
           field.onChange(next)
           setIsOpen(false)
         }
         return (
-          <FormItem className="[&>:not([hidden])~:not([hidden])]:mt-1">
+          <FormItem className="min-w-0 [&>:not([hidden])~:not([hidden])]:mt-1">
             {label && (
               <FormLabel>
                 {label} {required && <sup className="text-destructive">*</sup>}
@@ -85,14 +88,13 @@ export const DatePicker = (properties: TProperties) => {
                     type="button"
                     variant="outline"
                     className={cn(
-                      'h-9 w-full justify-start gap-2 rounded-md px-3 text-base font-normal md:text-sm',
+                      'h-9 w-full min-w-0 justify-start gap-2 rounded-md px-3 text-base font-normal md:text-sm',
                       !value && 'text-muted-foreground',
                     )}
+                    title={dateLabel}
                   >
-                    <CalendarDays className="size-4 text-muted-foreground" />
-                    {value
-                      ? format.format(toDate(value))
-                      : t('datePicker.choose')}
+                    <CalendarDays className="size-4 shrink-0 text-muted-foreground" />
+                    <span className="min-w-0 truncate">{dateLabel}</span>
                   </Button>
                 </FormControl>
               </PopoverTrigger>

@@ -443,7 +443,7 @@ export const Form = (properties: TFormProperties) => {
                         </span>
                         <span
                           className={cn(
-                            'col-start-2 row-start-2 min-w-0 font-medium wrap-break-word tabular-nums sm:col-start-3 sm:row-start-1',
+                            'col-start-2 row-start-2 min-w-0 text-right font-medium wrap-break-word tabular-nums sm:col-start-3 sm:row-start-1',
                             isIncome &&
                               'text-emerald-600 dark:text-emerald-400',
                           )}

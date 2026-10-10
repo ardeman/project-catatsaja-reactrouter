@@ -203,7 +203,7 @@
       },
       "rate": {
         "label": "1 {{from}} dalam {{to}}",
-        "hint": "Diisi dari pengaturan mata uangmu; ubah ke kurs yang benar-benar kamu dapat."
+        "hint": "Dari pengaturanmu. Ubah jika perlu."
       },
       "type": {
         "label": "Tipe",

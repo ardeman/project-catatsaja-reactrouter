@@ -18,6 +18,27 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'Quantity and date fields stack on narrow screens so the date has room and stays inside its button.',
+          id: 'Kolom jumlah barang dan tanggal tersusun ke bawah di layar sempit agar tanggal lebih lega dan tetap di dalam tombolnya.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Finance entry totals stay aligned to the right on phones too.',
+          id: 'Total entri keuangan tetap rata kanan di ponsel juga.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The exchange-rate hint is shorter and easier to scan.',
+          id: 'Petunjuk kurs lebih singkat dan mudah dibaca.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Entries in another currency show the exchange rate used, with readable details and totals on phones.',

@@ -278,7 +278,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid items-end gap-3 sm:grid-cols-2">
             <NumberInput
               name="quantity"
               label={t('finances.form.quantity.label')}
