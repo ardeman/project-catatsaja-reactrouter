@@ -18,6 +18,20 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'Search results stay above the action buttons while viewing a note, task or finance book.',
+          id: 'Hasil pencarian tetap berada di atas tombol tindakan saat membuka catatan, tugas, atau buku keuangan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'On phones, switch between notes, tasks and finances with tabs at the bottom of the screen.',
+          id: 'Di ponsel, berpindah antara catatan, tugas, dan keuangan melalui tab di bagian bawah layar.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Add a currency directly from a finance book’s currency picker and use it immediately.',

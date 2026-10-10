@@ -1,5 +1,4 @@
-import { CircleUser, ExternalLink, LogOut, Menu } from 'lucide-react'
-import { useState } from 'react'
+import { CircleUser, ExternalLink, LogOut } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 
@@ -14,12 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '~/components/ui/popover'
-import { appleIcon, appName } from '~/lib/constants/metadata'
+import { appName } from '~/lib/constants/metadata'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useLogout } from '~/lib/hooks/use-logout'
 import { TMenu } from '~/lib/types/common'
@@ -58,7 +52,6 @@ const MenuLink = (properties: { menu: TMenu }) => {
 
 export const Navbar = (properties: TProperties) => {
   const { className } = properties
-  const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { data: userData } = useUserData()
@@ -70,118 +63,90 @@ export const Navbar = (properties: TProperties) => {
   const { mutate: mutateLogout } = useLogout()
 
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b border-border/40 bg-background/95 px-4 backdrop-blur-sm supports-backdrop-filter:bg-background/20 md:px-6',
-        className,
-      )}
-    >
-      <Navigation className="hidden shrink-0 flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
-      <Popover
-        open={open}
-        onOpenChange={setOpen}
+    <>
+      <header
+        className={cn(
+          'sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b border-border/40 bg-background/95 px-4 backdrop-blur-sm supports-backdrop-filter:bg-background/20 md:px-6',
+          className,
+        )}
       >
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="shrink-0 md:hidden"
-          >
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">{t('navigation.menu')}</span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          sideOffset={12}
-          className="w-[calc(100vw-2rem)] max-w-xs p-2 md:hidden"
-        >
-          <div className="flex items-center gap-2 px-3 pt-1 pb-3 font-semibold">
-            <img
-              src={appleIcon}
-              alt=""
-              className="size-6 object-contain"
-            />
-            {appName}
-          </div>
-          <Navigation
-            variant="menu"
-            className="grid gap-1"
-            onLinkClick={() => setOpen(false)}
-          />
-        </PopoverContent>
-      </Popover>
-      <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <Search />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="shrink-0 rounded-full [&_svg]:size-6"
+        <Navigation className="hidden shrink-0 flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
+        <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+          <Search />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="shrink-0 rounded-full [&_svg]:size-6"
+              >
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={userData?.photoURL || ''} />
+                  <AvatarFallback>
+                    <CircleUser />
+                  </AvatarFallback>
+                </Avatar>
+                <span className="sr-only">{t('navigation.userMenu')}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-60"
             >
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={userData?.photoURL || ''} />
-                <AvatarFallback>
-                  <CircleUser />
-                </AvatarFallback>
-              </Avatar>
-              <span className="sr-only">{t('navigation.userMenu')}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-60"
-          >
-            <DropdownMenuLabel className="grid font-normal">
-              {userData?.displayName && (
-                <span className="truncate font-medium">
-                  {userData.displayName}
+              <DropdownMenuLabel className="grid font-normal">
+                {userData?.displayName && (
+                  <span className="truncate font-medium">
+                    {userData.displayName}
+                  </span>
+                )}
+                <span className="truncate text-xs text-muted-foreground">
+                  {userData?.email}
                 </span>
-              )}
-              <span className="truncate text-xs text-muted-foreground">
-                {userData?.email}
-              </span>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {userMenus(t).map((menu) => (
-              <MenuLink
-                key={menu.href}
-                menu={menu}
-              />
-            ))}
-            <InstallApp>
-              {({ onClick, label, icon }) => (
-                <DropdownMenuItem
-                  onClick={onClick}
-                  className="cursor-pointer gap-2 [&_svg]:text-muted-foreground"
-                >
-                  {icon}
-                  {label}
-                </DropdownMenuItem>
-              )}
-            </InstallApp>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-              {appName}
-            </DropdownMenuLabel>
-            {aboutMenus(t).map((menu) => (
-              <MenuLink
-                key={menu.href}
-                menu={menu}
-              />
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="cursor-pointer gap-2"
-            >
-              <LogOut className="size-4 text-muted-foreground" />
-              {t('navigation.signOut')}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </header>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {userMenus(t).map((menu) => (
+                <MenuLink
+                  key={menu.href}
+                  menu={menu}
+                />
+              ))}
+              <InstallApp>
+                {({ onClick, label, icon }) => (
+                  <DropdownMenuItem
+                    onClick={onClick}
+                    className="cursor-pointer gap-2 [&_svg]:text-muted-foreground"
+                  >
+                    {icon}
+                    {label}
+                  </DropdownMenuItem>
+                )}
+              </InstallApp>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                {appName}
+              </DropdownMenuLabel>
+              {aboutMenus(t).map((menu) => (
+                <MenuLink
+                  key={menu.href}
+                  menu={menu}
+                />
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="cursor-pointer gap-2"
+              >
+                <LogOut className="size-4 text-muted-foreground" />
+                {t('navigation.signOut')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+      <Navigation
+        variant="bottom"
+        className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 gap-1 border-t border-border/40 bg-background px-2 pb-[env(safe-area-inset-bottom)] md:hidden"
+      />
+    </>
   )
 }

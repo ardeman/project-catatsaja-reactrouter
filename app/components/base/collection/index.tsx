@@ -129,7 +129,7 @@ export const Collection = <T extends TCollectionItem>(
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pb-24 md:gap-8 md:p-8">
       <Button
-        containerClassName="flex fixed bottom-4 md:top-16 z-40 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8 h-fit"
+        containerClassName="flex fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] md:bottom-auto md:top-16 z-40 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8 h-fit"
         className="w-full backdrop-blur-sm hover:bg-primary supports-backdrop-filter:bg-primary/70"
         onClick={onCreate}
       >

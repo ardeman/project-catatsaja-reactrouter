@@ -126,7 +126,7 @@ export const Form = (properties: TFormProperties) => {
         onSubmit={handleCreate}
         className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
       >
-        <div className="sticky top-20 z-50 flex justify-center md:top-24">
+        <div className="sticky top-20 z-40 flex justify-center md:top-24">
           {note ? (
             <Action
               className="w-full"
