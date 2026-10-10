@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -75,8 +75,14 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const { handleSubmit, watch, setValue, reset, getValues } = formMethods
 
   // Fresh values each time the form opens.
+  const categoryByType = useRef<Partial<Record<TFinanceEntry['type'], string>>>(
+    {},
+  )
+
   useEffect(() => {
-    if (open) reset(entry ?? { ...empty, id: newEntryId() })
+    if (!open) return
+    categoryByType.current = {}
+    reset(entry ?? { ...empty, id: newEntryId() })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, entry])
 
@@ -104,12 +110,21 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   }
 
   const handleTypeChange = (next: TFinanceEntry['type']) => {
+    // A category belongs to one type. Switching type swaps in the category
+    // last chosen for that type (or none), so switching back restores it.
+    const current = getValues('category')
+    const currentType = financeCategories.find(
+      ({ key }) => key === current,
+    )?.type
+    if (currentType) categoryByType.current[currentType] = current
     setValue('type', next, { shouldDirty: true })
-    // A category belongs to one type; clear it when it no longer fits.
-    const current = financeCategories.find(
-      ({ key }) => key === getValues('category'),
-    )
-    if (current && current.type !== next) setValue('category', '')
+    if (currentType !== next) {
+      const remembered = categoryByType.current[next] ?? ''
+      setValue('category', remembered, {
+        shouldDirty: true,
+        shouldValidate: remembered !== '',
+      })
+    }
   }
 
   const onSubmit = handleSubmit((data) => {
@@ -228,13 +243,18 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               <sup className="text-destructive">*</sup>
             </Label>
             <Select
-              value={category || undefined}
-              onValueChange={(next) =>
+              // Always controlled: "" shows the placeholder. Leaving it undefined
+              // lets the picker keep showing an old choice the form cleared.
+              value={category}
+              onValueChange={(next) => {
+                // Radix reports "" when the option list changes under it; a person
+                // can't choose "nothing", so ignore it.
+                if (!next) return
                 setValue('category', next, {
                   shouldDirty: true,
                   shouldValidate: true,
                 })
-              }
+              }}
             >
               <SelectTrigger aria-label={t('finances.form.category.label')}>
                 <SelectValue
