@@ -18,6 +18,8 @@ export type TEntryFormProperties = {
   entry?: TFinanceEntry
   book: TFinanceCurrency
   currencies: TCurrency[]
+  // Past entries from every book, newest first, for category suggestions.
+  history: TFinanceEntry[]
   onSave: (entry: TFinanceEntry) => void
   onDelete: (id: string) => void
 }

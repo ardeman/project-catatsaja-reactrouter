@@ -21,6 +21,7 @@ import { fallbackCurrency, findCategory } from '~/lib/constants/finance'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateFinance } from '~/lib/hooks/use-create-finance'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
+import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
 import { useUpdateFinance } from '~/lib/hooks/use-update-finance'
@@ -33,6 +34,7 @@ import {
   entryBookTotal,
   entryTotal,
   groupByDate,
+  newestFirst,
   summarize,
 } from '~/lib/utils/finance'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -57,6 +59,7 @@ export const Form = (properties: TFormProperties) => {
   } = useFinance()
   const { data: userData } = useUserData()
   const { data: currencies = [] } = useGetCurrencies()
+  const { data: books = [] } = useGetFinances()
   const money = useMoney()
   const navigate = useNavigate()
   const { mutate: mutateCreateFinance, isPending: isCreatePending } =
@@ -111,6 +114,14 @@ export const Form = (properties: TFormProperties) => {
   const book = watch('currency')
   const entries = watch('content')
   const { income, expense, balance } = summarize(entries)
+  // Entries of this book (as edited here) and every other book, newest
+  // first, for category suggestions.
+  const history = newestFirst([
+    ...books
+      .filter((item) => item.id !== selectedFinance?.id)
+      .flatMap((item) => item.content || []),
+    ...entries,
+  ])
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
   const [editing, setEditing] = useState<TFinanceEntry>()
@@ -425,6 +436,7 @@ export const Form = (properties: TFormProperties) => {
         entry={editing}
         book={book}
         currencies={currencies}
+        history={history}
         onSave={handleSaveEntry}
         onDelete={handleDeleteEntry}
       />

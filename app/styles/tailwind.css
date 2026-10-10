@@ -77,6 +77,8 @@
     --tw-prose-quotes: var(--color-foreground);
     --tw-prose-quote-borders: var(--color-border);
     --tw-prose-code: var(--color-foreground);
+    --tw-prose-pre-bg: hsl(var(--muted));
+    --tw-prose-pre-code: hsl(var(--foreground));
     --tw-prose-hr: var(--color-border);
     --tw-prose-th-borders: var(--color-border);
     --tw-prose-td-borders: var(--color-border);

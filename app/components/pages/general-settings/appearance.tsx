@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import { useEffect } from 'react'
 import { FormProvider, useForm, Controller } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
@@ -22,7 +23,7 @@ import { TUpdateAppearanceRequest } from '~/lib/types/settings'
 import { supportedLanguages } from '~/localization/resource'
 
 export const Appearance = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { theme, size, setTheme, setSize, previewTheme, previewSize } =
     useTheme()
   const { mutate, isPending } = useUpdateAppearance()
@@ -59,10 +60,21 @@ export const Appearance = () => {
     [previewTheme, previewSize],
   )
 
+  // Preview the language too; leaving without saving goes back to the saved
+  // one (or the one in use when the page opened).
   useEffect(() => {
-    if (watchLanguage && i18n.language !== watchLanguage)
-      i18n.changeLanguage(watchLanguage)
-  }, [watchLanguage, i18n])
+    if (watchLanguage && i18next.language !== watchLanguage)
+      void i18next.changeLanguage(watchLanguage)
+  }, [watchLanguage])
+
+  const savedLanguage = userData?.language
+  useEffect(() => {
+    const languageOnOpen = i18next.language
+    return () => {
+      const target = savedLanguage ?? languageOnOpen
+      if (i18next.language !== target) void i18next.changeLanguage(target)
+    }
+  }, [savedLanguage])
 
   const onSubmit = handleSubmit(async (data) => {
     const isSaved = await mutate(data)

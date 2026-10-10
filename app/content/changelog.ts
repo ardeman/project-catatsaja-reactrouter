@@ -32,6 +32,41 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'new',
+        text: {
+          en: 'The entry form picks the category for you: the one you used last, or the one you used before for the same words ("Grab" → Transport). Your own choice always wins.',
+          id: 'Form entri memilihkan kategori: yang terakhir kamu pakai, atau yang dulu dipakai untuk kata yang sama ("Grab" → Transportasi). Pilihanmu sendiri selalu diutamakan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Add a currency right from the entry form.',
+          id: 'Tambahkan mata uang langsung dari form entri.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Code blocks in notes now follow the light or dark theme.',
+          id: 'Blok kode di catatan kini mengikuti tema terang atau gelap.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Amounts show thousands separators as you type, in your own number format, and dates are picked from a calendar with Today and Yesterday shortcuts.',
+          id: 'Nominal menampilkan pemisah ribuan saat diketik, sesuai format angkamu, dan tanggal dipilih dari kalender dengan pintasan Hari ini dan Kemarin.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Choosing another language in the settings no longer shows an error, and leaving without saving goes back to your saved language.',
+          id: 'Memilih bahasa lain di pengaturan tidak lagi memunculkan galat, dan keluar tanpa menyimpan akan kembali ke bahasa tersimpan.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Currency settings explain what the exchange rate means and accept very small rates.',

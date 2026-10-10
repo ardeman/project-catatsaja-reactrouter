@@ -13,10 +13,11 @@ export const useCreateCurrency = () => {
   const mutate = async (data: TCreateCurrencyRequest) => {
     setIsPending(true)
     try {
-      await createCurrency(data)
+      const created = await createCurrency(data)
       toast({
         description: t('settings.manageCurrencies.toast.created'),
       })
+      return created
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error creating currency:', error)

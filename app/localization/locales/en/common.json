@@ -284,7 +284,8 @@
           "label": "Other income",
           "description": "Anything that doesn't fit another category"
         },
-        "placeholder": "Choose a category"
+        "placeholder": "Choose a category",
+        "suggested": "Chosen from your earlier entries"
       },
       "quantity": {
         "label": "Quantity"
@@ -322,6 +323,11 @@
       "edit": "Edit entry",
       "delete": "Delete entry",
       "empty": "No entries yet. Add your first income or expense."
+    },
+    "addCurrency": {
+      "option": "Add currency…",
+      "rate": "Value of 1 unit in {{code}}",
+      "firstIsDefault": "Your first currency becomes your default currency."
     }
   },
   "about": {
@@ -622,6 +628,11 @@
         "title": "Groceries",
         "date": "Edited yesterday",
         "items": ["Milk", "Eggs", "Bread", "Coffee beans"]
+      },
+      "finance": {
+        "title": "Bali trip",
+        "date": "Edited 2 days ago",
+        "entries": ["Flights", "Dinner at Jimbaran"]
       }
     }
   },
@@ -656,5 +667,10 @@
         "install": "Choose \"Install\"."
       }
     }
+  },
+  "datePicker": {
+    "choose": "Choose a date",
+    "today": "Today",
+    "yesterday": "Yesterday"
   }
 }

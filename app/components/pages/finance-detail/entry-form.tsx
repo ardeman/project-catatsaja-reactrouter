@@ -1,11 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useRef } from 'react'
+import { Plus } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
+import { DatePicker } from '~/components/base/date-picker'
 import { Input } from '~/components/base/input'
 import { Modal } from '~/components/base/modal'
+import { NumberInput } from '~/components/base/number-input'
 import { Label } from '~/components/ui/label'
 import {
   Select,
@@ -22,11 +25,20 @@ import {
   TFinanceEntryForm,
 } from '~/lib/types/finance'
 import { TCurrency } from '~/lib/types/settings'
-import { newEntryId, today } from '~/lib/utils/finance'
+import {
+  lastCategory,
+  newEntryId,
+  suggestFromHistory,
+  today,
+} from '~/lib/utils/finance'
 import { cn } from '~/lib/utils/shadcn'
 import { entrySchema } from '~/lib/validations/finance'
 
+import { AddCurrency } from './add-currency'
 import { TEntryFormProperties } from './type'
+
+// The currency list item that opens "Add currency".
+const ADD_CURRENCY = '__add-currency'
 
 const toFinanceCurrency = (
   currency: Pick<TCurrency, 'code' | 'symbol' | 'maximumFractionDigits'>,
@@ -52,7 +64,7 @@ const suggestRate = (
 }
 
 export const EntryForm = (properties: TEntryFormProperties) => {
-  const { open, setOpen, entry, book, currencies, onSave, onDelete } =
+  const { open, setOpen, entry, book, currencies, history, onSave, onDelete } =
     properties
   const { t } = useTranslation(['common', 'zod'])
   const isEditing = !!entry
@@ -79,16 +91,35 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     {},
   )
 
+  // Choices the person made themselves; suggestions never override them.
+  const isCategoryChosen = useRef(false)
+  const isTypeChosen = useRef(false)
+  const [isSuggested, setIsSuggested] = useState(false)
+  const [isAddingCurrency, setIsAddingCurrency] = useState(false)
+  // Past entries (all books, newest first), without the one being edited.
+  const pastEntries = history.filter((item) => item.id !== entry?.id)
+
   useEffect(() => {
     if (!open) return
     categoryByType.current = {}
-    reset(entry ?? { ...empty, id: newEntryId() })
+    isCategoryChosen.current = false
+    isTypeChosen.current = false
+    setIsSuggested(false)
+    // A new entry starts with the category last used for expenses.
+    reset(
+      entry ?? {
+        ...empty,
+        id: newEntryId(),
+        category: lastCategory('expense', pastEntries) ?? '',
+      },
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, entry])
 
   const type = watch('type')
   const currency = watch('currency')
   const category = watch('category')
+  const description = watch('description')
   const isForeign = currency.code !== book.code
 
   // Every currency the person can pick: their own, the book's, and the
@@ -103,13 +134,52 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   )
 
   const handleCurrencyChange = (code: string) => {
+    if (code === ADD_CURRENCY) {
+      setIsAddingCurrency(true)
+      return
+    }
     const next = currencyOptions.find((option) => option.code === code)
     if (!next) return
     setValue('currency', next, { shouldDirty: true })
     setValue('rate', suggestRate(code, book, currencies), { shouldDirty: true })
   }
 
+  // A new currency from the entry form: select it, with the rate from its
+  // value in the default currency.
+  const handleCurrencyAdded = (added: TCurrency) => {
+    const next = toFinanceCurrency(added)
+    setValue('currency', next, { shouldDirty: true })
+    setValue('rate', suggestRate(next.code, book, [...currencies, added]), {
+      shouldDirty: true,
+    })
+  }
+
+  // Typing a description picks the category (and type) used before for the
+  // same words, unless the person already chose one.
+  useEffect(() => {
+    if (!open || isEditing || isCategoryChosen.current) return
+    // The form's current text: right after opening, `description` from this
+    // render still holds the previous entry's.
+    const match = suggestFromHistory(getValues('description'), pastEntries)
+    if (!match) return
+    if (!isTypeChosen.current && match.type !== getValues('type')) {
+      setValue('type', match.type, { shouldDirty: true })
+    }
+    if (
+      match.type === getValues('type') &&
+      match.category !== getValues('category')
+    ) {
+      setValue('category', match.category, {
+        shouldDirty: true,
+        shouldValidate: true,
+      })
+      setIsSuggested(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [description, open])
+
   const handleTypeChange = (next: TFinanceEntry['type']) => {
+    isTypeChosen.current = true
     // A category belongs to one type. Switching type swaps in the category
     // last chosen for that type (or none), so switching back restores it.
     const current = getValues('category')
@@ -119,7 +189,8 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     if (currentType) categoryByType.current[currentType] = current
     setValue('type', next, { shouldDirty: true })
     if (currentType !== next) {
-      const remembered = categoryByType.current[next] ?? ''
+      const remembered =
+        categoryByType.current[next] ?? lastCategory(next, pastEntries) ?? ''
       setValue('category', remembered, {
         shouldDirty: true,
         shouldValidate: remembered !== '',
@@ -166,12 +237,8 @@ export const EntryForm = (properties: TEntryFormProperties) => {
           </div>
 
           <div className="grid grid-cols-[1fr_auto] items-end gap-2">
-            <Input
+            <NumberInput
               name="amount"
-              type="number"
-              inputMode="decimal"
-              step="any"
-              min="0"
               label={t('finances.form.amount.label')}
               required
               autoFocus={!isEditing} // eslint-disable-line jsx-a11y/no-autofocus
@@ -199,35 +266,32 @@ export const EntryForm = (properties: TEntryFormProperties) => {
                       {option.code} ({option.symbol})
                     </SelectItem>
                   ))}
+                  <SelectItem value={ADD_CURRENCY}>
+                    <span className="flex items-center gap-2">
+                      <Plus className="size-4" />
+                      {t('finances.addCurrency.option')}
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <Input
+            <NumberInput
               name="quantity"
-              type="number"
-              inputMode="decimal"
-              step="any"
-              min="0"
               label={t('finances.form.quantity.label')}
             />
-            <Input
+            <DatePicker
               name="date"
-              type="date"
               label={t('finances.form.date.label')}
               required
             />
           </div>
 
           {isForeign && (
-            <Input
+            <NumberInput
               name="rate"
-              type="number"
-              inputMode="decimal"
-              step="any"
-              min="0"
               label={t('finances.form.rate.label', {
                 from: currency.code,
                 to: book.code,
@@ -236,6 +300,12 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               required
             />
           )}
+
+          <Input
+            name="description"
+            label={t('finances.form.description.label')}
+            placeholder={t('finances.form.description.placeholder')}
+          />
 
           <div className="grid gap-2">
             <Label>
@@ -250,6 +320,8 @@ export const EntryForm = (properties: TEntryFormProperties) => {
                 // Radix reports "" when the option list changes under it; a person
                 // can't choose "nothing", so ignore it.
                 if (!next) return
+                isCategoryChosen.current = true
+                setIsSuggested(false)
                 setValue('category', next, {
                   shouldDirty: true,
                   shouldValidate: true,
@@ -279,18 +351,17 @@ export const EntryForm = (properties: TEntryFormProperties) => {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            {isSuggested && (
+              <p className="text-[0.8rem] text-muted-foreground">
+                {t('finances.form.category.suggested')}
+              </p>
+            )}
             {formMethods.formState.errors.category && (
               <p className="text-[0.8rem] font-medium text-destructive">
                 {formMethods.formState.errors.category.message}
               </p>
             )}
           </div>
-
-          <Input
-            name="description"
-            label={t('finances.form.description.label')}
-            placeholder={t('finances.form.description.placeholder')}
-          />
 
           <div className="flex flex-wrap items-center gap-2 pt-2">
             {isEditing && (
@@ -320,6 +391,12 @@ export const EntryForm = (properties: TEntryFormProperties) => {
           </div>
         </form>
       </FormProvider>
+      <AddCurrency
+        open={isAddingCurrency}
+        setOpen={setIsAddingCurrency}
+        currencies={currencies}
+        onAdded={handleCurrencyAdded}
+      />
     </Modal>
   )
 }

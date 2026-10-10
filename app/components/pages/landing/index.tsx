@@ -16,7 +16,7 @@ import { AboutFooter } from '~/components/layouts/about-footer'
 import { Button } from '~/components/ui/button'
 import { appleIcon, appName } from '~/lib/constants/metadata'
 
-import { NotePreview, TaskPreview } from './preview'
+import { FinancePreview, NotePreview, TaskPreview } from './preview'
 
 type TFeature = {
   key: string
@@ -110,9 +110,12 @@ export const LandingPage = () => {
               </InstallApp>
             </div>
           </div>
-          <div className="relative mx-auto h-[26rem] w-full max-w-md lg:h-96">
-            <NotePreview className="absolute top-0 left-0 -rotate-3 sm:left-4" />
-            <TaskPreview className="absolute right-0 bottom-0 rotate-2 sm:right-4" />
+          {/* Phones: the cards stack down the page. Wider: note and checklist
+              on the left, the finance book on top of both on the right. */}
+          <div className="relative mx-auto h-[41rem] w-full max-w-md sm:h-[28rem]">
+            <NotePreview className="absolute top-0 left-0 z-10 -rotate-3" />
+            <FinancePreview className="absolute top-[11rem] right-0 z-20 rotate-2 sm:top-1/2 sm:z-30 sm:-translate-y-1/2" />
+            <TaskPreview className="absolute top-[26.5rem] left-2 z-30 -rotate-1 sm:top-auto sm:bottom-0 sm:left-0 sm:z-20" />
           </div>
         </section>
 

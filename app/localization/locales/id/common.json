@@ -284,7 +284,8 @@
           "label": "Pemasukan lainnya",
           "description": "Di luar kategori yang ada"
         },
-        "placeholder": "Pilih kategori"
+        "placeholder": "Pilih kategori",
+        "suggested": "Dipilih dari entri sebelumnya"
       },
       "quantity": {
         "label": "Jumlah barang"
@@ -322,6 +323,11 @@
       "edit": "Ubah entri",
       "delete": "Hapus entri",
       "empty": "Belum ada entri. Tambahkan pemasukan atau pengeluaran pertamamu."
+    },
+    "addCurrency": {
+      "option": "Tambah mata uang…",
+      "rate": "Nilai 1 unit dalam {{code}}",
+      "firstIsDefault": "Mata uang pertamamu menjadi mata uang default."
     }
   },
   "about": {
@@ -622,6 +628,11 @@
         "title": "Belanja",
         "date": "Diedit kemarin",
         "items": ["Susu", "Telur", "Roti", "Biji kopi"]
+      },
+      "finance": {
+        "title": "Liburan ke Bali",
+        "date": "Diedit 2 hari lalu",
+        "entries": ["Tiket pesawat", "Makan malam di Jimbaran"]
       }
     }
   },
@@ -656,5 +667,10 @@
         "install": "Pilih \"Pasang\"."
       }
     }
+  },
+  "datePicker": {
+    "choose": "Pilih tanggal",
+    "today": "Hari ini",
+    "yesterday": "Kemarin"
   }
 }

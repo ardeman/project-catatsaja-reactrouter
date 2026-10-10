@@ -36,3 +36,45 @@ export const groupByDate = (entries: TFinanceEntry[] = []) => {
   }
   return [...groups].toSorted(([a], [b]) => b.localeCompare(a))
 }
+
+// Entries from every book, newest first (by date, then by the order they
+// were added), used to suggest categories.
+export const newestFirst = (entries: TFinanceEntry[]) =>
+  entries
+    .map((entry, index) => ({ entry, index }))
+    .toSorted(
+      (a, b) => b.entry.date.localeCompare(a.entry.date) || b.index - a.index,
+    )
+    .map(({ entry }) => entry)
+
+// The category last used for this type.
+export const lastCategory = (
+  type: TFinanceEntry['type'],
+  history: TFinanceEntry[],
+) => history.find((entry) => entry.type === type)?.category
+
+const words = (text: string) =>
+  text
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter((word) => word.length >= 3)
+
+// The most recent past entry described the same way: the same text, or
+// else a shared word ("Grab ke kantor" → an earlier "Grab"). Its category
+// (and type) is the suggestion.
+export const suggestFromHistory = (
+  description: string,
+  history: TFinanceEntry[],
+) => {
+  const text = description.trim().toLowerCase()
+  if (text.length < 2) return
+  const exact = history.find(
+    (entry) => entry.description.trim().toLowerCase() === text,
+  )
+  if (exact) return exact
+  const typed = words(text)
+  if (typed.length === 0) return
+  return history.find((entry) =>
+    words(entry.description).some((word) => typed.includes(word)),
+  )
+}

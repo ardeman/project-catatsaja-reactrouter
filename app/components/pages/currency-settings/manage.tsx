@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '~/components/base/button'
 import { Checkbox } from '~/components/base/checkbox'
 import { Input } from '~/components/base/input'
+import { NumberInput } from '~/components/base/number-input'
 import {
   Card,
   CardContent,
@@ -419,11 +420,9 @@ export const ManageCurrencies = () => {
                   )}
                   disabled={disabled || isCreating || isUpdating}
                 />
-                <Input
+                <NumberInput
                   label={t('settings.manageCurrencies.form.rate.label')}
                   name="rate"
-                  type="number"
-                  step="any"
                   hint={t('settings.manageCurrencies.form.rate.hint')}
                   placeholder={t(
                     'settings.manageCurrencies.form.rate.placeholder',

@@ -1,4 +1,11 @@
-import { Circle, CircleCheck, Pin, Users } from 'lucide-react'
+import {
+  Circle,
+  CircleCheck,
+  Pin,
+  Plane,
+  UtensilsCrossed,
+  Users,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Markdown } from '~/components/base/markdown'
@@ -9,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card'
+import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
 // Static look-alikes of the note and task cards, filled with sample content.
@@ -85,6 +93,71 @@ export const TaskPreview = (properties: { className?: string }) => {
         <div className="mt-1 text-xs text-muted-foreground">
           {t('tasks.progress', { done: 2, total: items.length })}
         </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+const rupiah = (amount: number) =>
+  formatCurrency({
+    amount,
+    format: { ...getDefaultCurrencyFormat(), minimumFractionDigits: 0 },
+    currency: { code: 'IDR', symbol: 'Rp', maximumFractionDigits: 0 },
+  })
+
+export const FinancePreview = (properties: { className?: string }) => {
+  const { t } = useTranslation()
+  // Wider than the other cards so the amounts fit.
+  const entries = [
+    {
+      icon: Plane,
+      text: t('landing.preview.finance.entries.0'),
+      amount: -1_850_000,
+    },
+    {
+      icon: UtensilsCrossed,
+      text: t('landing.preview.finance.entries.1'),
+      amount: -275_000,
+    },
+  ]
+  return (
+    <Card
+      aria-hidden
+      className={cn('w-72 shadow-lg', properties.className)}
+    >
+      <CardHeader className="pb-3">
+        <CardDescription className="text-xs">
+          {t('landing.preview.finance.date')}
+        </CardDescription>
+        <CardTitle className="text-xl">
+          {t('landing.preview.finance.title')}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-3">
+        <div>
+          <p className="text-xs text-muted-foreground">
+            {t('finances.summary.balance')}
+          </p>
+          <p className="text-lg font-semibold">{rupiah(2_875_000)}</p>
+          <p className="text-xs text-muted-foreground">
+            {t('finances.summary.incomeExpense', {
+              income: rupiah(5_000_000),
+              expense: rupiah(2_125_000),
+            })}
+          </p>
+        </div>
+        <ul className="grid gap-1.5 text-sm">
+          {entries.map(({ icon: Icon, text, amount }) => (
+            <li
+              key={text}
+              className="flex items-center gap-2"
+            >
+              <Icon className="size-4 shrink-0 text-muted-foreground" />
+              <span className="min-w-0 flex-1 truncate">{text}</span>
+              <span className="tabular-nums">−{rupiah(-amount)}</span>
+            </li>
+          ))}
+        </ul>
       </CardContent>
     </Card>
   )

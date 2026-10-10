@@ -5,6 +5,7 @@ import { Milkdown, useEditor } from '@milkdown/react'
 import { useCallback, useEffect, useRef } from 'react'
 import { PathValue, useFormContext } from 'react-hook-form'
 
+import { codeTheme } from './code-theme'
 import { TMilkdownEditorProperties } from './type'
 
 import '@milkdown/crepe/theme/common/style.css'
@@ -38,6 +39,7 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
         [Crepe.Feature.BlockEdit]: false,
       },
       featureConfigs: {
+        [Crepe.Feature.CodeMirror]: { theme: codeTheme },
         [Crepe.Feature.Placeholder]: {
           text: placeholderText,
           mode: 'doc',

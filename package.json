@@ -15,7 +15,10 @@
     "validate": "pnpm lint && pnpm typecheck && pnpm knip"
   },
   "dependencies": {
+    "@codemirror/language": "6.13.1",
+    "@codemirror/view": "6.43.14",
     "@hookform/resolvers": "^5.9.1",
+    "@lezer/highlight": "1.2.5",
     "@milkdown/crepe": "^7.22.2",
     "@milkdown/kit": "^7.22.2",
     "@milkdown/react": "^7.22.2",
@@ -46,6 +49,7 @@
     "markdown-to-jsx": "^9.10.3",
     "masonry-layout": "^4.2.2",
     "react": "^19.3.0",
+    "react-day-picker": "^10.0.2",
     "react-dom": "^19.3.0",
     "react-hook-form": "^7.89.0",
     "react-i18next": "^17.0.16",

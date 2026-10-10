@@ -34,3 +34,26 @@
 .milkdown .ProseMirror {
   padding: 0;
 }
+
+/* Code block syntax colours (code-theme.ts), GitHub light and dark. */
+:root {
+  --code-keyword: #cf222e;
+  --code-string: #0a3069;
+  --code-number: #0550ae;
+  --code-comment: #6e7781;
+  --code-function: #8250df;
+  --code-type: #953800;
+  --code-property: #0550ae;
+  --code-tag: #116329;
+}
+
+.dark {
+  --code-keyword: #ff7b72;
+  --code-string: #a5d6ff;
+  --code-number: #79c0ff;
+  --code-comment: #8b949e;
+  --code-function: #d2a8ff;
+  --code-type: #ffa657;
+  --code-property: #79c0ff;
+  --code-tag: #7ee787;
+}
