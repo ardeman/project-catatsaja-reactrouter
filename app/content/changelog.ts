@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'Search results are no longer covered by the button for creating a note, task or finance book.',
+          id: 'Hasil pencarian tidak lagi tertutup tombol untuk membuat catatan, tugas, atau buku keuangan.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'Search finds notes, tasks and finances at once, with the matching words highlighted. Use the arrow keys and Enter, and press Ctrl K (⌘ K on a Mac) or / to search from anywhere.',
