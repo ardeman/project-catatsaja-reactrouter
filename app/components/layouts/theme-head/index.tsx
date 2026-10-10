@@ -1,17 +1,28 @@
 import { useSyncExternalStore } from 'react'
 
 import { statusBarStyles, themeColors } from '~/lib/constants/metadata'
+import { navPages, startPageStorageKey } from '~/lib/constants/navigation'
 
 // Runs before the first paint: the installed app skips the landing page, and
 // the saved theme and text size are applied so pages rendered at build time
 // (the landing page) don't flash the wrong theme.
 const themeScript = `(() => {
   try {
-    // The installed app has no landing page: leave it before it paints.
+    // The installed app has no landing page, and opens on the person's
+    // start page: leave before painting. It launches at the manifest's
+    // start_url (/notes), so the first page of a session moves too.
     const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true
-    if (installed && location.pathname === '/') {
-      location.replace('/notes')
-      return
+    if (installed) {
+      const pages = ${JSON.stringify(navPages)}
+      const saved = localStorage.getItem('${startPageStorageKey}')
+      const start = '/' + (pages.includes(saved) ? saved : pages[0])
+      const launching = !sessionStorage.getItem('launched')
+      sessionStorage.setItem('launched', '1')
+      const path = location.pathname
+      if (path === '/' || (launching && path === '/${navPages[0]}' && start !== path)) {
+        location.replace(start)
+        return
+      }
     }
     const theme = localStorage.getItem('vite-ui-theme') || 'system'
     const dark = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)

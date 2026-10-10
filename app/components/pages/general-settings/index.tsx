@@ -1,4 +1,5 @@
 import { Appearance } from './appearance'
+import { Navigation } from './navigation'
 import { Profile } from './profile'
 
 export const GeneralSettingsPage = () => {
@@ -6,6 +7,7 @@ export const GeneralSettingsPage = () => {
     <div className="grid gap-6">
       <Profile />
       <Appearance />
+      <Navigation />
     </div>
   )
 }

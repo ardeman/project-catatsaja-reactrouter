@@ -112,6 +112,8 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
                   />
                   <NumberInput
                     name={`accounts.${index}.balance`}
+                    allowMath
+                    fractionDigits={book.maximumFractionDigits}
                     accessibleLabel={t('finances.accounts.balance.label')}
                     placeholder="0"
                     disabled={isReadOnly}

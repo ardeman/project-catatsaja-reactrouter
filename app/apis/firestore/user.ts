@@ -23,6 +23,7 @@ import { auth, firestore } from '~/lib/configs/firebase'
 import {
   TCurrencyFormatRequest,
   TUpdateAppearanceRequest,
+  TUpdateNavigationRequest,
   TUpdateProfileRequest,
 } from '~/lib/types/settings'
 import { TSignInRequest, TSignUpRequest, TUserResponse } from '~/lib/types/user'
@@ -132,6 +133,20 @@ export const updateProfile = async (userData: TUpdateProfileRequest) => {
 }
 
 export const updateAppearance = async (data: TUpdateAppearanceRequest) => {
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const reference = doc(firestore, 'users', auth.currentUser.uid)
+  return await updateDoc(reference, {
+    ...data,
+    updatedAt: new Date(),
+  })
+}
+
+export const updateNavigation = async (data: TUpdateNavigationRequest) => {
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }

@@ -1,5 +1,13 @@
-import { ChangeEvent, useLayoutEffect, useRef } from 'react'
+import { Calculator } from 'lucide-react'
+import {
+  ChangeEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 import {
   FormControl,
@@ -11,6 +19,11 @@ import {
 } from '~/components/ui/form'
 import { Input as UIInput } from '~/components/ui/input'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import {
+  evaluateExpression,
+  isExpression,
+  normalizeExpression,
+} from '~/lib/utils/math-expression'
 import { getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -25,6 +38,15 @@ type TProperties = {
   autoFocus?: boolean
   disabled?: boolean
   className?: string
+  // Accept a calculation ("((24/22)*28500000)/4"); the field holds its
+  // result.
+  allowMath?: boolean
+  // A button that switches phones to a keyboard with + - * / ( ), which
+  // the number keypad lacks.
+  calculatorKeyboard?: boolean
+  // Decimals a calculated result is rounded to (the currency's); unrounded
+  // when not given (exchange rates).
+  fractionDigits?: number
 }
 
 // "1234567.5" → "1,234,567.5" with the person's separators. A typed decimal
@@ -54,7 +76,9 @@ const parse = (text: string, thousand: string, decimal: string) => {
 
 // A number field that shows thousands separators while typing, using the
 // separators from the person's currency format. The form gets the number
-// as text ("1234567.5"); the schema turns it into a number.
+// as text ("1234567.5"); the schema turns it into a number. With
+// `allowMath`, a typed calculation stays as typed, its result shown below
+// and held by the form, until the field is left.
 export const NumberInput = (properties: TProperties) => {
   const {
     name,
@@ -67,7 +91,11 @@ export const NumberInput = (properties: TProperties) => {
     autoFocus,
     disabled,
     className,
+    allowMath,
+    calculatorKeyboard,
+    fractionDigits,
   } = properties
+  const { t } = useTranslation()
   const { control } = useFormContext()
   const { data: userData } = useUserData()
   const format = userData?.currencyFormat ?? getDefaultCurrencyFormat()
@@ -78,6 +106,16 @@ export const NumberInput = (properties: TProperties) => {
   // shows the reformatted value.
   const pendingCaret = useRef<number>(undefined)
   const value = useWatch({ control, name })
+  // The calculation as typed, and the value it gave the form.
+  const [draft, setDraft] = useState<{ text: string; value: string }>()
+  const [isCalculatorKeyboard, setIsCalculatorKeyboard] = useState(false)
+  // A value set from elsewhere (a reset after saving) ends the calculation.
+  const activeDraft =
+    draft && String(value ?? '') === draft.value ? draft : undefined
+
+  useEffect(() => {
+    if (draft && String(value ?? '') !== draft.value) setDraft(undefined)
+  }, [draft, value])
 
   useLayoutEffect(() => {
     const element = inputReference.current
@@ -106,6 +144,26 @@ export const NumberInput = (properties: TProperties) => {
 
         const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
           const input = event.target
+          if (allowMath) {
+            const expression = normalizeExpression(
+              input.value,
+              thousand,
+              decimal,
+            )
+            if (isExpression(expression)) {
+              const evaluated = evaluateExpression(expression)
+              const result =
+                evaluated === undefined || fractionDigits === undefined
+                  ? evaluated
+                  : Number(evaluated.toFixed(fractionDigits))
+              // An unfinished calculation leaves text the schema rejects.
+              const next = result === undefined ? input.value : String(result)
+              setDraft({ text: input.value, value: next })
+              field.onChange(next)
+              return
+            }
+          }
+          setDraft(undefined)
           const caret = input.selectionStart ?? input.value.length
           // Keep the caret after the same number of digits once separators
           // are added or removed.
@@ -131,27 +189,68 @@ export const NumberInput = (properties: TProperties) => {
                 {label} {required && <sup className="text-destructive">*</sup>}
               </FormLabel>
             )}
-            <FormControl>
-              <UIInput
-                ref={(element) => {
-                  inputReference.current = element
-                  field.ref(element)
-                }}
-                id={id}
-                name={field.name}
-                aria-label={accessibleLabel}
-                title={accessibleLabel}
-                type="text"
-                inputMode="decimal"
-                autoComplete="off"
-                placeholder={placeholder}
-                autoFocus={autoFocus} // eslint-disable-line jsx-a11y/no-autofocus
-                value={display(raw, thousand, decimal)}
-                onChange={handleChange}
-                onBlur={field.onBlur}
-                disabled={disabled}
-              />
-            </FormControl>
+            <div className="relative">
+              <FormControl>
+                <UIInput
+                  ref={(element) => {
+                    inputReference.current = element
+                    field.ref(element)
+                  }}
+                  // Only when given: an undefined id would replace the one
+                  // the form control links the label to.
+                  {...(id && { id })}
+                  name={field.name}
+                  aria-label={accessibleLabel}
+                  title={accessibleLabel}
+                  type="text"
+                  inputMode={isCalculatorKeyboard ? 'text' : 'decimal'}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck={false}
+                  placeholder={placeholder}
+                  autoFocus={autoFocus} // eslint-disable-line jsx-a11y/no-autofocus
+                  value={activeDraft?.text ?? display(raw, thousand, decimal)}
+                  onChange={handleChange}
+                  onBlur={() => {
+                    setDraft(undefined)
+                    field.onBlur()
+                  }}
+                  disabled={disabled}
+                  className={cn(calculatorKeyboard && 'pr-10')}
+                />
+              </FormControl>
+              {calculatorKeyboard && !disabled && (
+                <button
+                  type="button"
+                  aria-label={t('numberInput.calculator')}
+                  title={t('numberInput.calculator')}
+                  aria-pressed={isCalculatorKeyboard}
+                  // Keeps the field focused, so the keyboard just switches.
+                  onPointerDown={(event) => event.preventDefault()}
+                  onClick={() => {
+                    setIsCalculatorKeyboard((current) => !current)
+                    inputReference.current?.focus()
+                  }}
+                  className={cn(
+                    'absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
+                    isCalculatorKeyboard
+                      ? 'text-primary'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  <Calculator className="size-4" />
+                </button>
+              )}
+            </div>
+            {activeDraft && !Number.isNaN(Number(activeDraft.value)) && (
+              <p
+                aria-live="polite"
+                className="text-xs text-muted-foreground tabular-nums"
+              >
+                = {display(activeDraft.value, thousand, decimal)}
+              </p>
+            )}
             {hint && <FormDescription>{hint}</FormDescription>}
             <FormMessage />
           </FormItem>

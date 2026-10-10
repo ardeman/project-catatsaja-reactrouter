@@ -20,6 +20,34 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Rearrange the menu and choose the page the app opens on, in Settings. Your choice follows you to other devices.',
+          id: 'Atur urutan menu dan pilih halaman yang dibuka saat aplikasi dibuka, di Pengaturan. Pilihanmu ikut ke perangkat lain.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'On phones, slide your finger across the bottom bar to switch pages.',
+          id: 'Di ponsel, geser jarimu di bilah bawah untuk berpindah halaman.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Type a calculation such as (24/22)*28500000 in an amount, exchange rate or account balance. The calculator button switches your phone to a keyboard with the symbols.',
+          id: 'Ketik perhitungan seperti (24/22)*28500000 di jumlah, kurs, atau saldo akun. Tombol kalkulator mengganti keyboard ponselmu ke keyboard dengan simbolnya.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Screen readers announce the labels of number fields.',
+          id: 'Pembaca layar kini membacakan label kolom angka.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Each book has an Analysis view: your savings rate, daily spending and top category, charts of cash flow and balance over time, and where your money went by category. Switch to a table to read every number.',
           id: 'Setiap buku punya tampilan Analisis: tingkat tabungan, pengeluaran harian dan kategori terbesar, grafik arus kas dan saldo dari waktu ke waktu, serta ke mana uangmu pergi per kategori. Ganti ke tabel untuk membaca setiap angka.',
         },

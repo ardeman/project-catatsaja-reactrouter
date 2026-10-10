@@ -433,6 +433,9 @@ export const EntryForm = (properties: TEntryFormProperties) => {
           <div className="grid grid-cols-[1fr_auto] items-end gap-2">
             <NumberInput
               name="amount"
+              allowMath
+              calculatorKeyboard
+              fractionDigits={currency.maximumFractionDigits}
               label={t('finances.form.amount.label')}
               required
             />
@@ -498,6 +501,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
             >
               <NumberInput
                 name="rate"
+                allowMath
                 label={t('finances.form.rate.label', {
                   from: currency.code,
                   to: book.code,

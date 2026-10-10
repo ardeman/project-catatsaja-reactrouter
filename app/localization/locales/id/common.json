@@ -669,6 +669,13 @@
       "general": "Profil, tema, ukuran teks, bahasa",
       "account": "Email dan cara masuk",
       "currency": "Format angka dan kurs"
+    },
+    "navigation": {
+      "title": "Navigasi",
+      "description": "Atur urutan menu dan pilih halaman yang dibuka saat aplikasi dibuka.",
+      "order": "Urutan menu",
+      "startPage": "Dibuka di",
+      "startPageHint": "Halaman yang tampil saat kamu membuka aplikasi atau masuk."
     }
   },
   "notFound": {
@@ -812,5 +819,8 @@
     "choose": "Pilih tanggal",
     "today": "Hari ini",
     "yesterday": "Kemarin"
+  },
+  "numberInput": {
+    "calculator": "Keyboard kalkulator: ketik perhitungan seperti (24/22)*28500000"
   }
 }

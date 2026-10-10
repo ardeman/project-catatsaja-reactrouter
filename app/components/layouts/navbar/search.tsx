@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 
 import { Input } from '~/components/ui/input'
+import { navs } from '~/lib/constants/navigation'
 import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useGetNotes } from '~/lib/hooks/use-get-notes'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
@@ -19,8 +20,6 @@ import { TMenu } from '~/lib/types/common'
 import { toPlainText } from '~/lib/utils/parser'
 import { excerpt, normalize } from '~/lib/utils/search'
 import { cn } from '~/lib/utils/shadcn'
-
-import { navs } from './constant'
 
 // Results shown per section; the rest are one "See all" away.
 const LIMIT = 5
@@ -163,6 +162,7 @@ const Results = (properties: TResultsProperties) => {
   const isLoading = isLoadingNotes || isLoadingTasks || isLoadingFinances
   const [active, setActive] = useState(0)
   const groups = useMemo(() => {
+    // Default order: the search groups results by page, not by the menu.
     const [noteNav, taskNav, financeNav] = navs(t)
     const normalizedQuery = normalize(query)
     const toGroup = <T extends { id: string; title?: string }>(

@@ -669,6 +669,13 @@
       "general": "Profile, theme, text size, language",
       "account": "Email and sign-in",
       "currency": "Number format and rates"
+    },
+    "navigation": {
+      "title": "Navigation",
+      "description": "Arrange the menu and choose the page the app opens on.",
+      "order": "Menu order",
+      "startPage": "Opens on",
+      "startPageHint": "The page shown when you open the app or sign in."
     }
   },
   "notFound": {
@@ -812,5 +819,8 @@
     "choose": "Choose a date",
     "today": "Today",
     "yesterday": "Yesterday"
+  },
+  "numberInput": {
+    "calculator": "Calculator keyboard: type a calculation such as (24/22)*28500000"
   }
 }

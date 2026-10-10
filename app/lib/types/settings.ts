@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { TNavPage } from '~/lib/constants/navigation'
 import { Theme, Size } from '~/lib/contexts/theme'
 import {
   generalSettingSchema,
@@ -15,6 +16,11 @@ export type TUpdateAppearanceRequest = {
   theme: Theme
   size: Size
   language: string
+}
+
+export type TUpdateNavigationRequest = {
+  navOrder: TNavPage[]
+  startPage: TNavPage
 }
 
 export type TCurrencyFormatRequest = z.infer<

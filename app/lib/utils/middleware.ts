@@ -2,6 +2,7 @@ import { User } from 'firebase/auth'
 import { NavigateFunction, type Location } from 'react-router'
 
 import { authPages, protectedPages } from '~/lib/configs/page'
+import { readStartPage } from '~/lib/constants/navigation'
 import { extractPathSegment } from '~/lib/utils/parser'
 
 type TProperties = {
@@ -30,7 +31,7 @@ export const middleware = (properties: TProperties) => {
 
   if (authPages.has(extractedPath) && user) {
     const redirect = new URLSearchParams(search).get('redirect')
-    const url = redirect || '/notes'
+    const url = redirect || `/${readStartPage()}`
     return navigate(url, { replace: true })
   }
 }

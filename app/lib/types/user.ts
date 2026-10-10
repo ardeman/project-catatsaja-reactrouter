@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { TNavPage } from '~/lib/constants/navigation'
 import { Theme, Size } from '~/lib/contexts/theme'
 import { TCurrencyFormatRequest } from '~/lib/types/settings'
 import { emailSchema, signInSchema, signUpSchema } from '~/lib/validations/user'
@@ -23,4 +24,7 @@ export type TUserResponse = {
   theme?: Theme
   size?: Size
   currencyFormat?: TCurrencyFormatRequest
+  // Main pages in the person's order, and the one the app opens on.
+  navOrder?: TNavPage[]
+  startPage?: TNavPage
 }
