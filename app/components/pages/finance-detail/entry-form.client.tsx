@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
+import { CategoryIcon } from '~/components/base/category-icon'
 import { DatePicker } from '~/components/base/date-picker'
 import { Input } from '~/components/base/input'
 import { NumberInput } from '~/components/base/number-input'
@@ -402,13 +403,13 @@ export const EntryForm = (properties: TEntryFormProperties) => {
                   <SelectGroup>
                     {financeCategories
                       .filter((option) => option.type === type)
-                      .map(({ key, icon: Icon }) => (
+                      .map(({ key }) => (
                         <SelectItem
                           key={key}
                           value={key}
                         >
                           <span className="flex items-center gap-2">
-                            <Icon className="size-4 text-muted-foreground" />
+                            <CategoryIcon category={key} />
                             {t(`finances.form.category.${key}.label`)}
                           </span>
                         </SelectItem>

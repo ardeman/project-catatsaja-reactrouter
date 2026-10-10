@@ -282,11 +282,47 @@
         },
         "income": {
           "label": "Income",
-          "description": "Salary, business profit, pocket money"
+          "description": "Salary, wages, pocket money"
         },
         "interest": {
           "label": "Interest",
-          "description": "Savings interest, investment returns"
+          "description": "Savings and deposit interest"
+        },
+        "bonus": {
+          "label": "Bonus",
+          "description": "Bonuses, holiday allowance (THR), commissions"
+        },
+        "business": {
+          "label": "Business",
+          "description": "Sales and business profit"
+        },
+        "freelance": {
+          "label": "Freelance",
+          "description": "Freelance work and side jobs"
+        },
+        "rent": {
+          "label": "Rental income",
+          "description": "Apartment, house, room or vehicle rent"
+        },
+        "investmentReturns": {
+          "label": "Investment returns",
+          "description": "Dividends, gains from stocks, funds or gold"
+        },
+        "crypto": {
+          "label": "Crypto",
+          "description": "Crypto sales, gains and staking rewards"
+        },
+        "exchangeGain": {
+          "label": "Exchange rate gain",
+          "description": "Gained from a difference in exchange rates"
+        },
+        "giftReceived": {
+          "label": "Gifts received",
+          "description": "Gifts, cash gifts, angpao"
+        },
+        "refund": {
+          "label": "Refunds & cashback",
+          "description": "Money back from purchases, cashback"
         },
         "otherIncome": {
           "label": "Other income",
@@ -359,7 +395,64 @@
       "rate": "Value of 1 unit in {{code}}",
       "firstIsDefault": "Your first currency becomes your default currency."
     },
-    "duplicateTitle": "{{title}} (copy)"
+    "duplicateTitle": "{{title}} (copy)",
+    "view": {
+      "label": "Show",
+      "entries": "Entries",
+      "analysis": "Analysis"
+    },
+    "analysis": {
+      "empty": "Add entries to see the analysis.",
+      "showAs": "Show as",
+      "chart": "Chart",
+      "table": "Table",
+      "net": "Net",
+      "weekOf": "Week of {{date}}",
+      "period": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
+      "cashFlow": {
+        "title": "Cash flow",
+        "label": "Income above the line and expenses below it, per period. Use the arrow keys to read each period.",
+        "subtitle": {
+          "day": "Income and expenses per day",
+          "week": "Income and expenses per week",
+          "month": "Income and expenses per month"
+        }
+      },
+      "balance": {
+        "title": "Balance over time",
+        "label": "The book's balance at the end of each period. Use the arrow keys to read each period."
+      },
+      "periodTable": {
+        "title": "By period"
+      },
+      "categories": {
+        "title": "By category",
+        "rest": "Other categories"
+      },
+      "insights": {
+        "savingsRate": "Savings rate",
+        "ofIncome": "of income kept",
+        "overspent": "Spent more than earned",
+        "dailySpending": "Daily spending",
+        "overDays_one": "average over {{count}} day",
+        "overDays_other": "average over {{count}} days",
+        "topCategory": "Top category",
+        "shareOfExpenses": "{{share}} of expenses",
+        "largestExpense": "Largest expense",
+        "change": {
+          "week": "Spending this week",
+          "month": "Spending this month"
+        },
+        "versus": {
+          "week": "vs the week before",
+          "month": "vs the month before"
+        }
+      }
+    }
   },
   "about": {
     "description": "<span>{{appName}}</span> is a personal productivity app for notes, checklists and finances."

@@ -39,6 +39,9 @@
   --color-chart-3: hsl(var(--chart-3));
   --color-chart-4: hsl(var(--chart-4));
   --color-chart-5: hsl(var(--chart-5));
+  --color-viz-income: var(--viz-income);
+  --color-viz-expense: var(--viz-expense);
+  --color-viz-balance: var(--viz-balance);
 
   --animate-rotate: rotate 3s infinite;
 
@@ -221,6 +224,21 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    /* Finance charts: validated as a set against each theme's card surface
+       (colour-blind separation and lightness). Light income is under 3:1
+       on white, so charts always offer a table and visible values. */
+    --viz-income: #1baf7a;
+    --viz-expense: #eb6834;
+    --viz-balance: #2a78d6;
+    /* Category colours: the same validated set, in palette order. */
+    --cat-1: #2a78d6;
+    --cat-2: #eb6834;
+    --cat-3: #1baf7a;
+    --cat-4: #eda100;
+    --cat-5: #e87ba4;
+    --cat-6: #008300;
+    --cat-7: #6250d6;
+    --cat-other: hsl(var(--muted-foreground));
   }
   /* Toasts sit above the phone bottom bar on the pages that have it, and
      above the floating create button too where there is one (list pages:
@@ -266,6 +284,16 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --viz-income: #199e70;
+    --viz-expense: #d95926;
+    --viz-balance: #3987e5;
+    --cat-1: #3987e5;
+    --cat-2: #d95926;
+    --cat-3: #199e70;
+    --cat-4: #c98500;
+    --cat-5: #d55181;
+    --cat-6: #008300;
+    --cat-7: #9085e9;
   }
 }
 

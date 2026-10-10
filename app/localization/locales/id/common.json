@@ -282,11 +282,47 @@
         },
         "income": {
           "label": "Pendapatan",
-          "description": "Gaji, laba usaha, uang saku"
+          "description": "Gaji, upah, uang saku"
         },
         "interest": {
           "label": "Bunga",
-          "description": "Bunga tabungan, hasil investasi"
+          "description": "Bunga tabungan dan deposito"
+        },
+        "bonus": {
+          "label": "Bonus",
+          "description": "Bonus, THR, komisi"
+        },
+        "business": {
+          "label": "Usaha",
+          "description": "Penjualan dan laba usaha"
+        },
+        "freelance": {
+          "label": "Freelance",
+          "description": "Pekerjaan lepas dan sampingan"
+        },
+        "rent": {
+          "label": "Pendapatan sewa",
+          "description": "Sewa apartemen, rumah, kamar atau kendaraan"
+        },
+        "investmentReturns": {
+          "label": "Hasil investasi",
+          "description": "Dividen, keuntungan saham, reksa dana atau emas"
+        },
+        "crypto": {
+          "label": "Kripto",
+          "description": "Penjualan, keuntungan dan hadiah staking kripto"
+        },
+        "exchangeGain": {
+          "label": "Selisih kurs",
+          "description": "Keuntungan dari selisih nilai tukar"
+        },
+        "giftReceived": {
+          "label": "Hadiah diterima",
+          "description": "Hadiah, uang pemberian, angpao"
+        },
+        "refund": {
+          "label": "Refund & cashback",
+          "description": "Uang kembali dari pembelian, cashback"
         },
         "otherIncome": {
           "label": "Pemasukan lainnya",
@@ -359,7 +395,64 @@
       "rate": "Nilai 1 unit dalam {{code}}",
       "firstIsDefault": "Mata uang pertamamu menjadi mata uang default."
     },
-    "duplicateTitle": "{{title}} (salinan)"
+    "duplicateTitle": "{{title}} (salinan)",
+    "view": {
+      "label": "Tampilkan",
+      "entries": "Entri",
+      "analysis": "Analisis"
+    },
+    "analysis": {
+      "empty": "Tambahkan entri untuk melihat analisis.",
+      "showAs": "Tampilkan sebagai",
+      "chart": "Grafik",
+      "table": "Tabel",
+      "net": "Bersih",
+      "weekOf": "Minggu {{date}}",
+      "period": {
+        "day": "Hari",
+        "week": "Minggu",
+        "month": "Bulan"
+      },
+      "cashFlow": {
+        "title": "Arus kas",
+        "label": "Pemasukan di atas garis dan pengeluaran di bawahnya, per periode. Gunakan tombol panah untuk membaca tiap periode.",
+        "subtitle": {
+          "day": "Pemasukan dan pengeluaran per hari",
+          "week": "Pemasukan dan pengeluaran per minggu",
+          "month": "Pemasukan dan pengeluaran per bulan"
+        }
+      },
+      "balance": {
+        "title": "Saldo dari waktu ke waktu",
+        "label": "Saldo buku di akhir tiap periode. Gunakan tombol panah untuk membaca tiap periode."
+      },
+      "periodTable": {
+        "title": "Per periode"
+      },
+      "categories": {
+        "title": "Per kategori",
+        "rest": "Kategori lainnya"
+      },
+      "insights": {
+        "savingsRate": "Tingkat tabungan",
+        "ofIncome": "dari pemasukan tersisa",
+        "overspent": "Pengeluaran melebihi pemasukan",
+        "dailySpending": "Pengeluaran harian",
+        "overDays_one": "rata-rata selama {{count}} hari",
+        "overDays_other": "rata-rata selama {{count}} hari",
+        "topCategory": "Kategori terbesar",
+        "shareOfExpenses": "{{share}} dari pengeluaran",
+        "largestExpense": "Pengeluaran terbesar",
+        "change": {
+          "week": "Pengeluaran minggu ini",
+          "month": "Pengeluaran bulan ini"
+        },
+        "versus": {
+          "week": "dibanding minggu sebelumnya",
+          "month": "dibanding bulan sebelumnya"
+        }
+      }
+    }
   },
   "about": {
     "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi untuk catatan, daftar tugas, dan keuangan."

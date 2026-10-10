@@ -14,6 +14,40 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-11',
+    title: { en: 'Finance analysis', id: 'Analisis keuangan' },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Each book has an Analysis view: your savings rate, daily spending and top category, charts of cash flow and balance over time, and where your money went by category. Switch to a table to read every number.',
+          id: 'Setiap buku punya tampilan Analisis: tingkat tabungan, pengeluaran harian dan kategori terbesar, grafik arus kas dan saldo dari waktu ke waktu, serta ke mana uangmu pergi per kategori. Ganti ke tabel untuk membaca setiap angka.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'More income categories: bonus, business, freelance, rental income, investment returns, crypto, exchange rate gain, gifts received, and refunds & cashback.',
+          id: 'Kategori pemasukan baru: bonus, usaha, freelance, pendapatan sewa, hasil investasi, kripto, selisih kurs, hadiah diterima, serta refund & cashback.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Categories are colour-coded by group in entries, cards and charts.',
+          id: 'Kategori kini diberi warna per kelompok di entri, kartu, dan grafik.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Negative amounts are easier to read in dark mode.',
+          id: 'Jumlah negatif lebih mudah dibaca di mode gelap.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-10',
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [

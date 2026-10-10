@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/base/card'
+import { CategoryIcon } from '~/components/base/category-icon'
 import { auth } from '~/lib/configs/firebase'
-import { findCategory } from '~/lib/constants/finance'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
 import { entryBookTotal, summarize } from '~/lib/utils/finance'
@@ -100,7 +100,7 @@ export const Card = (properties: TCardProperties) => {
           <p
             className={cn(
               'text-lg font-semibold',
-              balance < 0 && 'text-destructive',
+              balance < 0 && 'text-destructive-text',
             )}
           >
             {money(balance, finance.currency, balance < 0)}
@@ -115,16 +115,13 @@ export const Card = (properties: TCardProperties) => {
         {latest.length > 0 && (
           <ul className="grid gap-1.5 text-sm">
             {latest.map((entry) => {
-              const Icon = findCategory(entry.category)?.icon
               const isIncome = entry.type === 'income'
               return (
                 <li
                   key={entry.id}
                   className="flex min-w-0 items-center gap-2"
                 >
-                  {Icon && (
-                    <Icon className="size-4 shrink-0 text-muted-foreground" />
-                  )}
+                  <CategoryIcon category={entry.category} />
                   <span className="min-w-0 flex-1 truncate">
                     {entry.description ||
                       t(`finances.form.category.${entry.category}.label`)}

@@ -2,10 +2,12 @@ import { Plus } from 'lucide-react'
 import { useId, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 
 import { Action } from '~/components/base/action'
+import { CategoryIcon } from '~/components/base/category-icon'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
+import { Segmented } from '~/components/base/segmented'
 import {
   Select,
   SelectContent,
@@ -23,7 +25,7 @@ import {
   TooltipTrigger,
 } from '~/components/ui/tooltip'
 import { auth } from '~/lib/configs/firebase'
-import { fallbackCurrency, findCategory } from '~/lib/constants/finance'
+import { fallbackCurrency } from '~/lib/constants/finance'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateFinance } from '~/lib/hooks/use-create-finance'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
@@ -53,6 +55,7 @@ import { cn } from '~/lib/utils/shadcn'
 
 import { Accounts } from './accounts'
 import { AddCurrency } from './add-currency'
+import { Analysis } from './analysis'
 import { EntryForm } from './entry-form.client'
 import { TFormProperties } from './type'
 
@@ -79,6 +82,22 @@ export const Form = (properties: TFormProperties) => {
   const money = useMoney()
   const currencyFormat = userData?.currencyFormat ?? getDefaultCurrencyFormat()
   const navigate = useNavigate()
+  // Entries or their analysis, kept in the address so Back and reloading
+  // keep the choice.
+  const [searchParameters, setSearchParameters] = useSearchParams()
+  const view =
+    finance && searchParameters.get('view') === 'analysis'
+      ? 'analysis'
+      : 'entries'
+  const handleViewChange = (next: 'entries' | 'analysis') =>
+    setSearchParameters(
+      (current) => {
+        if (next === 'analysis') current.set('view', 'analysis')
+        else current.delete('view')
+        return current
+      },
+      { replace: true },
+    )
   const { mutate: mutateCreateFinance, isPending: isCreatePending } =
     useCreateFinance()
   const { mutate: mutateUpdateFinance } = useUpdateFinance()
@@ -410,7 +429,7 @@ export const Form = (properties: TFormProperties) => {
                 <dd
                   className={cn(
                     'text-lg font-semibold tabular-nums',
-                    balance < 0 && 'text-destructive',
+                    balance < 0 && 'text-destructive-text',
                   )}
                 >
                   {money(balance, book, balance < 0)}
@@ -442,133 +461,156 @@ export const Form = (properties: TFormProperties) => {
           </div>
         </form>
 
-        {!isReadOnly &&
-          (isEntryOpen ? (
-            <EntryForm
-              onClose={closeEntry}
-              book={book}
-              currencies={currencies}
-              history={history}
-              onSave={handleSaveEntry}
-              onDelete={handleDeleteEntry}
+        {finance && (
+          <div className="flex justify-center">
+            <Segmented
+              label={t('finances.view.label')}
+              value={view}
+              options={[
+                { value: 'entries', label: t('finances.view.entries') },
+                { value: 'analysis', label: t('finances.view.analysis') },
+              ]}
+              onChange={handleViewChange}
             />
-          ) : (
-            <Button
-              type="button"
-              className="motion-fade w-full gap-2"
-              onClick={() => openEntry()}
-            >
-              <Plus className="size-4" />
-              {t('finances.entry.add')}
-            </Button>
-          ))}
+          </div>
+        )}
 
-        {entries.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">
-            {t('finances.entry.empty')}
-          </p>
+        {view === 'analysis' ? (
+          <Analysis
+            entries={entries}
+            book={book}
+          />
         ) : (
-          groupedEntries.map(([date, dayEntries]) => (
-            <section
-              key={date}
-              className="grid gap-1"
-            >
-              <h2 className="text-xs font-medium text-muted-foreground">
-                {formatDay(date)}
-              </h2>
-              <ul className="glass-surface grid divide-y rounded-xl border">
-                {dayEntries.map((entry) => {
-                  if (!isReadOnly && editing?.id === entry.id)
-                    return (
-                      <li
-                        key={entry.id}
-                        className="min-w-0"
-                      >
-                        <EntryForm
-                          onClose={closeEntry}
-                          entry={editing}
-                          book={book}
-                          currencies={currencies}
-                          history={history}
-                          onSave={handleSaveEntry}
-                          onDelete={handleDeleteEntry}
-                        />
-                      </li>
-                    )
-                  const category = findCategory(entry.category)
-                  const Icon = category?.icon
-                  const isIncome = entry.type === 'income'
-                  const isForeign = entry.currency.code !== book.code
-                  const label = t(
-                    `finances.form.category.${entry.category}.label`,
-                  )
-                  const details = [
-                    entry.description ? label : '',
-                    entry.quantity === 1
-                      ? ''
-                      : `${entry.quantity} × ${money(entry.amount, entry.currency)}`,
-                    isForeign ? money(entryTotal(entry), entry.currency) : '',
-                  ].filter(Boolean)
-                  return (
-                    <li
-                      key={entry.id}
-                      className="min-w-0"
-                    >
-                      <button
-                        type="button"
-                        disabled={isReadOnly}
-                        onClick={() => openEntry(entry)}
-                        className="motion-enter grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default sm:grid-cols-[auto_minmax(0,1fr)_auto]"
-                      >
-                        {Icon && (
-                          <span className="row-span-2 flex size-9 items-center justify-center rounded-full bg-muted sm:row-span-1">
-                            <Icon className="size-4 text-muted-foreground" />
-                          </span>
-                        )}
-                        <span className="col-start-2 row-start-1 grid min-w-0">
-                          <span className="truncate font-medium">
-                            {entry.description || label}
-                          </span>
-                          {details.length > 0 && (
-                            <span className="truncate text-xs text-muted-foreground">
-                              {details.join(' · ')}
-                            </span>
-                          )}
-                          {isForeign && (
-                            <span className="text-xs wrap-break-word text-muted-foreground">
-                              {t('finances.entry.rateUsed', {
-                                from: entry.currency.code,
-                                to: book.code,
-                                rate: formatExchangeRate(
-                                  entry.rate,
-                                  currencyFormat,
-                                ),
-                              })}
-                            </span>
-                          )}
-                        </span>
-                        <span
-                          className={cn(
-                            'col-start-2 row-start-2 min-w-0 text-right font-medium wrap-break-word tabular-nums sm:col-start-3 sm:row-start-1',
-                            isIncome &&
-                              'text-emerald-600 dark:text-emerald-400',
-                          )}
+          <>
+            {!isReadOnly &&
+              (isEntryOpen ? (
+                <EntryForm
+                  onClose={closeEntry}
+                  book={book}
+                  currencies={currencies}
+                  history={history}
+                  onSave={handleSaveEntry}
+                  onDelete={handleDeleteEntry}
+                />
+              ) : (
+                <Button
+                  type="button"
+                  className="motion-fade w-full gap-2"
+                  onClick={() => openEntry()}
+                >
+                  <Plus className="size-4" />
+                  {t('finances.entry.add')}
+                </Button>
+              ))}
+
+            {entries.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                {t('finances.entry.empty')}
+              </p>
+            ) : (
+              groupedEntries.map(([date, dayEntries]) => (
+                <section
+                  key={date}
+                  className="grid gap-1"
+                >
+                  <h2 className="text-xs font-medium text-muted-foreground">
+                    {formatDay(date)}
+                  </h2>
+                  <ul className="glass-surface grid divide-y rounded-xl border">
+                    {dayEntries.map((entry) => {
+                      if (!isReadOnly && editing?.id === entry.id)
+                        return (
+                          <li
+                            key={entry.id}
+                            className="min-w-0"
+                          >
+                            <EntryForm
+                              onClose={closeEntry}
+                              entry={editing}
+                              book={book}
+                              currencies={currencies}
+                              history={history}
+                              onSave={handleSaveEntry}
+                              onDelete={handleDeleteEntry}
+                            />
+                          </li>
+                        )
+                      const isIncome = entry.type === 'income'
+                      const isForeign = entry.currency.code !== book.code
+                      const label = t(
+                        `finances.form.category.${entry.category}.label`,
+                      )
+                      const details = [
+                        entry.description ? label : '',
+                        entry.quantity === 1
+                          ? ''
+                          : `${entry.quantity} × ${money(entry.amount, entry.currency)}`,
+                        isForeign
+                          ? money(entryTotal(entry), entry.currency)
+                          : '',
+                      ].filter(Boolean)
+                      return (
+                        <li
+                          key={entry.id}
+                          className="min-w-0"
                         >
-                          {money(
-                            isIncome
-                              ? entryBookTotal(entry)
-                              : -entryBookTotal(entry),
-                            book,
-                            true,
-                          )}
-                        </span>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            </section>
-          ))
+                          <button
+                            type="button"
+                            disabled={isReadOnly}
+                            onClick={() => openEntry(entry)}
+                            className="motion-enter grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+                          >
+                            <CategoryIcon
+                              category={entry.category}
+                              chip
+                              className="row-span-2 sm:row-span-1"
+                            />
+                            <span className="col-start-2 row-start-1 grid min-w-0">
+                              <span className="truncate font-medium">
+                                {entry.description || label}
+                              </span>
+                              {details.length > 0 && (
+                                <span className="truncate text-xs text-muted-foreground">
+                                  {details.join(' · ')}
+                                </span>
+                              )}
+                              {isForeign && (
+                                <span className="text-xs wrap-break-word text-muted-foreground">
+                                  {t('finances.entry.rateUsed', {
+                                    from: entry.currency.code,
+                                    to: book.code,
+                                    rate: formatExchangeRate(
+                                      entry.rate,
+                                      currencyFormat,
+                                    ),
+                                  })}
+                                </span>
+                              )}
+                            </span>
+                            <span
+                              className={cn(
+                                'col-start-2 row-start-2 min-w-0 text-right font-medium wrap-break-word tabular-nums sm:col-start-3 sm:row-start-1',
+                                isIncome &&
+                                  'text-emerald-600 dark:text-emerald-400',
+                              )}
+                            >
+                              {money(
+                                isIncome
+                                  ? entryBookTotal(entry)
+                                  : -entryBookTotal(entry),
+                                book,
+                                true,
+                              )}
+                            </span>
+                          </button>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </section>
+              ))
+            )}
+          </>
         )}
       </div>
       <span className="flex justify-center gap-2 text-xs text-muted-foreground">
