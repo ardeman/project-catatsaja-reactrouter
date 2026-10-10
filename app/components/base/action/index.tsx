@@ -32,6 +32,7 @@ export const Action = (properties: TActionProperties) => {
     handleToggleCheckAll,
     checkedAll,
     buttonClassName: buttonClassNameProperty,
+    formId,
   } = properties
   const { t } = useTranslation()
   const buttonClassName = cn(
@@ -151,6 +152,7 @@ export const Action = (properties: TActionProperties) => {
           containerClassName="flex-1 flex items-center"
           className={buttonClassName}
           type="submit"
+          form={formId}
           aria-label={t('actions.save')}
           title={t('actions.save')}
           isLoading={isLoading}

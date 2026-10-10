@@ -9,6 +9,7 @@ import {
 import { variantClassName } from '~/components/ui/button'
 
 export type TButtonProperties = {
+  form?: string
   type?: 'button' | 'submit' | 'reset'
   onClick?: MouseEventHandler<HTMLButtonElement>
   className?: HTMLAttributes<HTMLButtonElement>['className']

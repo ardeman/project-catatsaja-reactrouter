@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from 'react'
-
 import {
   TFinanceCurrency,
   TFinanceEntry,
@@ -12,8 +10,7 @@ export type TFormProperties = {
 }
 
 export type TEntryFormProperties = {
-  open: boolean
-  setOpen: Dispatch<SetStateAction<boolean>>
+  onClose: () => void
   // The entry being edited; a new one when undefined.
   entry?: TFinanceEntry
   book: TFinanceCurrency

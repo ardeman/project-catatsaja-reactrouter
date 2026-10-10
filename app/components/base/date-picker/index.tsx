@@ -25,6 +25,7 @@ type TProperties = {
   name: string
   label?: string
   required?: boolean
+  defaultOpen?: boolean
 }
 
 const toDate = (value: string) => {
@@ -46,10 +47,10 @@ const daysAgo = (days: number) => {
 }
 
 export const DatePicker = (properties: TProperties) => {
-  const { name, label, required } = properties
+  const { name, label, required, defaultOpen = false } = properties
   const { control } = useFormContext()
   const { t, i18n } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(defaultOpen)
   const locale = i18n.language === 'id' ? indonesian : enUS
   const format = new Intl.DateTimeFormat(i18n.language, {
     weekday: 'short',

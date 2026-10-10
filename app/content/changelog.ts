@@ -20,6 +20,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Add and edit finance entries directly on the book page. After adding one, the form stays ready for the next, keeping your date, currency, rate and category. Fields follow date, quantity, description, category and amount. Date, currency and amount appear as small text until clicked, and return to text after adding an entry. Tighter spacing, a toggle with money-out and money-in icons, and @ for quantity keep the form compact on phones.',
+          id: 'Tambah dan ubah entri keuangan langsung di halaman buku. Setelah menambah entri, formulir tetap siap untuk berikutnya dengan tanggal, mata uang, kurs, dan kategori yang sama. Kolom berurutan dari tanggal, jumlah barang, keterangan, kategori, lalu nominal. Tanggal, mata uang, dan nominal tampil sebagai teks kecil hingga diklik, lalu kembali menjadi teks setelah entri ditambahkan. Jarak yang lebih rapat, tombol geser dengan ikon uang keluar dan masuk, serta @ untuk jumlah barang membuat formulir ringkas di ponsel.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Currency conversion labels and saved exchange rates use shorter wording.',
           id: 'Label konversi mata uang dan kurs tersimpan memakai kata-kata yang lebih singkat.',
         },

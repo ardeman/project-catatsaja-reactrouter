@@ -16,7 +16,9 @@ import { cn } from '~/lib/utils/shadcn'
 
 type TProperties = {
   name: string
+  id?: string
   label?: string
+  accessibleLabel?: string
   hint?: string
   required?: boolean
   placeholder?: string
@@ -56,7 +58,9 @@ const parse = (text: string, thousand: string, decimal: string) => {
 export const NumberInput = (properties: TProperties) => {
   const {
     name,
+    id,
     label,
+    accessibleLabel,
     hint,
     required,
     placeholder,
@@ -133,7 +137,10 @@ export const NumberInput = (properties: TProperties) => {
                   inputReference.current = element
                   field.ref(element)
                 }}
+                id={id}
                 name={field.name}
+                aria-label={accessibleLabel}
+                title={accessibleLabel}
                 type="text"
                 inputMode="decimal"
                 autoComplete="off"

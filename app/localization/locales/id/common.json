@@ -296,7 +296,8 @@
         "suggested": "Dipilih dari entri sebelumnya"
       },
       "quantity": {
-        "label": "Jumlah barang"
+        "label": "Jumlah barang",
+        "shortLabel": "@"
       },
       "date": {
         "label": "Tanggal"
@@ -327,6 +328,7 @@
       "incomeExpense": "Masuk {{income}} · Keluar {{expense}}"
     },
     "entry": {
+      "ready": "Entri ditambahkan. Siap untuk entri berikutnya.",
       "rateUsed": "1 {{from}} = {{rate}} {{to}}",
       "add": "Tambah entri",
       "edit": "Ubah entri",

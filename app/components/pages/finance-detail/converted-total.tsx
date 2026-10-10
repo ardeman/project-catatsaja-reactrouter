@@ -53,7 +53,7 @@ export const ConvertedTotal = (
     <div
       role="status"
       aria-atomic="true"
-      className="grid gap-2 rounded-lg border bg-muted/40 p-3 text-sm"
+      className="grid gap-1 rounded-lg border bg-muted/40 px-2 py-1.5 text-xs"
     >
       {isForeign && (
         <p className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">

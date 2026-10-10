@@ -54,6 +54,7 @@ export type TActionProperties = {
   handleToggleCheckAll?: () => void
   checkedAll?: boolean
   buttonClassName?: HTMLAttributes<HTMLButtonElement>['className']
+  formId?: string
 }
 
 export type TMenu = {

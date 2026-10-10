@@ -296,7 +296,8 @@
         "suggested": "Chosen from your earlier entries"
       },
       "quantity": {
-        "label": "Quantity"
+        "label": "Quantity",
+        "shortLabel": "@"
       },
       "date": {
         "label": "Date"
@@ -327,6 +328,7 @@
       "incomeExpense": "In {{income}} · Out {{expense}}"
     },
     "entry": {
+      "ready": "Entry added. Ready for the next one.",
       "rateUsed": "1 {{from}} = {{rate}} {{to}}",
       "add": "Add entry",
       "edit": "Edit entry",

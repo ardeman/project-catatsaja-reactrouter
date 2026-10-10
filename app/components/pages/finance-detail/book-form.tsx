@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react'
-import { useMemo, useRef, useState } from 'react'
+import { useId, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
@@ -45,7 +45,7 @@ import {
 import { cn } from '~/lib/utils/shadcn'
 
 import { AddCurrency } from './add-currency'
-import { EntryForm } from './entry-form'
+import { EntryForm } from './entry-form.client'
 import { TFormProperties } from './type'
 
 const sameJson = (a: unknown, b: unknown) =>
@@ -53,6 +53,7 @@ const sameJson = (a: unknown, b: unknown) =>
 
 export const Form = (properties: TFormProperties) => {
   const { finance } = properties
+  const bookFormId = useId()
   const { t, i18n } = useTranslation()
   const {
     selectedFinance,
@@ -236,10 +237,7 @@ export const Form = (properties: TFormProperties) => {
 
   return (
     <FormProvider {...formMethods}>
-      <form
-        onSubmit={handleCreate}
-        className="group/form is-shown mx-auto w-full max-w-3xl space-y-6"
-      >
+      <div className="group/form is-shown mx-auto w-full max-w-3xl space-y-6">
         <div className="sticky top-20 z-40 flex justify-center md:top-24">
           {finance ? (
             <Action
@@ -263,116 +261,137 @@ export const Form = (properties: TFormProperties) => {
               buttonClassName="glass-surface"
               isLoading={isCreatePending}
               isCreate={true}
+              formId={bookFormId}
               handleBack={handleBackFinance}
               disabled={!isDirty}
             />
           )}
         </div>
 
-        <div className="grid gap-3">
-          <Textarea
-            name="title"
-            placeholder={t('finances.form.title.label')}
-            inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
-            autoFocus={!selectedFinance} // eslint-disable-line jsx-a11y/no-autofocus
-            rows={1}
-            readOnly={isReadOnly}
-          />
-          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-            <span>{t('finances.form.bookCurrency.label')}</span>
-            <Select
-              value={book.code}
-              disabled={isReadOnly || entries.length > 0}
-              onValueChange={(code) => {
-                if (code === '__add-currency') {
-                  setIsAddingCurrency(true)
-                  return
-                }
-                const next = bookCurrencies.find(
-                  (option) => option.code === code,
-                )
-                if (next) setValue('currency', next, { shouldDirty: true })
-              }}
-            >
-              <SelectTrigger
-                aria-label={t('finances.form.bookCurrency.label')}
-                className="h-8 w-fit gap-2"
+        <form
+          id={bookFormId}
+          onSubmit={handleCreate}
+          className="space-y-6"
+        >
+          <div className="grid gap-3">
+            <Textarea
+              name="title"
+              placeholder={t('finances.form.title.label')}
+              inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
+              autoFocus={!selectedFinance} // eslint-disable-line jsx-a11y/no-autofocus
+              rows={1}
+              readOnly={isReadOnly}
+            />
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              <span>{t('finances.form.bookCurrency.label')}</span>
+              <Select
+                value={book.code}
+                disabled={isReadOnly || entries.length > 0}
+                onValueChange={(code) => {
+                  if (code === '__add-currency') {
+                    setIsAddingCurrency(true)
+                    return
+                  }
+                  const next = bookCurrencies.find(
+                    (option) => option.code === code,
+                  )
+                  if (next) setValue('currency', next, { shouldDirty: true })
+                }}
               >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {bookCurrencies.map((option) => (
-                  <SelectItem
-                    key={option.code}
-                    value={option.code}
-                  >
-                    {option.code} ({option.symbol})
+                <SelectTrigger
+                  aria-label={t('finances.form.bookCurrency.label')}
+                  className="h-8 w-fit gap-2"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {bookCurrencies.map((option) => (
+                    <SelectItem
+                      key={option.code}
+                      value={option.code}
+                    >
+                      {option.code} ({option.symbol})
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="__add-currency">
+                    <span className="flex items-center gap-2">
+                      <Plus className="size-4" />
+                      {t('finances.addCurrency.option')}
+                    </span>
                   </SelectItem>
-                ))}
-                <SelectItem value="__add-currency">
-                  <span className="flex items-center gap-2">
-                    <Plus className="size-4" />
-                    {t('finances.addCurrency.option')}
-                  </span>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            {entries.length > 0 && !isReadOnly && (
-              <span className="text-xs">
-                {t('finances.form.bookCurrency.locked')}
-              </span>
-            )}
-            {currencies.length === 0 && !isReadOnly && (
-              <Link
-                to="/settings/currency"
-                className="text-xs underline underline-offset-4"
-              >
-                {t('finances.form.bookCurrency.setup')}
-              </Link>
-            )}
-          </div>
-        </div>
-
-        <dl className="glass-surface grid grid-cols-2 gap-x-2 gap-y-3 rounded-xl border p-4 sm:grid-cols-3">
-          <div className="col-span-2 sm:col-span-1">
-            <dt className="text-xs text-muted-foreground">
-              {t('finances.summary.balance')}
-            </dt>
-            <dd
-              className={cn(
-                'text-lg font-semibold tabular-nums',
-                balance < 0 && 'text-destructive',
+                </SelectContent>
+              </Select>
+              {entries.length > 0 && !isReadOnly && (
+                <span className="text-xs">
+                  {t('finances.form.bookCurrency.locked')}
+                </span>
               )}
-            >
-              {money(balance, book, balance < 0)}
-            </dd>
+              {currencies.length === 0 && !isReadOnly && (
+                <Link
+                  to="/settings/currency"
+                  className="text-xs underline underline-offset-4"
+                >
+                  {t('finances.form.bookCurrency.setup')}
+                </Link>
+              )}
+            </div>
           </div>
-          <div>
-            <dt className="text-xs text-muted-foreground">
-              {t('finances.summary.income')}
-            </dt>
-            <dd className="font-medium text-emerald-600 tabular-nums dark:text-emerald-400">
-              {money(income, book)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-muted-foreground">
-              {t('finances.summary.expense')}
-            </dt>
-            <dd className="font-medium tabular-nums">{money(expense, book)}</dd>
-          </div>
-        </dl>
 
-        {!isReadOnly && (
-          <Button
-            type="button"
-            className="w-full gap-2"
-            onClick={() => openEntry()}
-          >
-            <Plus className="size-4" />
-            {t('finances.entry.add')}
-          </Button>
-        )}
+          <dl className="glass-surface grid grid-cols-2 gap-x-2 gap-y-3 rounded-xl border p-4 sm:grid-cols-3">
+            <div className="col-span-2 sm:col-span-1">
+              <dt className="text-xs text-muted-foreground">
+                {t('finances.summary.balance')}
+              </dt>
+              <dd
+                className={cn(
+                  'text-lg font-semibold tabular-nums',
+                  balance < 0 && 'text-destructive',
+                )}
+              >
+                {money(balance, book, balance < 0)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">
+                {t('finances.summary.income')}
+              </dt>
+              <dd className="font-medium text-emerald-600 tabular-nums dark:text-emerald-400">
+                {money(income, book)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">
+                {t('finances.summary.expense')}
+              </dt>
+              <dd className="font-medium tabular-nums">
+                {money(expense, book)}
+              </dd>
+            </div>
+          </dl>
+        </form>
+
+        {!isReadOnly &&
+          (isEntryOpen ? (
+            <EntryForm
+              key={editing?.id ?? 'new'}
+              onClose={() => setIsEntryOpen(false)}
+              entry={editing}
+              book={book}
+              currencies={currencies}
+              history={history}
+              onSave={handleSaveEntry}
+              onDelete={handleDeleteEntry}
+            />
+          ) : (
+            <Button
+              type="button"
+              className="w-full gap-2"
+              onClick={() => openEntry()}
+            >
+              <Plus className="size-4" />
+              {t('finances.entry.add')}
+            </Button>
+          ))}
 
         {entries.length === 0 ? (
           <p className="py-6 text-center text-sm text-muted-foreground">
@@ -464,7 +483,7 @@ export const Form = (properties: TFormProperties) => {
             </section>
           ))
         )}
-      </form>
+      </div>
       <span className="flex justify-center gap-2 text-xs text-muted-foreground">
         <span>
           {dateLabel}{' '}
@@ -475,16 +494,6 @@ export const Form = (properties: TFormProperties) => {
         </span>
         <SaveStatus status={saveStatus} />
       </span>
-      <EntryForm
-        open={isEntryOpen}
-        setOpen={setIsEntryOpen}
-        entry={editing}
-        book={book}
-        currencies={currencies}
-        history={history}
-        onSave={handleSaveEntry}
-        onDelete={handleDeleteEntry}
-      />
       <AddCurrency
         open={isAddingCurrency}
         setOpen={setIsAddingCurrency}
