@@ -73,7 +73,9 @@ export const Collection = <T extends TCollectionItem>(
           itemKeys={sectionItems.map((item) => item.id).join(',')}
           heading={heading}
         >
-          {sectionItems.map((item) => renderCard(item, ITEM_CLASS))}
+          {sectionItems.map((item) =>
+            renderCard(item, cn(ITEM_CLASS, 'motion-fade')),
+          )}
         </Layout>
       </section>
     )

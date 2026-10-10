@@ -2,7 +2,6 @@ import Masonry from 'masonry-layout'
 import { PropsWithChildren, useEffect, useRef } from 'react'
 
 export const ITEM_CLASS = 'collection-item'
-const STAMP_CLASS = 'collection-stamp'
 
 export type TLayoutProperties = PropsWithChildren<{
   itemKeys: string
@@ -22,9 +21,6 @@ export const MasonryGrid = (properties: TLayoutProperties) => {
       itemSelector: `.${ITEM_CLASS}`,
       gutter: 16,
       horizontalOrder: true,
-      fitWidth: true,
-      // The heading is stamped at the top so it lines up with the cards.
-      stamp: `.${STAMP_CLASS}`,
     })
     return () => {
       masonryReference.current?.destroy?.()
@@ -38,18 +34,16 @@ export const MasonryGrid = (properties: TLayoutProperties) => {
   }, [itemKeys])
 
   return (
-    <div className="flex justify-center">
+    <div className="mx-auto w-full max-w-(--breakpoint-2xl) space-y-3">
+      {heading && (
+        <h2 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+          {heading}
+        </h2>
+      )}
       <div
         ref={gridReference}
-        className="relative mx-auto w-full max-w-(--breakpoint-2xl)"
+        className="relative w-full"
       >
-        {heading && (
-          <h2
-            className={`${STAMP_CLASS} absolute top-0 left-0 h-8 w-full text-xs font-medium tracking-wide text-muted-foreground uppercase`}
-          >
-            {heading}
-          </h2>
-        )}
         {children}
       </div>
     </div>

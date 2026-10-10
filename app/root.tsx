@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
 import { LoadingSpinner } from '~/components/base/loading-spinner'
+import { PageTransition } from '~/components/base/page-transition'
 import { Rootlayout } from '~/components/layouts/root'
 import { ThemeHead } from '~/components/layouts/theme-head'
 import { FirebaseProvider } from '~/lib/contexts/firebase'
@@ -18,7 +19,9 @@ const App = () => {
     <FirebaseProvider>
       <ThemeProvider>
         <Rootlayout>
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </Rootlayout>
       </ThemeProvider>
     </FirebaseProvider>

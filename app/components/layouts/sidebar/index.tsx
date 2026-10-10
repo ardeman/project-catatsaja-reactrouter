@@ -12,7 +12,7 @@ export const Sidebar = () => {
   return (
     <nav
       aria-label={t('navigation.settings')}
-      className="glass-surface grid grid-cols-3 gap-1 rounded-lg border p-1 md:sticky md:top-24 md:grid-cols-1"
+      className="glass-surface sticky top-20 z-30 grid grid-cols-3 gap-1 rounded-lg border p-1 md:top-24 md:grid-cols-1"
     >
       {settings(t).map((setting) => {
         const isActive = pathname === setting.href

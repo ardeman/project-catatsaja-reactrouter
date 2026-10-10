@@ -119,12 +119,12 @@ export const LandingPage = () => {
               </InstallApp>
             </div>
           </div>
-          {/* Phones: the cards stack down the page. Wider: note and checklist
+          {/* Phones: the cards overlap down the page. Wider: note and checklist
               on the left, the finance book on top of both on the right. */}
-          <div className="relative mx-auto h-[41rem] w-full max-w-md sm:h-[28rem]">
+          <div className="relative mx-auto h-[39rem] w-full max-w-md sm:h-[28rem]">
             <NotePreview className="absolute top-0 left-0 z-10 -rotate-3" />
             <FinancePreview className="absolute top-[11rem] right-0 z-20 rotate-2 sm:top-1/2 sm:z-30 sm:-translate-y-1/2" />
-            <TaskPreview className="absolute top-[26.5rem] left-2 z-30 -rotate-1 sm:top-auto sm:bottom-0 sm:left-0 sm:z-20" />
+            <TaskPreview className="absolute top-[24rem] left-2 z-30 -rotate-1 sm:top-auto sm:bottom-0 sm:left-0 sm:z-20" />
           </div>
         </section>
 

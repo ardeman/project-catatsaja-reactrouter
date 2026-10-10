@@ -261,7 +261,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       ref={panelReference}
       aria-labelledby="finance-entry-title"
       className={cn(
-        'scroll-mt-36 p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight',
+        'motion-enter scroll-mt-36 p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight',
         !isEditing && 'glass-surface rounded-xl border',
       )}
     >
@@ -319,7 +319,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
           {savedCount > 0 && (
             <p
               role="status"
-              className="text-xs text-muted-foreground"
+              className="motion-fade text-xs text-muted-foreground"
             >
               {t('finances.entry.ready')}
             </p>

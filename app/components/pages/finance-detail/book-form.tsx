@@ -388,7 +388,7 @@ export const Form = (properties: TFormProperties) => {
           ) : (
             <Button
               type="button"
-              className="w-full gap-2"
+              className="motion-fade w-full gap-2"
               onClick={() => openEntry()}
             >
               <Plus className="size-4" />
@@ -451,7 +451,7 @@ export const Form = (properties: TFormProperties) => {
                         type="button"
                         disabled={isReadOnly}
                         onClick={() => openEntry(entry)}
-                        className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+                        className="motion-enter grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default sm:grid-cols-[auto_minmax(0,1fr)_auto]"
                       >
                         {Icon && (
                           <span className="row-span-2 flex size-9 items-center justify-center rounded-full bg-muted sm:row-span-1">

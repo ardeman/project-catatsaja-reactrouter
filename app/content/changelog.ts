@@ -18,6 +18,34 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'Pinning and unpinning cards keeps collection headings and card alignment consistent.',
+          id: 'Menyematkan dan melepas sematan kartu menjaga judul bagian dan posisi kartu tetap konsisten.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The landing page task preview overlaps the other cards on phones for a more compact layout.',
+          id: 'Pratinjau tugas di halaman awal bertumpuk dengan kartu lainnya di ponsel agar lebih ringkas.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Settings navigation stays visible while scrolling on phones too.',
+          id: 'Navigasi pengaturan tetap terlihat saat menggulir di ponsel juga.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Forms, new entries and page navigation have subtle transitions. Reduced-motion preferences turn them off.',
+          id: 'Formulir, entri baru, dan perpindahan halaman memiliki transisi halus. Transisi dinonaktifkan jika kamu memilih untuk mengurangi gerakan.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Editing an entry opens its form in place, with the Add entry button available above the list.',
