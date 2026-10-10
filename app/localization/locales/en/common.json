@@ -194,6 +194,10 @@
       "amount": {
         "label": "Amount"
       },
+      "convertedTotal": {
+        "book": "Total in {{code}}",
+        "default": "Default-currency total ({{code}})"
+      },
       "currency": {
         "label": "Currency"
       },
@@ -323,6 +327,7 @@
       "incomeExpense": "In {{income}} · Out {{expense}}"
     },
     "entry": {
+      "rateUsed": "Rate used: 1 {{from}} = {{rate}} {{to}}",
       "add": "Add entry",
       "edit": "Edit entry",
       "delete": "Delete entry",

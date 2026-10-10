@@ -35,6 +35,7 @@ import { cn } from '~/lib/utils/shadcn'
 import { entrySchema } from '~/lib/validations/finance'
 
 import { AddCurrency } from './add-currency'
+import { ConvertedTotal } from './converted-total'
 import { TEntryFormProperties } from './type'
 
 // The currency list item that opens "Add currency".
@@ -300,6 +301,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               required
             />
           )}
+
+          <ConvertedTotal
+            book={book}
+            currencies={currencies}
+          />
 
           <Input
             name="description"

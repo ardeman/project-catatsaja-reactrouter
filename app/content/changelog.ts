@@ -18,6 +18,20 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Entries in another currency show the exchange rate used, with readable details and totals on phones.',
+          id: 'Entri dalam mata uang lain menampilkan kurs yang dipakai, dengan rincian dan total yang mudah dibaca di ponsel.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'When entering another currency, see its converted total as you type, including quantity and your exchange rate. Your default-currency total also appears when it differs from the book.',
+          id: 'Saat mengisi mata uang lain, lihat total konversinya sambil mengetik, termasuk jumlah barang dan kursmu. Total dalam mata uang utamamu juga tampil jika berbeda dari buku.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'About, privacy, terms and changelog pages have even padding inside their cards and a smaller gap before the footer.',

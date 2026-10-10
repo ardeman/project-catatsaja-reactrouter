@@ -194,6 +194,10 @@
       "amount": {
         "label": "Nominal"
       },
+      "convertedTotal": {
+        "book": "Total dalam {{code}}",
+        "default": "Total dalam mata uang utama ({{code}})"
+      },
       "currency": {
         "label": "Mata uang"
       },
@@ -323,6 +327,7 @@
       "incomeExpense": "Masuk {{income}} · Keluar {{expense}}"
     },
     "entry": {
+      "rateUsed": "Kurs dipakai: 1 {{from}} = {{rate}} {{to}}",
       "add": "Tambah entri",
       "edit": "Ubah entri",
       "delete": "Hapus entri",

@@ -37,7 +37,11 @@ import {
   newestFirst,
   summarize,
 } from '~/lib/utils/finance'
-import { getDateLabel } from '~/lib/utils/parser'
+import {
+  formatExchangeRate,
+  getDateLabel,
+  getDefaultCurrencyFormat,
+} from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
 import { AddCurrency } from './add-currency'
@@ -62,6 +66,7 @@ export const Form = (properties: TFormProperties) => {
   const { data: currencies = [] } = useGetCurrencies()
   const { data: books = [] } = useGetFinances()
   const money = useMoney()
+  const currencyFormat = userData?.currencyFormat ?? getDefaultCurrencyFormat()
   const navigate = useNavigate()
   const { mutate: mutateCreateFinance, isPending: isCreatePending } =
     useCreateFinance()
@@ -407,14 +412,14 @@ export const Form = (properties: TFormProperties) => {
                         type="button"
                         disabled={isReadOnly}
                         onClick={() => openEntry(entry)}
-                        className="flex w-full items-center gap-3 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default"
+                        className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default sm:grid-cols-[auto_minmax(0,1fr)_auto]"
                       >
                         {Icon && (
-                          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
+                          <span className="row-span-2 flex size-9 items-center justify-center rounded-full bg-muted sm:row-span-1">
                             <Icon className="size-4 text-muted-foreground" />
                           </span>
                         )}
-                        <span className="grid min-w-0 flex-1">
+                        <span className="col-start-2 row-start-1 grid min-w-0">
                           <span className="truncate font-medium">
                             {entry.description || label}
                           </span>
@@ -423,10 +428,22 @@ export const Form = (properties: TFormProperties) => {
                               {details.join(' · ')}
                             </span>
                           )}
+                          {isForeign && (
+                            <span className="text-xs wrap-break-word text-muted-foreground">
+                              {t('finances.entry.rateUsed', {
+                                from: entry.currency.code,
+                                to: book.code,
+                                rate: formatExchangeRate(
+                                  entry.rate,
+                                  currencyFormat,
+                                ),
+                              })}
+                            </span>
+                          )}
                         </span>
                         <span
                           className={cn(
-                            'shrink-0 font-medium tabular-nums',
+                            'col-start-2 row-start-2 min-w-0 font-medium wrap-break-word tabular-nums sm:col-start-3 sm:row-start-1',
                             isIncome &&
                               'text-emerald-600 dark:text-emerald-400',
                           )}

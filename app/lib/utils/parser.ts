@@ -165,3 +165,23 @@ export const getDefaultCurrencyFormat = (): TCurrencyFormatRequest => ({
   currencyType: 'symbol',
   addSpace: false,
 })
+
+// Rates keep their stored precision instead of a currency's decimal limit.
+export const formatExchangeRate = (
+  rate: number,
+  format: TCurrencyFormatRequest,
+) => {
+  const [integer, fraction] = rate
+    .toLocaleString('en-US', {
+      useGrouping: false,
+      maximumSignificantDigits: 21,
+    })
+    .split('.')
+  const grouped = integer.replaceAll(
+    /\B(?=(\d{3})+(?!\d))/g,
+    format.thousandSeparator,
+  )
+  return fraction === undefined
+    ? grouped
+    : `${grouped}${format.decimalSeparator}${fraction}`
+}
