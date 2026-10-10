@@ -18,6 +18,20 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'In the installed app on iPhone, the status bar follows your theme and the bottom navigation bar stays clear of the screen corners.',
+          id: 'Di aplikasi yang terpasang di iPhone, bilah status mengikuti temamu dan bilah navigasi bawah tidak lagi terpotong sudut layar.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Account totals no longer overlap when the text is large.',
+          id: 'Total akun tidak lagi bertumpuk saat ukuran teks besar.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'Duplicate a book with its entries and accounts into a new book of your own, from the book or its card.',

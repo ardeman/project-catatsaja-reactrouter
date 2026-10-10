@@ -135,17 +135,19 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
             </ul>
 
             {/* The same columns as the rows above (without the remove
-              button), so totals line up under the balances. */}
+              button), so totals line up under the balances. Amounts stay
+              on one line; their column widens only when one doesn't fit
+              (large text on a phone). */}
             <dl
               className={cn(
-                'grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-baseline gap-x-1.5 gap-y-1',
+                'grid grid-cols-[minmax(0,3fr)_minmax(max-content,2fr)] items-center gap-x-1.5 gap-y-1',
                 !isReadOnly && 'pr-9.5',
               )}
             >
               <dt className="text-xs text-muted-foreground">
                 {t('finances.accounts.total')}
               </dt>
-              <dd className="pr-[calc(--spacing(3)+1px)] text-right text-sm font-medium wrap-break-word tabular-nums">
+              <dd className="pr-[calc(--spacing(3)+1px)] text-right text-sm font-medium whitespace-nowrap tabular-nums">
                 {money(actual, book)}
               </dd>
               <dt className="text-xs text-muted-foreground">
@@ -153,7 +155,7 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
               </dt>
               <dd
                 className={cn(
-                  'pr-[calc(--spacing(3)+1px)] text-right text-sm font-medium wrap-break-word tabular-nums',
+                  'pr-[calc(--spacing(3)+1px)] text-right text-sm font-medium whitespace-nowrap tabular-nums',
                   difference === 0
                     ? 'text-emerald-600 dark:text-emerald-400'
                     : 'text-destructive',

@@ -7,7 +7,19 @@ import {
   ReactNode,
 } from 'react'
 
-import { themeColors } from '~/lib/constants/metadata'
+import { statusBarStyles, themeColors } from '~/lib/constants/metadata'
+
+// A new tag instead of a changed one: some browsers (Safari) only repaint
+// their bars for a new tag.
+const replaceMeta = (name: string, content: string) => {
+  const current = document.querySelector(`meta[name="${CSS.escape(name)}"]`)
+  if (current?.getAttribute('content') === content) return
+  const meta = document.createElement('meta')
+  meta.name = name
+  meta.content = content
+  if (current) current.replaceWith(meta)
+  else document.head.append(meta)
+}
 
 export type Theme = 'system' | 'light' | 'dark'
 export type Size = 'small' | 'medium' | 'large'
@@ -65,17 +77,13 @@ export const ThemeProvider = ({
       const root = globalThis.document.documentElement
       root.classList.remove('light', 'dark')
       root.classList.add(resolved)
-      // The browser and installed-app bars follow the app's theme. A new tag
-      // instead of a changed one: some browsers (Safari) only repaint the
-      // bar for a new tag.
-      const color = document.createElement('meta')
-      color.name = 'theme-color'
-      color.content = themeColors[resolved]
-      const current = document.querySelector('meta[name="theme-color"]')
-      if (current?.getAttribute('content') !== color.content) {
-        if (current) current.replaceWith(color)
-        else document.head.append(color)
-      }
+      // The browser and installed-app bars follow the app's theme.
+      replaceMeta('theme-color', themeColors[resolved])
+      // iOS may apply a changed status bar only when the app next starts.
+      replaceMeta(
+        'apple-mobile-web-app-status-bar-style',
+        statusBarStyles[resolved],
+      )
     }
     apply()
     // In "system" mode, follow the device when it switches.

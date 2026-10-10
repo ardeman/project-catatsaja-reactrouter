@@ -10,6 +10,9 @@ const author = 'Ardeman'
 // Browser and installed-app bars match the page background.
 export const themeColor = '#ffffff'
 export const themeColors = { light: themeColor, dark: '#0c0a09' }
+// The installed app's status bar on iPhone and iPad, which ignores
+// theme-color: white with dark text, or black with light text.
+export const statusBarStyles = { light: 'default', dark: 'black' }
 export const appDescription =
   'Write notes, keep checklists, track your money and share them with the people you choose.'
 const manifest = '/site.webmanifest'
@@ -24,7 +27,8 @@ const appMeta: MetaDescriptor[] = [
   { name: 'mobile-web-app-capable', content: 'yes' },
   { name: 'apple-mobile-web-app-capable', content: 'yes' },
   { name: 'apple-mobile-web-app-title', content: appName },
-  { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+  // apple-mobile-web-app-status-bar-style follows the theme: ThemeHead
+  // creates it, like theme-color.
 ]
 
 export const withAppMeta = (routeMeta: MetaDescriptor[]): MetaDescriptor[] => [

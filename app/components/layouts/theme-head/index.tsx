@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
-import { themeColors } from '~/lib/constants/metadata'
+import { statusBarStyles, themeColors } from '~/lib/constants/metadata'
 
 // Runs before the first paint: the installed app skips the landing page, and
 // the saved theme and text size are applied so pages rendered at build time
@@ -23,6 +23,11 @@ const themeScript = `(() => {
       document.head.append(color)
     }
     color.content = dark ? '${themeColors.dark}' : '${themeColors.light}'
+    // iOS reads the installed app's status bar style when the app starts.
+    const bar = document.createElement('meta')
+    bar.name = 'apple-mobile-web-app-status-bar-style'
+    bar.content = dark ? '${statusBarStyles.dark}' : '${statusBarStyles.light}'
+    document.head.append(bar)
     const size = localStorage.getItem('tailwind-size')
     const sizes = { small: '87.5%', large: '112.5%' }
     if (sizes[size]) document.documentElement.style.setProperty('--base-size', sizes[size])
@@ -30,7 +35,8 @@ const themeScript = `(() => {
 })()`
 
 // The browser and installed-app bars follow the app's theme (not only the
-// device's) through one theme-color tag. The script creates it before the
+// device's) through one theme-color tag, and one status bar style tag for
+// iOS. The script creates it before the
 // first paint and ThemeProvider updates it; React does not render it, because
 // React would add its own copy once the script had changed it.
 const noSubscribe = () => () => {}
