@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'The entry form starts at the description, and goes back to it after each entry you add.',
+          id: 'Formulir entri dimulai dari deskripsi, dan kembali ke sana setelah setiap entri yang kamu tambahkan.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: "Add your wallets and bank accounts to a book with what they hold, and see how that compares with the book's balance.",

@@ -223,9 +223,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     }
   }
 
+  // Start at the description when the form opens and after each saved
+  // entry, so a batch can be typed without reaching for the pointer.
   useEffect(() => {
-    if (savedCount > 0) setFocus('amount')
     panelReference.current?.scrollIntoView({ block: 'start' })
+    setFocus('description')
   }, [savedCount, setFocus])
 
   useEffect(() => {
