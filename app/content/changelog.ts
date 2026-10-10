@@ -20,6 +20,20 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
+          en: 'About, privacy, terms and changelog pages have even padding inside their cards and a smaller gap before the footer.',
+          id: 'Halaman tentang aplikasi, privasi, syarat layanan, dan catatan perubahan memiliki jarak dalam kartu yang merata dan jarak lebih kecil ke bagian bawah.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Footer links have less space above them, and Catat Saja keeps the same brand color on every page, including the landing page.',
+          id: 'Jarak di atas tautan bagian bawah lebih rapat, dan Catat Saja memakai warna merek yang sama di setiap halaman, termasuk halaman depan.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
           en: 'Sign-in, sign-up and password reset fit better on phones, with clear headings, larger controls and accessible password visibility buttons.',
           id: 'Halaman masuk, pendaftaran, dan pengaturan ulang kata sandi lebih nyaman di ponsel, dengan judul yang jelas, kontrol lebih besar, dan tombol tampilan kata sandi yang mudah diakses.',
         },

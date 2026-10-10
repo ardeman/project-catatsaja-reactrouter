@@ -20,7 +20,7 @@ export const ChangelogPage = () => {
     }).format(new Date(`${date}T00:00:00Z`))
 
   return (
-    <div className="mx-auto grid min-h-fit w-full max-w-2xl gap-10 p-4 md:p-8">
+    <div className="grid gap-10">
       <div className="grid gap-1">
         <h1 className="text-3xl font-semibold">{t('navigation.changelog')}</h1>
         <p className="text-muted-foreground">{t('changelog.description')}</p>
