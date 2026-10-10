@@ -108,7 +108,7 @@ service cloud.firestore {
     match /finances/{financeId} {
       allow read: if canRead(resource.data.permissions.read);
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['title', 'content', 'currency']);
+      allow update: if canUpdateShared(['title', 'content', 'currency', 'accounts']);
       allow delete: if isOwner(resource.data.owner);
     }
   }

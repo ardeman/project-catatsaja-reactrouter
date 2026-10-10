@@ -16,6 +16,12 @@ import {
 import { Textarea } from '~/components/base/textarea'
 import { useFinance } from '~/components/pages/finances'
 import { Button } from '~/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '~/components/ui/tooltip'
 import { auth } from '~/lib/configs/firebase'
 import { fallbackCurrency, findCategory } from '~/lib/constants/finance'
 import { useAutosave } from '~/lib/hooks/use-autosave'
@@ -35,6 +41,7 @@ import {
   entryTotal,
   groupByDate,
   newestFirst,
+  normalizeAccounts,
   summarize,
 } from '~/lib/utils/finance'
 import {
@@ -44,6 +51,7 @@ import {
 } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
+import { Accounts } from './accounts'
 import { AddCurrency } from './add-currency'
 import { EntryForm } from './entry-form.client'
 import { TFormProperties } from './type'
@@ -107,6 +115,7 @@ export const Form = (properties: TFormProperties) => {
       title: selectedFinance?.title || '',
       currency: selectedFinance?.currency ?? initialCurrency,
       content: selectedFinance?.content || [],
+      accounts: selectedFinance?.accounts || [],
     },
     // Changes saved elsewhere must not overwrite what is being typed.
     resetOptions: { keepDirtyValues: true },
@@ -120,6 +129,8 @@ export const Form = (properties: TFormProperties) => {
   const watchTitle = watch('title')
   const book = watch('currency')
   const entries = watch('content')
+  const accounts = watch('accounts')
+  const isCurrencyLocked = !isReadOnly && entries.length > 0
   const { income, expense, balance } = useMemo(
     () => summarize(entries),
     [entries],
@@ -142,12 +153,14 @@ export const Form = (properties: TFormProperties) => {
   const [editing, setEditing] = useState<TFinanceEntry>()
   const [isEntryOpen, setIsEntryOpen] = useState(false)
   const [isAddingCurrency, setIsAddingCurrency] = useState(false)
+  const [isLockHintOpen, setIsLockHintOpen] = useState(false)
 
   // Writes only what differs from the stored book, so it is safe to call at
   // any time (autosave, leaving the page, the Save button).
   const save = async () => {
     if (isReadOnly) return
-    const data = getValues()
+    const values = getValues()
+    const data = { ...values, accounts: normalizeAccounts(values.accounts) }
     if (selectedFinance) {
       const changes: Partial<TFinanceForm> = {}
       if (data.title !== (selectedFinance.title || ''))
@@ -156,6 +169,8 @@ export const Form = (properties: TFormProperties) => {
         changes.currency = data.currency
       if (!sameJson(data.content, selectedFinance.content || []))
         changes.content = data.content
+      if (!sameJson(data.accounts, selectedFinance.accounts || []))
+        changes.accounts = data.accounts
       if (Object.keys(changes).length === 0) return
       setSaveStatus('saving')
       const isSaved = await mutateUpdateFinance({
@@ -165,7 +180,11 @@ export const Form = (properties: TFormProperties) => {
       setSaveStatus(isSaved ? 'saved' : 'error')
       return
     }
-    if (isCreating.current || (!data.title && data.content.length === 0)) return
+    if (
+      isCreating.current ||
+      (!data.title && data.content.length === 0 && data.accounts.length === 0)
+    )
+      return
     isCreating.current = true
     const reference = await mutateCreateFinance(data)
     // Stays set after success: the page switches to the new book and this
@@ -182,7 +201,12 @@ export const Form = (properties: TFormProperties) => {
 
   useAutosave({
     save,
-    watch: [watchTitle, JSON.stringify(book), JSON.stringify(entries)],
+    watch: [
+      watchTitle,
+      JSON.stringify(book),
+      JSON.stringify(entries),
+      JSON.stringify(accounts),
+    ],
     saveWhenIdle: !!selectedFinance,
   })
 
@@ -289,48 +313,72 @@ export const Form = (properties: TFormProperties) => {
             />
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <span>{t('finances.form.bookCurrency.label')}</span>
-              <Select
-                value={book.code}
-                disabled={isReadOnly || entries.length > 0}
-                onValueChange={(code) => {
-                  if (code === '__add-currency') {
-                    setIsAddingCurrency(true)
-                    return
-                  }
-                  const next = bookCurrencies.find(
-                    (option) => option.code === code,
-                  )
-                  if (next) setValue('currency', next, { shouldDirty: true })
-                }}
-              >
-                <SelectTrigger
-                  aria-label={t('finances.form.bookCurrency.label')}
-                  className="h-8 w-fit gap-2"
+              <TooltipProvider>
+                <Tooltip
+                  open={isCurrencyLocked && isLockHintOpen}
+                  onOpenChange={setIsLockHintOpen}
                 >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {bookCurrencies.map((option) => (
-                    <SelectItem
-                      key={option.code}
-                      value={option.code}
+                  <TooltipTrigger asChild>
+                    {/* A disabled control gets no pointer events, so the
+                        wrapper shows why it is locked, on hover or tap. */}
+                    <span
+                      className="inline-flex rounded-md"
+                      onClick={(event) => {
+                        if (!isCurrencyLocked) return
+                        event.preventDefault()
+                        setIsLockHintOpen(true)
+                      }}
                     >
-                      {option.code} ({option.symbol})
-                    </SelectItem>
-                  ))}
-                  <SelectItem value="__add-currency">
-                    <span className="flex items-center gap-2">
-                      <Plus className="size-4" />
-                      {t('finances.addCurrency.option')}
+                      <Select
+                        value={book.code}
+                        disabled={isReadOnly || isCurrencyLocked}
+                        onValueChange={(code) => {
+                          if (code === '__add-currency') {
+                            setIsAddingCurrency(true)
+                            return
+                          }
+                          const next = bookCurrencies.find(
+                            (option) => option.code === code,
+                          )
+                          if (next)
+                            setValue('currency', next, { shouldDirty: true })
+                        }}
+                      >
+                        <SelectTrigger
+                          aria-label={t('finances.form.bookCurrency.label')}
+                          className="h-8 w-fit gap-2 disabled:pointer-events-none"
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {bookCurrencies.map((option) => (
+                            <SelectItem
+                              key={option.code}
+                              value={option.code}
+                            >
+                              {option.code} ({option.symbol})
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="__add-currency">
+                            <span className="flex items-center gap-2">
+                              <Plus className="size-4" />
+                              {t('finances.addCurrency.option')}
+                            </span>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {isCurrencyLocked && (
+                        <span className="sr-only">
+                          {t('finances.form.bookCurrency.locked')}
+                        </span>
+                      )}
                     </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              {entries.length > 0 && !isReadOnly && (
-                <span className="text-xs">
-                  {t('finances.form.bookCurrency.locked')}
-                </span>
-              )}
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {t('finances.form.bookCurrency.locked')}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               {currencies.length === 0 && !isReadOnly && (
                 <Link
                   to="/settings/currency"
@@ -373,6 +421,12 @@ export const Form = (properties: TFormProperties) => {
               </dd>
             </div>
           </dl>
+
+          <Accounts
+            book={book}
+            balance={balance}
+            isReadOnly={isReadOnly}
+          />
         </form>
 
         {!isReadOnly &&

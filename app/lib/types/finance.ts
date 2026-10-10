@@ -10,9 +10,19 @@ export type TFinanceEntryForm = z.input<ReturnType<typeof entrySchema>>
 
 export type TFinanceCurrency = TFinanceEntry['currency']
 
-// A book: a title, the currency its totals are in, and its entries.
+// What someone actually holds in a wallet or bank account, in the book's
+// currency, to check the book's balance against.
+export type TFinanceAccount = {
+  id: string
+  name: string
+  balance: number
+}
+
+// A book: a title, the currency its totals are in, its entries and the
+// accounts it is checked against (missing on books made before them).
 export type TFinanceForm = z.infer<typeof bookSchema> & {
   content: TFinanceEntry[]
+  accounts?: TFinanceAccount[]
 }
 
 export type TCreateFinanceRequest = TFinanceForm

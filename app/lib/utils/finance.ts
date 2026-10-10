@@ -1,4 +1,4 @@
-import { TFinanceEntry } from '~/lib/types/finance'
+import { TFinanceAccount, TFinanceEntry } from '~/lib/types/finance'
 
 // Quantity × amount, in the entry's own currency.
 export const entryTotal = (entry: TFinanceEntry) =>
@@ -17,6 +17,17 @@ export const summarize = (entries: TFinanceEntry[] = []) => {
   }
   return { income, expense, balance: income - expense }
 }
+
+// Balances arrive as typed text ("1234.5") until saved as numbers.
+export const normalizeAccounts = (accounts: TFinanceAccount[] = []) =>
+  accounts.map((account) => ({
+    ...account,
+    name: account.name.trim(),
+    balance: Number(account.balance) || 0,
+  }))
+
+export const sumAccounts = (accounts: TFinanceAccount[] = []) =>
+  accounts.reduce((total, account) => total + (Number(account.balance) || 0), 0)
 
 // Today in the person's own time zone, as YYYY-MM-DD.
 export const today = () => {

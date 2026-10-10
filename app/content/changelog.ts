@@ -18,6 +18,20 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: "Add your wallets and bank accounts to a book with what they hold, and see how that compares with the book's balance.",
+          id: 'Tambahkan dompet dan rekening bankmu ke buku beserta isinya, lalu lihat perbandingannya dengan saldo buku.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: "Why a book's currency can't be changed now shows as a tip when you point at or tap it.",
+          id: 'Alasan mata uang buku tidak bisa diubah kini muncul sebagai tips saat kamu mengarahkan kursor atau mengetuknya.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Changelog updates from the same day appear together under one date.',
