@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finance analysis', id: 'Analisis keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'Holding a finger on the bottom bar no longer opens the link menu, so sliding to switch pages works.',
+          id: 'Menahan jari di bilah bawah tidak lagi membuka menu tautan, jadi geser untuk berpindah halaman berfungsi.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: "For an entry in another currency, type the total in the book's currency too: fill in any two of amount, rate and total, and the third is worked out.",

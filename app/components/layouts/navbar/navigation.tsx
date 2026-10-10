@@ -142,7 +142,10 @@ export const Navigation = (properties: TProperties) => {
       data-variant={variant}
       className={cn(
         'gap-6 text-lg font-medium',
-        isBottom && 'relative touch-none select-none',
+        // No link menu on a long press (iOS callout, Android context menu):
+        // holding the pill starts a swipe.
+        isBottom &&
+          'relative touch-none select-none [-webkit-touch-callout:none]',
         className,
       )}
       {...(isBottom && {
@@ -151,6 +154,8 @@ export const Navigation = (properties: TProperties) => {
         onPointerUp: handlePointerUp,
         onPointerCancel: handlePointerCancel,
         onClickCapture: handleClickCapture,
+        onContextMenu: (event: MouseEvent<HTMLElement>) =>
+          event.preventDefault(),
       })}
     >
       {isBottom && indicator && indicator.width > 0 && (
@@ -196,6 +201,7 @@ export const Navigation = (properties: TProperties) => {
             aria-current={isActive ? 'page' : undefined}
             draggable={false}
             className={cn(
+              isBottom && '[-webkit-touch-callout:none]',
               'flex items-center gap-2 whitespace-nowrap transition-colors hover:text-foreground',
               isActive ? 'text-primary' : 'text-muted-foreground',
               isBottom &&
