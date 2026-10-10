@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Health', id: 'Kesehatan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'In the entry form, the currency lines up with the amount and the quantity with the date.',
+          id: 'Di formulir entri, mata uang kini sejajar dengan nominal dan jumlah sejajar dengan tanggal.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'Health logs for you and your family: weight and BMI, child growth against the WHO standards, blood sugar, uric acid, cholesterol, calories and period estimates. Share a log like a note.',

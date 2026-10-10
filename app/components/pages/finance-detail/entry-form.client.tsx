@@ -281,7 +281,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       ref={panelReference}
       aria-labelledby="finance-entry-title"
       className={cn(
-        'motion-enter scroll-mt-36 p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight',
+        'motion-enter scroll-mt-36 p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_button[aria-haspopup=dialog]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight',
         !isEditing && 'glass-surface rounded-xl border',
       )}
     >
@@ -446,68 +446,65 @@ export const EntryForm = (properties: TEntryFormProperties) => {
             </div>
           </div>
 
-          {/* Top-aligned, so the currency stays level with the amount input
-              when a calculation's result shows under it. */}
-          <div className="grid grid-cols-[1fr_auto] items-start gap-2">
+          {/* The label on its own row, so the amount input and the currency
+              start level, with a calculation's result shown under the input. */}
+          <div className="grid grid-cols-[1fr_auto] items-start gap-x-2 gap-y-1">
+            <Label
+              htmlFor="finance-entry-amount"
+              className="col-span-2"
+            >
+              {t('finances.form.amount.label')}{' '}
+              <sup className="text-destructive">*</sup>
+            </Label>
             <NumberInput
               name="amount"
+              id="finance-entry-amount"
               allowMath
               calculatorKeyboard
               fractionDigits={currency.maximumFractionDigits}
-              label={t('finances.form.amount.label')}
-              required
             />
-            <div className="grid gap-1">
-              {/* Takes the place of the amount's label. */}
-              <span
-                aria-hidden="true"
-                className="invisible text-xs leading-tight"
-              >
-                {t('finances.form.amount.label')}
-              </span>
-              <EditableValue
-                label={t('finances.form.currency.label')}
-                value={`${currency.code} (${currency.symbol})`}
-                isEditing={editingFields.currency}
-                onEdit={() =>
-                  setEditingFields((fields) => ({ ...fields, currency: true }))
-                }
-              >
-                <div className="grid gap-1">
-                  <Label className="sr-only">
-                    {t('finances.form.currency.label')}
-                  </Label>
-                  <Select
-                    defaultOpen
-                    value={currency.code}
-                    onValueChange={handleCurrencyChange}
+            <EditableValue
+              label={t('finances.form.currency.label')}
+              value={`${currency.code} (${currency.symbol})`}
+              isEditing={editingFields.currency}
+              onEdit={() =>
+                setEditingFields((fields) => ({ ...fields, currency: true }))
+              }
+            >
+              <div className="grid gap-1">
+                <Label className="sr-only">
+                  {t('finances.form.currency.label')}
+                </Label>
+                <Select
+                  defaultOpen
+                  value={currency.code}
+                  onValueChange={handleCurrencyChange}
+                >
+                  <SelectTrigger
+                    aria-label={t('finances.form.currency.label')}
+                    className="w-28"
                   >
-                    <SelectTrigger
-                      aria-label={t('finances.form.currency.label')}
-                      className="w-28"
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {currencyOptions.map((option) => (
-                        <SelectItem
-                          key={option.code}
-                          value={option.code}
-                        >
-                          {option.code} ({option.symbol})
-                        </SelectItem>
-                      ))}
-                      <SelectItem value={ADD_CURRENCY}>
-                        <span className="flex items-center gap-2">
-                          <Plus className="size-4" />
-                          {t('finances.addCurrency.option')}
-                        </span>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyOptions.map((option) => (
+                      <SelectItem
+                        key={option.code}
+                        value={option.code}
+                      >
+                        {option.code} ({option.symbol})
                       </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </EditableValue>
-            </div>
+                    ))}
+                    <SelectItem value={ADD_CURRENCY}>
+                      <span className="flex items-center gap-2">
+                        <Plus className="size-4" />
+                        {t('finances.addCurrency.option')}
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </EditableValue>
           </div>
 
           {isForeign && (
