@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Changelog updates from the same day appear together under one date.',
+          id: 'Pembaruan catatan perubahan pada hari yang sama ditampilkan bersama di bawah satu tanggal.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Card groups and section headings stay centered when pinning and unpinning cards.',

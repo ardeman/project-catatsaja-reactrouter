@@ -10,6 +10,13 @@ const kindClassName: Record<TChangeKind, string> = {
   fixed: 'bg-muted text-muted-foreground',
 }
 
+const groupedReleases = [...new Set(releases.map((release) => release.date))]
+  .toSorted((a, b) => b.localeCompare(a))
+  .map(
+    (date) =>
+      [date, releases.filter((release) => release.date === date)] as const,
+  )
+
 export const ChangelogPage = () => {
   const { t, i18n } = useTranslation()
   const language = i18n.language === 'id' ? 'id' : 'en'
@@ -25,44 +32,44 @@ export const ChangelogPage = () => {
         <h1 className="text-3xl font-semibold">{t('navigation.changelog')}</h1>
         <p className="text-muted-foreground">{t('changelog.description')}</p>
       </div>
-      {releases.map((release) => (
+      {groupedReleases.map(([date, dayReleases]) => (
         <section
-          key={release.date}
-          aria-labelledby={`release-${release.date}`}
-          className="grid gap-3"
+          key={date}
+          aria-labelledby={`release-${date}`}
+          className="grid gap-5"
         >
-          <div className="grid gap-0.5">
-            <time
-              dateTime={release.date}
-              className="text-sm text-muted-foreground"
+          <h2
+            id={`release-${date}`}
+            className="text-xl font-semibold"
+          >
+            <time dateTime={date}>{formatDate(date)}</time>
+          </h2>
+          {dayReleases.map((release, index) => (
+            <div
+              key={`${release.title.en}-${index}`}
+              className="grid gap-3"
             >
-              {formatDate(release.date)}
-            </time>
-            <h2
-              id={`release-${release.date}`}
-              className="text-xl font-semibold"
-            >
-              {release.title[language]}
-            </h2>
-          </div>
-          <ul className="grid gap-2">
-            {release.changes.map((change) => (
-              <li
-                key={change.text.en}
-                className="flex items-start gap-3"
-              >
-                <span
-                  className={cn(
-                    'mt-0.5 w-20 shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium',
-                    kindClassName[change.kind],
-                  )}
-                >
-                  {t(`changelog.kind.${change.kind}`)}
-                </span>
-                <span>{change.text[language]}</span>
-              </li>
-            ))}
-          </ul>
+              <h3 className="font-semibold">{release.title[language]}</h3>
+              <ul className="grid gap-2">
+                {release.changes.map((change) => (
+                  <li
+                    key={change.text.en}
+                    className="flex items-start gap-3"
+                  >
+                    <span
+                      className={cn(
+                        'mt-0.5 w-20 shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium',
+                        kindClassName[change.kind],
+                      )}
+                    >
+                      {t(`changelog.kind.${change.kind}`)}
+                    </span>
+                    <span>{change.text[language]}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </section>
       ))}
       <p className="text-sm text-muted-foreground">
