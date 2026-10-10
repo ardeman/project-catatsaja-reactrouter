@@ -10,7 +10,6 @@ import { hydrateRoot } from 'react-dom/client'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
 import { HydratedRouter } from 'react-router/dom'
 
-import { publicPages } from './lib/configs/page'
 import { listenForInstallPrompt } from './lib/hooks/use-install-app'
 import i18n from './localization/i18n'
 import { resources } from './localization/resource'
@@ -48,12 +47,9 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
 }
 
 async function hydrate() {
-  // Public pages are rendered to HTML at build time in one language. React
-  // must hydrate them in that language, or the text won't match; the saved
-  // language is applied right after. Other pages contain no text yet.
+  // Public pages and the startup loading screen contain build-time text.
+  // Hydrate in the HTML language, then apply the person's saved language.
   const savedLanguage = readLanguageCookie()
-  const path = globalThis.location.pathname.replace(/(.)\/+$/, '$1')
-  const isPrerendered = publicPages.has(path)
   const pageLanguage = document.documentElement.lang || undefined
 
   await i18nextUse(initReactI18next) // Tell i18next to use the react-i18next plugin
@@ -61,7 +57,7 @@ async function hydrate() {
     .init({
       ...i18n, // spread the configuration
       resources,
-      ...(isPrerendered && pageLanguage && { lng: pageLanguage }),
+      ...(pageLanguage && { lng: pageLanguage }),
       detection: {
         // The language the person chose (saved in a cookie), else the page's
         // `<html lang>`.
@@ -77,7 +73,7 @@ async function hydrate() {
       document,
       <I18nextProvider i18n={i18next}>
         <StrictMode>
-          <SavedLanguage language={isPrerendered ? savedLanguage : undefined}>
+          <SavedLanguage language={savedLanguage}>
             <HydratedRouter />
           </SavedLanguage>
         </StrictMode>

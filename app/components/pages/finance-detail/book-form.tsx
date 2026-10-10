@@ -40,6 +40,7 @@ import {
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
+import { AddCurrency } from './add-currency'
 import { EntryForm } from './entry-form'
 import { TFormProperties } from './type'
 
@@ -134,6 +135,7 @@ export const Form = (properties: TFormProperties) => {
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
   const [editing, setEditing] = useState<TFinanceEntry>()
   const [isEntryOpen, setIsEntryOpen] = useState(false)
+  const [isAddingCurrency, setIsAddingCurrency] = useState(false)
 
   // Writes only what differs from the stored book, so it is safe to call at
   // any time (autosave, leaving the page, the Save button).
@@ -277,6 +279,10 @@ export const Form = (properties: TFormProperties) => {
               value={book.code}
               disabled={isReadOnly || entries.length > 0}
               onValueChange={(code) => {
+                if (code === '__add-currency') {
+                  setIsAddingCurrency(true)
+                  return
+                }
                 const next = bookCurrencies.find(
                   (option) => option.code === code,
                 )
@@ -298,6 +304,12 @@ export const Form = (properties: TFormProperties) => {
                     {option.code} ({option.symbol})
                   </SelectItem>
                 ))}
+                <SelectItem value="__add-currency">
+                  <span className="flex items-center gap-2">
+                    <Plus className="size-4" />
+                    {t('finances.addCurrency.option')}
+                  </span>
+                </SelectItem>
               </SelectContent>
             </Select>
             {entries.length > 0 && !isReadOnly && (
@@ -455,6 +467,19 @@ export const Form = (properties: TFormProperties) => {
         history={history}
         onSave={handleSaveEntry}
         onDelete={handleDeleteEntry}
+      />
+      <AddCurrency
+        open={isAddingCurrency}
+        setOpen={setIsAddingCurrency}
+        currencies={currencies}
+        onAdded={({ code, symbol, maximumFractionDigits }) => {
+          if (isReadOnly || getValues('content').length > 0) return
+          setValue(
+            'currency',
+            { code, symbol, maximumFractionDigits },
+            { shouldDirty: true },
+          )
+        }}
       />
     </FormProvider>
   )

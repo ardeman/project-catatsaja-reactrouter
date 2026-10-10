@@ -24,7 +24,7 @@ type TProperties = {
   onAdded: (currency: TCurrency) => void
 }
 
-// Adds a currency to the person's settings without leaving the entry form.
+// Adds a currency to the person's settings without leaving the book or entry.
 // Same rules as the settings page: the first currency is the default.
 export const AddCurrency = (properties: TProperties) => {
   const { open, setOpen, currencies, onAdded } = properties
@@ -82,7 +82,7 @@ export const AddCurrency = (properties: TProperties) => {
       <FormProvider {...formMethods}>
         <form
           onSubmit={(event) => {
-            // Don't submit the entry form underneath.
+            // Don't submit the book or entry form underneath.
             event.stopPropagation()
             void onSubmit(event)
           }}

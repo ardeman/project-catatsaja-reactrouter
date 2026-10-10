@@ -20,6 +20,20 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Add a currency directly from a finance book’s currency picker and use it immediately.',
+          id: 'Tambahkan mata uang langsung dari pilihan mata uang buku keuangan dan gunakan segera.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Loading icons change smoothly between animation cycles and stay still when your device requests reduced motion.',
+          id: 'Ikon pemuatan berganti dengan mulus di antara siklus animasi dan tetap diam saat perangkatmu meminta pengurangan gerakan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Search and finance books do less repeated work when you move through results or edit a title.',
           id: 'Pencarian dan buku keuangan kini mengurangi pemrosesan berulang saat kamu menelusuri hasil atau mengubah judul.',
         },

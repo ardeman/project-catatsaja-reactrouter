@@ -1,4 +1,5 @@
 {
+  "loading": "Memuat…",
   "time": {
     "created": "Dibuat {{time}}",
     "edited": "Diedit {{time}}"

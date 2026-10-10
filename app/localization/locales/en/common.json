@@ -1,4 +1,5 @@
 {
+  "loading": "Loading…",
   "time": {
     "created": "Created {{time}}",
     "edited": "Edited {{time}}"

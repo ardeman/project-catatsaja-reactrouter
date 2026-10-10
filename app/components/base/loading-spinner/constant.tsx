@@ -29,8 +29,3 @@ export const icons = [
   PiPlantDuotone,
   PiCurrencyCircleDollarDuotone,
 ]
-
-export const IconComponent = ({ counter }: { counter: number }) => {
-  const Icon = icons[counter]
-  return <Icon />
-}
