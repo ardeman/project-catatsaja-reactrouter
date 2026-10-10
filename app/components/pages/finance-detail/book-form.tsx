@@ -40,7 +40,6 @@ import {
   entryBookTotal,
   entryTotal,
   groupByDate,
-  newEntryId,
   newestFirst,
   normalizeAccounts,
   summarize,
@@ -71,6 +70,8 @@ export const Form = (properties: TFormProperties) => {
     handleShareFinance,
     handleUnlinkFinance,
     handleBackFinance,
+    handleDuplicateFinance,
+    isDuplicatePending,
   } = useFinance()
   const { data: userData } = useUserData()
   const { data: currencies = [] } = useGetCurrencies()
@@ -194,23 +195,10 @@ export const Form = (properties: TFormProperties) => {
     return reference
   }
 
-  // A new book of the person's own with the same content, not shared or
-  // pinned. Saves this one first so the copy has the latest changes.
+  // Copies what is on screen, after saving it, and opens the copy.
   const handleDuplicate = async () => {
     await save()
-    const { title, currency, content, accounts } = getValues()
-    const reference = await mutateCreateFinance(
-      {
-        title: title ? t('finances.duplicateTitle', { title }) : '',
-        currency,
-        content: content.map((entry) => ({ ...entry, id: newEntryId() })),
-        accounts: normalizeAccounts(accounts).map((account) => ({
-          ...account,
-          id: crypto.randomUUID(),
-        })),
-      },
-      t('finances.toast.duplicated'),
-    )
+    const reference = await handleDuplicateFinance({ finance: getValues() })
     if (reference) navigate(`/finances/${reference.id}`)
   }
 
@@ -303,7 +291,7 @@ export const Form = (properties: TFormProperties) => {
               handleShare={() => handleShareFinance({ finance })}
               handleUnlink={() => handleUnlinkFinance({ finance })}
               handleDuplicate={handleDuplicate}
-              isLoading={isCreatePending}
+              isLoading={isDuplicatePending}
               sharedCount={sharedCount}
               handleBack={handleBackFinance}
             />

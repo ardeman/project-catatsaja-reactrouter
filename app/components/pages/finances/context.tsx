@@ -4,16 +4,21 @@ import {
   PropsWithChildren,
   SetStateAction,
   useContext,
+  useRef,
   useState,
 } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useLocation } from 'react-router'
 
+import { useCreateFinance } from '~/lib/hooks/use-create-finance'
 import { useDeleteFinance } from '~/lib/hooks/use-delete-finance'
 import { usePinFinance } from '~/lib/hooks/use-pin-finance'
 import { useUnlinkFinance } from '~/lib/hooks/use-unlink-finance'
 import { TFinanceResponse } from '~/lib/types/finance'
+import { newEntryId, normalizeAccounts } from '~/lib/utils/finance'
 
 import {
+  THandleDuplicateFinance,
   THandleModifyFinance,
   THandlePinFinance,
   TFinanceConfirmation,
@@ -35,6 +40,10 @@ type FinanceContextValue = {
   handleUnlinkFinance: (properties: THandleModifyFinance) => void
   handlePinFinance: (properties: THandlePinFinance) => void
   handleShareFinance: (properties: THandleModifyFinance) => void
+  handleDuplicateFinance: (
+    properties: THandleDuplicateFinance,
+  ) => Promise<{ id: string } | undefined>
+  isDuplicatePending: boolean
   handleBackFinance: () => void
   handleCreateFinance: () => void
 }
@@ -51,6 +60,10 @@ const FinanceProvider = (properties: PropsWithChildren) => {
   const { mutate: mutatePinFinance } = usePinFinance()
   const { mutate: mutateDeleteFinance } = useDeleteFinance()
   const { mutate: mutateUnlinkFinance } = useUnlinkFinance()
+  const { mutate: mutateCreateFinance, isPending: isDuplicatePending } =
+    useCreateFinance()
+  const isDuplicating = useRef(false)
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
@@ -100,6 +113,35 @@ const FinanceProvider = (properties: PropsWithChildren) => {
     setSelectedFinance(finance)
   }
 
+  // A new book of the person's own with the same content, not shared or
+  // pinned. Ignores repeated presses while a copy is being made.
+  const handleDuplicateFinance = async (
+    properties_: THandleDuplicateFinance,
+  ) => {
+    const { title, currency, content, accounts } = properties_.finance
+    if (isDuplicating.current) return
+    isDuplicating.current = true
+    try {
+      return await mutateCreateFinance(
+        {
+          title: title ? t('finances.duplicateTitle', { title }) : '',
+          currency,
+          content: (content || []).map((entry) => ({
+            ...entry,
+            id: newEntryId(),
+          })),
+          accounts: normalizeAccounts(accounts).map((account) => ({
+            ...account,
+            id: crypto.randomUUID(),
+          })),
+        },
+        t('finances.toast.duplicated'),
+      )
+    } finally {
+      isDuplicating.current = false
+    }
+  }
+
   const handleCreateFinance = () => {
     navigate('/finances/create')
   }
@@ -124,6 +166,8 @@ const FinanceProvider = (properties: PropsWithChildren) => {
         handleUnlinkFinance,
         handlePinFinance,
         handleShareFinance,
+        handleDuplicateFinance,
+        isDuplicatePending,
         handleBackFinance,
         handleCreateFinance,
       }}

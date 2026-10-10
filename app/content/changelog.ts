@@ -20,8 +20,8 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: 'Duplicate a book with its entries and accounts into a new book of your own.',
-          id: 'Duplikat buku beserta entri dan akunnya menjadi buku baru milikmu sendiri.',
+          en: 'Duplicate a book with its entries and accounts into a new book of your own, from the book or its card.',
+          id: 'Duplikat buku beserta entri dan akunnya menjadi buku baru milikmu sendiri, dari buku atau kartunya.',
         },
       },
       {

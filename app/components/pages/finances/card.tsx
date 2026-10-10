@@ -28,6 +28,7 @@ export const Card = (properties: TCardProperties) => {
     handlePinFinance,
     handleShareFinance,
     handleUnlinkFinance,
+    handleDuplicateFinance,
   } = useFinance()
   const { data: userData } = useUserData()
   const money = useMoney()
@@ -67,6 +68,7 @@ export const Card = (properties: TCardProperties) => {
         handlePin={() => handlePinFinance({ finance, isPinned: !isPinned })}
         handleShare={() => handleShareFinance({ finance })}
         handleUnlink={() => handleUnlinkFinance({ finance })}
+        handleDuplicate={() => handleDuplicateFinance({ finance })}
         sharedCount={sharedCount}
       />
       <CardHeader className="pb-3">

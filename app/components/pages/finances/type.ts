@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'react'
 
-import { TFinanceResponse } from '~/lib/types/finance'
+import { TFinanceForm, TFinanceResponse } from '~/lib/types/finance'
 
 export type THandleModifyFinance = {
   finance: TFinanceResponse
@@ -9,6 +9,11 @@ export type THandleModifyFinance = {
 export type THandlePinFinance = {
   isPinned: boolean
 } & THandleModifyFinance
+
+// Any book content: a stored book, or the detail form's current values.
+export type THandleDuplicateFinance = {
+  finance: TFinanceForm
+}
 
 export type TCardProperties = {
   finance: TFinanceResponse
