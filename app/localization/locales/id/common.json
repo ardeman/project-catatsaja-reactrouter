@@ -329,7 +329,6 @@
     },
     "accounts": {
       "title": "Akunmu",
-      "hint": "Isi jumlah uang yang benar-benar ada di tiap dompet atau rekening bank untuk dicocokkan dengan buku.",
       "name": {
         "label": "Nama akun",
         "placeholder": "Dompet, bank…"
@@ -341,9 +340,10 @@
       "remove": "Hapus akun",
       "total": "Di akunmu",
       "difference": "Selisih dengan buku",
-      "match": "Akunmu cocok dengan buku.",
-      "more": "Uangmu {{amount}} lebih banyak dari yang tercatat di buku. Mungkin ada pemasukan yang belum dicatat.",
-      "less": "Uangmu {{amount}} lebih sedikit dari yang tercatat di buku. Mungkin ada pengeluaran yang belum dicatat."
+      "hint": "Tambahkan jumlah uang yang benar-benar ada di tiap dompet atau rekening bank untuk dicocokkan dengan buku.",
+      "match": "Cocok dengan buku.",
+      "more": "Mungkin ada pemasukan yang belum dicatat.",
+      "less": "Mungkin ada pengeluaran yang belum dicatat."
     },
     "entry": {
       "ready": "Entri ditambahkan. Siap untuk entri berikutnya.",

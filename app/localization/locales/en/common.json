@@ -329,7 +329,6 @@
     },
     "accounts": {
       "title": "Your accounts",
-      "hint": "Enter what you actually have in each wallet or bank account to check it against the book.",
       "name": {
         "label": "Account name",
         "placeholder": "Wallet, bank…"
@@ -341,9 +340,10 @@
       "remove": "Remove account",
       "total": "In your accounts",
       "difference": "Difference from the book",
-      "match": "Your accounts match the book.",
-      "more": "You have {{amount}} more than the book shows. Maybe some income isn't recorded yet.",
-      "less": "You have {{amount}} less than the book shows. Maybe some expenses aren't recorded yet."
+      "hint": "Add what you actually have in each wallet or bank account to check it against the book.",
+      "match": "Matches the book.",
+      "more": "Possibly unrecorded income.",
+      "less": "Possibly unrecorded expenses."
     },
     "entry": {
       "ready": "Entry added. Ready for the next one.",

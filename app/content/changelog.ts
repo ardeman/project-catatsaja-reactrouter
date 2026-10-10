@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Your accounts line up with their totals and take less space: tips on Add account and on the difference explain them.',
+          id: 'Akunmu kini sejajar dengan totalnya dan lebih ringkas: tips di Tambah akun dan di selisih menjelaskannya.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Typing in your accounts no longer jumps or resets while the book saves, and a balance you leave empty stays empty.',
