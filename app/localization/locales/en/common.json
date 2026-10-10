@@ -196,7 +196,8 @@
       },
       "convertedTotal": {
         "book": "Total {{code}}",
-        "default": "Default total ({{code}})"
+        "default": "Default total ({{code}})",
+        "hint": "Fill in any two of amount, rate and total: the third is worked out."
       },
       "currency": {
         "label": "Currency"

@@ -196,7 +196,8 @@
       },
       "convertedTotal": {
         "book": "Total {{code}}",
-        "default": "Total utama ({{code}})"
+        "default": "Total utama ({{code}})",
+        "hint": "Isi dua dari nominal, kurs, dan total: yang ketiga dihitung otomatis."
       },
       "currency": {
         "label": "Mata uang"

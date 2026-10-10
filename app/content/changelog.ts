@@ -20,6 +20,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: "For an entry in another currency, type the total in the book's currency too: fill in any two of amount, rate and total, and the third is worked out.",
+          id: 'Untuk entri dalam mata uang lain, total dalam mata uang buku kini bisa diketik: isi dua dari nominal, kurs, dan total, dan yang ketiga dihitung otomatis.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Rearrange the menu and choose the page the app opens on, in Settings. Your choice follows you to other devices.',
           id: 'Atur urutan menu dan pilih halaman yang dibuka saat aplikasi dibuka, di Pengaturan. Pilihanmu ikut ke perangkat lain.',
         },
