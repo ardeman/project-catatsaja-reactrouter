@@ -41,7 +41,7 @@ const Main = () => {
 
   return (
     <ScrollArea className="flex h-dvh w-full">
-      <main className="flex min-h-dvh w-screen flex-col bg-muted/40 pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
+      <main className="flex min-h-dvh w-screen flex-col bg-muted/40 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
         <Navbar />
         <Outlet />
       </main>

@@ -355,7 +355,7 @@ const Results = (properties: TResultsProperties) => {
       aria-label={t('navigation.search.placeholder')}
       // Keep focus in the box so a click doesn't close the list first.
       onMouseDown={(event) => event.preventDefault()}
-      className="fixed inset-x-4 top-[4.5rem] z-50 max-h-[70vh] overflow-y-auto rounded-xl border bg-popover p-2 text-popover-foreground shadow-lg md:absolute md:inset-x-0 md:top-full md:mt-2"
+      className="glass-surface fixed inset-x-4 top-[4.5rem] z-50 max-h-[70vh] overflow-y-auto rounded-xl border p-2 text-popover-foreground md:absolute md:inset-x-0 md:top-full md:mt-2"
     >
       {renderBody()}
     </ul>

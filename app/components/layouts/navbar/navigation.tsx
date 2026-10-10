@@ -44,7 +44,7 @@ export const Navigation = (properties: TProperties) => {
               isActive ? 'text-primary' : 'text-muted-foreground',
               isBottom &&
                 'h-16 min-w-0 flex-col justify-center gap-1 rounded-lg px-1 text-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
-              isBottom && isActive && 'bg-accent',
+              isBottom && isActive && 'bg-primary/15 text-foreground',
             )}
           >
             {Icon && (

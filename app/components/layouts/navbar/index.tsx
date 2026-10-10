@@ -66,7 +66,7 @@ export const Navbar = (properties: TProperties) => {
     <>
       <header
         className={cn(
-          'sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b border-border/40 bg-background/95 px-4 backdrop-blur-sm supports-backdrop-filter:bg-background/20 md:px-6',
+          'glass-surface sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b px-4 md:px-6',
           className,
         )}
       >
@@ -91,7 +91,7 @@ export const Navbar = (properties: TProperties) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-60"
+              className="glass-surface w-60"
             >
               <DropdownMenuLabel className="grid font-normal">
                 {userData?.displayName && (
@@ -145,7 +145,7 @@ export const Navbar = (properties: TProperties) => {
       </header>
       <Navigation
         variant="bottom"
-        className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 gap-1 border-t border-border/40 bg-background px-2 pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="glass-surface fixed inset-x-3 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1 rounded-2xl border p-1 md:hidden"
       />
     </>
   )

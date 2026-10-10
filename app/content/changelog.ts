@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Navigation, search results and floating controls have a glass finish, with solid surfaces when you prefer reduced transparency.',
+          id: 'Navigasi, hasil pencarian, dan kontrol mengambang tampil dengan efek kaca, dengan permukaan solid jika kamu memilih pengurangan transparansi.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Search results stay above the action buttons while viewing a note, task or finance book.',

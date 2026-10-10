@@ -239,7 +239,7 @@ export const Form = (properties: TFormProperties) => {
           {finance ? (
             <Action
               className="w-full"
-              buttonClassName="supports-backdrop-filter:bg-accent/20 backdrop-blur-sm"
+              buttonClassName="glass-surface"
               isOwner={isOwner}
               isEditable={isEditable}
               isPinned={isPinned}
@@ -255,7 +255,7 @@ export const Form = (properties: TFormProperties) => {
           ) : (
             <Action
               className="w-full"
-              buttonClassName="supports-backdrop-filter:bg-accent/20 backdrop-blur-sm"
+              buttonClassName="glass-surface"
               isLoading={isCreatePending}
               isCreate={true}
               handleBack={handleBackFinance}
