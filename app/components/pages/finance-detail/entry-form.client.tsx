@@ -111,11 +111,15 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const [isSuggested, setIsSuggested] = useState(false)
   const [isAddingCurrency, setIsAddingCurrency] = useState(false)
   const [savedCount, setSavedCount] = useState(0)
+  // Bumped after each reset: reset() drops the inputs' references until the
+  // next render, so focusing has to wait for that render.
+  const [focusRequest, setFocusRequest] = useState(0)
   // Past entries (all books, newest first), without the one being edited.
   const pastEntries = history.filter((item) => item.id !== entry?.id)
 
   useEffect(() => {
     setSavedCount(0)
+    setFocusRequest((count) => count + 1)
     categoryByType.current = {}
     isCategoryChosen.current = false
     isTypeChosen.current = false
@@ -226,9 +230,10 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   // Start at the description when the form opens and after each saved
   // entry, so a batch can be typed without reaching for the pointer.
   useEffect(() => {
+    if (focusRequest === 0) return
     panelReference.current?.scrollIntoView({ block: 'start' })
     setFocus('description')
-  }, [savedCount, setFocus])
+  }, [focusRequest, setFocus])
 
   useEffect(() => {
     if (editingFields.rate) setFocus('rate')
@@ -252,6 +257,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       setIsSuggested(false)
       setEditingFields({ date: false, currency: false, rate: false })
       setSavedCount((count) => count + 1)
+      setFocusRequest((count) => count + 1)
     },
     (errors) => {
       if (errors.rate) setEditingFields((fields) => ({ ...fields, rate: true }))

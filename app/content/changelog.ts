@@ -18,6 +18,27 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'Typing in your accounts no longer jumps or resets while the book saves, and a balance you leave empty stays empty.',
+          id: 'Mengetik di akunmu tidak lagi melompat atau ter-reset saat buku disimpan, dan saldo yang dibiarkan kosong tetap kosong.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Your accounts sit in the summary card, in a more compact layout.',
+          id: 'Akunmu kini berada di kartu ringkasan, dengan tampilan yang lebih ringkas.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Opening Add entry or an existing entry now puts the cursor in the description.',
+          id: 'Membuka Tambah entri atau entri yang sudah ada kini langsung menaruh kursor di deskripsi.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'The entry form starts at the description, and goes back to it after each entry you add.',

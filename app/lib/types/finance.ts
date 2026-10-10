@@ -11,11 +11,12 @@ export type TFinanceEntryForm = z.input<ReturnType<typeof entrySchema>>
 export type TFinanceCurrency = TFinanceEntry['currency']
 
 // What someone actually holds in a wallet or bank account, in the book's
-// currency, to check the book's balance against.
+// currency, to check the book's balance against. A balance not entered yet
+// is null, so it stays empty instead of turning into 0 once saved.
 export type TFinanceAccount = {
   id: string
   name: string
-  balance: number
+  balance: number | null
 }
 
 // A book: a title, the currency its totals are in, its entries and the

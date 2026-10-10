@@ -18,13 +18,17 @@ export const summarize = (entries: TFinanceEntry[] = []) => {
   return { income, expense, balance: income - expense }
 }
 
-// Balances arrive as typed text ("1234.5") until saved as numbers.
+// Balances arrive as typed text ("1234.5") until saved as numbers; one left
+// empty is saved as null.
 export const normalizeAccounts = (accounts: TFinanceAccount[] = []) =>
-  accounts.map((account) => ({
-    ...account,
-    name: account.name.trim(),
-    balance: Number(account.balance) || 0,
-  }))
+  accounts.map((account) => {
+    const text = String(account.balance ?? '')
+    const balance = Number(text)
+    return {
+      ...account,
+      balance: text === '' || Number.isNaN(balance) ? null : balance,
+    }
+  })
 
 export const sumAccounts = (accounts: TFinanceAccount[] = []) =>
   accounts.reduce((total, account) => total + (Number(account.balance) || 0), 0)

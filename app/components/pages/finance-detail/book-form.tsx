@@ -390,43 +390,45 @@ export const Form = (properties: TFormProperties) => {
             </div>
           </div>
 
-          <dl className="glass-surface grid grid-cols-2 gap-x-2 gap-y-3 rounded-xl border p-4 sm:grid-cols-3">
-            <div className="col-span-2 sm:col-span-1">
-              <dt className="text-xs text-muted-foreground">
-                {t('finances.summary.balance')}
-              </dt>
-              <dd
-                className={cn(
-                  'text-lg font-semibold tabular-nums',
-                  balance < 0 && 'text-destructive',
-                )}
-              >
-                {money(balance, book, balance < 0)}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('finances.summary.income')}
-              </dt>
-              <dd className="font-medium text-emerald-600 tabular-nums dark:text-emerald-400">
-                {money(income, book)}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('finances.summary.expense')}
-              </dt>
-              <dd className="font-medium tabular-nums">
-                {money(expense, book)}
-              </dd>
-            </div>
-          </dl>
+          <div className="glass-surface grid gap-3 rounded-xl border p-4">
+            <dl className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-3">
+              <div className="col-span-2 sm:col-span-1">
+                <dt className="text-xs text-muted-foreground">
+                  {t('finances.summary.balance')}
+                </dt>
+                <dd
+                  className={cn(
+                    'text-lg font-semibold tabular-nums',
+                    balance < 0 && 'text-destructive',
+                  )}
+                >
+                  {money(balance, book, balance < 0)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">
+                  {t('finances.summary.income')}
+                </dt>
+                <dd className="font-medium text-emerald-600 tabular-nums dark:text-emerald-400">
+                  {money(income, book)}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">
+                  {t('finances.summary.expense')}
+                </dt>
+                <dd className="font-medium tabular-nums">
+                  {money(expense, book)}
+                </dd>
+              </div>
+            </dl>
 
-          <Accounts
-            book={book}
-            balance={balance}
-            isReadOnly={isReadOnly}
-          />
+            <Accounts
+              book={book}
+              balance={balance}
+              isReadOnly={isReadOnly}
+            />
+          </div>
         </form>
 
         {!isReadOnly &&
