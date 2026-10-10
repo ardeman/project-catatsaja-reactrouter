@@ -48,7 +48,8 @@
       "saving": "Saving…",
       "saved": "Saved",
       "error": "Couldn't save"
-    }
+    },
+    "cancel": "Cancel"
   },
   "toast": {
     "itemDeleted": "{{item}} removed"
@@ -175,15 +176,16 @@
     }
   },
   "finances": {
-    "title": "finance",
-    "add": "Create new",
+    "title": "book",
+    "add": "New book",
     "form": {
       "add": "Add item",
       "title": {
         "label": "Title"
       },
       "description": {
-        "label": "Description"
+        "label": "Description",
+        "placeholder": "Optional"
       },
       "amount": {
         "label": "Amount"
@@ -192,7 +194,8 @@
         "label": "Currency"
       },
       "rate": {
-        "label": "Exchange rate"
+        "label": "1 {{from}} in {{to}}",
+        "hint": "Filled in from your currency settings; change it to the rate you actually got."
       },
       "type": {
         "label": "Type",
@@ -280,22 +283,53 @@
         "otherIncome": {
           "label": "Other income",
           "description": "Anything that doesn't fit another category"
-        }
+        },
+        "placeholder": "Choose a category"
+      },
+      "quantity": {
+        "label": "Quantity"
+      },
+      "date": {
+        "label": "Date"
+      },
+      "bookCurrency": {
+        "label": "Currency",
+        "locked": "Can't be changed once there are entries.",
+        "setup": "Set up your currencies"
       }
     },
     "toast": {
-      "deleted": "Deleted",
-      "created": "Created",
-      "unlinked": "Removed from your list",
-      "notFound": "This doesn't exist or isn't shared with you"
+      "deleted": "Book deleted",
+      "created": "Book created",
+      "unlinked": "Book removed from your list",
+      "notFound": "This book doesn't exist or isn't shared with you"
+    },
+    "untitled": "Untitled book",
+    "empty": {
+      "title": "No books yet",
+      "description": "Track money for a month, a trip or a project: add income and expenses, and see the balance."
+    },
+    "entries_one": "{{count}} entry",
+    "entries_other": "{{count}} entries",
+    "summary": {
+      "balance": "Balance",
+      "income": "Income",
+      "expense": "Expenses",
+      "incomeExpense": "In {{income}} · Out {{expense}}"
+    },
+    "entry": {
+      "add": "Add entry",
+      "edit": "Edit entry",
+      "delete": "Delete entry",
+      "empty": "No entries yet. Add your first income or expense."
     }
   },
   "about": {
-    "description": "<span>{{appName}}</span> is a personal productivity app for notes and checklists. Finances are coming soon."
+    "description": "<span>{{appName}}</span> is a personal productivity app for notes, checklists and finances."
   },
   "privacyPolicy": {
-    "updated": "Last updated: 9 October 2026",
-    "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks and settings you create.",
+    "updated": "Last updated: 10 October 2026",
+    "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books and settings you create.",
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices.",
     "sharing": "When you share a note or task, the people you share it with see its content. Your name, email address and photo are visible to other signed-in users, so they can find you to share with you.",
@@ -454,7 +488,8 @@
         },
         "rate": {
           "label": "Exchange rate",
-          "placeholder": "e.g., 1.00"
+          "placeholder": "e.g., 1.00",
+          "hint": "What 1 unit of this currency is worth in your default currency, e.g. 16000 for USD when your default is IDR."
         },
         "isDefault": {
           "label": "Set as default",
@@ -545,11 +580,10 @@
   "landing": {
     "signIn": "Sign in",
     "getStarted": "Create an account",
-    "comingSoon": "Coming soon",
     "hero": {
       "eyebrow": "Notes · Tasks · Finances",
       "title": "Just write it down.",
-      "description": "<span>{{appName}}</span> keeps your notes and checklists in one simple place, on your phone and your computer, and shares them with the people you choose."
+      "description": "<span>{{appName}}</span> keeps your notes, checklists and money in one simple place, on your phone and your computer, and shares them with the people you choose."
     },
     "features": {
       "title": "Everything you need to remember, nothing you don't",
@@ -570,8 +604,8 @@
         "description": "Works in any browser and installs like an app. Light or dark, in English or Bahasa Indonesia."
       },
       "finances": {
-        "title": "Finances",
-        "description": "Record income and spending in any currency, converted with your own exchange rates."
+        "title": "Money, sorted",
+        "description": "Keep books for a month, a trip or a project. Record income and expenses in any currency and see the balance at a glance."
       }
     },
     "cta": {

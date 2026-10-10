@@ -1,18 +1,23 @@
 import { z } from 'zod'
 
-import { itemSchema, titleSchema } from '~/lib/validations/finance'
+import { bookSchema, entrySchema } from '~/lib/validations/finance'
 
 import { THandleSetPermission, TPermissions, TTime } from './common'
 
-type TFinanceTitleForm = z.infer<ReturnType<typeof titleSchema>>
+export type TFinanceEntry = z.output<ReturnType<typeof entrySchema>>
 
-type TFinanceItemForm = z.infer<ReturnType<typeof itemSchema>>
+export type TFinanceEntryForm = z.input<ReturnType<typeof entrySchema>>
 
-type TFinanceForm = TFinanceTitleForm & { content: TFinanceItemForm[] }
+export type TFinanceCurrency = TFinanceEntry['currency']
+
+// A book: a title, the currency its totals are in, and its entries.
+export type TFinanceForm = z.infer<typeof bookSchema> & {
+  content: TFinanceEntry[]
+}
 
 export type TCreateFinanceRequest = TFinanceForm
 
-export type TUpdateFinanceRequest = { id: string } & TFinanceForm
+export type TUpdateFinanceRequest = { id: string } & Partial<TFinanceForm>
 
 export type TPinFinanceRequest = {
   finance: TFinanceResponse
@@ -24,7 +29,7 @@ export type TFinanceResponse = {
   isPinned?: boolean
   pinnedBy?: string[]
   createdAt: TTime
-  updatedAt: TTime
+  updatedAt?: TTime
   owner: string
   permissions?: TPermissions
 } & TFinanceForm

@@ -1,10 +1,9 @@
-import { Content } from './content'
-import { FinanceProvider } from './context'
+import { FinanceProvider } from '~/components/pages/finances'
 
-export const FinanceDetailPage = () => {
-  return (
-    <FinanceProvider>
-      <Content />
-    </FinanceProvider>
-  )
-}
+import { Content } from './content'
+
+export const FinanceDetailPage = () => (
+  <FinanceProvider>
+    <Content />
+  </FinanceProvider>
+)

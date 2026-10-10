@@ -39,7 +39,7 @@
       "number": {
         "exact": "Number must be exactly {{minimum}}",
         "inclusive": "Must be {{minimum}} or more",
-        "not_inclusive": "Number must be greater than {{minimum}}"
+        "not_inclusive": "Must be more than {{minimum}}"
       },
       "set": {
         "exact": "Invalid input",

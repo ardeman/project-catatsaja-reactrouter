@@ -80,7 +80,7 @@ export const formatCurrency = ({
   amount: number
   format: TCurrencyFormatRequest
   currencies?: TCurrency[]
-  currency?: TCurrency
+  currency?: Pick<TCurrency, 'code' | 'symbol' | 'maximumFractionDigits'>
 }): string => {
   // Find the default currency from the currencies list
   const defaultCurrency =

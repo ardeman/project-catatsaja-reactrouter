@@ -11,7 +11,7 @@ const author = 'Ardeman'
 export const themeColor = '#ffffff'
 export const themeColors = { light: themeColor, dark: '#0c0a09' }
 export const appDescription =
-  'Write notes, keep checklists and share them with the people you choose. Finances are coming soon.'
+  'Write notes, keep checklists, track your money and share them with the people you choose.'
 const manifest = '/site.webmanifest'
 export const githubUser = 'ardeman'
 export const githubRepo = 'project-catatsaja-reactrouter'

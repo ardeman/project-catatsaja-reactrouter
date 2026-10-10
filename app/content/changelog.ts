@@ -15,8 +15,29 @@ export type TRelease = {
 export const releases: TRelease[] = [
   {
     date: '2026-10-10',
-    title: { en: 'Theme fixes', id: 'Perbaikan tema' },
+    title: { en: 'Finances', id: 'Keuangan' },
     changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Finances: keep books for a month, a trip or a project, record income and expenses by category, and see the balance. Share a book like a note.',
+          id: 'Keuangan: buat buku untuk sebulan, perjalanan, atau proyek, catat pemasukan dan pengeluaran per kategori, dan lihat saldonya. Bagikan buku seperti catatan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Entries can be in any of your currencies: the exchange rate is filled in from your settings and saved with the entry, so totals never change later.',
+          id: 'Entri bisa memakai mata uang apa pun milikmu: kurs diisi dari pengaturan dan disimpan bersama entri, jadi totalnya tidak berubah di kemudian hari.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Currency settings explain what the exchange rate means and accept very small rates.',
+          id: 'Pengaturan mata uang menjelaskan arti kurs dan menerima kurs yang sangat kecil.',
+        },
+      },
       {
         kind: 'fixed',
         text: {

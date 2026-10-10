@@ -6,7 +6,7 @@ import {
   useContext,
   useState,
 } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 
 import { useDeleteFinance } from '~/lib/hooks/use-delete-finance'
 import { usePinFinance } from '~/lib/hooks/use-pin-finance'
@@ -35,7 +35,6 @@ type FinanceContextValue = {
   handleUnlinkFinance: (properties: THandleModifyFinance) => void
   handlePinFinance: (properties: THandlePinFinance) => void
   handleShareFinance: (properties: THandleModifyFinance) => void
-  handleOpenFinance: (finance: TFinanceResponse) => void
   handleBackFinance: () => void
   handleCreateFinance: () => void
 }
@@ -105,10 +104,6 @@ const FinanceProvider = (properties: PropsWithChildren) => {
     navigate('/finances/create')
   }
 
-  const handleOpenFinance = (finance: TFinanceResponse) => {
-    navigate(`/finances/${finance.id}`)
-  }
-
   const handleBackFinance = () => {
     navigate('/finances')
   }
@@ -129,7 +124,6 @@ const FinanceProvider = (properties: PropsWithChildren) => {
         handleUnlinkFinance,
         handlePinFinance,
         handleShareFinance,
-        handleOpenFinance,
         handleBackFinance,
         handleCreateFinance,
       }}
@@ -139,11 +133,7 @@ const FinanceProvider = (properties: PropsWithChildren) => {
   )
 }
 
-/**
- * Used by the finance forms, which are still placeholders.
- * @public
- */
-export const useFinance = () => {
+const useFinance = () => {
   const context = useContext(FinanceContext)
   if (context === undefined) {
     throw new Error('useFinance must be used within a FinanceProvider')
@@ -151,4 +141,4 @@ export const useFinance = () => {
   return context
 }
 
-export { FinanceProvider }
+export { FinanceProvider, useFinance }

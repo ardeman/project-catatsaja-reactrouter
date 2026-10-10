@@ -48,7 +48,8 @@
       "saving": "Menyimpan…",
       "saved": "Tersimpan",
       "error": "Gagal menyimpan"
-    }
+    },
+    "cancel": "Batal"
   },
   "toast": {
     "itemDeleted": "{{item}} dihapus"
@@ -175,24 +176,26 @@
     }
   },
   "finances": {
-    "title": "keuangan",
-    "add": "Buat baru",
+    "title": "buku",
+    "add": "Buku baru",
     "form": {
       "add": "Tambah item",
       "title": {
         "label": "Judul"
       },
       "description": {
-        "label": "Deskripsi"
+        "label": "Keterangan",
+        "placeholder": "Opsional"
       },
       "amount": {
-        "label": "Jumlah"
+        "label": "Nominal"
       },
       "currency": {
         "label": "Mata uang"
       },
       "rate": {
-        "label": "Kurs"
+        "label": "1 {{from}} dalam {{to}}",
+        "hint": "Diisi dari pengaturan mata uangmu; ubah ke kurs yang benar-benar kamu dapat."
       },
       "type": {
         "label": "Tipe",
@@ -280,22 +283,53 @@
         "otherIncome": {
           "label": "Pemasukan lainnya",
           "description": "Di luar kategori yang ada"
-        }
+        },
+        "placeholder": "Pilih kategori"
+      },
+      "quantity": {
+        "label": "Jumlah barang"
+      },
+      "date": {
+        "label": "Tanggal"
+      },
+      "bookCurrency": {
+        "label": "Mata uang",
+        "locked": "Tidak bisa diubah setelah ada entri.",
+        "setup": "Atur mata uangmu"
       }
     },
     "toast": {
-      "deleted": "Dihapus",
-      "created": "Dibuat",
-      "unlinked": "Dihapus dari daftarmu",
-      "notFound": "Ini tidak ada atau tidak dibagikan denganmu"
+      "deleted": "Buku dihapus",
+      "created": "Buku dibuat",
+      "unlinked": "Buku dihapus dari daftarmu",
+      "notFound": "Buku ini tidak ada atau tidak dibagikan denganmu"
+    },
+    "untitled": "Buku tanpa judul",
+    "empty": {
+      "title": "Belum ada buku",
+      "description": "Catat uang untuk sebulan, perjalanan, atau proyek: tambahkan pemasukan dan pengeluaran, lalu lihat saldonya."
+    },
+    "entries_one": "{{count}} entri",
+    "entries_other": "{{count}} entri",
+    "summary": {
+      "balance": "Saldo",
+      "income": "Pemasukan",
+      "expense": "Pengeluaran",
+      "incomeExpense": "Masuk {{income}} · Keluar {{expense}}"
+    },
+    "entry": {
+      "add": "Tambah entri",
+      "edit": "Ubah entri",
+      "delete": "Hapus entri",
+      "empty": "Belum ada entri. Tambahkan pemasukan atau pengeluaran pertamamu."
     }
   },
   "about": {
-    "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi untuk catatan dan daftar tugas. Fitur keuangan segera hadir."
+    "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi untuk catatan, daftar tugas, dan keuangan."
   },
   "privacyPolicy": {
-    "updated": "Terakhir diperbarui: 9 Oktober 2026",
-    "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, dan pengaturan yang kamu buat.",
+    "updated": "Terakhir diperbarui: 10 Oktober 2026",
+    "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, dan pengaturan yang kamu buat.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google.",
     "sharing": "Saat kamu membagikan catatan atau tugas, orang yang kamu bagikan bisa melihat isinya. Nama, alamat email, dan fotomu bisa dilihat oleh pengguna lain yang sudah masuk, agar mereka bisa menemukanmu untuk berbagi.",
@@ -454,7 +488,8 @@
         },
         "rate": {
           "label": "Kurs",
-          "placeholder": "contoh: 1.00"
+          "placeholder": "contoh: 1.00",
+          "hint": "Nilai 1 unit mata uang ini dalam mata uang default-mu, misalnya 16000 untuk USD jika default-mu IDR."
         },
         "isDefault": {
           "label": "Jadikan default",
@@ -545,11 +580,10 @@
   "landing": {
     "signIn": "Masuk",
     "getStarted": "Buat akun",
-    "comingSoon": "Segera hadir",
     "hero": {
       "eyebrow": "Catatan · Tugas · Keuangan",
       "title": "Catat saja.",
-      "description": "<span>{{appName}}</span> menyimpan catatan dan daftar tugasmu di satu tempat sederhana, di ponsel maupun komputer, dan bisa dibagikan ke orang yang kamu pilih."
+      "description": "<span>{{appName}}</span> menyimpan catatan, daftar tugas, dan keuanganmu di satu tempat sederhana, di ponsel maupun komputer, dan bisa dibagikan ke orang yang kamu pilih."
     },
     "features": {
       "title": "Semua yang perlu kamu ingat, tanpa yang tidak perlu",
@@ -570,8 +604,8 @@
         "description": "Bisa dibuka di browser apa saja dan dipasang seperti aplikasi. Tema terang atau gelap, dalam Bahasa Indonesia atau Inggris."
       },
       "finances": {
-        "title": "Keuangan",
-        "description": "Catat pemasukan dan pengeluaran dalam mata uang apa pun, dengan kurs pilihanmu sendiri."
+        "title": "Keuangan yang rapi",
+        "description": "Buat buku untuk sebulan, perjalanan, atau proyek. Catat pemasukan dan pengeluaran dalam mata uang apa pun dan lihat saldonya sekilas."
       }
     },
     "cta": {

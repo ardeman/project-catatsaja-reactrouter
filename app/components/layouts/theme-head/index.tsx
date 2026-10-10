@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from 'react'
+
 import { themeColors } from '~/lib/constants/metadata'
 
 // Runs before the first paint: the installed app skips the landing page, and
@@ -31,6 +33,16 @@ const themeScript = `(() => {
 // device's) through one theme-color tag. The script creates it before the
 // first paint and ThemeProvider updates it; React does not render it, because
 // React would add its own copy once the script had changed it.
-export const ThemeHead = () => (
-  <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-)
+const noSubscribe = () => () => {}
+
+export const ThemeHead = () => {
+  // Only in server-rendered HTML (and while React takes it over): a script
+  // React creates in the browser never runs, and React warns about it.
+  const isServerHtml = useSyncExternalStore(
+    noSubscribe,
+    () => false,
+    () => true,
+  )
+  if (!isServerHtml) return null
+  return <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+}

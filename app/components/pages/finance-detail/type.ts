@@ -1,25 +1,23 @@
-import { HTMLAttributes } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
-import { TFinanceResponse } from '~/lib/types/finance'
+import {
+  TFinanceCurrency,
+  TFinanceEntry,
+  TFinanceResponse,
+} from '~/lib/types/finance'
+import { TCurrency } from '~/lib/types/settings'
 
-export type THandleModifyFinance = {
-  finance: TFinanceResponse
+export type TFormProperties = {
+  finance?: TFinanceResponse
 }
 
-export type THandlePinFinance = {
-  isPinned: boolean
-} & THandleModifyFinance
-
-export type TFinanceConfirmation = {
-  kind: string
-  detail: TFinanceResponse
-}
-
-/**
- * Used by the finance forms, which are still placeholders.
- * @public
- */
-export type TCardProperties = {
-  finance: TFinanceResponse
-  className?: HTMLAttributes<HTMLDivElement>['className']
+export type TEntryFormProperties = {
+  open: boolean
+  setOpen: Dispatch<SetStateAction<boolean>>
+  // The entry being edited; a new one when undefined.
+  entry?: TFinanceEntry
+  book: TFinanceCurrency
+  currencies: TCurrency[]
+  onSave: (entry: TFinanceEntry) => void
+  onDelete: (id: string) => void
 }

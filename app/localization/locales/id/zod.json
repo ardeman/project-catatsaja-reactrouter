@@ -39,7 +39,7 @@
       "number": {
         "exact": "Angka harus bernilai {{minimum}}",
         "inclusive": "Minimal {{minimum}}",
-        "not_inclusive": "Angka harus lebih dari {{minimum}}"
+        "not_inclusive": "Harus lebih dari {{minimum}}"
       },
       "set": {
         "exact": "Input tidak valid",

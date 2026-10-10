@@ -15,14 +15,12 @@ import { ModeToggle } from '~/components/base/mode-toggle'
 import { AboutFooter } from '~/components/layouts/about-footer'
 import { Button } from '~/components/ui/button'
 import { appleIcon, appName } from '~/lib/constants/metadata'
-import { cn } from '~/lib/utils/shadcn'
 
 import { NotePreview, TaskPreview } from './preview'
 
 type TFeature = {
   key: string
   icon: LucideIcon
-  isComingSoon?: boolean
 }
 
 const features: TFeature[] = [
@@ -30,7 +28,7 @@ const features: TFeature[] = [
   { key: 'tasks', icon: ListTodo },
   { key: 'sharing', icon: Users },
   { key: 'everywhere', icon: MonitorSmartphone },
-  { key: 'finances', icon: Wallet, isComingSoon: true },
+  { key: 'finances', icon: Wallet },
 ]
 
 export const LandingPage = () => {
@@ -130,23 +128,15 @@ export const LandingPage = () => {
               {t('landing.features.title')}
             </h2>
             <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map(({ key, icon: Icon, isComingSoon }) => (
+              {features.map(({ key, icon: Icon }) => (
                 <li
                   key={key}
-                  className={cn(
-                    'rounded-xl border bg-card p-6',
-                    isComingSoon && 'border-dashed',
-                  )}
+                  className="rounded-xl border bg-card p-6"
                 >
                   <div className="flex items-center justify-between">
                     <span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
                       <Icon className="size-5" />
                     </span>
-                    {isComingSoon && (
-                      <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                        {t('landing.comingSoon')}
-                      </span>
-                    )}
                   </div>
                   <h3 className="mt-4 font-semibold">
                     {t(`landing.features.${key}.title`)}

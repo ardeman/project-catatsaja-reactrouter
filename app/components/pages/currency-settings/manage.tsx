@@ -423,7 +423,8 @@ export const ManageCurrencies = () => {
                   label={t('settings.manageCurrencies.form.rate.label')}
                   name="rate"
                   type="number"
-                  step="0.01"
+                  step="any"
+                  hint={t('settings.manageCurrencies.form.rate.hint')}
                   placeholder={t(
                     'settings.manageCurrencies.form.rate.placeholder',
                   )}
