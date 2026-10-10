@@ -21,6 +21,7 @@ export const MasonryGrid = (properties: TLayoutProperties) => {
       itemSelector: `.${ITEM_CLASS}`,
       gutter: 16,
       horizontalOrder: true,
+      fitWidth: true,
     })
     return () => {
       masonryReference.current?.destroy?.()
@@ -36,13 +37,13 @@ export const MasonryGrid = (properties: TLayoutProperties) => {
   return (
     <div className="mx-auto w-full max-w-(--breakpoint-2xl) space-y-3">
       {heading && (
-        <h2 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        <h2 className="text-center text-xs font-medium tracking-wide text-muted-foreground uppercase">
           {heading}
         </h2>
       )}
       <div
         ref={gridReference}
-        className="relative w-full"
+        className="relative mx-auto w-full"
       >
         {children}
       </div>

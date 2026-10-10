@@ -20,8 +20,8 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
-          en: 'Pinning and unpinning cards keeps collection headings and card alignment consistent.',
-          id: 'Menyematkan dan melepas sematan kartu menjaga judul bagian dan posisi kartu tetap konsisten.',
+          en: 'Card groups and section headings stay centered when pinning and unpinning cards.',
+          id: 'Kelompok kartu dan judul bagian tetap berada di tengah saat menyematkan dan melepas sematan kartu.',
         },
       },
       {
