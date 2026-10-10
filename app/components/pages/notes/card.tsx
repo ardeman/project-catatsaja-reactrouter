@@ -81,11 +81,12 @@ export const Card = (properties: TCardProperties) => {
         </CardTitle>
       </CardHeader>
       {note.content && (
-        <CardContent className="max-h-96 overflow-hidden">
+        // Long notes fade out at the height limit (24rem): a mask on the
+        // text, so the card's own surface shows, as on the other cards.
+        <CardContent className="max-h-96 overflow-hidden [mask-image:linear-gradient(to_bottom,black_21rem,transparent_24rem)] sm:pb-8">
           <Markdown className="text-sm wrap-break-word whitespace-pre-wrap">
             {note.content}
           </Markdown>
-          <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-12 w-full bg-linear-to-b from-transparent to-background" />
         </CardContent>
       )}
     </UICard>

@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'The bottom of note cards matches task and book cards, without a dark band behind the buttons.',
+          id: 'Bagian bawah kartu catatan kini sama dengan kartu tugas dan buku, tanpa pita gelap di belakang tombol.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'On phones, the bottom navigation bar is a slimmer pill that sits lower, and messages appear above it and above the create button instead of covering them.',
