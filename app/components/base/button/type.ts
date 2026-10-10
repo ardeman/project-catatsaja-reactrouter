@@ -1,7 +1,6 @@
 import { type VariantProps } from 'class-variance-authority'
 import {
   AriaAttributes,
-  ElementType,
   HTMLAttributes,
   MouseEventHandler,
   ReactNode,
@@ -9,7 +8,7 @@ import {
 
 import { variantClassName } from '~/components/ui/button'
 
-export type TButtonProperties<T extends ElementType = 'button'> = {
+export type TButtonProperties = {
   type?: 'button' | 'submit' | 'reset'
   onClick?: MouseEventHandler<HTMLButtonElement>
   className?: HTMLAttributes<HTMLButtonElement>['className']
@@ -17,7 +16,6 @@ export type TButtonProperties<T extends ElementType = 'button'> = {
   disabled?: boolean
   children: ReactNode
   isLoading?: boolean
-  as?: T
   variant?: VariantProps<typeof variantClassName>['variant']
   title?: string
 } & AriaAttributes

@@ -15,7 +15,6 @@ export const Button = (properties: TButtonProperties) => {
     onClick,
     containerClassName,
     variant,
-    as: _as,
     ...rest
   } = properties
   return (

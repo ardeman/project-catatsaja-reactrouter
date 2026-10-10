@@ -1,4 +1,8 @@
 import {
+  onSnapshot,
+  query,
+  where,
+  FieldPath,
   addDoc,
   collection,
   doc,
@@ -7,6 +11,7 @@ import {
 } from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
+import { TLiveSubscription } from '~/lib/types/common'
 import {
   TCreateFinanceRequest,
   TFinanceResponse,
@@ -141,4 +146,57 @@ export const setFinancePermission = async (form: TFinancePermissionRequest) => {
     },
   }
   return await updateDoc(reference, data)
+}
+
+export const subscribeToFinances: TLiveSubscription<TFinanceResponse[]> = (
+  uid,
+  onData,
+  onError,
+) => {
+  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
+  const reference = query(
+    collection(firestore, 'finances'),
+    where(new FieldPath('permissions', 'read'), 'array-contains', uid),
+  )
+  return onSnapshot(
+    reference,
+    (snap) => {
+      onData(
+        snap.docs.map((document) => {
+          const data = document.data()
+          return {
+            ...data,
+            id: document.id,
+            isPinned: data.pinnedBy?.includes(uid),
+          } as TFinanceResponse
+        }),
+      )
+    },
+    onError,
+  )
+}
+
+export const subscribeToFinance = (
+  id: string,
+  uid: string,
+  onData: (data: TFinanceResponse | undefined) => void,
+  onError: (error: unknown) => void,
+) => {
+  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
+  return onSnapshot(
+    doc(firestore, 'finances', id),
+    (snap) => {
+      const data = snap.data()
+      onData(
+        data
+          ? ({
+              ...data,
+              id: snap.id,
+              isPinned: data.pinnedBy?.includes(uid),
+            } as TFinanceResponse)
+          : undefined,
+      )
+    },
+    onError,
+  )
 }

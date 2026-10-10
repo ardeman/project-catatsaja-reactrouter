@@ -10,7 +10,6 @@ import {
   THandleDeletePermission,
   THandleSetPermission,
 } from '~/lib/types/common'
-import { TFinancePermissionRequest } from '~/lib/types/finance'
 
 import { Card } from './card'
 import { useFinance } from './context'
@@ -29,26 +28,18 @@ export const List = () => {
   } = useFinance()
   const { data: financesData, isLoading } = useGetFinances()
   const { mutate: mutateShare } = useShareFinance()
+  const sharedFinance = financesData?.find(
+    (item) => item.id === selectedFinance?.id,
+  )
 
   const handleShare = (parameters: THandleSetPermission) => {
-    const data = {
-      ...parameters,
-      finance: financesData?.find(
-        (finance) => finance.id === selectedFinance?.id,
-      ),
-    } as TFinancePermissionRequest
-    mutateShare(data)
+    if (!sharedFinance) return
+    mutateShare({ ...parameters, finance: sharedFinance })
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {
-    const data = {
-      ...parameters,
-      permission: 'delete',
-      finance: financesData?.find(
-        (finance) => finance.id === selectedFinance?.id,
-      ),
-    } as TFinancePermissionRequest
-    mutateShare(data)
+    if (!sharedFinance) return
+    mutateShare({ ...parameters, permission: 'delete', finance: sharedFinance })
   }
 
   return (
@@ -115,14 +106,8 @@ export const List = () => {
       >
         <Share
           path={`/finances/${selectedFinance?.id}`}
-          write={
-            financesData?.find((finance) => finance.id === selectedFinance?.id)
-              ?.permissions?.write || []
-          }
-          read={
-            financesData?.find((finance) => finance.id === selectedFinance?.id)
-              ?.permissions?.read || []
-          }
+          write={sharedFinance?.permissions?.write || []}
+          read={sharedFinance?.permissions?.read || []}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

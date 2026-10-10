@@ -5,9 +5,5 @@
     "app/routes/**/*.{js,ts,tsx}"
   ],
   "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,css}"],
-  "ignore": [
-    "app/components/ui/*.{js,ts,tsx}",
-    "app/localization/resource.ts",
-    "public/sw.js"
-  ]
+  "ignore": ["app/components/ui/*.{js,ts,tsx}", "public/sw.js"]
 }

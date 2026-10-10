@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
@@ -113,15 +113,23 @@ export const Form = (properties: TFormProperties) => {
   const watchTitle = watch('title')
   const book = watch('currency')
   const entries = watch('content')
-  const { income, expense, balance } = summarize(entries)
-  // Entries of this book (as edited here) and every other book, newest
-  // first, for category suggestions.
-  const history = newestFirst([
-    ...books
-      .filter((item) => item.id !== selectedFinance?.id)
-      .flatMap((item) => item.content || []),
-    ...entries,
-  ])
+  const { income, expense, balance } = useMemo(
+    () => summarize(entries),
+    [entries],
+  )
+  const groupedEntries = useMemo(() => groupByDate(entries), [entries])
+  // Rebuild suggestions only when entries change, not while editing a title
+  // or moving between dialogs.
+  const history = useMemo(
+    () =>
+      newestFirst([
+        ...books
+          .filter((item) => item.id !== selectedFinance?.id)
+          .flatMap((item) => item.content || []),
+        ...entries,
+      ]),
+    [books, entries, selectedFinance?.id],
+  )
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
   const [editing, setEditing] = useState<TFinanceEntry>()
@@ -195,11 +203,16 @@ export const Form = (properties: TFormProperties) => {
     )
   }
 
+  const dayFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(i18n.language, {
+        dateStyle: 'full',
+        timeZone: 'UTC',
+      }),
+    [i18n.language],
+  )
   const formatDay = (date: string) =>
-    new Intl.DateTimeFormat(i18n.language, {
-      dateStyle: 'full',
-      timeZone: 'UTC',
-    }).format(new Date(`${date}T00:00:00Z`))
+    dayFormatter.format(new Date(`${date}T00:00:00Z`))
 
   // The book currency, plus the person's own currencies to choose from.
   const bookCurrencies = [
@@ -349,7 +362,7 @@ export const Form = (properties: TFormProperties) => {
             {t('finances.entry.empty')}
           </p>
         ) : (
-          groupByDate(entries).map(([date, dayEntries]) => (
+          groupedEntries.map(([date, dayEntries]) => (
             <section
               key={date}
               className="grid gap-1"

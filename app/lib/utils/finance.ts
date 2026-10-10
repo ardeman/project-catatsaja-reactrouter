@@ -32,7 +32,9 @@ export const newEntryId = () => crypto.randomUUID()
 export const groupByDate = (entries: TFinanceEntry[] = []) => {
   const groups = new Map<string, TFinanceEntry[]>()
   for (const entry of entries.toReversed()) {
-    groups.set(entry.date, [...(groups.get(entry.date) ?? []), entry])
+    const group = groups.get(entry.date)
+    if (group) group.push(entry)
+    else groups.set(entry.date, [entry])
   }
   return [...groups].toSorted(([a], [b]) => b.localeCompare(a))
 }
@@ -72,9 +74,9 @@ export const suggestFromHistory = (
     (entry) => entry.description.trim().toLowerCase() === text,
   )
   if (exact) return exact
-  const typed = words(text)
-  if (typed.length === 0) return
+  const typed = new Set(words(text))
+  if (typed.size === 0) return
   return history.find((entry) =>
-    words(entry.description).some((word) => typed.includes(word)),
+    words(entry.description).some((word) => typed.has(word)),
   )
 }

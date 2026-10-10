@@ -33,7 +33,11 @@ export const Share = (properties: TPermissions) => {
   const [disabled, setDisabled] = useState(false)
   const [email, setEmail] = useState('')
   const { t } = useTranslation(['common', 'zod'])
-  const { data: searchResults } = useSearchUsers(email)
+  const {
+    data: searchResults,
+    error: searchError,
+    isLoading: isSearching,
+  } = useSearchUsers(email)
   const formMethods = useForm<TShareForm>({
     resolver: zodResolver(shareSchema(t)),
     defaultValues: { user: '' },
@@ -58,13 +62,15 @@ export const Share = (properties: TPermissions) => {
     (uid) => uid !== auth?.currentUser?.uid,
   )
   const { data: users } = useGetUsers(sharedWith)
+  const usersById = new Map(users?.map((user) => [user.uid, user]))
+  const availableUsers = searchResults?.filter(
+    (user) => !permissions.has(user.uid),
+  )
   const getPermission = (uid: string) =>
     write.includes(uid) ? 'write' : read.includes(uid) ? 'read' : undefined
 
   useEffect(() => {
-    if (
-      searchResults?.filter((user) => !permissions.has(user.uid)).length === 0
-    ) {
+    if (!searchResults?.some((user) => !permissions.has(user.uid))) {
       setDisabled(false)
     }
   }, [searchResults, permissions])
@@ -142,11 +148,11 @@ export const Share = (properties: TPermissions) => {
           name="user"
           placeholder={t('form.user.placeholder')}
           required
-          disabled={disabled}
+          disabled={disabled || isSearching}
           rightNode={({ className }) => (
             <Button
               type="submit"
-              disabled={disabled}
+              disabled={disabled || isSearching}
               variant="ghost"
               size="icon"
               className={className}
@@ -156,22 +162,28 @@ export const Share = (properties: TPermissions) => {
           )}
         />
 
-        {searchResults
-          ?.filter((user) => !permissions.has(user.uid))
-          .map(({ uid, photoURL, displayName, email }) => (
-            <Permission
-              key={uid}
-              photoURL={photoURL}
-              displayName={displayName}
-              uid={uid}
-              email={email}
-              handleDeletePermission={handleDeletePermission}
-              handleSetPermission={handleSetPermission}
-            />
-          ))}
+        {searchError && (
+          <p
+            role="alert"
+            className="text-sm text-destructive"
+          >
+            {searchError}
+          </p>
+        )}
+        {availableUsers?.map(({ uid, photoURL, displayName, email }) => (
+          <Permission
+            key={uid}
+            photoURL={photoURL}
+            displayName={displayName}
+            uid={uid}
+            email={email}
+            handleDeletePermission={handleDeletePermission}
+            handleSetPermission={handleSetPermission}
+          />
+        ))}
 
         {sharedWith.map((uid) => {
-          const user = users?.find((user) => user.uid === uid)
+          const user = usersById.get(uid)
           if (!user) return null
           return (
             <Permission

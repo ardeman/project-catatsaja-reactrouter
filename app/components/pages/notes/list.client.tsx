@@ -10,7 +10,6 @@ import {
   THandleDeletePermission,
   THandleSetPermission,
 } from '~/lib/types/common'
-import { TNotePermissionRequest } from '~/lib/types/note'
 import { toPlainText } from '~/lib/utils/parser'
 
 import { Card } from './card'
@@ -30,22 +29,16 @@ export const List = () => {
   } = useNote()
   const { data: notesData, isLoading } = useGetNotes()
   const { mutate: mutateShare } = useShareNote()
+  const sharedNote = notesData?.find((item) => item.id === selectedNote?.id)
 
   const handleShare = (parameters: THandleSetPermission) => {
-    const data = {
-      ...parameters,
-      note: notesData?.find((note) => note.id === selectedNote?.id),
-    } as TNotePermissionRequest
-    mutateShare(data)
+    if (!sharedNote) return
+    mutateShare({ ...parameters, note: sharedNote })
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {
-    const data = {
-      ...parameters,
-      permission: 'delete',
-      note: notesData?.find((note) => note.id === selectedNote?.id),
-    } as TNotePermissionRequest
-    mutateShare(data)
+    if (!sharedNote) return
+    mutateShare({ ...parameters, permission: 'delete', note: sharedNote })
   }
 
   return (
@@ -104,14 +97,8 @@ export const List = () => {
       >
         <Share
           path={`/notes/${selectedNote?.id}`}
-          write={
-            notesData?.find((note) => note.id === selectedNote?.id)?.permissions
-              ?.write || []
-          }
-          read={
-            notesData?.find((note) => note.id === selectedNote?.id)?.permissions
-              ?.read || []
-          }
+          write={sharedNote?.permissions?.write || []}
+          read={sharedNote?.permissions?.read || []}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

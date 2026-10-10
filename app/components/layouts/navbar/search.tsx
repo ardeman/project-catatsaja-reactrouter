@@ -1,5 +1,13 @@
 import { ArrowRight, LucideIcon, Search as SearchIcon } from 'lucide-react'
-import { Fragment, RefObject, useEffect, useId, useRef, useState } from 'react'
+import {
+  Fragment,
+  RefObject,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 
@@ -9,7 +17,7 @@ import { useGetNotes } from '~/lib/hooks/use-get-notes'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
 import { TMenu } from '~/lib/types/common'
 import { toPlainText } from '~/lib/utils/parser'
-import { excerpt, matches, normalize } from '~/lib/utils/search'
+import { excerpt, normalize } from '~/lib/utils/search'
 import { cn } from '~/lib/utils/shadcn'
 
 import { navs } from './constant'
@@ -154,62 +162,73 @@ const Results = (properties: TResultsProperties) => {
   const { data: finances, isLoading: isLoadingFinances } = useGetFinances()
   const isLoading = isLoadingNotes || isLoadingTasks || isLoadingFinances
   const [active, setActive] = useState(0)
-  const [noteNav, taskNav, financeNav] = navs(t)
-
-  const toGroup = <T extends { id: string; title?: string }>(
-    nav: TMenu,
-    items: T[] | undefined,
-    untitled: string,
-    getText: (item: T) => string,
-  ): TGroup => {
-    const found = (items || [])
-      .filter((item) => matches(`${item.title ?? ''} ${getText(item)}`, query))
-      // Title matches first.
-      .toSorted(
-        (a, b) =>
-          Number(matches(b.title ?? '', query)) -
-          Number(matches(a.title ?? '', query)),
-      )
-    const options: TOption[] = found.slice(0, LIMIT).map((item) => ({
-      id: `${nav.href}/${item.id}`,
-      href: `${nav.href}/${item.id}`,
-      kind: 'item',
-      title: item.title || untitled,
-      isUntitled: !item.title,
-      detail: matches(item.title ?? '', query)
-        ? undefined
-        : excerpt(getText(item), query),
-      icon: nav.icon,
-    }))
-    if (found.length > LIMIT) {
-      options.push({
-        id: `${nav.href}?q`,
-        href: `${nav.href}?q=${encodeURIComponent(query)}`,
-        kind: 'all',
-        title: t('search.seeAll', { count: found.length, section: nav.name }),
-      })
+  const groups = useMemo(() => {
+    const [noteNav, taskNav, financeNav] = navs(t)
+    const normalizedQuery = normalize(query)
+    const toGroup = <T extends { id: string; title?: string }>(
+      nav: TMenu,
+      items: T[] | undefined,
+      untitled: string,
+      getText: (item: T) => string,
+    ): TGroup => {
+      const titleMatches: TOption[] = []
+      const contentMatches: TOption[] = []
+      let count = 0
+      const collectionItems = items || []
+      // Scan each collection once. Keep only the visible results instead of
+      // sorting every match, with title matches first in their original order.
+      for (const item of collectionItems) {
+        const title = item.title ?? ''
+        const text = getText(item)
+        if (!normalize(`${title} ${text}`).includes(normalizedQuery)) continue
+        count++
+        const isTitleMatch = normalize(title).includes(normalizedQuery)
+        const target = isTitleMatch ? titleMatches : contentMatches
+        if (target.length === LIMIT) continue
+        target.push({
+          id: `${nav.href}/${item.id}`,
+          href: `${nav.href}/${item.id}`,
+          kind: 'item',
+          title: title || untitled,
+          isUntitled: !title,
+          detail: isTitleMatch ? undefined : excerpt(text, query),
+          icon: nav.icon,
+        })
+      }
+      const options = [...titleMatches, ...contentMatches].slice(0, LIMIT)
+      if (count > LIMIT) {
+        options.push({
+          id: `${nav.href}?q`,
+          href: `${nav.href}?q=${encodeURIComponent(query)}`,
+          kind: 'all',
+          title: t('search.seeAll', { count, section: nav.name }),
+        })
+      }
+      return { heading: nav.name, options }
     }
-    return { heading: nav.name, options }
-  }
 
-  const groups = [
-    toGroup(noteNav, notes, t('notes.untitled'), (note) =>
-      toPlainText(note.content || ''),
-    ),
-    toGroup(taskNav, tasks, t('tasks.untitled'), (task) =>
-      (task.content || []).map((item) => item.item).join(' · '),
-    ),
-    toGroup(financeNav, finances, t('finances.untitled'), (finance) =>
-      (finance.content || [])
-        .flatMap((entry) => [
-          entry.description,
-          t(`finances.form.category.${entry.category}.label`),
-        ])
-        .filter(Boolean)
-        .join(' · '),
-    ),
-  ].filter((group) => group.options.length > 0)
-  const options = groups.flatMap((group) => group.options)
+    return [
+      toGroup(noteNav, notes, t('notes.untitled'), (note) =>
+        toPlainText(note.content || ''),
+      ),
+      toGroup(taskNav, tasks, t('tasks.untitled'), (task) =>
+        (task.content || []).map((item) => item.item).join(' · '),
+      ),
+      toGroup(financeNav, finances, t('finances.untitled'), (finance) =>
+        (finance.content || [])
+          .flatMap((entry) => [
+            entry.description,
+            t(`finances.form.category.${entry.category}.label`),
+          ])
+          .filter(Boolean)
+          .join(' · '),
+      ),
+    ].filter((group) => group.options.length > 0)
+  }, [notes, tasks, finances, query, t])
+  const options = useMemo(
+    () => groups.flatMap((group) => group.options),
+    [groups],
+  )
 
   useEffect(() => setActive(0), [query])
 

@@ -61,3 +61,9 @@ export type TMenu = {
   href: string
   icon?: LucideIcon
 }
+
+export type TLiveSubscription<T> = (
+  uid: string,
+  onData: (data: T) => void,
+  onError: (error: unknown) => void,
+) => () => void

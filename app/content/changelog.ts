@@ -18,6 +18,20 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Search and finance books do less repeated work when you move through results or edit a title.',
+          id: 'Pencarian dan buku keuangan kini mengurangi pemrosesan berulang saat kamu menelusuri hasil atau mengubah judul.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Sharing searches clear old results and show errors inside the dialog. Closing a page while signing in no longer leaves a data listener running.',
+          id: 'Pencarian pengguna untuk berbagi membersihkan hasil lama dan menampilkan galat di dalam dialog. Menutup halaman saat masuk tidak lagi meninggalkan pemantau data yang berjalan.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Examples for exchange rates and minimum decimals now use your chosen number separators.',

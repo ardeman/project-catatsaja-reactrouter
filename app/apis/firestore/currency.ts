@@ -2,16 +2,19 @@ import {
   collection,
   doc,
   getDoc,
+  onSnapshot,
+  orderBy,
+  query,
   addDoc,
   updateDoc,
   deleteDoc,
   serverTimestamp,
   getDocs,
-  query,
   where,
 } from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
+import { TLiveSubscription } from '~/lib/types/common'
 import {
   TCurrency,
   TCreateCurrencyRequest,
@@ -151,4 +154,27 @@ export const deleteCurrency = async (id: string): Promise<void> => {
     console.error('Error deleting currency:', error)
     throw error
   }
+}
+
+export const subscribeToCurrencies: TLiveSubscription<TCurrency[]> = (
+  uid,
+  onData,
+  onError,
+) => {
+  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
+  const reference = query(
+    collection(firestore, 'users', uid, 'currencies'),
+    orderBy('createdAt', 'desc'),
+  )
+  return onSnapshot(
+    reference,
+    (snap) => {
+      onData(
+        snap.docs.map(
+          (document) => ({ ...document.data(), id: document.id }) as TCurrency,
+        ),
+      )
+    },
+    onError,
+  )
 }

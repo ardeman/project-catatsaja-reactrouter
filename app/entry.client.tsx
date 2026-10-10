@@ -1,6 +1,5 @@
 import i18next, { use as i18nextUse } from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
-import Backend from 'i18next-http-backend'
 import {
   PropsWithChildren,
   startTransition,
@@ -59,7 +58,6 @@ async function hydrate() {
 
   await i18nextUse(initReactI18next) // Tell i18next to use the react-i18next plugin
     .use(LanguageDetector) // Setup a client-side language detector
-    .use(Backend) // Setup your backend
     .init({
       ...i18n, // spread the configuration
       resources,

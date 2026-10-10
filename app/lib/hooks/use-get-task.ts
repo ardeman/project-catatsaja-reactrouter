@@ -1,60 +1,15 @@
-import { doc, onSnapshot } from 'firebase/firestore'
-import { useEffect, useState } from 'react'
+import { useCallback } from 'react'
 
-import { auth, firestore } from '~/lib/configs/firebase'
+import { subscribeToTask } from '~/apis/firestore/task'
+import { TLiveSubscription } from '~/lib/types/common'
 import { TTaskResponse } from '~/lib/types/task'
-import { waitForAuth } from '~/lib/utils/wait-for-auth'
+
+import { useLiveData } from './use-live-data'
 
 export const useGetTask = (id?: string) => {
-  const [data, setData] = useState<TTaskResponse>()
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    if (!firestore || !id) {
-      setData(undefined)
-      setIsLoading(false)
-      return
-    }
-    setIsLoading(true)
-    const database = firestore
-    let unsubscribe: () => void
-
-    const listen = async () => {
-      const user = auth?.currentUser ?? (await waitForAuth())
-      if (!user) {
-        setData(undefined)
-        setIsLoading(false)
-        return
-      }
-      const reference = doc(database, 'tasks', id)
-      unsubscribe = onSnapshot(
-        reference,
-        (snap) => {
-          if (snap.exists()) {
-            const taskData = snap.data()
-            setData({
-              ...taskData,
-              id: snap.id,
-              isPinned: taskData.pinnedBy?.includes(user.uid),
-            } as TTaskResponse)
-          } else {
-            setData(undefined)
-          }
-          setIsLoading(false)
-        },
-        () => {
-          setData(undefined)
-          setIsLoading(false)
-        },
-      )
-    }
-
-    void listen()
-
-    return () => {
-      if (unsubscribe) unsubscribe()
-    }
-  }, [id])
-
-  return { data, isLoading }
+  const subscribe = useCallback<TLiveSubscription<TTaskResponse | undefined>>(
+    (uid, onData, onError) => subscribeToTask(id!, uid, onData, onError),
+    [id],
+  )
+  return useLiveData(subscribe, undefined, !!id)
 }

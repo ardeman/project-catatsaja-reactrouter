@@ -22,12 +22,3 @@ export const resources: Record<Language, Resource> = {
     zod: idZod,
   },
 }
-
-export const returnLanguageIfSupported = (
-  lang?: string,
-): Language | undefined => {
-  if (supportedLanguages.includes(lang as Language)) {
-    return lang as Language
-  }
-  return undefined
-}

@@ -2,9 +2,6 @@
 
 export const normalize = (text: string) => text.toLowerCase()
 
-export const matches = (text: string, query: string) =>
-  normalize(text).includes(normalize(query.trim()))
-
 // A short excerpt of `text` around the first match, with an ellipsis where
 // it is cut. Empty when there is no match.
 export const excerpt = (text: string, query: string, radius = 40) => {

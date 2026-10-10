@@ -8,7 +8,6 @@ import tseslint from 'typescript-eslint'
 import tsEslintParser from '@typescript-eslint/parser'
 import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 import reactPlugin from 'eslint-plugin-react'
-import pluginQuery from '@tanstack/eslint-plugin-query'
 import unusedImports from 'eslint-plugin-unused-imports'
 import eslintConfigPrettier from 'eslint-config-prettier'
 
@@ -34,7 +33,6 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       react: fixupPluginRules(reactPlugin),
-      '@tanstack/query': pluginQuery,
       'unused-imports': unusedImports,
     },
     settings: {
@@ -55,7 +53,6 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       ...tseslint.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
-      '@tanstack/query/exhaustive-deps': 'error',
       '@typescript-eslint/no-unused-vars': 'off',
       'unicorn/filename-case': [
         'error',

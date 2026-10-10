@@ -10,7 +10,6 @@ import {
   THandleDeletePermission,
   THandleSetPermission,
 } from '~/lib/types/common'
-import { TTaskPermissionRequest } from '~/lib/types/task'
 
 import { Card } from './card'
 import { useTask } from './context'
@@ -29,22 +28,16 @@ export const List = () => {
   } = useTask()
   const { data: tasksData, isLoading } = useGetTasks()
   const { mutate: mutateShare } = useShareTask()
+  const sharedTask = tasksData?.find((item) => item.id === selectedTask?.id)
 
   const handleShare = (parameters: THandleSetPermission) => {
-    const data = {
-      ...parameters,
-      task: tasksData?.find((task) => task.id === selectedTask?.id),
-    } as TTaskPermissionRequest
-    mutateShare(data)
+    if (!sharedTask) return
+    mutateShare({ ...parameters, task: sharedTask })
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {
-    const data = {
-      ...parameters,
-      permission: 'delete',
-      task: tasksData?.find((note) => note.id === selectedTask?.id),
-    } as TTaskPermissionRequest
-    mutateShare(data)
+    if (!sharedTask) return
+    mutateShare({ ...parameters, permission: 'delete', task: sharedTask })
   }
 
   return (
@@ -102,14 +95,8 @@ export const List = () => {
       >
         <Share
           path={`/tasks/${selectedTask?.id}`}
-          write={
-            tasksData?.find((task) => task.id === selectedTask?.id)?.permissions
-              ?.write || []
-          }
-          read={
-            tasksData?.find((note) => note.id === selectedTask?.id)?.permissions
-              ?.read || []
-          }
+          write={sharedTask?.permissions?.write || []}
+          read={sharedTask?.permissions?.read || []}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />
