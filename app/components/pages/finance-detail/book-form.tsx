@@ -337,7 +337,7 @@ export const Form = (properties: TFormProperties) => {
               name="title"
               placeholder={t('finances.form.title.label')}
               inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
-              autoFocus={!selectedFinance} // eslint-disable-line jsx-a11y/no-autofocus
+              autoFocus={!finance} // eslint-disable-line jsx-a11y/no-autofocus -- new books only; `finance` is set from the first render
               rows={1}
               readOnly={isReadOnly}
             />
@@ -439,7 +439,7 @@ export const Form = (properties: TFormProperties) => {
                 <dt className="text-xs text-muted-foreground">
                   {t('finances.summary.income')}
                 </dt>
-                <dd className="font-medium text-emerald-600 tabular-nums dark:text-emerald-400">
+                <dd className="font-medium text-income tabular-nums">
                   {money(income, book)}
                 </dd>
               </div>
@@ -447,7 +447,7 @@ export const Form = (properties: TFormProperties) => {
                 <dt className="text-xs text-muted-foreground">
                   {t('finances.summary.expense')}
                 </dt>
-                <dd className="font-medium tabular-nums">
+                <dd className="font-medium text-expense tabular-nums">
                   {money(expense, book)}
                 </dd>
               </div>
@@ -590,8 +590,7 @@ export const Form = (properties: TFormProperties) => {
                             <span
                               className={cn(
                                 'col-start-2 row-start-2 min-w-0 text-right font-medium wrap-break-word tabular-nums sm:col-start-3 sm:row-start-1',
-                                isIncome &&
-                                  'text-emerald-600 dark:text-emerald-400',
+                                isIncome ? 'text-income' : 'text-expense',
                               )}
                             >
                               {money(

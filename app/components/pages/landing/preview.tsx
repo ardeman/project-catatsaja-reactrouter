@@ -1,5 +1,5 @@
 import { Circle, CircleCheck, Pin, Users } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 
 import {
   Card,
@@ -141,10 +141,17 @@ export const FinancePreview = (properties: { className?: string }) => {
           </p>
           <p className="text-lg font-semibold">{rupiah(5_000_000 - expense)}</p>
           <p className="text-xs text-muted-foreground">
-            {t('finances.summary.incomeExpense', {
-              income: rupiah(5_000_000),
-              expense: rupiah(expense),
-            })}
+            <Trans
+              i18nKey="finances.summary.incomeExpense"
+              values={{
+                income: rupiah(5_000_000),
+                expense: rupiah(expense),
+              }}
+              components={{
+                in: <span className="text-income" />,
+                out: <span className="text-expense" />,
+              }}
+            />
           </p>
         </div>
         <CategoryBar
@@ -161,7 +168,9 @@ export const FinancePreview = (properties: { className?: string }) => {
             >
               <CategoryIcon category={category} />
               <span className="min-w-0 flex-1 truncate">{text}</span>
-              <span className="tabular-nums">−{rupiah(amount)}</span>
+              <span className="text-expense tabular-nums">
+                −{rupiah(amount)}
+              </span>
             </li>
           ))}
         </ul>

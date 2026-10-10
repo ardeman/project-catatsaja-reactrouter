@@ -8,7 +8,7 @@
   </a>
 </p>
 
-**Catat Saja** ("just write it down") is a personal productivity web app for notes, tasks and finances, in English and Bahasa Indonesia. Live at [catatsaja.ardeman.com](https://catatsaja.ardeman.com).
+**Catat Saja** ("just write it down") is a personal productivity web app for notes, tasks, finances and health, in English and Bahasa Indonesia. Live at [catatsaja.ardeman.com](https://catatsaja.ardeman.com).
 
 ## Objective
 
@@ -20,7 +20,7 @@ One simple, private place to write things down and keep track of them:
 
 ## Status
 
-Notes, tasks, finances, sharing, accounts and currency settings are done and live, and the app installs as a standalone app. See the [Roadmap](#roadmap) for what's next.
+Notes, tasks, finances, health logs, sharing, accounts and currency settings are done and live, and the app installs as a standalone app. See the [Roadmap](#roadmap) for what's next.
 
 ## Features
 
@@ -29,11 +29,13 @@ Notes, tasks, finances, sharing, accounts and currency settings are done and liv
 - **Notes:** rich Markdown editor (Milkdown) with live preview cards, pinning, autosave, and a page per note.
 - **Tasks:** checklists with add-by-paste (one item per line), tap an item to edit it, reordering, check all, undo after removing an item, and completed items grouped at the bottom.
 - **Saving:** notes and tasks save as you type and when you leave the page, with a "Saving… / Saved" status; a new note or task is kept when you leave it.
-- **Search:** one search box finds notes, tasks and finances together by title and content (Ctrl/⌘ K or `/` from anywhere); "See all" filters a list.
+- **Search:** one search box finds notes, tasks, finances and health logs together by title and content (Ctrl/⌘ K or `/` from anywhere); "See all" filters a list.
 - **Sharing:** find users by email and give them read or write access to a note or task; read-only is enforced by the database rules; copy a link; undo removing someone; shared items update in real time; a reader can remove a shared item from their own list.
 - **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and the Google profile photo when signing in with Google.
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Finances:** books (for a month, a trip, a project) of income and expense entries with categories, quantity and date; totals and balance in the book's currency; entries in other currencies keep the exchange rate used, so totals never shift; pin and share like notes.
+- **Finance analysis:** per book, insight tiles, cash flow and balance charts and spending by colour-coded category, with a table view; accounts to check the balance against; calculations in amount fields.
+- **Health:** a log per person (yourself, a child, a parent), shared like notes: weight, height and BMI (Kemenkes, WHO or WHO Asia-Pacific categories), child growth against the WHO Child Growth Standards (birth to 5 years, percentiles and Kemenkes PMK 2/2020 status), blood sugar, uric acid and cholesterol with adult reference ranges (mg/dL or SI units), calories against a daily target, and period cycle estimates.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
 - **Landing page:** what the app does, with previews of a note and a checklist, in both languages and themes; signed-in visitors go straight to their notes.
 - **App:** installable as a standalone app ("Install app" on the landing page and in the account menu: the browser's install prompt, or the right steps for Safari, Firefox on Android and Chrome before it offers the prompt), opens offline, a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
@@ -42,7 +44,8 @@ Notes, tasks, finances, sharing, accounts and currency settings are done and liv
 
 **Planned**
 
-- [ ] Finances: reports by category and month, and budgets.
+- [ ] Finances: budgets.
+- [ ] Health: WHO growth references for 5–19 years, and reminders.
 - [ ] Gemini integration: the API key is set up in `.env.example` and the deploy workflow, but no feature uses it yet and its scope is not decided.
 
 **Technical**
@@ -146,8 +149,8 @@ app/
   routes/             Route modules (thin: each renders one page component)
                         _layout._home.*   public pages (about, privacy, terms)
                         _layout.auth.*    sign in, sign up, forgot password
-                        _layout._main.*   signed-in app (notes, tasks, finances, settings)
-  apis/firestore/     Firestore reads and writes per collection (note, task, finance, user, currency)
+                        _layout._main.*   signed-in app (notes, tasks, finances, health, settings)
+  apis/firestore/     Firestore reads and writes per collection (note, task, finance, health-log, user, currency)
   components/
     ui/               shadcn/ui primitives (generated)
     base/             Shared app components built on ui/

@@ -25,7 +25,7 @@ export const Segmented = <TValue extends string>({
         aria-pressed={value === option.value}
         onClick={() => onChange(option.value)}
         className={cn(
-          'rounded-full px-3 py-1 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
+          'rounded-full px-3 py-1 whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
           value === option.value
             ? 'bg-background font-medium text-foreground shadow-xs'
             : 'text-muted-foreground hover:text-foreground',

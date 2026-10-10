@@ -22,7 +22,8 @@
     },
     "currency": "Currency",
     "userMenu": "Account menu",
-    "menu": "Menu"
+    "menu": "Menu",
+    "health": "Health"
   },
   "form": {
     "save": "Save",
@@ -245,6 +246,10 @@
           "label": "Bills",
           "description": "Water, electricity, gas, phone, internet"
         },
+        "laundry": {
+          "label": "Laundry",
+          "description": "Washing, ironing, dry cleaning"
+        },
         "health": {
           "label": "Health",
           "description": "Exercise, doctor, medicine, self-care"
@@ -363,7 +368,7 @@
       "balance": "Balance",
       "income": "Income",
       "expense": "Expenses",
-      "incomeExpense": "In {{income}} · Out {{expense}}",
+      "incomeExpense": "In <in>{{income}}</in> · Out <out>{{expense}}</out>",
       "byCategory": "Spending by category"
     },
     "accounts": {
@@ -678,6 +683,27 @@
       "order": "Menu order",
       "startPage": "Opens on",
       "startPageHint": "The page shown when you open the app or sign in."
+    },
+    "health": {
+      "title": "Health",
+      "description": "How health results are judged and shown.",
+      "bmiStandard": "Adult BMI categories",
+      "bmiStandards": {
+        "kemenkes": "Kemenkes",
+        "who": "WHO",
+        "asiaPacific": "Asia-Pacific"
+      },
+      "bmiStandardHint": {
+        "kemenkes": "Indonesia's Ministry of Health: normal 18.5–25, overweight to 27, obese above.",
+        "who": "WHO international: normal 18.5–24.9, overweight 25–29.9, obese from 30.",
+        "asiaPacific": "WHO for Asian adults: normal 18.5–22.9, at risk 23–24.9, obese from 25."
+      },
+      "labUnits": "Units for lab results",
+      "units": {
+        "conventional": "mg/dL",
+        "si": "mmol/L"
+      },
+      "labUnitsHint": "Blood sugar, cholesterol and uric acid. In SI units uric acid is shown in µmol/L, as labs report it."
     }
   },
   "notFound": {
@@ -828,5 +854,207 @@
   },
   "numberInput": {
     "calculator": "Calculator keyboard: type a calculation such as (24/22)*28500000"
+  },
+  "health": {
+    "title": "health log",
+    "new": "New health log",
+    "untitled": "Unnamed",
+    "entries_one": "{{count}} entry",
+    "entries_other": "{{count}} entries",
+    "age_one": "{{count}} year old",
+    "age_other": "{{count}} years old",
+    "noEntries": "Nothing logged yet.",
+    "overview": "Overview",
+    "sections": "Sections",
+    "all": "All",
+    "disclaimer": "Ranges are general guides for adults (children by the WHO standards), not a diagnosis. Talk to a doctor about your results.",
+    "empty": {
+      "title": "No health logs yet",
+      "description": "Keep a log for yourself, a child or a parent: weight and growth, blood sugar, uric acid, cholesterol, calories and periods.",
+      "overview": "Nothing logged yet. Pick a section above to add the first measurement.",
+      "body": "No measurements yet.",
+      "glucose": "No blood sugar results yet.",
+      "uricAcid": "No uric acid results yet.",
+      "cholesterol": "No cholesterol results yet.",
+      "calories": "No meals logged yet.",
+      "period": "No periods logged yet.",
+      "filtered": "Nothing logged for this choice yet."
+    },
+    "toast": {
+      "created": "Health log created",
+      "deleted": "Health log deleted",
+      "unlinked": "Health log removed from your list",
+      "notFound": "This health log doesn't exist or isn't shared with you"
+    },
+    "kinds": {
+      "body": "Body",
+      "glucose": "Blood sugar",
+      "uricAcid": "Uric acid",
+      "cholesterol": "Cholesterol",
+      "calories": "Calories",
+      "period": "Period"
+    },
+    "add": {
+      "body": "Add measurement",
+      "glucose": "Add blood sugar",
+      "uricAcid": "Add uric acid",
+      "cholesterol": "Add cholesterol",
+      "calories": "Add meal",
+      "period": "Log a period"
+    },
+    "form": {
+      "name": "Name",
+      "birthDate": "Birth date",
+      "sex": {
+        "label": "Sex",
+        "female": "Female",
+        "male": "Male"
+      },
+      "date": "Date",
+      "time": "Time",
+      "start": "First day",
+      "end": "Last day",
+      "note": "Note",
+      "food": "Food",
+      "weight": "Weight",
+      "height": "Height",
+      "head": "Head",
+      "kcal": "Calories",
+      "context": "When",
+      "meal": "Meal",
+      "flow": "Flow",
+      "notSet": "Not set",
+      "add": "Add measurement",
+      "edit": "Edit measurement",
+      "delete": "Delete",
+      "atLeastOne": "Fill in at least one value",
+      "endBeforeStart": "The last day can't be before the first"
+    },
+    "glucoseContext": {
+      "fasting": "Fasting",
+      "beforeMeal": "Before a meal",
+      "afterMeal": "2 h after a meal",
+      "random": "Any time",
+      "bedtime": "Bedtime"
+    },
+    "meal": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    },
+    "flow": {
+      "light": "Light flow",
+      "medium": "Medium flow",
+      "heavy": "Heavy flow"
+    },
+    "cholesterol": {
+      "total": "Total cholesterol",
+      "ldl": "LDL cholesterol",
+      "hdl": "HDL cholesterol",
+      "triglycerides": "Triglycerides",
+      "short": {
+        "total": "Total",
+        "ldl": "LDL",
+        "hdl": "HDL",
+        "triglycerides": "TG"
+      }
+    },
+    "chart": {
+      "weight": "Weight over time"
+    },
+    "ranges": {
+      "glucose": "Normal: fasting or before a meal 70–99 mg/dL, 2 h after a meal under 140 (ADA). Choose a time above to see its range.",
+      "uricAcid": "Usual adult range: {{low}}–{{high}} {{unit}} (labs differ a little).",
+      "cholesterol": "Adult guide (NCEP ATP III): total under 200, LDL under 100, HDL 40 or more for men and 50 or more for women, triglycerides under 150 mg/dL."
+    },
+    "growth": {
+      "title": "Growth (WHO standards)",
+      "loading": "Loading the WHO standards…",
+      "needBirthDate": "Add a birth date to see growth and age-based ranges.",
+      "source": "WHO Child Growth Standards, birth to 5 years. Status as in Kemenkes PMK No. 2/2020. Length is measured lying down until 2 years, height standing after.",
+      "axis": "Age in months · {{unit}} · lines: WHO median, ±2 and ±3 SD",
+      "ageMonths_one": "{{count}} month old",
+      "ageMonths_other": "{{count}} months old",
+      "percentile": "Percentile {{value}}",
+      "percentileLabel": "percentile",
+      "short": {
+        "weightForAge": "Weight",
+        "lengthForAge": "Height",
+        "headForAge": "Head",
+        "bmiForAge": "BMI"
+      },
+      "indicators": {
+        "weightForAge": "Weight for age",
+        "lengthForAge": "Length/height for age",
+        "headForAge": "Head circumference for age",
+        "bmiForAge": "BMI for age"
+      }
+    },
+    "calories": {
+      "today": "Today",
+      "target": "Daily target (kcal)",
+      "recent": "Recent days",
+      "left": "{{amount}} kcal left today",
+      "over": "{{amount}} kcal over today's target",
+      "ofTarget": "of {{amount}} kcal",
+      "useSuggestion": "Use {{amount}}",
+      "suggestionHint": "Suggested from the latest weight and height, age and sex (Mifflin-St Jeor, light activity). A starting point, not advice."
+    },
+    "period": {
+      "next": "Next period",
+      "inDays_one": "in {{count}} day",
+      "inDays_other": "in {{count}} days",
+      "late_one": "{{count}} day late",
+      "late_other": "{{count}} days late",
+      "cycleDay": "Cycle day",
+      "fertile": "Fertile window",
+      "averageCycle": "Average cycle",
+      "averagePeriod": "Average period",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "lasted_one": "{{count}} day",
+      "lasted_other": "{{count}} days",
+      "ongoing": "Ongoing",
+      "basedOn_one": "Based on your last cycle.",
+      "basedOn_other": "Based on your last {{count}} cycles.",
+      "notEnough": "Log two periods for estimates from your own cycle; until then a 28-day cycle is assumed.",
+      "disclaimer": "Estimates only, as cycles vary: not a method of birth control."
+    },
+    "status": {
+      "normal": "Normal",
+      "severelyUnderweight": "Severely underweight",
+      "underweight": "Underweight",
+      "overweight": "Overweight",
+      "obese": "Obese",
+      "atRisk": "At risk (overweight)",
+      "obeseOne": "Obese I",
+      "obeseTwo": "Obese II",
+      "veryLow": "Very low",
+      "low": "Low",
+      "prediabetes": "Prediabetes range",
+      "diabetes": "Diabetes range",
+      "elevated": "Elevated",
+      "high": "High",
+      "belowRange": "Below range",
+      "desirable": "Desirable",
+      "borderline": "Borderline high",
+      "optimal": "Optimal",
+      "nearOptimal": "Near optimal",
+      "veryHigh": "Very high",
+      "protective": "Protective",
+      "childSeverelyUnderweight": "Severely underweight",
+      "childUnderweight": "Underweight",
+      "childRiskOverweight": "Possible risk of overweight",
+      "childOverweight": "Overweight",
+      "childObese": "Obese",
+      "severelyStunted": "Severely stunted",
+      "stunted": "Stunted",
+      "tall": "Tall",
+      "small": "Below range",
+      "large": "Above range",
+      "severelyWasted": "Severely wasted",
+      "wasted": "Wasted"
+    }
   }
 }

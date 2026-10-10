@@ -448,7 +448,7 @@ export const Form = (properties: TFormProperties) => {
           name="title"
           placeholder={t('tasks.form.title.label')}
           inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
-          autoFocus={!selectedTask} // eslint-disable-line jsx-a11y/no-autofocus
+          autoFocus={!task} // eslint-disable-line jsx-a11y/no-autofocus -- new lists only; `task` is set from the first render
           rows={1}
           onKeyDown={(event) => {
             if (event.key === 'Enter' || event.key === 'ArrowDown') {

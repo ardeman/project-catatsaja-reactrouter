@@ -1,11 +1,11 @@
 import { TFunction } from 'i18next'
-import { ListTodo, StickyNote, Wallet } from 'lucide-react'
+import { HeartPulse, ListTodo, StickyNote, Wallet } from 'lucide-react'
 
 import { TMenu } from '~/lib/types/common'
 
 // The app's main pages, in their default order. People can reorder them
 // and choose which one the app opens on (settings, saved to their profile).
-export const navPages = ['notes', 'tasks', 'finances'] as const
+export const navPages = ['notes', 'tasks', 'finances', 'health'] as const
 
 export type TNavPage = (typeof navPages)[number]
 
@@ -41,7 +41,12 @@ export const rememberStartPage = (page: TNavPage) => {
   }
 }
 
-const navIcons = { notes: StickyNote, tasks: ListTodo, finances: Wallet }
+const navIcons = {
+  notes: StickyNote,
+  tasks: ListTodo,
+  finances: Wallet,
+  health: HeartPulse,
+}
 
 // The main pages as menu items, in the person's saved order (default order
 // otherwise).

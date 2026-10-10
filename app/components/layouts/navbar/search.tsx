@@ -14,6 +14,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Input } from '~/components/ui/input'
 import { navs } from '~/lib/constants/navigation'
 import { useGetFinances } from '~/lib/hooks/use-get-finances'
+import { useGetHealthLogs } from '~/lib/hooks/use-get-health-logs'
 import { useGetNotes } from '~/lib/hooks/use-get-notes'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
 import { TMenu } from '~/lib/types/common'
@@ -41,7 +42,7 @@ type TGroup = {
   options: TOption[]
 }
 
-// Searches notes, tasks and finances at once. Typing shows the best matches
+// Searches notes, tasks, finances and health logs at once. Typing shows the best matches
 // of each; Enter opens the highlighted one, "See all" filters that list.
 export const Search = () => {
   const { t } = useTranslation()
@@ -159,11 +160,13 @@ const Results = (properties: TResultsProperties) => {
   const { data: notes, isLoading: isLoadingNotes } = useGetNotes()
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks()
   const { data: finances, isLoading: isLoadingFinances } = useGetFinances()
-  const isLoading = isLoadingNotes || isLoadingTasks || isLoadingFinances
+  const { data: healthLogs, isLoading: isLoadingHealth } = useGetHealthLogs()
+  const isLoading =
+    isLoadingNotes || isLoadingTasks || isLoadingFinances || isLoadingHealth
   const [active, setActive] = useState(0)
   const groups = useMemo(() => {
     // Default order: the search groups results by page, not by the menu.
-    const [noteNav, taskNav, financeNav] = navs(t)
+    const [noteNav, taskNav, financeNav, healthNav] = navs(t)
     const normalizedQuery = normalize(query)
     const toGroup = <T extends { id: string; title?: string }>(
       nav: TMenu,
@@ -223,8 +226,19 @@ const Results = (properties: TResultsProperties) => {
           .filter(Boolean)
           .join(' · '),
       ),
+      // Health logs by the person's name and their notes.
+      toGroup(
+        healthNav,
+        (healthLogs ?? []).map((log) => ({ ...log, title: log.name })),
+        t('health.untitled'),
+        (log) =>
+          (log.content || [])
+            .map((entry) => entry.note)
+            .filter(Boolean)
+            .join(' · '),
+      ),
     ].filter((group) => group.options.length > 0)
-  }, [notes, tasks, finances, query, t])
+  }, [notes, tasks, finances, healthLogs, query, t])
   const options = useMemo(
     () => groups.flatMap((group) => group.options),
     [groups],

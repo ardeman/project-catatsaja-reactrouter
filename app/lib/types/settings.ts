@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 import { TNavPage } from '~/lib/constants/navigation'
 import { Theme, Size } from '~/lib/contexts/theme'
+import { TBmiStandard, TLabUnits } from '~/lib/types/health'
 import {
   generalSettingSchema,
   currencyFormatSchema,
@@ -21,6 +22,11 @@ export type TUpdateAppearanceRequest = {
 export type TUpdateNavigationRequest = {
   navOrder: TNavPage[]
   startPage: TNavPage
+}
+
+export type TUpdateHealthSettingsRequest = {
+  bmiStandard: TBmiStandard
+  labUnits: TLabUnits
 }
 
 export type TCurrencyFormatRequest = z.infer<

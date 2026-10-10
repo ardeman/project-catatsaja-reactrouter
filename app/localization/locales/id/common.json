@@ -22,7 +22,8 @@
     },
     "currency": "Mata uang",
     "userMenu": "Menu akun",
-    "menu": "Menu"
+    "menu": "Menu",
+    "health": "Kesehatan"
   },
   "form": {
     "save": "Simpan",
@@ -245,6 +246,10 @@
           "label": "Tagihan",
           "description": "Air, listrik, gas, telepon, internet"
         },
+        "laundry": {
+          "label": "Laundry",
+          "description": "Cuci, setrika, dry clean"
+        },
         "health": {
           "label": "Kesehatan",
           "description": "Olahraga, dokter, obat-obatan, perawatan diri"
@@ -363,7 +368,7 @@
       "balance": "Saldo",
       "income": "Pemasukan",
       "expense": "Pengeluaran",
-      "incomeExpense": "Masuk {{income}} · Keluar {{expense}}",
+      "incomeExpense": "Masuk <in>{{income}}</in> · Keluar <out>{{expense}}</out>",
       "byCategory": "Pengeluaran per kategori"
     },
     "accounts": {
@@ -678,6 +683,27 @@
       "order": "Urutan menu",
       "startPage": "Dibuka di",
       "startPageHint": "Halaman yang tampil saat kamu membuka aplikasi atau masuk."
+    },
+    "health": {
+      "title": "Kesehatan",
+      "description": "Cara hasil kesehatan dinilai dan ditampilkan.",
+      "bmiStandard": "Kategori IMT dewasa",
+      "bmiStandards": {
+        "kemenkes": "Kemenkes",
+        "who": "WHO",
+        "asiaPacific": "Asia-Pasifik"
+      },
+      "bmiStandardHint": {
+        "kemenkes": "Kementerian Kesehatan RI: normal 18,5–25, berat badan lebih sampai 27, obesitas di atasnya.",
+        "who": "WHO internasional: normal 18,5–24,9, berat badan lebih 25–29,9, obesitas mulai 30.",
+        "asiaPacific": "WHO untuk orang dewasa Asia: normal 18,5–22,9, berisiko 23–24,9, obesitas mulai 25."
+      },
+      "labUnits": "Satuan hasil laboratorium",
+      "units": {
+        "conventional": "mg/dL",
+        "si": "mmol/L"
+      },
+      "labUnitsHint": "Gula darah, kolesterol, dan asam urat. Dalam satuan SI asam urat ditampilkan dalam µmol/L, seperti laporan laboratorium."
     }
   },
   "notFound": {
@@ -828,5 +854,207 @@
   },
   "numberInput": {
     "calculator": "Keyboard kalkulator: ketik perhitungan seperti (24/22)*28500000"
+  },
+  "health": {
+    "title": "catatan kesehatan",
+    "new": "Catatan kesehatan baru",
+    "untitled": "Tanpa nama",
+    "entries_one": "{{count}} entri",
+    "entries_other": "{{count}} entri",
+    "age_one": "{{count}} tahun",
+    "age_other": "{{count}} tahun",
+    "noEntries": "Belum ada yang dicatat.",
+    "overview": "Ringkasan",
+    "sections": "Bagian",
+    "all": "Semua",
+    "disclaimer": "Rentang ini panduan umum untuk dewasa (anak menurut standar WHO), bukan diagnosis. Diskusikan hasilmu dengan dokter.",
+    "empty": {
+      "title": "Belum ada catatan kesehatan",
+      "description": "Buat catatan untuk dirimu, anak, atau orang tua: berat badan dan tumbuh kembang, gula darah, asam urat, kolesterol, kalori, dan menstruasi.",
+      "overview": "Belum ada yang dicatat. Pilih bagian di atas untuk menambah pengukuran pertama.",
+      "body": "Belum ada pengukuran.",
+      "glucose": "Belum ada hasil gula darah.",
+      "uricAcid": "Belum ada hasil asam urat.",
+      "cholesterol": "Belum ada hasil kolesterol.",
+      "calories": "Belum ada makanan yang dicatat.",
+      "period": "Belum ada menstruasi yang dicatat.",
+      "filtered": "Belum ada catatan untuk pilihan ini."
+    },
+    "toast": {
+      "created": "Catatan kesehatan dibuat",
+      "deleted": "Catatan kesehatan dihapus",
+      "unlinked": "Catatan kesehatan dihapus dari daftarmu",
+      "notFound": "Catatan kesehatan ini tidak ada atau tidak dibagikan denganmu"
+    },
+    "kinds": {
+      "body": "Tubuh",
+      "glucose": "Gula darah",
+      "uricAcid": "Asam urat",
+      "cholesterol": "Kolesterol",
+      "calories": "Kalori",
+      "period": "Menstruasi"
+    },
+    "add": {
+      "body": "Tambah pengukuran",
+      "glucose": "Tambah gula darah",
+      "uricAcid": "Tambah asam urat",
+      "cholesterol": "Tambah kolesterol",
+      "calories": "Tambah makanan",
+      "period": "Catat menstruasi"
+    },
+    "form": {
+      "name": "Nama",
+      "birthDate": "Tanggal lahir",
+      "sex": {
+        "label": "Jenis kelamin",
+        "female": "Perempuan",
+        "male": "Laki-laki"
+      },
+      "date": "Tanggal",
+      "time": "Jam",
+      "start": "Hari pertama",
+      "end": "Hari terakhir",
+      "note": "Catatan",
+      "food": "Makanan",
+      "weight": "Berat",
+      "height": "Tinggi",
+      "head": "Kepala",
+      "kcal": "Kalori",
+      "context": "Waktu",
+      "meal": "Waktu makan",
+      "flow": "Banyaknya darah",
+      "notSet": "Tidak diisi",
+      "add": "Tambah pengukuran",
+      "edit": "Ubah pengukuran",
+      "delete": "Hapus",
+      "atLeastOne": "Isi setidaknya satu nilai",
+      "endBeforeStart": "Hari terakhir tidak boleh sebelum hari pertama"
+    },
+    "glucoseContext": {
+      "fasting": "Puasa",
+      "beforeMeal": "Sebelum makan",
+      "afterMeal": "2 jam setelah makan",
+      "random": "Sewaktu",
+      "bedtime": "Sebelum tidur"
+    },
+    "meal": {
+      "breakfast": "Sarapan",
+      "lunch": "Makan siang",
+      "dinner": "Makan malam",
+      "snack": "Camilan"
+    },
+    "flow": {
+      "light": "Sedikit",
+      "medium": "Sedang",
+      "heavy": "Banyak"
+    },
+    "cholesterol": {
+      "total": "Kolesterol total",
+      "ldl": "Kolesterol LDL",
+      "hdl": "Kolesterol HDL",
+      "triglycerides": "Trigliserida",
+      "short": {
+        "total": "Total",
+        "ldl": "LDL",
+        "hdl": "HDL",
+        "triglycerides": "TG"
+      }
+    },
+    "chart": {
+      "weight": "Berat badan dari waktu ke waktu"
+    },
+    "ranges": {
+      "glucose": "Normal: puasa atau sebelum makan 70–99 mg/dL, 2 jam setelah makan di bawah 140 (ADA). Pilih waktu di atas untuk melihat rentangnya.",
+      "uricAcid": "Rentang umum dewasa: {{low}}–{{high}} {{unit}} (sedikit berbeda antar laboratorium).",
+      "cholesterol": "Panduan dewasa (NCEP ATP III): total di bawah 200, LDL di bawah 100, HDL 40 ke atas untuk laki-laki dan 50 ke atas untuk perempuan, trigliserida di bawah 150 mg/dL."
+    },
+    "growth": {
+      "title": "Tumbuh kembang (standar WHO)",
+      "loading": "Memuat standar WHO…",
+      "needBirthDate": "Isi tanggal lahir untuk melihat tumbuh kembang dan rentang sesuai usia.",
+      "source": "Standar Pertumbuhan Anak WHO, lahir sampai 5 tahun. Status menurut Permenkes No. 2 Tahun 2020. Panjang badan diukur berbaring sampai 2 tahun, tinggi badan berdiri setelahnya.",
+      "axis": "Usia dalam bulan · {{unit}} · garis: median WHO, ±2 dan ±3 SD",
+      "ageMonths_one": "{{count}} bulan",
+      "ageMonths_other": "{{count}} bulan",
+      "percentile": "Persentil {{value}}",
+      "percentileLabel": "persentil",
+      "short": {
+        "weightForAge": "Berat",
+        "lengthForAge": "Tinggi",
+        "headForAge": "Kepala",
+        "bmiForAge": "IMT"
+      },
+      "indicators": {
+        "weightForAge": "Berat badan menurut umur",
+        "lengthForAge": "Panjang/tinggi badan menurut umur",
+        "headForAge": "Lingkar kepala menurut umur",
+        "bmiForAge": "IMT menurut umur"
+      }
+    },
+    "calories": {
+      "today": "Hari ini",
+      "target": "Target harian (kkal)",
+      "recent": "Hari-hari terakhir",
+      "left": "Sisa {{amount}} kkal hari ini",
+      "over": "{{amount}} kkal melebihi target hari ini",
+      "ofTarget": "dari {{amount}} kkal",
+      "useSuggestion": "Pakai {{amount}}",
+      "suggestionHint": "Disarankan dari berat dan tinggi terakhir, usia, dan jenis kelamin (Mifflin-St Jeor, aktivitas ringan). Titik awal, bukan anjuran medis."
+    },
+    "period": {
+      "next": "Menstruasi berikutnya",
+      "inDays_one": "{{count}} hari lagi",
+      "inDays_other": "{{count}} hari lagi",
+      "late_one": "terlambat {{count}} hari",
+      "late_other": "terlambat {{count}} hari",
+      "cycleDay": "Hari siklus",
+      "fertile": "Masa subur",
+      "averageCycle": "Rata-rata siklus",
+      "averagePeriod": "Rata-rata menstruasi",
+      "days_one": "{{count}} hari",
+      "days_other": "{{count}} hari",
+      "lasted_one": "{{count}} hari",
+      "lasted_other": "{{count}} hari",
+      "ongoing": "Sedang berlangsung",
+      "basedOn_one": "Berdasarkan siklus terakhirmu.",
+      "basedOn_other": "Berdasarkan {{count}} siklus terakhirmu.",
+      "notEnough": "Catat dua kali menstruasi untuk perkiraan dari siklusmu sendiri; sampai saat itu dianggap siklus 28 hari.",
+      "disclaimer": "Hanya perkiraan karena siklus bisa berubah: bukan metode kontrasepsi."
+    },
+    "status": {
+      "normal": "Normal",
+      "severelyUnderweight": "Kurus berat",
+      "underweight": "Kurus",
+      "overweight": "Berat badan lebih",
+      "obese": "Obesitas",
+      "atRisk": "Berisiko (berat badan lebih)",
+      "obeseOne": "Obesitas I",
+      "obeseTwo": "Obesitas II",
+      "veryLow": "Sangat rendah",
+      "low": "Rendah",
+      "prediabetes": "Rentang prediabetes",
+      "diabetes": "Rentang diabetes",
+      "elevated": "Agak tinggi",
+      "high": "Tinggi",
+      "belowRange": "Di bawah rentang",
+      "desirable": "Baik",
+      "borderline": "Batas tinggi",
+      "optimal": "Optimal",
+      "nearOptimal": "Mendekati optimal",
+      "veryHigh": "Sangat tinggi",
+      "protective": "Melindungi",
+      "childSeverelyUnderweight": "Berat badan sangat kurang",
+      "childUnderweight": "Berat badan kurang",
+      "childRiskOverweight": "Risiko berat badan lebih",
+      "childOverweight": "Gizi lebih",
+      "childObese": "Obesitas",
+      "severelyStunted": "Sangat pendek",
+      "stunted": "Pendek",
+      "tall": "Tinggi",
+      "small": "Di bawah rentang",
+      "large": "Di atas rentang",
+      "severelyWasted": "Gizi buruk",
+      "wasted": "Gizi kurang"
+    }
   }
 }

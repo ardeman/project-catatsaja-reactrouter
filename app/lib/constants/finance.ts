@@ -28,6 +28,7 @@ import {
   Users,
   UtensilsCrossed,
   Wallet,
+  WashingMachine,
 } from 'lucide-react'
 
 import { TFinanceEntry } from '~/lib/types/finance'
@@ -55,6 +56,7 @@ export const financeCategories: TCategory[] = [
   { key: 'entertainment', type: 'expense', icon: Clapperboard, color: 5 },
   { key: 'vacation', type: 'expense', icon: Plane, color: 1 },
   { key: 'bills', type: 'expense', icon: Receipt, color: 7 },
+  { key: 'laundry', type: 'expense', icon: WashingMachine, color: 7 },
   { key: 'health', type: 'expense', icon: HeartPulse, color: 3 },
   { key: 'social', type: 'expense', icon: Gift, color: 5 },
   { key: 'insurance', type: 'expense', icon: ShieldCheck, color: 3 },

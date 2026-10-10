@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { Action } from '~/components/base/action'
@@ -109,10 +109,17 @@ export const Card = (properties: TCardProperties) => {
             {money(balance, finance.currency, balance < 0)}
           </p>
           <p className="text-xs text-muted-foreground">
-            {t('finances.summary.incomeExpense', {
-              income: money(income, finance.currency),
-              expense: money(expense, finance.currency),
-            })}
+            <Trans
+              i18nKey="finances.summary.incomeExpense"
+              values={{
+                income: money(income, finance.currency),
+                expense: money(expense, finance.currency),
+              }}
+              components={{
+                in: <span className="text-income" />,
+                out: <span className="text-expense" />,
+              }}
+            />
           </p>
         </div>
         <CategoryBar segments={spending} />
@@ -133,7 +140,7 @@ export const Card = (properties: TCardProperties) => {
                   <span
                     className={cn(
                       'shrink-0 tabular-nums',
-                      isIncome && 'text-emerald-600 dark:text-emerald-400',
+                      isIncome ? 'text-income' : 'text-expense',
                     )}
                   >
                     {money(

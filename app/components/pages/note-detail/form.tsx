@@ -156,7 +156,7 @@ export const Form = (properties: TFormProperties) => {
           name="title"
           placeholder={t('notes.form.title.label')}
           inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
-          autoFocus={!selectedNote} // eslint-disable-line jsx-a11y/no-autofocus
+          autoFocus={!note} // eslint-disable-line jsx-a11y/no-autofocus -- new notes only; `note` is set from the first render
           rows={1}
           onKeyDown={(event) => {
             if (event.key === 'Enter' || event.key === 'ArrowDown') {

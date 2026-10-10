@@ -15,6 +15,54 @@ export type TRelease = {
 export const releases: TRelease[] = [
   {
     date: '2026-10-11',
+    title: { en: 'Health', id: 'Kesehatan' },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Health logs for you and your family: weight and BMI, child growth against the WHO standards, blood sugar, uric acid, cholesterol, calories and period estimates. Share a log like a note.',
+          id: 'Catatan kesehatan untukmu dan keluarga: berat badan dan IMT, tumbuh kembang anak menurut standar WHO, gula darah, asam urat, kolesterol, kalori, dan perkiraan menstruasi. Bagikan catatan seperti catatan biasa.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Choose the adult BMI categories (Kemenkes, WHO or Asia-Pacific) and the units for lab results in Settings.',
+          id: 'Pilih kategori IMT dewasa (Kemenkes, WHO, atau Asia-Pasifik) dan satuan hasil laboratorium di Pengaturan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'A Laundry category for expenses.',
+          id: 'Kategori Laundry untuk pengeluaran.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Income is green and expenses orange everywhere: totals, entries, cards and the type switch.',
+          id: 'Pemasukan berwarna hijau dan pengeluaran oranye di mana-mana: total, entri, kartu, dan tombol jenis.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Category suggestions no longer switch an expense to income because of one shared word, such as a bank name.',
+          id: 'Saran kategori tidak lagi mengubah pengeluaran menjadi pemasukan hanya karena satu kata yang sama, misalnya nama bank.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Opening an existing book, note or list no longer jumps into its title, and the currency stays level with the amount while a calculation shows.',
+          id: 'Membuka buku, catatan, atau daftar yang sudah ada tidak lagi langsung masuk ke judulnya, dan mata uang tetap sejajar dengan nominal saat hasil perhitungan tampil.',
+        },
+      },
+    ],
+  },
+  {
+    date: '2026-10-11',
     title: { en: 'Finance analysis', id: 'Analisis keuangan' },
     changes: [
       {

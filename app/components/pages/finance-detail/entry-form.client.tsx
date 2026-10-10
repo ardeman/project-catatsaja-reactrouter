@@ -190,7 +190,18 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     if (isEditing || isCategoryChosen.current) return
     // The form's current text: right after opening, `description` from this
     // render still holds the previous entry's.
-    const match = suggestFromHistory(getValues('description'), pastEntries)
+    const text = getValues('description')
+    const found = suggestFromHistory(text, pastEntries)
+    if (!found) return
+    // A weak match (one shared word, say a bank's name) never switches
+    // income and expense: look among entries of the current type instead.
+    const match =
+      found.isStrong || found.entry.type === getValues('type')
+        ? found.entry
+        : suggestFromHistory(
+            text,
+            pastEntries.filter((item) => item.type === getValues('type')),
+          )?.entry
     if (!match) return
     if (!isTypeChosen.current && match.type !== getValues('type')) {
       setValue('type', match.type, { shouldDirty: true })
@@ -282,7 +293,12 @@ export const EntryForm = (properties: TEntryFormProperties) => {
           {t(isEditing ? 'finances.entry.edit' : 'finances.entry.add')}
         </h2>
         <div className="flex min-w-0 items-center gap-2">
-          <span className="truncate text-xs text-muted-foreground">
+          <span
+            className={cn(
+              'truncate text-xs font-medium',
+              type === 'income' ? 'text-income' : 'text-expense',
+            )}
+          >
             {t(`finances.form.type.${type}`)}
           </span>
           <button
@@ -307,14 +323,14 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               aria-hidden="true"
               className={cn(
                 'relative size-5 justify-self-center',
-                type === 'income' && 'text-muted-foreground',
+                type === 'income' ? 'text-muted-foreground' : 'text-expense',
               )}
             />
             <BanknoteArrowDown
               aria-hidden="true"
               className={cn(
                 'relative size-5 justify-self-center',
-                type === 'expense' && 'text-muted-foreground',
+                type === 'expense' ? 'text-muted-foreground' : 'text-income',
               )}
             />
           </button>
@@ -430,7 +446,9 @@ export const EntryForm = (properties: TEntryFormProperties) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-[1fr_auto] items-end gap-2">
+          {/* Top-aligned, so the currency stays level with the amount input
+              when a calculation's result shows under it. */}
+          <div className="grid grid-cols-[1fr_auto] items-start gap-2">
             <NumberInput
               name="amount"
               allowMath
@@ -439,48 +457,57 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               label={t('finances.form.amount.label')}
               required
             />
-            <EditableValue
-              label={t('finances.form.currency.label')}
-              value={`${currency.code} (${currency.symbol})`}
-              isEditing={editingFields.currency}
-              onEdit={() =>
-                setEditingFields((fields) => ({ ...fields, currency: true }))
-              }
-            >
-              <div className="grid gap-1">
-                <Label className="sr-only">
-                  {t('finances.form.currency.label')}
-                </Label>
-                <Select
-                  defaultOpen
-                  value={currency.code}
-                  onValueChange={handleCurrencyChange}
-                >
-                  <SelectTrigger
-                    aria-label={t('finances.form.currency.label')}
-                    className="w-28"
+            <div className="grid gap-1">
+              {/* Takes the place of the amount's label. */}
+              <span
+                aria-hidden="true"
+                className="invisible text-xs leading-tight"
+              >
+                {t('finances.form.amount.label')}
+              </span>
+              <EditableValue
+                label={t('finances.form.currency.label')}
+                value={`${currency.code} (${currency.symbol})`}
+                isEditing={editingFields.currency}
+                onEdit={() =>
+                  setEditingFields((fields) => ({ ...fields, currency: true }))
+                }
+              >
+                <div className="grid gap-1">
+                  <Label className="sr-only">
+                    {t('finances.form.currency.label')}
+                  </Label>
+                  <Select
+                    defaultOpen
+                    value={currency.code}
+                    onValueChange={handleCurrencyChange}
                   >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {currencyOptions.map((option) => (
-                      <SelectItem
-                        key={option.code}
-                        value={option.code}
-                      >
-                        {option.code} ({option.symbol})
+                    <SelectTrigger
+                      aria-label={t('finances.form.currency.label')}
+                      className="w-28"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {currencyOptions.map((option) => (
+                        <SelectItem
+                          key={option.code}
+                          value={option.code}
+                        >
+                          {option.code} ({option.symbol})
+                        </SelectItem>
+                      ))}
+                      <SelectItem value={ADD_CURRENCY}>
+                        <span className="flex items-center gap-2">
+                          <Plus className="size-4" />
+                          {t('finances.addCurrency.option')}
+                        </span>
                       </SelectItem>
-                    ))}
-                    <SelectItem value={ADD_CURRENCY}>
-                      <span className="flex items-center gap-2">
-                        <Plus className="size-4" />
-                        {t('finances.addCurrency.option')}
-                      </span>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </EditableValue>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </EditableValue>
+            </div>
           </div>
 
           {isForeign && (

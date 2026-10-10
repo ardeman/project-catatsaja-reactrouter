@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 import { TNavPage } from '~/lib/constants/navigation'
 import { Theme, Size } from '~/lib/contexts/theme'
+import { TBmiStandard, TLabUnits } from '~/lib/types/health'
 import { TCurrencyFormatRequest } from '~/lib/types/settings'
 import { emailSchema, signInSchema, signUpSchema } from '~/lib/validations/user'
 
@@ -27,4 +28,7 @@ export type TUserResponse = {
   // Main pages in the person's order, and the one the app opens on.
   navOrder?: TNavPage[]
   startPage?: TNavPage
+  // How health values are judged and shown.
+  bmiStandard?: TBmiStandard
+  labUnits?: TLabUnits
 }

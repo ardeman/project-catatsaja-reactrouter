@@ -76,9 +76,12 @@ const words = (text: string) =>
     .split(/[^\p{L}\p{N}]+/u)
     .filter((word) => word.length >= 3)
 
-// The most recent past entry described the same way: the same text, or
-// else a shared word ("Grab ke kantor" → an earlier "Grab"). Its category
-// (and type) is the suggestion.
+// The past entry described most like this one: the same text, or else the
+// most words in common, with the first word counting extra ("Cicilan …"
+// and "Gaji …" say what an entry is; a bank or place name says little).
+// Ties go to the most recent. `isStrong` when it is the same text, two or
+// more shared words or the same first word: only then may it change the
+// type (income or expense), not just the category.
 export const suggestFromHistory = (
   description: string,
   history: TFinanceEntry[],
@@ -88,10 +91,19 @@ export const suggestFromHistory = (
   const exact = history.find(
     (entry) => entry.description.trim().toLowerCase() === text,
   )
-  if (exact) return exact
-  const typed = new Set(words(text))
+  if (exact) return { entry: exact, isStrong: true }
+  const typedWords = words(text)
+  const typed = new Set(typedWords)
   if (typed.size === 0) return
-  return history.find((entry) =>
-    words(entry.description).some((word) => typed.has(word)),
-  )
+  let best: { entry: TFinanceEntry; score: number } | undefined
+  for (const entry of history) {
+    const theirs = words(entry.description)
+    const shared = new Set(theirs.filter((word) => typed.has(word))).size
+    if (shared === 0) continue
+    const sameFirst = theirs[0] === typedWords[0]
+    const score = shared + (sameFirst ? 1 : 0)
+    if (!best || score > best.score) best = { entry, score }
+  }
+  if (!best) return
+  return { entry: best.entry, isStrong: best.score >= 2 }
 }

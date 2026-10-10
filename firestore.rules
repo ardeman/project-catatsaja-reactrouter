@@ -111,5 +111,13 @@ service cloud.firestore {
       allow update: if canUpdateShared(['title', 'content', 'currency', 'accounts']);
       allow delete: if isOwner(resource.data.owner);
     }
+
+    // Health logs: one person's measurements, shared like the others.
+    match /healthLogs/{healthLogId} {
+      allow read: if canRead(resource.data.permissions.read);
+      allow create: if isValidNewShared();
+      allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content']);
+      allow delete: if isOwner(resource.data.owner);
+    }
   }
 }

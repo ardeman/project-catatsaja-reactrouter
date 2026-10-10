@@ -150,7 +150,7 @@ export const Navbar = (properties: TProperties) => {
       </header>
       <Navigation
         variant="bottom"
-        className="glass-surface fixed inset-x-3 bottom-(--nav-bottom) z-50 grid grid-cols-3 gap-1 rounded-full border p-1 md:hidden"
+        className="glass-surface fixed inset-x-3 bottom-(--nav-bottom) z-50 grid auto-cols-fr grid-flow-col gap-1 rounded-full border p-1 md:hidden"
       />
     </>
   )

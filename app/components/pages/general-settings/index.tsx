@@ -1,4 +1,5 @@
 import { Appearance } from './appearance'
+import { Health } from './health'
 import { Navigation } from './navigation'
 import { Profile } from './profile'
 
@@ -8,6 +9,7 @@ export const GeneralSettingsPage = () => {
       <Profile />
       <Appearance />
       <Navigation />
+      <Health />
     </div>
   )
 }

@@ -40,6 +40,8 @@
   --color-chart-4: hsl(var(--chart-4));
   --color-chart-5: hsl(var(--chart-5));
   --color-viz-income: var(--viz-income);
+  --color-income: var(--income);
+  --color-expense: var(--expense);
   --color-viz-expense: var(--viz-expense);
   --color-viz-balance: var(--viz-balance);
 
@@ -227,6 +229,10 @@
     /* Finance charts: validated as a set against each theme's card surface
        (colour-blind separation and lightness). Light income is under 3:1
        on white, so charts always offer a table and visible values. */
+    /* Income and expense amounts as text: darker than the chart fills so
+       they read at body size (4.5:1 or more on the surface). */
+    --income: #047857;
+    --expense: #c2410c;
     --viz-income: #1baf7a;
     --viz-expense: #eb6834;
     --viz-balance: #2a78d6;
@@ -284,6 +290,8 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --income: #34d399;
+    --expense: #fb923c;
     --viz-income: #199e70;
     --viz-expense: #d95926;
     --viz-balance: #3987e5;

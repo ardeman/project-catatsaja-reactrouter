@@ -4,3 +4,5 @@ dist
 build
 .react-router
 pnpm-lock.yaml
+# Generated WHO growth tables (one data line; see the file header).
+app/lib/constants/who-growth-standards.ts
