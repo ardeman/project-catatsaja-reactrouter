@@ -8,9 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/base/card'
+import { CategoryBar } from '~/components/base/category-bar'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { Markdown } from '~/components/base/markdown'
-import { categoryColor } from '~/lib/constants/finance'
 import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -147,24 +147,12 @@ export const FinancePreview = (properties: { className?: string }) => {
             })}
           </p>
         </div>
-        {/* A glimpse of the analysis: spending by category, each segment
-            in its category's colour with a surface gap between them. */}
-        <div className="grid gap-1">
-          <p className="text-xs text-muted-foreground">
-            {t('landing.preview.finance.byCategory')}
-          </p>
-          <div className="flex h-2 gap-0.5 overflow-hidden rounded-full">
-            {entries.map((entry) => (
-              <span
-                key={entry.category}
-                style={{
-                  flexGrow: entry.amount,
-                  backgroundColor: categoryColor(entry.category),
-                }}
-              />
-            ))}
-          </div>
-        </div>
+        <CategoryBar
+          segments={entries.map(({ category, amount }) => ({
+            category,
+            total: amount,
+          }))}
+        />
         <ul className="grid gap-1.5 text-sm">
           {entries.map(({ category, text, amount }) => (
             <li

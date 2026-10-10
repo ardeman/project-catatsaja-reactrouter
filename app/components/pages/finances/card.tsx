@@ -9,11 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/base/card'
+import { CategoryBar } from '~/components/base/category-bar'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
 import { entryBookTotal, summarize } from '~/lib/utils/finance'
+import { totalsByCategory } from '~/lib/utils/finance-analysis'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -50,6 +52,7 @@ export const Card = (properties: TCardProperties) => {
   ).size
   const entries = finance.content || []
   const { income, expense, balance } = summarize(entries)
+  const spending = totalsByCategory(entries, 'expense')
   const latest = entries.toReversed().slice(0, 3)
 
   return (
@@ -112,6 +115,7 @@ export const Card = (properties: TCardProperties) => {
             })}
           </p>
         </div>
+        <CategoryBar segments={spending} />
         {latest.length > 0 && (
           <ul className="grid gap-1.5 text-sm">
             {latest.map((entry) => {

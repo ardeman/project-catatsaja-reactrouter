@@ -363,7 +363,8 @@
       "balance": "Saldo",
       "income": "Pemasukan",
       "expense": "Pengeluaran",
-      "incomeExpense": "Masuk {{income}} · Keluar {{expense}}"
+      "incomeExpense": "Masuk {{income}} · Keluar {{expense}}",
+      "byCategory": "Pengeluaran per kategori"
     },
     "accounts": {
       "title": "Akunmu",
@@ -740,7 +741,7 @@
       "description": "<span>{{appName}}</span> menyimpan catatan, daftar tugas, dan keuanganmu di satu tempat sederhana, di ponsel maupun komputer, dan bisa dibagikan ke orang yang kamu pilih."
     },
     "features": {
-      "title": "Semua yang perlu kamu ingat, tanpa yang tidak perlu",
+      "title": "Semua yang perlu kamu ingat, tanpa ribet",
       "notes": {
         "title": "Catatan yang rapi dengan sendirinya",
         "description": "Tulis judul, daftar, dan teks tebal sambil mengetik. Setiap perubahan tersimpan otomatis."
@@ -784,8 +785,7 @@
       "finance": {
         "title": "Liburan ke Bali",
         "date": "Diedit 2 hari lalu",
-        "entries": ["Tiket pesawat", "Makan di Jimbaran", "Oleh-oleh"],
-        "byCategory": "Pengeluaran per kategori"
+        "entries": ["Tiket pesawat", "Makan di Jimbaran", "Oleh-oleh"]
       }
     }
   },

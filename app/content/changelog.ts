@@ -18,6 +18,20 @@ export const releases: TRelease[] = [
     title: { en: 'Finance analysis', id: 'Analisis keuangan' },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'Book cards show your spending by category as a coloured bar.',
+          id: 'Kartu buku menampilkan pengeluaran per kategori sebagai bilah berwarna.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'More natural Indonesian on the home page.',
+          id: 'Bahasa Indonesia di halaman utama kini lebih alami.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'The home page shows what the app can do now, including the finance analysis, calculations in amounts and checking against your accounts.',

@@ -363,7 +363,8 @@
       "balance": "Balance",
       "income": "Income",
       "expense": "Expenses",
-      "incomeExpense": "In {{income}} · Out {{expense}}"
+      "incomeExpense": "In {{income}} · Out {{expense}}",
+      "byCategory": "Spending by category"
     },
     "accounts": {
       "title": "Your accounts",
@@ -784,8 +785,7 @@
       "finance": {
         "title": "Bali trip",
         "date": "Edited 2 days ago",
-        "entries": ["Flights", "Dinner at Jimbaran", "Souvenirs"],
-        "byCategory": "Spending by category"
+        "entries": ["Flights", "Dinner at Jimbaran", "Souvenirs"]
       }
     }
   },
