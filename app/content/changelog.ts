@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finance analysis', id: 'Analisis keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'The home page shows what the app can do now, including the finance analysis, calculations in amounts and checking against your accounts.',
+          id: 'Halaman utama kini menampilkan kemampuan terbaru aplikasi, termasuk analisis keuangan, perhitungan di nominal, dan pencocokan dengan rekeningmu.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Holding a finger on the bottom bar no longer opens the link menu, so sliding to switch pages works.',

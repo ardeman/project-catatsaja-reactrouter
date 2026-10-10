@@ -1,11 +1,4 @@
-import {
-  Circle,
-  CircleCheck,
-  Pin,
-  Plane,
-  UtensilsCrossed,
-  Users,
-} from 'lucide-react'
+import { Circle, CircleCheck, Pin, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -15,7 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/base/card'
+import { CategoryIcon } from '~/components/base/category-icon'
 import { Markdown } from '~/components/base/markdown'
+import { categoryColor } from '~/lib/constants/finance'
 import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -107,19 +102,25 @@ const rupiah = (amount: number) =>
 
 export const FinancePreview = (properties: { className?: string }) => {
   const { t } = useTranslation()
-  // Wider than the other cards so the amounts fit.
+  // Real categories, so the icons and colours match the app.
   const entries = [
     {
-      icon: Plane,
+      category: 'vacation',
       text: t('landing.preview.finance.entries.0'),
-      amount: -1_850_000,
+      amount: 1_850_000,
     },
     {
-      icon: UtensilsCrossed,
+      category: 'fnb',
       text: t('landing.preview.finance.entries.1'),
-      amount: -275_000,
+      amount: 275_000,
+    },
+    {
+      category: 'shopping',
+      text: t('landing.preview.finance.entries.2'),
+      amount: 400_000,
     },
   ]
+  const expense = entries.reduce((total, entry) => total + entry.amount, 0)
   return (
     <Card
       aria-hidden
@@ -138,23 +139,41 @@ export const FinancePreview = (properties: { className?: string }) => {
           <p className="text-xs text-muted-foreground">
             {t('finances.summary.balance')}
           </p>
-          <p className="text-lg font-semibold">{rupiah(2_875_000)}</p>
+          <p className="text-lg font-semibold">{rupiah(5_000_000 - expense)}</p>
           <p className="text-xs text-muted-foreground">
             {t('finances.summary.incomeExpense', {
               income: rupiah(5_000_000),
-              expense: rupiah(2_125_000),
+              expense: rupiah(expense),
             })}
           </p>
         </div>
+        {/* A glimpse of the analysis: spending by category, each segment
+            in its category's colour with a surface gap between them. */}
+        <div className="grid gap-1">
+          <p className="text-xs text-muted-foreground">
+            {t('landing.preview.finance.byCategory')}
+          </p>
+          <div className="flex h-2 gap-0.5 overflow-hidden rounded-full">
+            {entries.map((entry) => (
+              <span
+                key={entry.category}
+                style={{
+                  flexGrow: entry.amount,
+                  backgroundColor: categoryColor(entry.category),
+                }}
+              />
+            ))}
+          </div>
+        </div>
         <ul className="grid gap-1.5 text-sm">
-          {entries.map(({ icon: Icon, text, amount }) => (
+          {entries.map(({ category, text, amount }) => (
             <li
               key={text}
               className="flex min-w-0 items-center gap-2"
             >
-              <Icon className="size-4 shrink-0 text-muted-foreground" />
+              <CategoryIcon category={category} />
               <span className="min-w-0 flex-1 truncate">{text}</span>
-              <span className="tabular-nums">−{rupiah(-amount)}</span>
+              <span className="tabular-nums">−{rupiah(amount)}</span>
             </li>
           ))}
         </ul>

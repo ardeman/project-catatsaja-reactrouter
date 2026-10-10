@@ -749,17 +749,21 @@
         "title": "Checklists that keep up",
         "description": "Add items with a tap or paste a whole list at once. Finished items move out of the way."
       },
+      "finances": {
+        "title": "Money, sorted",
+        "description": "Keep books for a month, a trip or a project, in any currency. Type a sum like 24/22*28,500,000 right into the amount, and check the balance against your real accounts."
+      },
+      "analysis": {
+        "title": "See where your money goes",
+        "description": "Charts of your cash flow and balance, spending by colour-coded category, and your savings rate, worked out on your device."
+      },
       "sharing": {
         "title": "Share it your way",
-        "description": "Give someone read-only or edit access to a note or list. Changes show up for everyone right away."
+        "description": "Give someone read-only or edit access to a note, list or book. Changes show up for everyone right away."
       },
       "everywhere": {
         "title": "Wherever you are",
-        "description": "Works in any browser and installs like an app. Light or dark, in English or Bahasa Indonesia."
-      },
-      "finances": {
-        "title": "Money, sorted",
-        "description": "Keep books for a month, a trip or a project. Record income and expenses in any currency and see the balance at a glance."
+        "description": "Works in any browser and installs like an app that opens on the page you choose. Light or dark, in English or Bahasa Indonesia."
       }
     },
     "cta": {
@@ -780,7 +784,8 @@
       "finance": {
         "title": "Bali trip",
         "date": "Edited 2 days ago",
-        "entries": ["Flights", "Dinner at Jimbaran"]
+        "entries": ["Flights", "Dinner at Jimbaran", "Souvenirs"],
+        "byCategory": "Spending by category"
       }
     }
   },

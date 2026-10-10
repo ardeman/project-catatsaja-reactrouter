@@ -749,17 +749,21 @@
         "title": "Daftar tugas yang praktis",
         "description": "Tambah item sekali ketuk atau tempel satu daftar sekaligus. Item yang selesai tersingkir dengan sendirinya."
       },
+      "finances": {
+        "title": "Keuangan yang rapi",
+        "description": "Buat buku untuk sebulan, perjalanan, atau proyek, dalam mata uang apa pun. Ketik hitungan seperti 24/22*28.500.000 langsung di nominal, dan cocokkan saldo dengan rekeningmu."
+      },
+      "analysis": {
+        "title": "Lihat ke mana uangmu pergi",
+        "description": "Grafik arus kas dan saldo, pengeluaran per kategori berwarna, dan tingkat tabunganmu, dihitung di perangkatmu."
+      },
       "sharing": {
         "title": "Berbagi sesukamu",
-        "description": "Beri orang lain akses hanya baca atau boleh ubah ke catatan atau daftar. Perubahan langsung terlihat oleh semua."
+        "description": "Beri orang lain akses hanya baca atau boleh ubah ke catatan, daftar, atau buku. Perubahan langsung terlihat oleh semua."
       },
       "everywhere": {
         "title": "Di mana pun kamu berada",
-        "description": "Bisa dibuka di browser apa saja dan dipasang seperti aplikasi. Tema terang atau gelap, dalam Bahasa Indonesia atau Inggris."
-      },
-      "finances": {
-        "title": "Keuangan yang rapi",
-        "description": "Buat buku untuk sebulan, perjalanan, atau proyek. Catat pemasukan dan pengeluaran dalam mata uang apa pun dan lihat saldonya sekilas."
+        "description": "Bisa dibuka di browser apa saja dan dipasang seperti aplikasi yang terbuka di halaman pilihanmu. Tema terang atau gelap, dalam Bahasa Indonesia atau Inggris."
       }
     },
     "cta": {
@@ -780,7 +784,8 @@
       "finance": {
         "title": "Liburan ke Bali",
         "date": "Diedit 2 hari lalu",
-        "entries": ["Tiket pesawat", "Makan di Jimbaran"]
+        "entries": ["Tiket pesawat", "Makan di Jimbaran", "Oleh-oleh"],
+        "byCategory": "Pengeluaran per kategori"
       }
     }
   },
