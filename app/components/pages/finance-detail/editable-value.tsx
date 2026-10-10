@@ -1,4 +1,4 @@
-import { ReactNode, Ref } from 'react'
+import { ReactNode } from 'react'
 
 type TProperties = {
   label: string
@@ -6,7 +6,6 @@ type TProperties = {
   required?: boolean
   isEditing: boolean
   onEdit: () => void
-  buttonReference?: Ref<HTMLButtonElement>
   children: ReactNode
 }
 
@@ -16,14 +15,12 @@ export const EditableValue = ({
   required,
   isEditing,
   onEdit,
-  buttonReference,
   children,
 }: TProperties) =>
   isEditing ? (
     children
   ) : (
     <button
-      ref={buttonReference}
       type="button"
       aria-label={label}
       title={value}

@@ -188,7 +188,12 @@ export const Form = (properties: TFormProperties) => {
 
   const openEntry = (entry?: TFinanceEntry) => {
     setEditing(entry)
-    setIsEntryOpen(true)
+    setIsEntryOpen(!entry)
+  }
+
+  const closeEntry = () => {
+    setEditing(undefined)
+    setIsEntryOpen(false)
   }
 
   const handleSaveEntry = (entry: TFinanceEntry) => {
@@ -373,9 +378,7 @@ export const Form = (properties: TFormProperties) => {
         {!isReadOnly &&
           (isEntryOpen ? (
             <EntryForm
-              key={editing?.id ?? 'new'}
-              onClose={() => setIsEntryOpen(false)}
-              entry={editing}
+              onClose={closeEntry}
               book={book}
               currencies={currencies}
               history={history}
@@ -408,6 +411,23 @@ export const Form = (properties: TFormProperties) => {
               </h2>
               <ul className="glass-surface grid divide-y rounded-xl border">
                 {dayEntries.map((entry) => {
+                  if (!isReadOnly && editing?.id === entry.id)
+                    return (
+                      <li
+                        key={entry.id}
+                        className="min-w-0"
+                      >
+                        <EntryForm
+                          onClose={closeEntry}
+                          entry={editing}
+                          book={book}
+                          currencies={currencies}
+                          history={history}
+                          onSave={handleSaveEntry}
+                          onDelete={handleDeleteEntry}
+                        />
+                      </li>
+                    )
                   const category = findCategory(entry.category)
                   const Icon = category?.icon
                   const isIncome = entry.type === 'income'

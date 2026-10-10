@@ -18,7 +18,7 @@ import {
 } from '~/components/base/select'
 import { Label } from '~/components/ui/label'
 import { financeCategories } from '~/lib/constants/finance'
-import { useMoney } from '~/lib/hooks/use-money'
+import { useUserData } from '~/lib/hooks/use-get-user'
 import {
   TFinanceCurrency,
   TFinanceEntry,
@@ -31,6 +31,10 @@ import {
   suggestFromHistory,
   today,
 } from '~/lib/utils/finance'
+import {
+  formatExchangeRate,
+  getDefaultCurrencyFormat,
+} from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { entrySchema } from '~/lib/validations/finance'
 
@@ -69,14 +73,13 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const { onClose, entry, book, currencies, history, onSave, onDelete } =
     properties
   const { t, i18n } = useTranslation(['common', 'zod'])
-  const money = useMoney()
+  const { data: userData } = useUserData()
   const isEditing = !!entry
   const panelReference = useRef<HTMLElement>(null)
-  const dateReference = useRef<HTMLButtonElement>(null)
   const [editingFields, setEditingFields] = useState({
     date: false,
     currency: false,
-    amount: false,
+    rate: false,
   })
 
   const empty: TFinanceEntryForm = {
@@ -131,8 +134,8 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const type = watch('type')
   const currency = watch('currency')
   const category = watch('category')
+  const rate = watch('rate')
   const date = watch('date')
-  const amount = watch('amount')
   const dateLabel = new Intl.DateTimeFormat(i18n.language, {
     weekday: 'short',
     day: 'numeric',
@@ -160,6 +163,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     }
     const next = currencyOptions.find((option) => option.code === code)
     if (!next) return
+    setEditingFields((fields) => ({ ...fields, rate: false }))
     setValue('currency', next, { shouldDirty: true })
     setValue('rate', suggestRate(code, book, currencies), { shouldDirty: true })
   }
@@ -168,6 +172,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   // value in the default currency.
   const handleCurrencyAdded = (added: TCurrency) => {
     const next = toFinanceCurrency(added)
+    setEditingFields((fields) => ({ ...fields, rate: false }))
     setValue('currency', next, { shouldDirty: true })
     setValue('rate', suggestRate(next.code, book, [...currencies, added]), {
       shouldDirty: true,
@@ -219,13 +224,13 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   }
 
   useEffect(() => {
-    if (savedCount > 0) dateReference.current?.focus({ preventScroll: true })
+    if (savedCount > 0) setFocus('amount')
     panelReference.current?.scrollIntoView({ block: 'start' })
-  }, [savedCount])
+  }, [savedCount, setFocus])
 
   useEffect(() => {
-    if (editingFields.amount) setFocus('amount')
-  }, [editingFields.amount, setFocus])
+    if (editingFields.rate) setFocus('rate')
+  }, [editingFields.rate, setFocus])
 
   const onSubmit = handleSubmit(
     (data) => {
@@ -243,12 +248,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
         description: '',
       })
       setIsSuggested(false)
-      setEditingFields({ date: false, currency: false, amount: false })
+      setEditingFields({ date: false, currency: false, rate: false })
       setSavedCount((count) => count + 1)
     },
     (errors) => {
-      if (errors.amount)
-        setEditingFields((fields) => ({ ...fields, amount: true }))
+      if (errors.rate) setEditingFields((fields) => ({ ...fields, rate: true }))
     },
   )
 
@@ -256,7 +260,10 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     <section
       ref={panelReference}
       aria-labelledby="finance-entry-title"
-      className="glass-surface scroll-mt-36 rounded-xl border p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight"
+      className={cn(
+        'scroll-mt-36 p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight',
+        !isEditing && 'glass-surface rounded-xl border',
+      )}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <h2
@@ -317,12 +324,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               {t('finances.entry.ready')}
             </p>
           )}
-          <div className="grid grid-cols-[minmax(0,1fr)_5rem] items-center gap-2">
+          <div className="grid grid-cols-[minmax(0,1fr)_5rem] items-end gap-2">
             <EditableValue
               label={t('finances.form.date.label')}
               value={dateLabel}
               required
-              buttonReference={dateReference}
               isEditing={editingFields.date}
               onEdit={() =>
                 setEditingFields((fields) => ({ ...fields, date: true }))
@@ -416,21 +422,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
           </div>
 
           <div className="grid grid-cols-[1fr_auto] items-end gap-2">
-            <EditableValue
+            <NumberInput
+              name="amount"
               label={t('finances.form.amount.label')}
-              value={money(Number(amount) || 0, currency)}
               required
-              isEditing={editingFields.amount}
-              onEdit={() =>
-                setEditingFields((fields) => ({ ...fields, amount: true }))
-              }
-            >
-              <NumberInput
-                name="amount"
-                label={t('finances.form.amount.label')}
-                required
-              />
-            </EditableValue>
+            />
             <EditableValue
               label={t('finances.form.currency.label')}
               value={`${currency.code} (${currency.symbol})`}
@@ -476,15 +472,31 @@ export const EntryForm = (properties: TEntryFormProperties) => {
           </div>
 
           {isForeign && (
-            <NumberInput
-              name="rate"
+            <EditableValue
               label={t('finances.form.rate.label', {
                 from: currency.code,
                 to: book.code,
               })}
-              hint={t('finances.form.rate.hint')}
+              value={formatExchangeRate(
+                Number(rate),
+                userData?.currencyFormat ?? getDefaultCurrencyFormat(),
+              )}
               required
-            />
+              isEditing={editingFields.rate}
+              onEdit={() =>
+                setEditingFields((fields) => ({ ...fields, rate: true }))
+              }
+            >
+              <NumberInput
+                name="rate"
+                label={t('finances.form.rate.label', {
+                  from: currency.code,
+                  to: book.code,
+                })}
+                hint={t('finances.form.rate.hint')}
+                required
+              />
+            </EditableValue>
           )}
 
           <ConvertedTotal
