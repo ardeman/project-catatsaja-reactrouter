@@ -150,7 +150,7 @@ export const FinancePreview = (properties: { className?: string }) => {
           {entries.map(({ icon: Icon, text, amount }) => (
             <li
               key={text}
-              className="flex items-center gap-2"
+              className="flex min-w-0 items-center gap-2"
             >
               <Icon className="size-4 shrink-0 text-muted-foreground" />
               <span className="min-w-0 flex-1 truncate">{text}</span>

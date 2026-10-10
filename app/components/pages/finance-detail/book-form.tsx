@@ -374,7 +374,10 @@ export const Form = (properties: TFormProperties) => {
                     isForeign ? money(entryTotal(entry), entry.currency) : '',
                   ].filter(Boolean)
                   return (
-                    <li key={entry.id}>
+                    <li
+                      key={entry.id}
+                      className="min-w-0"
+                    >
                       <button
                         type="button"
                         disabled={isReadOnly}

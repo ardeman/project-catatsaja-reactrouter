@@ -118,7 +118,7 @@ export const Card = (properties: TCardProperties) => {
               return (
                 <li
                   key={entry.id}
-                  className="flex items-center gap-2"
+                  className="flex min-w-0 items-center gap-2"
                 >
                   {Icon && (
                     <Icon className="size-4 shrink-0 text-muted-foreground" />
