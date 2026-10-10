@@ -183,6 +183,11 @@
 
 @layer base {
   :root {
+    /* The phone bottom bar's distance from the screen edge: a pill that
+       sits partly in the home-indicator area, its round ends clear of the
+       screen's corners. Content and floating buttons keep clear of it. */
+    --nav-bottom: max(0.5rem, calc(env(safe-area-inset-bottom) - 1.5rem));
+    --toast-bottom: 0px;
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
@@ -217,6 +222,16 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
+  /* Toasts sit above the phone bottom bar on the pages that have it, and
+     above the floating create button too where there is one (list pages:
+     its 1rem padding and 2.25rem height over the bar). */
+  :root:has(nav[data-variant='bottom']) {
+    --toast-bottom: calc(4rem + var(--nav-bottom));
+  }
+  :root:has(nav[data-variant='bottom']):has([data-floating-create]) {
+    --toast-bottom: calc(7.75rem + var(--nav-bottom));
+  }
+
   .dark,
   :root[class~='dark'] {
     --background: 20 14.3% 4.1%;

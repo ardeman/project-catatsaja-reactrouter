@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'On phones, the bottom navigation bar is a slimmer pill that sits lower, and messages appear above it and above the create button instead of covering them.',
+          id: 'Di ponsel, bilah navigasi bawah kini berbentuk pil yang lebih ramping dan lebih rendah, dan pesan muncul di atasnya serta di atas tombol buat, tidak lagi menutupinya.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'In the installed app on iPhone, the status bar follows your theme and the bottom navigation bar stays clear of the screen corners.',

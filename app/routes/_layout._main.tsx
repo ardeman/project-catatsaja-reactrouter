@@ -41,7 +41,7 @@ const Main = () => {
 
   return (
     <ScrollArea className="flex h-dvh w-full">
-      <main className="app-background flex min-h-dvh w-screen flex-col pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
+      <main className="app-background flex min-h-dvh w-screen flex-col pb-[calc(5rem+var(--nav-bottom))] md:pb-0">
         <Navbar />
         <Outlet />
       </main>

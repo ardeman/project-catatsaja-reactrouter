@@ -10,8 +10,8 @@ import {
 } from 'react-router'
 
 import { LoadingSpinner } from '~/components/base/loading-spinner'
+import { Toaster } from '~/components/base/toaster'
 import { ThemeHead } from '~/components/layouts/theme-head'
-import { Toaster } from '~/components/ui/toaster'
 import { publicPages } from '~/lib/configs/page'
 import { useFirebase } from '~/lib/contexts/firebase'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'

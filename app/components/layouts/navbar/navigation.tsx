@@ -16,6 +16,7 @@ export const Navigation = (properties: TProperties) => {
   return (
     <nav
       aria-label={t('navigation.menu')}
+      data-variant={variant}
       className={cn('gap-6 text-lg font-medium', className)}
     >
       {!isBottom && (
@@ -43,7 +44,7 @@ export const Navigation = (properties: TProperties) => {
               'flex items-center gap-2 whitespace-nowrap transition-colors hover:text-foreground',
               isActive ? 'text-primary' : 'text-muted-foreground',
               isBottom &&
-                'h-16 min-w-0 flex-col justify-center gap-1 rounded-lg px-1 text-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
+                'h-14 min-w-0 flex-col justify-center gap-0.5 rounded-full px-1 text-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
               isBottom && isActive && 'bg-primary/15 text-foreground',
             )}
           >

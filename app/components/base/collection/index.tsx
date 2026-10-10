@@ -131,8 +131,10 @@ export const Collection = <T extends TCollectionItem>(
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pb-24 md:gap-8 md:p-8">
       <Button
-        containerClassName="flex fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-auto md:top-16 z-40 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8 h-fit"
+        containerClassName="flex fixed bottom-[calc(4.5rem+var(--nav-bottom))] md:bottom-auto md:top-16 z-40 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8 h-fit"
         className="glass-surface glass-primary w-full border hover:bg-primary"
+        // Toasts keep clear of it (app/styles/tailwind.css).
+        data-floating-create
         onClick={onCreate}
       >
         {createLabel}
