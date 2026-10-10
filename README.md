@@ -29,7 +29,7 @@ Notes, tasks, finances, sharing, accounts and currency settings are done and liv
 - **Notes:** rich Markdown editor (Milkdown) with live preview cards, pinning, autosave, and a page per note.
 - **Tasks:** checklists with add-by-paste (one item per line), tap an item to edit it, reordering, check all, undo after removing an item, and completed items grouped at the bottom.
 - **Saving:** notes and tasks save as you type and when you leave the page, with a "Saving… / Saved" status; a new note or task is kept when you leave it.
-- **Search:** the search bar filters the notes, tasks or finances list by title and content.
+- **Search:** one search box finds notes, tasks and finances together by title and content (Ctrl/⌘ K or `/` from anywhere); "See all" filters a list.
 - **Sharing:** find users by email and give them read or write access to a note or task; read-only is enforced by the database rules; copy a link; undo removing someone; shared items update in real time; a reader can remove a shared item from their own list.
 - **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and the Google profile photo when signing in with Google.
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.

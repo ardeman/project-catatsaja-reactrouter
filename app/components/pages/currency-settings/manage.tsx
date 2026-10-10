@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronDown, ChevronUp, Edit, Plus, Trash2 } from 'lucide-react'
+import { Coins, Pencil, Plus, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -23,14 +23,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '~/components/ui/dialog'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '~/components/ui/table'
 import { useCreateCurrency } from '~/lib/hooks/use-create-currency'
 import { useDeleteCurrency } from '~/lib/hooks/use-delete-currency'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
@@ -57,7 +49,6 @@ export const ManageCurrencies = () => {
   const [deletingCurrency, setDeletingCurrency] = useState<TCurrency | null>(
     null,
   )
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
   const { data: currencies = [], isLoading } = useGetCurrencies()
 
@@ -147,16 +138,6 @@ export const ManageCurrencies = () => {
     setDeletingCurrency(null)
   }
 
-  const toggleExpandedRow = (currencyId: string) => {
-    const newExpandedRows = new Set(expandedRows)
-    if (newExpandedRows.has(currencyId)) {
-      newExpandedRows.delete(currencyId)
-    } else {
-      newExpandedRows.add(currencyId)
-    }
-    setExpandedRows(newExpandedRows)
-  }
-
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
 
@@ -182,12 +163,14 @@ export const ManageCurrencies = () => {
 
   // Preview amount
   const previewAmount = 1234.123_456_789
+  const displayFormat = currentCurrencyFormat || getDefaultCurrencyFormat()
+  const defaultCurrency = currencies.find((currency) => currency.isDefault)
 
   return (
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col space-y-1.5">
               <CardTitle>{t('settings.manageCurrencies.title')}</CardTitle>
               <CardDescription>
@@ -197,7 +180,7 @@ export const ManageCurrencies = () => {
             <Button
               onClick={() => handleOpenDialog()}
               disabled={disabled}
-              className="flex items-center gap-2"
+              containerClassName="shrink-0"
             >
               <Plus className="h-4 w-4" />
               {t('settings.manageCurrencies.button.add')}
@@ -206,168 +189,101 @@ export const ManageCurrencies = () => {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="text-muted-foreground">
-                {t('settings.manageCurrencies.status.loading')}
-              </div>
-            </div>
+            <p className="py-8 text-center text-muted-foreground">
+              {t('settings.manageCurrencies.status.loading')}
+            </p>
           ) : sortedCurrencies.length === 0 ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="text-muted-foreground">
+            <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed px-4 py-10 text-center">
+              <Coins className="size-8 text-muted-foreground/60" />
+              <p className="font-medium">
                 {t('settings.manageCurrencies.status.empty')}
-              </div>
+              </p>
+              <p className="max-w-sm text-sm text-muted-foreground">
+                {t('settings.manageCurrencies.status.emptyHint')}
+              </p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="h-10 w-1/3 md:w-auto">
-                    {t('settings.manageCurrencies.table.code')}
-                  </TableHead>
-                  <TableHead className="hidden h-10 w-auto md:table-cell">
-                    {t('settings.manageCurrencies.table.symbol')}
-                  </TableHead>
-                  <TableHead className="hidden h-10 md:table-cell">
-                    {t('settings.manageCurrencies.table.maxDecimals')}
-                  </TableHead>
-                  <TableHead className="hidden h-10 md:table-cell">
-                    {t('settings.manageCurrencies.table.rate')}
-                  </TableHead>
-                  <TableHead className="hidden h-10 md:table-cell">
-                    {t('settings.manageCurrencies.table.preview')}
-                  </TableHead>
-                  <TableHead className="h-10 w-[100px]">
-                    {t('settings.manageCurrencies.table.actions')}
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedCurrencies.map((currency: TCurrency) => {
-                  const isExpanded = expandedRows.has(currency.id!)
-                  return (
-                    <React.Fragment key={currency.id}>
-                      <TableRow>
-                        <TableCell className="py-0">
-                          <span>{currency.code}</span>{' '}
-                          <span
-                            className={cn(
-                              'inline-block text-xs md:hidden',
-                              currency.isDefault
-                                ? 'font-bold text-primary'
-                                : 'text-muted-foreground',
-                            )}
-                          >
-                            ({currency.symbol})
-                          </span>
-                        </TableCell>
-                        <TableCell
-                          className={cn(
-                            'hidden py-0 font-medium md:table-cell',
-                            currency.isDefault
-                              ? 'font-bold text-primary'
-                              : 'text-muted-foreground',
-                          )}
-                        >
-                          {currency.symbol}
-                        </TableCell>
-                        <TableCell className="hidden py-0 md:table-cell">
-                          {currency.maximumFractionDigits}
-                        </TableCell>
-                        <TableCell className="hidden py-0 md:table-cell">
-                          {currency.rate}
-                        </TableCell>
-                        <TableCell className="hidden py-0 font-mono md:table-cell">
-                          {formatCurrency({
-                            amount: previewAmount,
-                            format:
-                              currentCurrencyFormat ||
-                              getDefaultCurrencyFormat(),
-                            currency: currency,
-                          })}
-                        </TableCell>
-                        <TableCell className="py-0">
-                          <div className="flex items-center gap-1 md:gap-2">
-                            <Button
-                              variant="ghost"
-                              onClick={() => toggleExpandedRow(currency.id!)}
-                              disabled={disabled}
-                              className="md:hidden"
-                            >
-                              {isExpanded ? (
-                                <ChevronUp className="h-3 w-3" />
-                              ) : (
-                                <ChevronDown className="h-3 w-3" />
-                              )}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              onClick={() => handleOpenDialog(currency)}
-                              disabled={disabled}
-                            >
-                              <Edit className="h-3 w-3 md:h-4 md:w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              onClick={() => handleOpenDeleteDialog(currency)}
-                              disabled={disabled || currency.isDefault}
-                            >
-                              <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                      {isExpanded && (
-                        <TableRow className="md:hidden">
-                          <TableCell
-                            {...({
-                              colSpan: 6,
-                            } as React.HTMLAttributes<HTMLTableCellElement>)}
-                          >
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-muted-foreground">
-                                  {t(
-                                    'settings.manageCurrencies.form.maximumFractionDigits.label',
-                                  )}
-                                  :
-                                </span>
-                                <span className="text-sm">
-                                  {currency.maximumFractionDigits}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-muted-foreground">
-                                  {t(
-                                    'settings.manageCurrencies.form.rate.label',
-                                  )}
-                                  :
-                                </span>
-                                <span className="text-sm">{currency.rate}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-muted-foreground">
-                                  {t('settings.manageCurrencies.table.preview')}
-                                  :
-                                </span>
-                                <span className="font-mono text-sm">
-                                  {formatCurrency({
-                                    amount: previewAmount,
-                                    format:
-                                      currentCurrencyFormat ||
-                                      getDefaultCurrencyFormat(),
-                                    currency: currency,
-                                  })}
-                                </span>
-                              </div>
-                            </div>
-                          </TableCell>
-                        </TableRow>
+            <ul className="divide-y rounded-lg border">
+              {sortedCurrencies.map((currency: TCurrency) => (
+                <li
+                  key={currency.id}
+                  className="flex items-center gap-3 p-3"
+                >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      'flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold',
+                      currency.isDefault && 'bg-primary/15 text-primary',
+                    )}
+                  >
+                    {currency.symbol}
+                  </span>
+                  <div className="grid min-w-0 flex-1 gap-0.5">
+                    <p className="flex items-center gap-2 font-medium">
+                      {currency.code}
+                      {currency.isDefault && (
+                        <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
+                          {t('settings.manageCurrencies.badge.default')}
+                        </span>
                       )}
-                    </React.Fragment>
-                  )
-                })}
-              </TableBody>
-            </Table>
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {currency.isDefault || !defaultCurrency
+                        ? t('settings.manageCurrencies.decimals', {
+                            count: currency.maximumFractionDigits,
+                          })
+                        : t('settings.manageCurrencies.rateLine', {
+                            code: currency.code,
+                            value: formatCurrency({
+                              amount: currency.rate,
+                              format: displayFormat,
+                              currency: defaultCurrency,
+                            }),
+                          })}
+                    </p>
+                  </div>
+                  <span className="hidden font-mono text-sm text-muted-foreground lg:block">
+                    {formatCurrency({
+                      amount: previewAmount,
+                      format: displayFormat,
+                      currency,
+                    })}
+                  </span>
+                  <div className="flex shrink-0 items-center">
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleOpenDialog(currency)}
+                      disabled={disabled}
+                      aria-label={t(
+                        'settings.manageCurrencies.button.editNamed',
+                        {
+                          code: currency.code,
+                        },
+                      )}
+                      title={t('settings.manageCurrencies.button.edit')}
+                      className="px-2.5"
+                    >
+                      <Pencil className="size-4" />
+                    </Button>
+                    {!currency.isDefault && (
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleOpenDeleteDialog(currency)}
+                        disabled={disabled}
+                        aria-label={t(
+                          'settings.manageCurrencies.button.deleteNamed',
+                          { code: currency.code },
+                        )}
+                        title={t('settings.manageCurrencies.button.delete')}
+                        className="px-2.5 text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
         </CardContent>
       </Card>

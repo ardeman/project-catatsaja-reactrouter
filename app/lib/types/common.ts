@@ -1,3 +1,4 @@
+import { LucideIcon } from 'lucide-react'
 import { HTMLAttributes } from 'react'
 import { z } from 'zod'
 
@@ -58,4 +59,5 @@ export type TActionProperties = {
 export type TMenu = {
   name: string
   href: string
+  icon?: LucideIcon
 }

@@ -25,10 +25,6 @@ type ThemeProviderState = {
   size: Size
   setTheme: (theme: Theme) => void
   setSize: (size: Size) => void
-  // Shown instead of the saved value until cleared (undefined), e.g. while
-  // choosing in the settings, without saving it.
-  previewTheme: (theme?: Theme) => void
-  previewSize: (size?: Size) => void
 }
 
 const initialState: ThemeProviderState = {
@@ -36,8 +32,6 @@ const initialState: ThemeProviderState = {
   size: 'medium',
   setTheme: () => null,
   setSize: () => null,
-  previewTheme: () => null,
-  previewSize: () => null,
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
@@ -59,24 +53,15 @@ export const ThemeProvider = ({
   const [theme, setThemeState] = useState<Theme>(
     () => (readStorage(themeStorageKey) as Theme | undefined) || defaultTheme,
   )
-  const [previewedTheme, setPreviewedTheme] = useState<Theme>()
-  const [previewedSize, setPreviewedSize] = useState<Size>()
   const [size, setSizeState] = useState<Size>(
     () => (readStorage(sizeStorageKey) as Size | undefined) || defaultSize,
   )
-
-  const activeTheme = previewedTheme ?? theme
-  const activeSize = previewedSize ?? size
 
   useEffect(() => {
     const query = globalThis.matchMedia('(prefers-color-scheme: dark)')
     const apply = () => {
       const resolved =
-        activeTheme === 'system'
-          ? query.matches
-            ? 'dark'
-            : 'light'
-          : activeTheme
+        theme === 'system' ? (query.matches ? 'dark' : 'light') : theme
       const root = globalThis.document.documentElement
       root.classList.remove('light', 'dark')
       root.classList.add(resolved)
@@ -94,19 +79,19 @@ export const ThemeProvider = ({
     }
     apply()
     // In "system" mode, follow the device when it switches.
-    if (activeTheme !== 'system') return
+    if (theme !== 'system') return
     query.addEventListener('change', apply)
     return () => query.removeEventListener('change', apply)
-  }, [activeTheme])
+  }, [theme])
 
   useEffect(() => {
     const root = globalThis.document.documentElement
     let value = '100%'
-    if (activeSize === 'small') value = '87.5%'
-    else if (activeSize === 'large') value = '112.5%'
+    if (size === 'small') value = '87.5%'
+    else if (size === 'large') value = '112.5%'
     root.style.setProperty('--base-size', value)
-    root.dataset.size = activeSize
-  }, [activeSize])
+    root.dataset.size = size
+  }, [size])
 
   const setTheme = useCallback(
     (newTheme: Theme) => {
@@ -129,8 +114,6 @@ export const ThemeProvider = ({
     size,
     setTheme,
     setSize,
-    previewTheme: setPreviewedTheme,
-    previewSize: setPreviewedSize,
   }
 
   return (

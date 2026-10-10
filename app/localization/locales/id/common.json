@@ -20,7 +20,8 @@
       "placeholder": "Cari"
     },
     "currency": "Mata uang",
-    "userMenu": "Menu akun"
+    "userMenu": "Menu akun",
+    "menu": "Menu"
   },
   "form": {
     "save": "Simpan",
@@ -375,9 +376,6 @@
           "medium": "Sedang",
           "large": "Besar"
         }
-      },
-      "toast": {
-        "updated": "Tampilan diperbarui."
       }
     },
     "email": {
@@ -414,7 +412,8 @@
         },
         "minimumFractionDigits": {
           "label": "Min. desimal",
-          "placeholder": "contoh: 2"
+          "placeholder": "contoh: 2",
+          "hint": "Desimal yang selalu ditampilkan, misalnya 2 untuk 1.000,00."
         },
         "currencyCode": {
           "label": "Kode mata uang",
@@ -436,6 +435,13 @@
         },
         "addSpace": {
           "label": "Tambah spasi"
+        },
+        "numberStyle": {
+          "label": "Gaya angka",
+          "hint": "Cara memisahkan ribuan dan desimal di seluruh aplikasi.",
+          "dotComma": "Indonesia",
+          "commaDot": "Internasional",
+          "custom": "Atur sendiri"
         }
       },
       "preview": {
@@ -462,17 +468,10 @@
     "manageCurrencies": {
       "title": "Kelola mata uang",
       "description": "Tambah, ubah, dan atur mata uang yang kamu pakai.",
-      "table": {
-        "code": "Kode",
-        "symbol": "Simbol",
-        "maxDecimals": "Maks. desimal",
-        "rate": "Kurs",
-        "preview": "Pratinjau",
-        "actions": "Aksi"
-      },
       "status": {
         "loading": "Memuat mata uang…",
-        "empty": "Belum ada mata uang."
+        "empty": "Belum ada mata uang.",
+        "emptyHint": "Tambahkan mata uang yang kamu pakai. Yang pertama jadi default, dan yang lain dikonversi ke situ."
       },
       "dialog": {
         "editDescription": "Ubah detail mata uang",
@@ -507,7 +506,9 @@
         "edit": "Ubah mata uang",
         "delete": "Hapus mata uang",
         "save": "Simpan mata uang",
-        "cancel": "Batal"
+        "cancel": "Batal",
+        "editNamed": "Ubah {{code}}",
+        "deleteNamed": "Hapus {{code}}"
       },
       "toast": {
         "created": "Mata uang ditambahkan.",
@@ -527,12 +528,24 @@
         "maximumFractionDigits": {
           "min": "Minimal {{min}}, sesuai min. desimal di format mata uangmu."
         }
-      }
+      },
+      "badge": {
+        "default": "Default"
+      },
+      "decimals_one": "Maks. {{count}} desimal",
+      "decimals_other": "Maks. {{count}} desimal",
+      "rateLine": "1 {{code}} = {{value}}"
     },
     "validation": {
       "displayName": {
         "required": "Isi nama tampilan."
       }
+    },
+    "subtitle": "Profil, tampilan, akun, dan mata uangmu.",
+    "sections": {
+      "general": "Profil, tema, ukuran teks, bahasa",
+      "account": "Email dan cara masuk",
+      "currency": "Format angka dan kurs"
     }
   },
   "notFound": {
@@ -581,7 +594,10 @@
       "title": "Tidak ditemukan",
       "description": "Coba kata lain, atau hapus pencarian."
     },
-    "results_one": "{{count}} hasil untuk “{{query}}”"
+    "results_one": "{{count}} hasil untuk “{{query}}”",
+    "seeAll": "Lihat semua {{count}} di {{section}}",
+    "searching": "Mencari…",
+    "nothing": "Tidak ada yang cocok dengan “{{query}}”."
   },
   "landing": {
     "signIn": "Masuk",

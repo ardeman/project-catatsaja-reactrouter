@@ -8,44 +8,48 @@ import { navs } from './constant'
 import { TProperties } from './type'
 
 export const Navigation = (properties: TProperties) => {
-  const { className, onLinkClick } = properties
+  const { className, onLinkClick, variant = 'bar' } = properties
   const { pathname } = useLocation()
   const { t } = useTranslation()
+  const isMenu = variant === 'menu'
 
   return (
     <nav className={cn('gap-6 text-lg font-medium', className)}>
-      <Link
-        to="#"
-        onClick={onLinkClick}
-        className="flex items-center gap-2 text-lg font-semibold whitespace-nowrap md:text-base"
-      >
-        <div className="relative h-6 w-6">
+      {!isMenu && (
+        <Link
+          to="/notes"
+          onClick={onLinkClick}
+          className="flex shrink-0 items-center gap-2 text-lg font-semibold whitespace-nowrap md:text-base"
+        >
           <img
             src={appleIcon}
-            alt={appName}
-            sizes="24px"
-            style={{
-              objectFit: 'contain',
-            }}
+            alt=""
+            className="size-6 object-contain"
           />
-        </div>
-        <span className="sr-only">{appName}</span>
-      </Link>
-      {navs(t).map((nav, index) => (
-        <Link
-          key={index}
-          to={nav.href}
-          onClick={onLinkClick}
-          className={cn(
-            pathname.split('/')[1] === nav.href.split('/')[1]
-              ? 'text-primary'
-              : 'text-muted-foreground',
-            'whitespace-nowrap transition-colors hover:text-foreground',
-          )}
-        >
-          {nav.name}
+          <span className="sr-only">{appName}</span>
         </Link>
-      ))}
+      )}
+      {navs(t).map((nav) => {
+        const isActive = pathname.split('/')[1] === nav.href.split('/')[1]
+        const Icon = nav.icon
+        return (
+          <Link
+            key={nav.href}
+            to={nav.href}
+            onClick={onLinkClick}
+            aria-current={isActive ? 'page' : undefined}
+            className={cn(
+              'flex items-center gap-2 whitespace-nowrap transition-colors hover:text-foreground',
+              isActive ? 'text-primary' : 'text-muted-foreground',
+              isMenu && 'rounded-lg px-3 py-2.5 text-base hover:bg-accent',
+              isMenu && isActive && 'bg-accent',
+            )}
+          >
+            {Icon && <Icon className={cn('size-4', isMenu && 'size-5')} />}
+            {nav.name}
+          </Link>
+        )
+      })}
     </nav>
   )
 }

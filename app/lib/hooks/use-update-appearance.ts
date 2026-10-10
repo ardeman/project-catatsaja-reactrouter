@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useRevalidator } from 'react-router'
 
 import { updateAppearance } from '~/apis/firestore/user'
@@ -10,7 +9,6 @@ import { toast } from './use-toast'
 
 export const useUpdateAppearance = () => {
   const { revalidate } = useRevalidator()
-  const { t } = useTranslation()
   const [isPending, setIsPending] = useState(false)
   const [isError, setIsError] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -20,10 +18,8 @@ export const useUpdateAppearance = () => {
     setIsError(false)
     setIsSuccess(false)
     try {
+      // Saved as it is chosen; the settings show the status instead of a toast.
       await updateAppearance(data)
-      toast({
-        description: t('settings.appearance.toast.updated'),
-      })
       setIsSuccess(true)
       revalidate()
       return true

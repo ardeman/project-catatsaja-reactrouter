@@ -20,6 +20,27 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Search finds notes, tasks and finances at once, with the matching words highlighted. Use the arrow keys and Enter, and press Ctrl K (⌘ K on a Mac) or / to search from anywhere.',
+          id: 'Pencarian menemukan catatan, tugas, dan keuangan sekaligus, dengan kata yang cocok ditandai. Pakai tombol panah dan Enter, dan tekan Ctrl K (⌘ K di Mac) atau / untuk mencari dari mana saja.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Settings are easier to use: theme, text size and language are picked from cards and saved as soon as you choose, numbers have Indonesian and international presets, and each currency shows its rate in your default currency.',
+          id: 'Pengaturan lebih mudah dipakai: tema, ukuran teks, dan bahasa dipilih dari kartu dan langsung tersimpan, format angka punya pilihan Indonesia dan internasional, dan setiap mata uang menampilkan kursnya dalam mata uang default.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The navigation bar has icons, the logo takes you to your notes, and the account menu shows your email.',
+          id: 'Bilah navigasi kini punya ikon, logo membawamu ke catatan, dan menu akun menampilkan email-mu.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Finances: keep books for a month, a trip or a project, record income and expenses by category, and see the balance. Share a book like a note.',
           id: 'Keuangan: buat buku untuk sebulan, perjalanan, atau proyek, catat pemasukan dan pengeluaran per kategori, dan lihat saldonya. Bagikan buku seperti catatan.',
         },
@@ -62,8 +83,8 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
-          en: 'Choosing another language in the settings no longer shows an error, and leaving without saving goes back to your saved language.',
-          id: 'Memilih bahasa lain di pengaturan tidak lagi memunculkan galat, dan keluar tanpa menyimpan akan kembali ke bahasa tersimpan.',
+          en: 'Choosing another language in the settings no longer shows an error.',
+          id: 'Memilih bahasa lain di pengaturan tidak lagi memunculkan galat.',
         },
       },
       {
@@ -76,8 +97,8 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
-          en: 'The status bar and window bar now follow the theme you pick in the app, not only your device setting. Choosing a theme in the settings shows it right away, and leaving without saving goes back to your saved theme.',
-          id: 'Bar status dan bar jendela kini mengikuti tema yang kamu pilih di aplikasi, bukan hanya pengaturan perangkat. Memilih tema di pengaturan langsung terlihat, dan keluar tanpa menyimpan akan kembali ke tema tersimpan.',
+          en: 'The status bar and window bar now follow the theme you pick in the app, not only your device setting.',
+          id: 'Bar status dan bar jendela kini mengikuti tema yang kamu pilih di aplikasi, bukan hanya pengaturan perangkat.',
         },
       },
       {

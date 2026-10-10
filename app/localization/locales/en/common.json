@@ -20,7 +20,8 @@
       "placeholder": "Search"
     },
     "currency": "Currency",
-    "userMenu": "Account menu"
+    "userMenu": "Account menu",
+    "menu": "Menu"
   },
   "form": {
     "save": "Save",
@@ -375,9 +376,6 @@
           "medium": "Medium",
           "large": "Large"
         }
-      },
-      "toast": {
-        "updated": "Appearance updated."
       }
     },
     "email": {
@@ -414,7 +412,8 @@
         },
         "minimumFractionDigits": {
           "label": "Min. decimals",
-          "placeholder": "e.g., 2"
+          "placeholder": "e.g., 2",
+          "hint": "Decimals always shown, such as 2 for 1,000.00."
         },
         "currencyCode": {
           "label": "Currency code",
@@ -436,6 +435,13 @@
         },
         "addSpace": {
           "label": "Add space"
+        },
+        "numberStyle": {
+          "label": "Number style",
+          "hint": "How thousands and decimals are separated everywhere in the app.",
+          "dotComma": "Indonesian",
+          "commaDot": "International",
+          "custom": "Custom"
         }
       },
       "preview": {
@@ -462,17 +468,10 @@
     "manageCurrencies": {
       "title": "Manage currencies",
       "description": "Add, edit and set up the currencies you use.",
-      "table": {
-        "code": "Code",
-        "symbol": "Symbol",
-        "maxDecimals": "Max. decimals",
-        "rate": "Exchange rate",
-        "preview": "Preview",
-        "actions": "Actions"
-      },
       "status": {
         "loading": "Loading currencies…",
-        "empty": "No currencies yet."
+        "empty": "No currencies yet.",
+        "emptyHint": "Add the currencies you use. The first one becomes your default, and the others are converted to it."
       },
       "dialog": {
         "editDescription": "Edit currency details",
@@ -507,7 +506,9 @@
         "edit": "Edit currency",
         "delete": "Delete currency",
         "save": "Save currency",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "editNamed": "Edit {{code}}",
+        "deleteNamed": "Delete {{code}}"
       },
       "toast": {
         "created": "Currency added.",
@@ -527,12 +528,24 @@
         "maximumFractionDigits": {
           "min": "Must be at least {{min}}, the min. decimals in your currency format."
         }
-      }
+      },
+      "badge": {
+        "default": "Default"
+      },
+      "decimals_one": "Up to {{count}} decimal",
+      "decimals_other": "Up to {{count}} decimals",
+      "rateLine": "1 {{code}} = {{value}}"
     },
     "validation": {
       "displayName": {
         "required": "Enter a display name."
       }
+    },
+    "subtitle": "Your profile, look, account and currencies.",
+    "sections": {
+      "general": "Profile, theme, text size, language",
+      "account": "Email and sign-in",
+      "currency": "Number format and rates"
     }
   },
   "notFound": {
@@ -581,7 +594,10 @@
     "empty": {
       "title": "Nothing found",
       "description": "Try a different word, or clear the search."
-    }
+    },
+    "seeAll": "See all {{count}} in {{section}}",
+    "searching": "Searching…",
+    "nothing": "Nothing matches “{{query}}”."
   },
   "landing": {
     "signIn": "Sign in",

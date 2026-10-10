@@ -1,11 +1,8 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleUser, Menu, Search } from 'lucide-react'
+import { CircleUser, ExternalLink, LogOut, Menu } from 'lucide-react'
 import { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
-import { Input } from '~/components/base/input'
 import { InstallApp } from '~/components/base/install-app'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
@@ -22,19 +19,42 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '~/components/ui/popover'
+import { appleIcon, appName } from '~/lib/constants/metadata'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useLogout } from '~/lib/hooks/use-logout'
-import { TSearchRequest } from '~/lib/types/search'
-import { extractPathSegment } from '~/lib/utils/parser'
+import { TMenu } from '~/lib/types/common'
 import { cn } from '~/lib/utils/shadcn'
-import { searchSchema } from '~/lib/validations/search'
 
 import { aboutMenus, userMenus } from './constant'
 import { Navigation } from './navigation'
+import { Search } from './search'
 import { TProperties } from './type'
 export { aboutMenus } from './constant'
 
-const searchableSections = new Set(['/notes', '/tasks', '/finances'])
+const isExternal = (href: string) => href.startsWith('http')
+
+const MenuLink = (properties: { menu: TMenu }) => {
+  const { menu } = properties
+  const Icon = menu.icon
+  return (
+    <DropdownMenuItem
+      asChild
+      className="cursor-pointer gap-2"
+    >
+      <Link
+        to={menu.href}
+        rel={isExternal(menu.href) ? 'noopener noreferrer' : undefined}
+        target={isExternal(menu.href) ? '_blank' : undefined}
+      >
+        {Icon && <Icon className="size-4 text-muted-foreground" />}
+        {menu.name}
+        {isExternal(menu.href) && (
+          <ExternalLink className="ml-auto size-3.5 text-muted-foreground" />
+        )}
+      </Link>
+    </DropdownMenuItem>
+  )
+}
 
 export const Navbar = (properties: TProperties) => {
   const { className } = properties
@@ -42,22 +62,6 @@ export const Navbar = (properties: TProperties) => {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { data: userData } = useUserData()
-  const { pathname } = useLocation()
-  const [searchParameters] = useSearchParams()
-  const formMethods = useForm<TSearchRequest>({
-    resolver: zodResolver(searchSchema),
-    values: {
-      query: searchParameters.get('q') || '',
-    },
-  })
-  const { handleSubmit } = formMethods
-  // Filters the list of the current section (notes when outside one).
-  const onSubmit = handleSubmit(async (data) => {
-    const section = extractPathSegment(pathname)
-    const list = searchableSections.has(section) ? section : '/notes'
-    const query = data.query.trim()
-    navigate(query ? `${list}?q=${encodeURIComponent(query)}` : list)
-  })
   const handleLogout = () => {
     mutateLogout()
     navigate('/', { replace: true })
@@ -72,7 +76,7 @@ export const Navbar = (properties: TProperties) => {
         className,
       )}
     >
-      <Navigation className="hidden flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
+      <Navigation className="hidden shrink-0 flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
       <Popover
         open={open}
         onOpenChange={setOpen}
@@ -84,41 +88,37 @@ export const Navbar = (properties: TProperties) => {
             className="shrink-0 md:hidden"
           >
             <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle navigation menu</span>
+            <span className="sr-only">{t('navigation.menu')}</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          sideOffset={8}
-          className="w-screen p-4 backdrop-blur-sm supports-backdrop-filter:bg-background/20 md:hidden"
+          align="start"
+          sideOffset={12}
+          className="w-[calc(100vw-2rem)] max-w-xs p-2 md:hidden"
         >
+          <div className="flex items-center gap-2 px-3 pt-1 pb-3 font-semibold">
+            <img
+              src={appleIcon}
+              alt=""
+              className="size-6 object-contain"
+            />
+            {appName}
+          </div>
           <Navigation
-            className="grid gap-4"
+            variant="menu"
+            className="grid gap-1"
             onLinkClick={() => setOpen(false)}
           />
         </PopoverContent>
       </Popover>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <FormProvider {...formMethods}>
-          <form
-            onSubmit={onSubmit}
-            className="ml-auto flex-1"
-          >
-            <Input
-              name="query"
-              type="search"
-              placeholder={t('navigation.search.placeholder')}
-              aria-label={t('navigation.search.placeholder')}
-              inputClassName="w-full"
-              leftNode={({ className }) => <Search className={className} />}
-            />
-          </form>
-        </FormProvider>
+        <Search />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="secondary"
               size="icon"
-              className="rounded-full [&_svg]:size-6"
+              className="shrink-0 rounded-full [&_svg]:size-6"
             >
               <Avatar className="h-10 w-10">
                 <AvatarImage src={userData?.photoURL || ''} />
@@ -131,64 +131,52 @@ export const Navbar = (properties: TProperties) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="backdrop-blur-sm supports-backdrop-filter:bg-background/20"
+            className="w-60"
           >
-            <DropdownMenuLabel>
-              {userData?.displayName || userData?.email}
+            <DropdownMenuLabel className="grid font-normal">
+              {userData?.displayName && (
+                <span className="truncate font-medium">
+                  {userData.displayName}
+                </span>
+              )}
+              <span className="truncate text-xs text-muted-foreground">
+                {userData?.email}
+              </span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {userMenus(t).map((menu, index) => (
-              <Link
-                key={index}
-                to={menu.href}
-                rel={
-                  menu.href.startsWith('http')
-                    ? 'noopener noreferrer'
-                    : undefined
-                }
-                target={menu.href.startsWith('http') ? '_blank' : undefined}
-              >
-                <DropdownMenuItem className="cursor-pointer">
-                  {menu.name}
-                </DropdownMenuItem>
-              </Link>
-            ))}
-            <DropdownMenuSeparator />
-            {aboutMenus(t).map((menu, index) => (
-              <Link
-                key={index}
-                to={menu.href}
-                rel={
-                  menu.href.startsWith('http')
-                    ? 'noopener noreferrer'
-                    : undefined
-                }
-                target={menu.href.startsWith('http') ? '_blank' : undefined}
-              >
-                <DropdownMenuItem className="cursor-pointer">
-                  {menu.name}
-                </DropdownMenuItem>
-              </Link>
+            {userMenus(t).map((menu) => (
+              <MenuLink
+                key={menu.href}
+                menu={menu}
+              />
             ))}
             <InstallApp>
               {({ onClick, label, icon }) => (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={onClick}
-                    className="cursor-pointer gap-2"
-                  >
-                    {icon}
-                    {label}
-                  </DropdownMenuItem>
-                </>
+                <DropdownMenuItem
+                  onClick={onClick}
+                  className="cursor-pointer gap-2 [&_svg]:text-muted-foreground"
+                >
+                  {icon}
+                  {label}
+                </DropdownMenuItem>
               )}
             </InstallApp>
             <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+              {appName}
+            </DropdownMenuLabel>
+            {aboutMenus(t).map((menu) => (
+              <MenuLink
+                key={menu.href}
+                menu={menu}
+              />
+            ))}
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleLogout}
-              className="cursor-pointer"
+              className="cursor-pointer gap-2"
             >
+              <LogOut className="size-4 text-muted-foreground" />
               {t('navigation.signOut')}
             </DropdownMenuItem>
           </DropdownMenuContent>
