@@ -102,7 +102,10 @@ const Dropdown = (parameters: TParameters) => {
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="glass-surface"
+      >
         <DropdownMenuRadioGroup
           value={value}
           onValueChange={(newValue) => handleSetTheme(newValue as Theme)}

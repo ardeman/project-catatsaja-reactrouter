@@ -1,25 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeClosed } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
 import { Link } from 'react-router'
 
+import { AuthHeader } from '~/components/base/auth-header'
 import { Button } from '~/components/base/button'
+import { CardContent, CardFooter, Card } from '~/components/base/card'
 import { Input } from '~/components/base/input'
-import { LanguageSelector } from '~/components/base/language-selector'
-import { ModeToggle } from '~/components/base/mode-toggle'
-import { SizeToggle } from '~/components/base/size-toggle'
+import { PasswordToggle } from '~/components/base/password-toggle'
 import { Button as UIButton } from '~/components/ui/button'
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  Card,
-} from '~/components/ui/card'
 import { appName } from '~/lib/constants/metadata'
 import { useLogin } from '~/lib/hooks/use-login'
 import { useLoginGoogle } from '~/lib/hooks/use-login-google'
@@ -72,66 +63,56 @@ export const SignInPage = () => {
   }, [isLoginError, isLoginGoogleError])
 
   return (
-    <Card className="relative mt-1 min-h-fit w-full max-w-md rounded-md border shadow-xs md:mt-0">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="grid">
-            <CardTitle className="text-2xl">{t('auth.signIn.title')}</CardTitle>
-            <CardDescription>
-              <Trans
-                i18nKey="auth.signIn.description"
-                values={{ appName }}
-                components={{ span: <strong className="text-primary" /> }}
-              />
-            </CardDescription>
-          </div>
-          <div className="flex space-x-2">
-            <LanguageSelector />
-            <ModeToggle />
-            <SizeToggle />
-          </div>
-        </div>
-      </CardHeader>
+    <Card className="relative w-full max-w-md rounded-2xl [&_a]:min-h-[44px] [&_button]:min-h-[44px] [&_input]:h-11 [&_input]:min-h-[44px] [&_input]:text-[max(1rem,16px)] md:[&_input]:text-sm">
+      <AuthHeader
+        title={t('auth.signIn.title')}
+        description={
+          <Trans
+            i18nKey="auth.signIn.description"
+            values={{ appName }}
+            components={{ span: <strong className="text-primary" /> }}
+          />
+        }
+      />
       <CardContent className="pb-2">
         <FormProvider {...formMethods}>
           <form
+            noValidate
             onSubmit={onSubmit}
             className="space-y-6"
           >
             <Input
               label={t('auth.form.email.label')}
               name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
               placeholder={t('auth.form.email.placeholder')}
-              autoFocus // eslint-disable-line jsx-a11y/no-autofocus
               required
               disabled={disabled}
             />
             <Input
               label={t('auth.form.password.label')}
               name="password"
+              autoComplete="current-password"
+              inputClassName="pr-[52px]"
               type={passwordType}
               hint={
                 <Link
                   to="/auth/forgot-password"
-                  className="block text-right hover:underline"
+                  className="flex items-center justify-end text-right hover:underline"
                 >
                   {t('auth.form.forgotPassword.label')}
                 </Link>
               }
               required
               disabled={disabled}
-              rightNode={({ className }) =>
-                passwordType === 'password' ? (
-                  <EyeClosed
-                    className={className}
-                    onClick={togglePassword}
-                  />
-                ) : (
-                  <Eye
-                    className={className}
-                    onClick={togglePassword}
-                  />
-                )
+              rightNode={
+                <PasswordToggle
+                  isVisible={passwordType === 'text'}
+                  onToggle={togglePassword}
+                  disabled={disabled}
+                />
               }
             />
             <Button

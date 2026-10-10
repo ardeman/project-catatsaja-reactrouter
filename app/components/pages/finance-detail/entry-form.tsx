@@ -9,7 +9,6 @@ import { DatePicker } from '~/components/base/date-picker'
 import { Input } from '~/components/base/input'
 import { Modal } from '~/components/base/modal'
 import { NumberInput } from '~/components/base/number-input'
-import { Label } from '~/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -17,7 +16,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '~/components/ui/select'
+} from '~/components/base/select'
+import { Label } from '~/components/ui/label'
 import { financeCategories } from '~/lib/constants/finance'
 import {
   TFinanceCurrency,

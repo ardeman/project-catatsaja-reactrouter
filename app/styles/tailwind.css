@@ -29,6 +29,7 @@
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
   --color-destructive: hsl(var(--destructive));
+  --color-destructive-text: hsl(var(--destructive-text));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
@@ -66,7 +67,16 @@
 }
 
 @layer utilities {
-  /* Solid surfaces are the fallback; only floating controls use glass. */
+  .app-background {
+    background-color: hsl(var(--muted) / 0.4);
+    background-image: radial-gradient(
+      ellipse at top right,
+      hsl(var(--primary) / 0.12),
+      transparent 65%
+    );
+  }
+
+  /* Solid surfaces are the fallback when backdrop blur is unavailable. */
   .glass-surface {
     background-color: hsl(var(--background));
     background-image: linear-gradient(
@@ -144,6 +154,7 @@
     --accent: 60 4.8% 95.9%;
     --accent-foreground: 24 9.8% 10%;
     --destructive: 0 84.2% 60.2%;
+    --destructive-text: 0 72% 45%;
     --destructive-foreground: 60 9.1% 97.8%;
     --border: 20 5.9% 90%;
     --input: 20 5.9% 90%;
@@ -179,6 +190,7 @@
     --accent: 12 6.5% 15.1%;
     --accent-foreground: 60 9.1% 97.8%;
     --destructive: 0 62.8% 30.6%;
+    --destructive-text: 0 90% 75%;
     --destructive-foreground: 60 9.1% 97.8%;
     --border: 12 6.5% 15.1%;
     --input: 12 6.5% 15.1%;

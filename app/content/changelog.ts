@@ -18,6 +18,34 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'Sign-in, sign-up and password reset fit better on phones, with clear headings, larger controls and accessible password visibility buttons.',
+          id: 'Halaman masuk, pendaftaran, dan pengaturan ulang kata sandi lebih nyaman di ponsel, dengan judul yang jelas, kontrol lebih besar, dan tombol tampilan kata sandi yang mudah diakses.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Footer links use consistent spacing on the landing, public, sign-in and error pages, with room for your phone’s home indicator.',
+          id: 'Tautan bagian bawah memiliki jarak yang konsisten di halaman depan, publik, masuk, dan galat, dengan ruang untuk indikator beranda ponselmu.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Glass styling now carries across the landing page, public pages, sign-in forms, settings, cards, menus and dialogs.',
+          id: 'Tampilan kaca kini hadir di halaman depan, halaman publik, formulir masuk, pengaturan, kartu, menu, dan dialog.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'The glass search dropdown now blurs the page behind its results.',
+          id: 'Daftar hasil pencarian dengan efek kaca kini memburamkan halaman di belakangnya.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Navigation, search results and floating controls have a glass finish, with solid surfaces when you prefer reduced transparency.',

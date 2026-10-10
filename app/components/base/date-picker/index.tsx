@@ -97,7 +97,7 @@ export const DatePicker = (properties: TProperties) => {
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent
-                className="w-auto p-0"
+                className="glass-surface w-auto p-0"
                 align="start"
               >
                 <Calendar

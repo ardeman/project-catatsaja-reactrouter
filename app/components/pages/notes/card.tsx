@@ -2,14 +2,14 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { Action } from '~/components/base/action'
-import { Markdown } from '~/components/base/markdown'
 import {
   Card as UICard,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card'
+} from '~/components/base/card'
+import { Markdown } from '~/components/base/markdown'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { getDateLabel } from '~/lib/utils/parser'

@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { useRevalidator } from 'react-router'
 
 import { Button } from '~/components/base/button'
-import { Input } from '~/components/base/input'
 import {
   Card,
   CardContent,
@@ -14,7 +13,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card'
+} from '~/components/base/card'
+import { Input } from '~/components/base/input'
 import {
   Tooltip,
   TooltipContent,

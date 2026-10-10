@@ -5,8 +5,6 @@ import { FormProvider, useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
-import { ChoiceCards } from '~/components/base/choice-cards'
-import { Input } from '~/components/base/input'
 import {
   Card,
   CardContent,
@@ -14,7 +12,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card'
+} from '~/components/base/card'
+import { ChoiceCards } from '~/components/base/choice-cards'
+import { Input } from '~/components/base/input'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateCurrencyFormat } from '~/lib/hooks/use-update-currency-format'

@@ -5,16 +5,16 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
-import { Checkbox } from '~/components/base/checkbox'
-import { Input } from '~/components/base/input'
-import { NumberInput } from '~/components/base/number-input'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card'
+} from '~/components/base/card'
+import { Checkbox } from '~/components/base/checkbox'
+import { Input } from '~/components/base/input'
+import { NumberInput } from '~/components/base/number-input'
 import {
   Dialog,
   DialogContent,
@@ -293,7 +293,7 @@ export const ManageCurrencies = () => {
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
       >
-        <DialogContent>
+        <DialogContent className="glass-surface">
           <DialogHeader>
             <DialogTitle>
               {editingCurrency
@@ -396,7 +396,7 @@ export const ManageCurrencies = () => {
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
       >
-        <DialogContent>
+        <DialogContent className="glass-surface">
           <DialogHeader>
             <DialogTitle>
               {t('settings.manageCurrencies.button.delete')}

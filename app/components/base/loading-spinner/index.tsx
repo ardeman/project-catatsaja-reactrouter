@@ -19,7 +19,7 @@ export const LoadingSpinner = (properties: TProperties) => {
       role="status"
       aria-label={t('loading')}
       className={cn(
-        'relative flex min-h-dvh items-center justify-center bg-muted/40',
+        'app-background relative flex min-h-dvh items-center justify-center',
         classname,
       )}
     >

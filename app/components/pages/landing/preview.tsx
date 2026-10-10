@@ -8,14 +8,14 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { Markdown } from '~/components/base/markdown'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card'
+} from '~/components/base/card'
+import { Markdown } from '~/components/base/markdown'
 import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 

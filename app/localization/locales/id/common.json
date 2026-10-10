@@ -97,7 +97,9 @@
         "placeholder": "kamu@contoh.com"
       },
       "password": {
-        "label": "Kata sandi"
+        "label": "Kata sandi",
+        "show": "Tampilkan kata sandi",
+        "hide": "Sembunyikan kata sandi"
       },
       "confirmPassword": {
         "label": "Konfirmasi kata sandi"

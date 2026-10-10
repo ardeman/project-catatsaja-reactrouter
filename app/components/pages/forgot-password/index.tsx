@@ -4,19 +4,11 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { AuthHeader } from '~/components/base/auth-header'
 import { Button } from '~/components/base/button'
+import { Card, CardContent, CardFooter } from '~/components/base/card'
 import { Input } from '~/components/base/input'
-import { LanguageSelector } from '~/components/base/language-selector'
-import { ModeToggle } from '~/components/base/mode-toggle'
 import { Button as UIButton } from '~/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '~/components/ui/card'
 import { useForgotPassword } from '~/lib/hooks/use-forgot-password'
 import { TEmailRequest } from '~/lib/types/user'
 import { emailSchema } from '~/lib/validations/user'
@@ -65,32 +57,25 @@ export const ForgotPasswordPage: FC = () => {
   }, [timerForgotPassword])
 
   return (
-    <Card className="relative min-h-dvh w-full max-w-md rounded-none border-none shadow-none md:min-h-fit md:rounded-md md:border md:shadow-xs">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="grid">
-            <CardTitle className="text-2xl">
-              {t('auth.forgotPassword.title')}
-            </CardTitle>
-            <CardDescription>
-              {t('auth.forgotPassword.description')}
-            </CardDescription>
-          </div>
-          <div className="flex space-x-2">
-            <LanguageSelector />
-            <ModeToggle />
-          </div>
-        </div>
-      </CardHeader>
+    <Card className="relative w-full max-w-md rounded-2xl [&_a]:min-h-[44px] [&_button]:min-h-[44px] [&_input]:h-11 [&_input]:min-h-[44px] [&_input]:text-[max(1rem,16px)] md:[&_input]:text-sm">
+      <AuthHeader
+        title={t('auth.forgotPassword.title')}
+        description={t('auth.forgotPassword.description')}
+        showSize={false}
+      />
       <CardContent className="pb-4">
         <FormProvider {...formMethods}>
           <form
+            noValidate
             onSubmit={onSubmit}
             className="space-y-6"
           >
             <Input
               label={t('auth.form.email.label')}
               name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
               placeholder={t('auth.form.email.placeholder')}
               required
               disabled={disabled}

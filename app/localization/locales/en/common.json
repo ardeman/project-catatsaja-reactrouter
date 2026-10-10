@@ -97,7 +97,9 @@
         "placeholder": "you@example.com"
       },
       "password": {
-        "label": "Password"
+        "label": "Password",
+        "show": "Show password",
+        "hide": "Hide password"
       },
       "confirmPassword": {
         "label": "Confirm password"

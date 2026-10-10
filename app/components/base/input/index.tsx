@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { isValidElement, useId } from 'react'
 import { useFormContext } from 'react-hook-form'
 
 import {
@@ -70,9 +70,12 @@ export const Input = <TFormValues extends Record<string, unknown>>(
                 {...rest}
               />
             </FormControl>
-            {RightNode && (
-              <RightNode className="absolute right-3.5 h-4 w-4 cursor-pointer text-muted-foreground" />
-            )}
+            {RightNode &&
+              (isValidElement(RightNode) ? (
+                RightNode
+              ) : (
+                <RightNode className="absolute right-3.5 h-4 w-4 cursor-pointer text-muted-foreground" />
+              ))}
           </div>
           {hint && <FormDescription>{hint}</FormDescription>}
           <FormMessage />

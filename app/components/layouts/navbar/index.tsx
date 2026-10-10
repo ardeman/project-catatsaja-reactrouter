@@ -66,10 +66,15 @@ export const Navbar = (properties: TProperties) => {
     <>
       <header
         className={cn(
-          'glass-surface sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b px-4 md:px-6',
+          'sticky top-0 z-50 flex h-16 w-full items-center gap-4 px-4 md:px-6',
           className,
         )}
       >
+        {/* Keep blur off the ancestor so search can blur the page behind it. */}
+        <div
+          aria-hidden="true"
+          className="glass-surface pointer-events-none absolute inset-0 -z-10 border-b"
+        />
         <Navigation className="hidden shrink-0 flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <Search />

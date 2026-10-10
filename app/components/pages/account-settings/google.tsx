@@ -9,7 +9,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card'
+} from '~/components/base/card'
 import { appName } from '~/lib/constants/metadata'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { useLinkGoogle } from '~/lib/hooks/use-link-google'

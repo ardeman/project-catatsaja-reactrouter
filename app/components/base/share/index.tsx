@@ -5,16 +5,16 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Input } from '~/components/base/input'
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
-import { Button } from '~/components/ui/button'
-import { Input as UIInput } from '~/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '~/components/ui/select'
+} from '~/components/base/select'
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
+import { Button } from '~/components/ui/button'
+import { Input as UIInput } from '~/components/ui/input'
 import { auth } from '~/lib/configs/firebase'
 import { useGetUsers } from '~/lib/hooks/use-get-users'
 import { useSearchUsers } from '~/lib/hooks/use-search-users'

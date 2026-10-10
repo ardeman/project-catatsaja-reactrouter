@@ -6,16 +6,16 @@ import { Link, useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
-import { Textarea } from '~/components/base/textarea'
-import { useFinance } from '~/components/pages/finances'
-import { Button } from '~/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '~/components/ui/select'
+} from '~/components/base/select'
+import { Textarea } from '~/components/base/textarea'
+import { useFinance } from '~/components/pages/finances'
+import { Button } from '~/components/ui/button'
 import { auth } from '~/lib/configs/firebase'
 import { fallbackCurrency, findCategory } from '~/lib/constants/finance'
 import { useAutosave } from '~/lib/hooks/use-autosave'
@@ -328,7 +328,7 @@ export const Form = (properties: TFormProperties) => {
           </div>
         </div>
 
-        <dl className="grid grid-cols-2 gap-x-2 gap-y-3 rounded-xl border bg-card p-4 sm:grid-cols-3">
+        <dl className="glass-surface grid grid-cols-2 gap-x-2 gap-y-3 rounded-xl border p-4 sm:grid-cols-3">
           <div className="col-span-2 sm:col-span-1">
             <dt className="text-xs text-muted-foreground">
               {t('finances.summary.balance')}
@@ -382,7 +382,7 @@ export const Form = (properties: TFormProperties) => {
               <h2 className="text-xs font-medium text-muted-foreground">
                 {formatDay(date)}
               </h2>
-              <ul className="grid divide-y rounded-xl border bg-card">
+              <ul className="glass-surface grid divide-y rounded-xl border">
                 {dayEntries.map((entry) => {
                   const category = findCategory(entry.category)
                   const Icon = category?.icon

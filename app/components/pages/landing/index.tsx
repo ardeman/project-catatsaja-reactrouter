@@ -35,8 +35,12 @@ export const LandingPage = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="flex min-h-dvh flex-col bg-muted/40">
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-sm">
+    <div className="app-background flex min-h-dvh flex-col">
+      <header className="sticky top-0 z-50">
+        <div
+          aria-hidden="true"
+          className="glass-surface pointer-events-none absolute inset-0 -z-10 border-b"
+        />
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 md:px-6">
           <Link
             to="/"
@@ -59,7 +63,10 @@ export const LandingPage = () => {
           >
             <Link to="/auth/sign-up">{t('landing.getStarted')}</Link>
           </Button>
-          <Button asChild>
+          <Button
+            asChild
+            className="glass-surface glass-primary border"
+          >
             <Link to="/auth/sign-in">{t('landing.signIn')}</Link>
           </Button>
         </div>
@@ -85,6 +92,7 @@ export const LandingPage = () => {
               <Button
                 asChild
                 size="lg"
+                className="glass-surface glass-primary border"
               >
                 <Link to="/auth/sign-up">{t('landing.getStarted')}</Link>
               </Button>
@@ -92,6 +100,7 @@ export const LandingPage = () => {
                 asChild
                 size="lg"
                 variant="outline"
+                className="glass-surface"
               >
                 <Link to="/auth/sign-in">{t('landing.signIn')}</Link>
               </Button>
@@ -121,7 +130,7 @@ export const LandingPage = () => {
 
         <section
           aria-labelledby="features-title"
-          className="border-t border-border/40 bg-background"
+          className="border-t border-border/40 bg-background/40"
         >
           <div className="mx-auto max-w-6xl px-4 py-16 md:px-6 md:py-20">
             <h2
@@ -134,7 +143,7 @@ export const LandingPage = () => {
               {features.map(({ key, icon: Icon }) => (
                 <li
                   key={key}
-                  className="rounded-xl border bg-card p-6"
+                  className="glass-surface rounded-xl border p-6"
                 >
                   <div className="flex items-center justify-between">
                     <span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
@@ -163,16 +172,14 @@ export const LandingPage = () => {
           <Button
             asChild
             size="lg"
-            className="mt-6"
+            className="glass-surface glass-primary mt-6 border"
           >
             <Link to="/auth/sign-up">{t('landing.getStarted')}</Link>
           </Button>
         </section>
       </main>
 
-      <footer className="pb-6">
-        <AboutFooter />
-      </footer>
+      <AboutFooter />
     </div>
   )
 }

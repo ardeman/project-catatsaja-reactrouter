@@ -8,7 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card'
+} from '~/components/base/card'
 import { auth } from '~/lib/configs/firebase'
 import { findCategory } from '~/lib/constants/finance'
 import { useUserData } from '~/lib/hooks/use-get-user'

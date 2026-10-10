@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from '~/components/ui/card'
+} from '~/components/base/card'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { getDateLabel } from '~/lib/utils/parser'

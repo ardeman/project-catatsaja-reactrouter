@@ -94,7 +94,7 @@ const Dialog = (parameters: TParameters) => {
         if (!isOpen) handleClose() // Trigger handleClose when closing
       }}
     >
-      <DialogContent className="max-h-dvh overflow-y-auto rounded-lg">
+      <DialogContent className="glass-surface max-h-dvh overflow-y-auto rounded-lg">
         <DialogHeader className={title || description ? '' : 'hidden'}>
           <DialogTitle className={title ? '' : 'hidden'}>{title}</DialogTitle>
           <DialogDescription className={description ? '' : 'hidden'}>
@@ -138,7 +138,7 @@ const Drawer = (parameters: TParameters) => {
         if (!isOpen) handleClose() // Trigger handleClose when closing
       }}
     >
-      <DrawerContent className="h-fit max-h-dvh rounded-t-lg">
+      <DrawerContent className="glass-surface h-fit max-h-dvh rounded-t-lg">
         <div className="overflow-y-auto">
           <DrawerHeader
             className={cn(title || description ? '' : 'hidden', 'text-left')}

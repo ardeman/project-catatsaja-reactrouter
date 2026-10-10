@@ -3,6 +3,7 @@ import {
   HTMLInputAutoCompleteAttribute,
   MouseEventHandler,
   ReactNode,
+  ReactElement,
 } from 'react'
 import { FieldValues, Path } from 'react-hook-form'
 
@@ -28,6 +29,7 @@ export type TProperties<TFormValues extends FieldValues> = {
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode']
   autoFocus?: boolean
   leftNode?: (properties: HTMLAttributes<HTMLDivElement>) => ReactNode
-  rightNode?: (properties: HTMLAttributes<HTMLDivElement>) => ReactNode
+  rightNode?:
+    ReactElement | ((properties: HTMLAttributes<HTMLDivElement>) => ReactNode)
   autoComplete?: HTMLInputAutoCompleteAttribute
 }

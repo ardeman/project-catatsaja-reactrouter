@@ -3,15 +3,15 @@ import { Monitor, Moon, Sun } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { ChoiceCards } from '~/components/base/choice-cards'
-import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card'
+} from '~/components/base/card'
+import { ChoiceCards } from '~/components/base/choice-cards'
+import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { appName } from '~/lib/constants/metadata'
 import { Size, Theme, useTheme } from '~/lib/contexts/theme'
 import { useUserData } from '~/lib/hooks/use-get-user'
