@@ -195,14 +195,14 @@
         "label": "Amount"
       },
       "convertedTotal": {
-        "book": "Total in {{code}}",
-        "default": "Default-currency total ({{code}})"
+        "book": "Total {{code}}",
+        "default": "Default total ({{code}})"
       },
       "currency": {
         "label": "Currency"
       },
       "rate": {
-        "label": "1 {{from}} in {{to}}",
+        "label": "1 {{from}} → {{to}}",
         "hint": "From your settings. Adjust if needed."
       },
       "type": {
@@ -327,7 +327,7 @@
       "incomeExpense": "In {{income}} · Out {{expense}}"
     },
     "entry": {
-      "rateUsed": "Rate used: 1 {{from}} = {{rate}} {{to}}",
+      "rateUsed": "1 {{from}} = {{rate}} {{to}}",
       "add": "Add entry",
       "edit": "Edit entry",
       "delete": "Delete entry",

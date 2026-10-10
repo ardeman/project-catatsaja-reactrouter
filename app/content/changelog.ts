@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Currency conversion labels and saved exchange rates use shorter wording.',
+          id: 'Label konversi mata uang dan kurs tersimpan memakai kata-kata yang lebih singkat.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Quantity and date fields stack on narrow screens so the date has room and stays inside its button.',
