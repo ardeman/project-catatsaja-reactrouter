@@ -12,13 +12,16 @@ export const useCreateFinance = () => {
   const [isError, setIsError] = useState(false)
   const { t } = useTranslation()
 
-  const mutate = async (data: TCreateFinanceRequest) => {
+  const mutate = async (
+    data: TCreateFinanceRequest,
+    message = t('finances.toast.created'),
+  ) => {
     setIsPending(true)
     setIsError(false)
     try {
       const reference = await createFinance(data)
       toast({
-        description: t('finances.toast.created'),
+        description: message,
       })
       return reference
     } catch (error: unknown) {

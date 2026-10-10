@@ -46,6 +46,7 @@ export type TActionProperties = {
   handlePin?: () => void
   handleShare?: () => void
   handleUnlink?: () => void
+  handleDuplicate?: () => void
   sharedCount?: number
   handleBack?: () => void
   isCreate?: boolean

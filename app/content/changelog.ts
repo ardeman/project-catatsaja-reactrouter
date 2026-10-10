@@ -18,6 +18,20 @@ export const releases: TRelease[] = [
     title: { en: 'Finances', id: 'Keuangan' },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'Duplicate a book with its entries and accounts into a new book of your own.',
+          id: 'Duplikat buku beserta entri dan akunnya menjadi buku baru milikmu sendiri.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The tip about a possible unrecorded entry opens from the difference amount.',
+          id: 'Tips tentang kemungkinan entri yang belum dicatat kini muncul dari jumlah selisih.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Your accounts line up with their totals and take less space: tips on Add account and on the difference explain them.',

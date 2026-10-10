@@ -312,7 +312,8 @@
       "deleted": "Book deleted",
       "created": "Book created",
       "unlinked": "Book removed from your list",
-      "notFound": "This book doesn't exist or isn't shared with you"
+      "notFound": "This book doesn't exist or isn't shared with you",
+      "duplicated": "Book duplicated"
     },
     "untitled": "Untitled book",
     "empty": {
@@ -357,7 +358,8 @@
       "option": "Add currency…",
       "rate": "Value of 1 unit in {{code}}",
       "firstIsDefault": "Your first currency becomes your default currency."
-    }
+    },
+    "duplicateTitle": "{{title}} (copy)"
   },
   "about": {
     "description": "<span>{{appName}}</span> is a personal productivity app for notes, checklists and finances."
@@ -609,7 +611,8 @@
     "unpin": "Unpin",
     "moveUp": "Move up",
     "moveDown": "Move down",
-    "close": "Close"
+    "close": "Close",
+    "duplicate": "Duplicate"
   },
   "collection": {
     "pinned": "Pinned",

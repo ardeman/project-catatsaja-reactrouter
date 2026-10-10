@@ -40,6 +40,7 @@ import {
   entryBookTotal,
   entryTotal,
   groupByDate,
+  newEntryId,
   newestFirst,
   normalizeAccounts,
   summarize,
@@ -193,6 +194,26 @@ export const Form = (properties: TFormProperties) => {
     return reference
   }
 
+  // A new book of the person's own with the same content, not shared or
+  // pinned. Saves this one first so the copy has the latest changes.
+  const handleDuplicate = async () => {
+    await save()
+    const { title, currency, content, accounts } = getValues()
+    const reference = await mutateCreateFinance(
+      {
+        title: title ? t('finances.duplicateTitle', { title }) : '',
+        currency,
+        content: content.map((entry) => ({ ...entry, id: newEntryId() })),
+        accounts: normalizeAccounts(accounts).map((account) => ({
+          ...account,
+          id: crypto.randomUUID(),
+        })),
+      },
+      t('finances.toast.duplicated'),
+    )
+    if (reference) navigate(`/finances/${reference.id}`)
+  }
+
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault()
     const reference = await save()
@@ -281,6 +302,8 @@ export const Form = (properties: TFormProperties) => {
               }
               handleShare={() => handleShareFinance({ finance })}
               handleUnlink={() => handleUnlinkFinance({ finance })}
+              handleDuplicate={handleDuplicate}
+              isLoading={isCreatePending}
               sharedCount={sharedCount}
               handleBack={handleBackFinance}
             />

@@ -1,5 +1,6 @@
 import {
   ArrowLeft,
+  Copy,
   EyeOff,
   Forward,
   Pin,
@@ -24,6 +25,7 @@ export const Action = (properties: TActionProperties) => {
     handleUnlink,
     handleShare,
     handlePin,
+    handleDuplicate,
     sharedCount,
     handleBack,
     isCreate = false,
@@ -159,6 +161,23 @@ export const Action = (properties: TActionProperties) => {
           disabled={isLoading || disabled}
         >
           <Save />
+        </Button>
+      )}
+      {handleDuplicate && (
+        <Button
+          variant="outline"
+          aria-label={t('actions.duplicate')}
+          title={t('actions.duplicate')}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleDuplicate()
+          }}
+          containerClassName="flex-1 flex items-center"
+          className={buttonClassName}
+          isLoading={isLoading}
+          disabled={isLoading}
+        >
+          <Copy />
         </Button>
       )}
       {handlePin && (

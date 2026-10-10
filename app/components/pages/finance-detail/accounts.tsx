@@ -149,6 +149,16 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
                 {money(actual, book)}
               </dd>
               <dt className="text-xs text-muted-foreground">
+                {t('finances.accounts.difference')}
+              </dt>
+              <dd
+                className={cn(
+                  'pr-[calc(--spacing(3)+1px)] text-right text-sm font-medium wrap-break-word tabular-nums',
+                  difference === 0
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-destructive',
+                )}
+              >
                 <Tooltip
                   open={isDifferenceHintOpen}
                   onOpenChange={setIsDifferenceHintOpen}
@@ -156,14 +166,14 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
                   <TooltipTrigger asChild>
                     <button
                       type="button"
-                      className="cursor-help text-left underline decoration-dotted underline-offset-4"
+                      className="cursor-help text-right underline decoration-dotted underline-offset-4"
                       // Opens on tap as well as on hover and focus.
                       onClick={(event) => {
                         event.preventDefault()
                         setIsDifferenceHintOpen(true)
                       }}
                     >
-                      {t('finances.accounts.difference')}
+                      {money(difference, book, true)}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-64">
@@ -176,16 +186,6 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
                         )}
                   </TooltipContent>
                 </Tooltip>
-              </dt>
-              <dd
-                className={cn(
-                  'pr-[calc(--spacing(3)+1px)] text-right text-sm font-medium wrap-break-word tabular-nums',
-                  difference === 0
-                    ? 'text-emerald-600 dark:text-emerald-400'
-                    : 'text-destructive',
-                )}
-              >
-                {money(difference, book, true)}
               </dd>
             </dl>
           </>

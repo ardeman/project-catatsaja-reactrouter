@@ -312,7 +312,8 @@
       "deleted": "Buku dihapus",
       "created": "Buku dibuat",
       "unlinked": "Buku dihapus dari daftarmu",
-      "notFound": "Buku ini tidak ada atau tidak dibagikan denganmu"
+      "notFound": "Buku ini tidak ada atau tidak dibagikan denganmu",
+      "duplicated": "Buku diduplikat"
     },
     "untitled": "Buku tanpa judul",
     "empty": {
@@ -357,7 +358,8 @@
       "option": "Tambah mata uang…",
       "rate": "Nilai 1 unit dalam {{code}}",
       "firstIsDefault": "Mata uang pertamamu menjadi mata uang default."
-    }
+    },
+    "duplicateTitle": "{{title}} (salinan)"
   },
   "about": {
     "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi untuk catatan, daftar tugas, dan keuangan."
@@ -609,7 +611,8 @@
     "moveUp": "Pindah ke atas",
     "moveDown": "Pindah ke bawah",
     "sharedWith_one": "Dibagikan dengan {{count}} orang",
-    "close": "Tutup"
+    "close": "Tutup",
+    "duplicate": "Duplikat"
   },
   "collection": {
     "pinned": "Disematkan",

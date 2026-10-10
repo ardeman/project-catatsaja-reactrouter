@@ -112,7 +112,12 @@ export const Content = () => {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-      <Form finance={financeData} />
+      {/* A fresh form per book, so values typed in one never carry over
+          into the next (after creating or duplicating). */}
+      <Form
+        key={finance}
+        finance={financeData}
+      />
       <Modal
         open={openConfirmation}
         setOpen={setOpenConfirmation}
