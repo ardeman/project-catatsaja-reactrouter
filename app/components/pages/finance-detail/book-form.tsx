@@ -57,6 +57,7 @@ import { Accounts } from './accounts'
 import { AddCurrency } from './add-currency'
 import { Analysis } from './analysis'
 import { EntryForm } from './entry-form.client'
+import { ReceiptScan } from './receipt-scan.client'
 import { TFormProperties } from './type'
 
 const sameJson = (a: unknown, b: unknown) =>
@@ -258,6 +259,13 @@ export const Form = (properties: TFormProperties) => {
         : [...current, entry],
       { shouldDirty: true },
     )
+  }
+
+  // Entries read from a receipt, after the person checked them.
+  const handleAddEntries = (added: TFinanceEntry[]) => {
+    setValue('content', [...getValues('content'), ...added], {
+      shouldDirty: true,
+    })
   }
 
   const handleDeleteEntry = (id: string) => {
@@ -493,14 +501,22 @@ export const Form = (properties: TFormProperties) => {
                   onDelete={handleDeleteEntry}
                 />
               ) : (
-                <Button
-                  type="button"
-                  className="motion-fade w-full gap-2"
-                  onClick={() => openEntry()}
-                >
-                  <Plus className="size-4" />
-                  {t('finances.entry.add')}
-                </Button>
+                <div className="motion-fade grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+                  <Button
+                    type="button"
+                    className="w-full gap-2"
+                    onClick={() => openEntry()}
+                  >
+                    <Plus className="size-4" />
+                    {t('finances.entry.add')}
+                  </Button>
+                  <ReceiptScan
+                    book={book}
+                    currencies={currencies}
+                    history={history}
+                    onAdd={handleAddEntries}
+                  />
+                </div>
               ))}
 
             {entries.length === 0 ? (

@@ -35,6 +35,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and the Google profile photo when signing in with Google.
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Finances:** books (for a month, a trip, a project) of income and expense entries with categories, quantity and date; totals and balance in the book's currency; entries in other currencies keep the exchange rate used, so totals never shift; pin and share like notes.
+- **Receipt scanning:** in a finance book, a photo of a receipt is read by Gemini (Firebase AI Logic) into one entry for its total or one per item, checked before adding; categories still come from the on-device suggestions. Opt-in: the photo is sent only when chosen, after a one-time notice.
 - **Finance analysis:** per book, insight tiles, cash flow and balance charts and spending by colour-coded category, with a table view; accounts to check the balance against; calculations in amount fields.
 - **Health:** a log per person (yourself, a child, a parent), shared like notes: weight, height and BMI (Kemenkes, WHO or WHO Asia-Pacific categories), child growth against the WHO Child Growth Standards (birth to 5 years, percentiles and Kemenkes PMK 2/2020 status), blood sugar, uric acid and cholesterol with adult reference ranges (mg/dL or SI units), calories against a daily target, and period cycle estimates.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
@@ -47,7 +48,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 - [ ] Finances: budgets.
 - [ ] Health: WHO growth references for 5–19 years, and reminders.
-- [ ] Gemini integration through Firebase AI Logic (Gemini Developer API, App Check enforced; no API key in the app): set up in the Firebase console, but no feature uses it yet and its scope is not decided.
+- [ ] More Gemini features through Firebase AI Logic (receipt scanning is the first); which ones is not decided.
 
 **Technical**
 
@@ -155,6 +156,7 @@ app/
                         _layout.auth.*    sign in, sign up, forgot password
                         _layout._main.*   signed-in app (notes, tasks, finances, health, settings)
   apis/firestore/     Firestore reads and writes per collection (note, task, finance, health-log, user, currency)
+  apis/ai/            Gemini calls through Firebase AI Logic (receipt)
   components/
     ui/               shadcn/ui primitives (generated)
     base/             Shared app components built on ui/

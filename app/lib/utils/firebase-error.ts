@@ -27,14 +27,36 @@ const errorKeys: Record<string, string> = {
   'encryption/passkey-unsupported': 'errors.passkeyUnsupported',
   'encryption/locked': 'errors.encryptionLocked',
   'encryption/not-set-up': 'errors.encryptionNotSetUp',
+  // Firebase AI Logic (Gemini), and what the app throws for its answers.
+  'fetch-error': 'errors.aiUnavailable',
+  'api-not-enabled': 'errors.aiUnavailable',
+  'response-error': 'errors.receiptUnreadable',
+  'parse-failed': 'errors.receiptUnreadable',
+  'invalid-content': 'errors.receiptUnreadable',
+  'receipt/unreadable': 'errors.receiptUnreadable',
+  'receipt/empty': 'errors.receiptEmpty',
+  'image/unreadable': 'errors.imageUnreadable',
   // A passkey prompt dismissed or timed out.
   NotAllowedError: 'errors.passkeyCancelled',
 }
 
+// Codes the app throws itself, as the error's message.
+const appCodes = ['encryption/', 'receipt/', 'image/']
+
 const codeOf = (error: unknown) => {
-  if (error instanceof FirebaseError) return error.code
+  if (error instanceof FirebaseError) {
+    // Gemini's rate limit arrives as a fetch error with HTTP status 429.
+    const { customErrorData } = error as {
+      customErrorData?: { status?: number }
+    }
+    if (customErrorData?.status === 429) return 'resource-exhausted'
+    return error.code
+  }
   if (error instanceof DOMException) return error.name
-  if (error instanceof Error && error.message.startsWith('encryption/'))
+  if (
+    error instanceof Error &&
+    appCodes.some((prefix) => error.message.startsWith(prefix))
+  )
     return error.message
   return ''
 }

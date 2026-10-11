@@ -1,4 +1,9 @@
-import { TFinanceAccount, TFinanceEntry } from '~/lib/types/finance'
+import {
+  TFinanceAccount,
+  TFinanceCurrency,
+  TFinanceEntry,
+} from '~/lib/types/finance'
+import { TCurrency } from '~/lib/types/settings'
 
 // Quantity × amount, in the entry's own currency.
 export const entryTotal = (entry: TFinanceEntry) =>
@@ -69,3 +74,18 @@ export const lastCategory = (
   type: TFinanceEntry['type'],
   history: TFinanceEntry[],
 ) => history.find((entry) => entry.type === type)?.category
+
+// Book-currency units for 1 unit of \`code\`, from the person's own rates
+// (each rate is the value of 1 unit in their default currency). 1 when the
+// currencies match or a rate is missing; it can be edited either way.
+export const suggestRate = (
+  code: string,
+  book: TFinanceCurrency,
+  currencies: TCurrency[],
+) => {
+  if (code === book.code) return 1
+  const from = currencies.find((currency) => currency.code === code)
+  const to = currencies.find((currency) => currency.code === book.code)
+  if (!from?.rate || !to?.rate) return 1
+  return Number((from.rate / to.rate).toPrecision(8))
+}

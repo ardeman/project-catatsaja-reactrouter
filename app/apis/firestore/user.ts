@@ -280,3 +280,19 @@ export const register = async (userData: TSignUpRequest) => {
     throw new Error('No user is currently signed in.')
   }
 }
+
+// Agreeing to AI features sending what they work on to Google: saved on the
+// profile, so the notice isn't shown again on any device.
+export const updateAiConsent = async (aiConsent: boolean) => {
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const reference = doc(firestore, 'users', auth.currentUser.uid)
+  return await updateDoc(reference, {
+    aiConsent,
+    updatedAt: new Date(),
+  })
+}

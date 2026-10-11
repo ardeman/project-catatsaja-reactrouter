@@ -11,6 +11,8 @@ export type TProperties = {
   description?: string
   onClose?: () => void
   handleConfirm?: () => void | Promise<void>
+  // The confirm button's text; "Confirm" when not given.
+  confirmLabel?: string
   variant?: VariantProps<typeof variantClassName>['variant']
 }
 

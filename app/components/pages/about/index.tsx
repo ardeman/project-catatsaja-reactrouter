@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import {
   appName,
   author,
+  authorUrl,
   githubRepo,
   githubUser,
 } from '~/lib/constants/metadata'
@@ -71,6 +72,7 @@ export const AboutPage = () => {
             i18nKey="about.made.description"
             values={{ author }}
             components={{
+              portfolio: <ExternalLink href={authorUrl} />,
               github: (
                 <ExternalLink
                   href={`https://github.com/${githubUser}/${githubRepo}`}

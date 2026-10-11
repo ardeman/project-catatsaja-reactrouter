@@ -7,8 +7,10 @@ const paragraphs = [
   'use',
   'storage',
   'encryption',
+  'ai',
   'sharing',
   'analytics',
+  'security',
   'video',
 ]
 

@@ -28,7 +28,12 @@ import {
 } from '~/lib/types/finance'
 import { TCurrency } from '~/lib/types/settings'
 import { suggestCategory } from '~/lib/utils/category-classifier'
-import { lastCategory, newEntryId, today } from '~/lib/utils/finance'
+import {
+  lastCategory,
+  newEntryId,
+  suggestRate,
+  today,
+} from '~/lib/utils/finance'
 import {
   formatExchangeRate,
   getDefaultCurrencyFormat,
@@ -51,21 +56,6 @@ const toFinanceCurrency = (
   symbol: currency.symbol,
   maximumFractionDigits: currency.maximumFractionDigits,
 })
-
-// Book-currency units for 1 unit of \`code\`, from the person's own rates
-// (each rate is the value of 1 unit in their default currency). 1 when the
-// currencies match or a rate is missing; it can be edited either way.
-const suggestRate = (
-  code: string,
-  book: TFinanceCurrency,
-  currencies: TCurrency[],
-) => {
-  if (code === book.code) return 1
-  const from = currencies.find((currency) => currency.code === code)
-  const to = currencies.find((currency) => currency.code === book.code)
-  if (!from?.rate || !to?.rate) return 1
-  return Number((from.rate / to.rate).toPrecision(8))
-}
 
 export const EntryForm = (properties: TEntryFormProperties) => {
   const { onClose, entry, book, currencies, history, onSave, onDelete } =

@@ -463,6 +463,30 @@
           "month": "vs the month before"
         }
       }
+    },
+    "receipt": {
+      "scan": "Scan receipt",
+      "scanHint": "Add entries from a photo of a receipt",
+      "reading": "Reading the receipt…",
+      "review": "Check the receipt",
+      "mode": {
+        "label": "Add as",
+        "total": "One entry",
+        "items": "Each item"
+      },
+      "noLines": "No amounts could be read from this receipt.",
+      "mismatch": "The items add up to {{lines}}, but the receipt says {{total}}. Check for a misread line.",
+      "currencyUnknown": "The receipt is in {{code}}, which isn’t in your currencies, so the amounts are in {{book}}. Add {{code}} in Settings to record it as such.",
+      "check": "Gemini can misread receipts. Check the amounts and categories; you can change each entry after adding it.",
+      "add_one": "Add {{count}} entry",
+      "add_other": "Add {{count}} entries",
+      "notice": {
+        "title": "Scan receipts with Gemini?",
+        "send": "The photo you choose is sent to Google’s Gemini to read the shop, date, items and amounts. Google may keep it and use it to improve its services, so leave out anything you don’t want to share.",
+        "encryption": "This happens even in end-to-end encrypted books: the photo leaves your device, while the entries you add are encrypted as usual. The photo itself is not saved in Catat Saja.",
+        "check": "Nothing is sent until you choose a photo, and you check every entry before it is added.",
+        "confirm": "Choose a photo"
+      }
     }
   },
   "about": {
@@ -481,7 +505,7 @@
     },
     "made": {
       "title": "Who makes it",
-      "description": "Made by {{author}}. It is free, and its <github>source code</github> is open on GitHub. See what is new in the <changelog>changelog</changelog>."
+      "description": "Made by <portfolio>{{author}}</portfolio>. It is free, and its <github>source code</github> is open on GitHub. See what is new in the <changelog>changelog</changelog>."
     }
   },
   "privacyPolicy": {
@@ -490,8 +514,10 @@
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices.",
     "encryption": "With end-to-end encryption (on for new accounts, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
+    "ai": "Scanning a receipt in a finance book is optional. Only when you choose a photo is it sent to Google’s Gemini (through Firebase AI Logic) to read the shop, date, items and amounts, even in an end-to-end encrypted book. Google may keep these photos and use them to improve its services. We don’t store the photo; the entries you add are stored like any others. You agree to this once, the first time you scan.",
     "sharing": "When you share a note, task, book or health log, the people you share it with see its content. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
+    "security": "To keep out abuse, the app uses Firebase App Check with Google reCAPTCHA, which checks that requests come from this app using signals from your browser.",
     "video": "The home page has a video hosted on YouTube. It loads only when you press play, from YouTube's privacy-enhanced mode (youtube-nocookie.com); YouTube's own privacy policy then applies to it.",
     "contact": "To get a copy of your data, or to delete your account and everything in it, email <a>{{email}}</a>."
   },
@@ -755,7 +781,11 @@
     "passkeyUnsupported": "This device's passkeys can't unlock encrypted data. Use your passphrase instead.",
     "passkeyCancelled": "The passkey request was cancelled",
     "encryptionLocked": "Unlock this device to change encrypted items",
-    "encryptionNotSetUp": "Encryption isn't set up for this account"
+    "encryptionNotSetUp": "Encryption isn't set up for this account",
+    "aiUnavailable": "The receipt reader isn’t available right now. Try again later.",
+    "receiptUnreadable": "This receipt couldn’t be read. Try a sharper, well-lit photo of the whole receipt.",
+    "receiptEmpty": "No receipt was found in this photo.",
+    "imageUnreadable": "This image can’t be opened. Try a JPEG or PNG photo."
   },
   "actions": {
     "back": "Back",

@@ -463,6 +463,30 @@
           "month": "dibanding bulan sebelumnya"
         }
       }
+    },
+    "receipt": {
+      "scan": "Pindai struk",
+      "scanHint": "Tambahkan entri dari foto struk",
+      "reading": "Membaca struk…",
+      "review": "Periksa struk",
+      "mode": {
+        "label": "Tambahkan sebagai",
+        "total": "Satu entri",
+        "items": "Per barang"
+      },
+      "noLines": "Tidak ada jumlah yang terbaca dari struk ini.",
+      "mismatch": "Jumlah barang {{lines}}, tetapi struk menulis {{total}}. Periksa apakah ada baris yang salah terbaca.",
+      "currencyUnknown": "Struk ini dalam {{code}}, yang tidak ada di mata uangmu, jadi jumlahnya dicatat dalam {{book}}. Tambahkan {{code}} di Pengaturan untuk mencatatnya dalam mata uang itu.",
+      "check": "Gemini bisa salah membaca struk. Periksa jumlah dan kategorinya; setiap entri bisa diubah setelah ditambahkan.",
+      "add_one": "Tambah {{count}} entri",
+      "add_other": "Tambah {{count}} entri",
+      "notice": {
+        "title": "Pindai struk dengan Gemini?",
+        "send": "Foto yang kamu pilih dikirim ke Gemini milik Google untuk membaca nama toko, tanggal, barang, dan jumlahnya. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
+        "encryption": "Ini berlaku juga untuk buku yang terenkripsi end-to-end: fotonya keluar dari perangkatmu, sedangkan entri yang kamu tambahkan tetap dienkripsi seperti biasa. Fotonya sendiri tidak disimpan di Catat Saja.",
+        "check": "Tidak ada yang dikirim sampai kamu memilih foto, dan kamu memeriksa setiap entri sebelum ditambahkan.",
+        "confirm": "Pilih foto"
+      }
     }
   },
   "about": {
@@ -481,7 +505,7 @@
     },
     "made": {
       "title": "Siapa pembuatnya",
-      "description": "Dibuat oleh {{author}}. Gratis, dan <github>kode sumbernya</github> terbuka di GitHub. Lihat yang baru di <changelog>catatan perubahan</changelog>."
+      "description": "Dibuat oleh <portfolio>{{author}}</portfolio>. Gratis, dan <github>kode sumbernya</github> terbuka di GitHub. Lihat yang baru di <changelog>catatan perubahan</changelog>."
     }
   },
   "privacyPolicy": {
@@ -490,8 +514,10 @@
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google.",
     "encryption": "Dengan enkripsi end-to-end (aktif untuk akun baru, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, dan kapan item berubah. Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
+    "ai": "Memindai struk di buku keuangan bersifat opsional. Hanya saat kamu memilih foto, foto itu dikirim ke Gemini milik Google (melalui Firebase AI Logic) untuk membaca nama toko, tanggal, barang, dan jumlahnya, termasuk di buku yang terenkripsi end-to-end. Google dapat menyimpan foto ini dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan fotonya; entri yang kamu tambahkan disimpan seperti entri lainnya. Kamu menyetujuinya sekali, saat pertama kali memindai.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu bagikan bisa melihat isinya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
+    "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
     "video": "Halaman utama memuat video yang di-hosting di YouTube. Video baru dimuat saat kamu menekan putar, melalui mode privasi YouTube (youtube-nocookie.com); setelah itu kebijakan privasi YouTube berlaku untuknya.",
     "contact": "Untuk meminta salinan datamu, atau menghapus akun beserta semua isinya, kirim email ke <a>{{email}}</a>."
   },
@@ -755,7 +781,11 @@
     "passkeyUnsupported": "Passkey di perangkat ini tidak bisa membuka data terenkripsi. Gunakan frasa sandi.",
     "passkeyCancelled": "Permintaan passkey dibatalkan",
     "encryptionLocked": "Buka perangkat ini untuk mengubah item terenkripsi",
-    "encryptionNotSetUp": "Enkripsi belum diatur untuk akun ini"
+    "encryptionNotSetUp": "Enkripsi belum diatur untuk akun ini",
+    "aiUnavailable": "Pembaca struk sedang tidak tersedia. Coba lagi nanti.",
+    "receiptUnreadable": "Struk ini tidak terbaca. Coba foto seluruh struk yang lebih tajam dan terang.",
+    "receiptEmpty": "Tidak ada struk di foto ini.",
+    "imageUnreadable": "Gambar ini tidak bisa dibuka. Coba foto JPEG atau PNG."
   },
   "actions": {
     "back": "Kembali",

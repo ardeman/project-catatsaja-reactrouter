@@ -35,6 +35,8 @@ export type TUserResponse = {
   encryptionRequired?: boolean
   // The email its `userLookup` entry is filed under.
   lookupEmail?: string
+  // Agreed that AI features send what they work on to Google (Gemini).
+  aiConsent?: boolean
   bmiStandard?: TBmiStandard
   labUnits?: TLabUnits
 }

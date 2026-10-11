@@ -32,6 +32,7 @@ export const Modal = (properties: TProperties) => {
     description,
     onClose,
     handleConfirm,
+    confirmLabel,
     variant = 'default',
   } = properties
   const isDesktop = useMediaQuery('(min-width: 768px)')
@@ -52,6 +53,7 @@ export const Modal = (properties: TProperties) => {
         description={description}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
+        confirmLabel={confirmLabel}
         variant={variant}
       >
         {children}
@@ -67,6 +69,7 @@ export const Modal = (properties: TProperties) => {
       description={description}
       handleClose={handleClose}
       handleConfirm={handleConfirm}
+      confirmLabel={confirmLabel}
       variant={variant}
     >
       {children}
@@ -83,6 +86,7 @@ const Dialog = (parameters: TParameters) => {
     description,
     handleClose,
     handleConfirm,
+    confirmLabel,
     variant,
   } = parameters
   const { t } = useTranslation()
@@ -108,7 +112,7 @@ const Dialog = (parameters: TParameters) => {
               variant={variant}
               onClick={handleConfirm}
             >
-              {t('form.confirm')}
+              {confirmLabel ?? t('form.confirm')}
             </Button>
           </DialogFooter>
         )}
@@ -126,6 +130,7 @@ const Drawer = (parameters: TParameters) => {
     description,
     handleClose,
     handleConfirm,
+    confirmLabel,
     variant,
   } = parameters
   const { t } = useTranslation()
@@ -155,7 +160,7 @@ const Drawer = (parameters: TParameters) => {
                 variant={variant}
                 onClick={handleConfirm}
               >
-                {t('form.confirm')}
+                {confirmLabel ?? t('form.confirm')}
               </Button>
             )}
             <DrawerClose asChild>

@@ -20,6 +20,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Scan a receipt into a finance book: take or choose a photo, check what was read, and add it as one entry or one per item. The photo is read by Google’s Gemini, and only when you choose one.',
+          id: 'Pindai struk ke buku keuangan: ambil atau pilih foto, periksa hasil bacaannya, lalu tambahkan sebagai satu entri atau per barang. Foto dibaca oleh Gemini milik Google, dan hanya saat kamu memilihnya.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'The home page has a one-minute video showing the app. It loads from YouTube only when you press play.',
           id: 'Halaman utama kini punya video satu menit yang memperlihatkan aplikasi. Video baru dimuat dari YouTube saat kamu menekan putar.',
         },
@@ -41,8 +48,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'The About page explains what the app does, how it keeps your data private, and who makes it.',
-          id: 'Halaman Tentang aplikasi kini menjelaskan apa yang bisa dilakukan, bagaimana datamu dijaga tetap privat, dan siapa pembuatnya.',
+          en: 'The About page explains what the app does, how it keeps your data private, and who makes it, with a link to their website.',
+          id: 'Halaman Tentang aplikasi kini menjelaskan apa yang bisa dilakukan, bagaimana datamu dijaga tetap privat, dan siapa pembuatnya, dengan tautan ke situsnya.',
         },
       },
       {

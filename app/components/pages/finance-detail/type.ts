@@ -20,3 +20,11 @@ export type TEntryFormProperties = {
   onSave: (entry: TFinanceEntry) => void
   onDelete: (id: string) => void
 }
+
+export type TReceiptScanProperties = {
+  book: TFinanceCurrency
+  currencies: TCurrency[]
+  // Past entries from every book, newest first, for category suggestions.
+  history: TFinanceEntry[]
+  onAdd: (entries: TFinanceEntry[]) => void
+}

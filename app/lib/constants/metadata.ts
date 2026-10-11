@@ -7,6 +7,8 @@ export const appleIcon = '/apple-touch-icon.png'
 const shortcutIcon = '/android-chrome-512x512.png'
 const favicon = '/favicon.ico'
 export const author = 'Ardeman'
+// The author's portfolio, linked from the About page.
+export const authorUrl = 'https://ardeman.com'
 // Browser and installed-app bars match the page background.
 export const themeColor = '#ffffff'
 export const themeColors = { light: themeColor, dark: '#0c0a09' }

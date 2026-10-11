@@ -82,4 +82,4 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export { auth, firestore }
+export { auth, firebase, firestore }

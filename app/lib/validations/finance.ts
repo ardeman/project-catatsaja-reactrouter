@@ -37,3 +37,27 @@ export const bookSchema = z.object({
   title: z.string(),
   currency: currencySchema,
 })
+
+// What Gemini reads from a receipt photo (`app/apis/ai/receipt.ts`). Checked
+// before use, since a model's answer can be malformed. Unknown text is "",
+// unknown numbers 0.
+export const receiptSchema = z.object({
+  merchant: z.string(),
+  // YYYY-MM-DD, or "" when the receipt has no readable date.
+  date: z.string(),
+  // ISO 4217, or "" when the receipt doesn't show one.
+  currency: z.string(),
+  items: z.array(
+    z.object({
+      description: z.string(),
+      quantity: z.number(),
+      // The price of one, after any discount on that line.
+      unitPrice: z.number(),
+    }),
+  ),
+  // Tax, service charge, delivery and other additions to the whole receipt.
+  charges: z.array(z.object({ description: z.string(), amount: z.number() })),
+  // A discount on the whole receipt, as a positive number.
+  discount: z.number(),
+  total: z.number(),
+})
