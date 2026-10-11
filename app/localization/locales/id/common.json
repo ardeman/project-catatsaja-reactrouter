@@ -492,6 +492,7 @@
     "encryption": "Dengan enkripsi end-to-end (aktif untuk akun baru, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, dan kapan item berubah. Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu bagikan bisa melihat isinya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
+    "video": "Halaman utama memuat video yang di-hosting di YouTube. Video baru dimuat saat kamu menekan putar, melalui mode privasi YouTube (youtube-nocookie.com); setelah itu kebijakan privasi YouTube berlaku untuknya.",
     "contact": "Untuk meminta salinan datamu, atau menghapus akun beserta semua isinya, kirim email ke <a>{{email}}</a>."
   },
   "termsOfService": {
@@ -824,6 +825,12 @@
         "title": "Di mana pun kamu berada",
         "description": "Bisa dibuka di browser apa saja dan dipasang seperti aplikasi yang terbuka di halaman pilihanmu. Tema terang atau gelap, dalam Bahasa Indonesia atau Inggris."
       }
+    },
+    "video": {
+      "title": "Kenali {{appName}} dalam semenit",
+      "description": "Catatan, daftar tugas, keuangan, dan kesehatan, di HP dan laptopmu.",
+      "play": "Putar video",
+      "note": "Video diputar dari YouTube, yang baru dimuat saat kamu menekan putar."
     },
     "cta": {
       "title": "Siap mencatat?",

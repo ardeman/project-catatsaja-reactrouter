@@ -23,6 +23,7 @@ import {
   NotePreview,
   TaskPreview,
 } from './preview'
+import { LandingVideo } from './video'
 
 type TFeature = {
   key: string
@@ -136,6 +137,8 @@ export const LandingPage = () => {
             <TaskPreview className="absolute top-[47rem] right-2 z-40 rotate-1 sm:top-[19rem] sm:right-auto sm:left-0 sm:z-20 sm:-rotate-2" />
           </div>
         </section>
+
+        <LandingVideo />
 
         <section
           aria-labelledby="features-title"

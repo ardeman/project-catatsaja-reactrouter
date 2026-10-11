@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'End-to-end encryption', id: 'Enkripsi end-to-end' },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'The home page has a one-minute video showing the app. It loads from YouTube only when you press play.',
+          id: 'Halaman utama kini punya video satu menit yang memperlihatkan aplikasi. Video baru dimuat dari YouTube saat kamu menekan putar.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'A friendlier page when a link leads nowhere, with buttons to go back or return to the app.',

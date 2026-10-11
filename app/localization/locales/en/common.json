@@ -492,6 +492,7 @@
     "encryption": "With end-to-end encryption (on for new accounts, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
     "sharing": "When you share a note, task, book or health log, the people you share it with see its content. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
+    "video": "The home page has a video hosted on YouTube. It loads only when you press play, from YouTube's privacy-enhanced mode (youtube-nocookie.com); YouTube's own privacy policy then applies to it.",
     "contact": "To get a copy of your data, or to delete your account and everything in it, email <a>{{email}}</a>."
   },
   "termsOfService": {
@@ -824,6 +825,12 @@
         "title": "Wherever you are",
         "description": "Works in any browser and installs like an app that opens on the page you choose. Light or dark, in English or Bahasa Indonesia."
       }
+    },
+    "video": {
+      "title": "See {{appName}} in a minute",
+      "description": "Notes, checklists, money and health, on your phone and your laptop.",
+      "play": "Play the video",
+      "note": "The video plays from YouTube, which loads only when you press play."
     },
     "cta": {
       "title": "Ready to write it down?",

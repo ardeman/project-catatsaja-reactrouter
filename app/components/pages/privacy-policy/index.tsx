@@ -9,6 +9,7 @@ const paragraphs = [
   'encryption',
   'sharing',
   'analytics',
+  'video',
 ]
 
 export const PrivacyPolicyPage = () => {
