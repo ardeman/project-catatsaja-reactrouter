@@ -20,6 +20,20 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'A friendlier page when a link leads nowhere, with buttons to go back or return to the app.',
+          id: 'Halaman yang lebih ramah saat tautan tidak ditemukan, dengan tombol untuk kembali atau ke aplikasi.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'The settings tabs fit on phone screens.',
+          id: 'Tab pengaturan kini muat di layar HP.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'The About page explains what the app does, how it keeps your data private, and who makes it.',
           id: 'Halaman Tentang aplikasi kini menjelaskan apa yang bisa dilakukan, bagaimana datamu dijaga tetap privat, dan siapa pembuatnya.',
         },

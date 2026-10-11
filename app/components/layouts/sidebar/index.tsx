@@ -5,7 +5,8 @@ import { cn } from '~/lib/utils/shadcn'
 
 import { settings } from './constant'
 
-// Tabs on phones; a list with a line about each section from md up.
+// Tabs on phones (icon above a short label, so four fit); a list with a
+// line about each section from md up.
 export const Sidebar = () => {
   const { pathname } = useLocation()
   const { t } = useTranslation()
@@ -23,7 +24,7 @@ export const Sidebar = () => {
             to={setting.href}
             aria-current={isActive ? 'page' : undefined}
             className={cn(
-              'flex min-w-0 items-center justify-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-hidden md:items-start md:justify-start md:gap-3 md:px-3 md:py-2.5',
+              'flex min-w-0 flex-col items-center justify-center gap-1 rounded-md border border-transparent px-1 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-hidden md:flex-row md:items-start md:justify-start md:gap-3 md:px-3 md:py-2.5 md:text-sm',
               isActive &&
                 'bg-background text-foreground shadow-xs dark:border-input dark:bg-card/30',
             )}
@@ -34,7 +35,7 @@ export const Sidebar = () => {
                 isActive && 'text-primary',
               )}
             />
-            <span className="grid min-w-0">
+            <span className="grid min-w-0 text-center md:text-left">
               <span className="truncate">{setting.name}</span>
               <span className="hidden text-xs font-normal text-muted-foreground md:block">
                 {setting.description}

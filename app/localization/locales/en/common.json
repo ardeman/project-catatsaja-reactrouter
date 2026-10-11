@@ -729,8 +729,11 @@
     }
   },
   "notFound": {
-    "title": "Page not found",
-    "description": "Sorry, this page doesn't exist."
+    "title": "This page went missing",
+    "description": "The link might be broken, or the page has moved. Let's get you back.",
+    "back": "Go back",
+    "app": "Back to {{appName}}",
+    "home": "Go to the home page"
   },
   "errors": {
     "permissionDenied": "You don't have permission to do that.",

@@ -729,8 +729,11 @@
     }
   },
   "notFound": {
-    "title": "Halaman tidak ditemukan",
-    "description": "Maaf, halaman yang kamu cari tidak ada."
+    "title": "Halaman ini hilang entah ke mana",
+    "description": "Mungkin tautannya rusak, atau halamannya sudah pindah. Yuk, balik lagi.",
+    "back": "Kembali",
+    "app": "Kembali ke {{appName}}",
+    "home": "Ke halaman utama"
   },
   "errors": {
     "permissionDenied": "Kamu tidak punya izin untuk melakukan itu.",
