@@ -9,7 +9,7 @@ const fromBase64Url = (text: string): TBytes =>
   fromBase64(text.replaceAll('-', '+').replaceAll('_', '/'))
 
 export const canUsePasskeys = () =>
-  typeof globalThis.PublicKeyCredential === 'function' &&
+  typeof PublicKeyCredential === 'function' &&
   typeof navigator.credentials?.create === 'function'
 
 type TPrfResults = { results?: { first?: ArrayBuffer } }

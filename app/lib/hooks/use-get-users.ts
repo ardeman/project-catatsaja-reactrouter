@@ -9,12 +9,8 @@ export const useGetUsers = (uids: string[]) => {
   const key = [...uids].toSorted((a, b) => a.localeCompare(b)).join(',')
 
   useEffect(() => {
-    const ids = key ? key.split(',') : []
-    if (ids.length === 0) {
-      setData([])
-      setIsLoading(false)
-      return
-    }
+    if (!key) return
+    const ids = key.split(',')
     let isCurrent = true
     const load = async () => {
       setIsLoading(true)
@@ -33,5 +29,6 @@ export const useGetUsers = (uids: string[]) => {
     }
   }, [key])
 
-  return { data, isLoading }
+  // Nobody to load: nothing to wait for.
+  return key ? { data, isLoading } : { data: [], isLoading: false }
 }

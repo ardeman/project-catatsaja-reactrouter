@@ -29,7 +29,7 @@ export default async function handleRequest(
   })
 
   return new Promise<Response>((resolve, reject) => {
-    let shellRendered = false
+    let isShellRendered = false
     const ready = isbot(request.headers.get('user-agent') || '')
       ? 'onAllReady'
       : 'onShellReady'
@@ -42,7 +42,7 @@ export default async function handleRequest(
       </I18nextProvider>,
       {
         [ready]() {
-          shellRendered = true
+          isShellRendered = true
           const body = new PassThrough()
           // A completed render no longer needs an abort timer.
           body.on('close', () => clearTimeout(abortTimer))
@@ -62,7 +62,7 @@ export default async function handleRequest(
         },
         onError(error: unknown) {
           responseStatusCode = 500
-          if (shellRendered) {
+          if (isShellRendered) {
             // Streaming errors occur after the response has been returned.
             // eslint-disable-next-line no-console
             console.error(error)
@@ -74,6 +74,7 @@ export default async function handleRequest(
   })
 }
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- registered once, when the server entry loads, to log rejections nothing else catches
 process.on('unhandledRejection', (reason: unknown, p: Promise<unknown>) => {
   let stack: string
 

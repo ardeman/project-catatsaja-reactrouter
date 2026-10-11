@@ -18,7 +18,7 @@ export const middleware = (properties: TProperties) => {
   const { pathname, search } = location
   const extractedPath = extractPathSegment(pathname)
 
-  if (protectedPages.has(extractedPath) && !user) {
+  if (!user && protectedPages.has(extractedPath)) {
     const url = `/auth/sign-in?redirect=${encodeURIComponent(
       pathname + search,
     )}`
@@ -29,9 +29,9 @@ export const middleware = (properties: TProperties) => {
     return navigate('/auth/sign-in', { replace: true })
   }
 
-  if (authPages.has(extractedPath) && user) {
-    const redirect = new URLSearchParams(search).get('redirect')
-    const url = redirect || `/${readStartPage()}`
-    return navigate(url, { replace: true })
-  }
+  if (!user || !authPages.has(extractedPath)) return
+
+  const redirect = new URLSearchParams(search).get('redirect')
+  const url = redirect || `/${readStartPage()}`
+  return navigate(url, { replace: true })
 }

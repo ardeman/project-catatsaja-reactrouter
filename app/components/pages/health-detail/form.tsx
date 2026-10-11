@@ -26,11 +26,12 @@ import { CaloriesSection } from './calories-section'
 import { LabSection } from './lab-section'
 import { Overview } from './overview'
 import { PeriodSection } from './period-section'
+import { Reminders } from './reminders'
 import { TFormProperties } from './type'
 
 type TTab = 'overview' | THealthKind
 
-const sameJson = (a: unknown, b: unknown) =>
+const isSameJson = (a: unknown, b: unknown) =>
   JSON.stringify(a) === JSON.stringify(b)
 
 // The target as stored: a whole number, or null when cleared.
@@ -84,6 +85,7 @@ export const Form = (properties: TFormProperties) => {
       sex: selectedHealthLog?.sex ?? 'female',
       calorieTarget: selectedHealthLog?.calorieTarget ?? null,
       content: selectedHealthLog?.content ?? [],
+      reminders: selectedHealthLog?.reminders ?? [],
     },
     // Changes saved elsewhere must not overwrite what is being typed.
     resetOptions: { keepDirtyValues: true },
@@ -116,8 +118,10 @@ export const Form = (properties: TFormProperties) => {
       if (data.sex !== selectedHealthLog.sex) changes.sex = data.sex
       if (data.calorieTarget !== (selectedHealthLog.calorieTarget ?? null))
         changes.calorieTarget = data.calorieTarget
-      if (!sameJson(data.content, selectedHealthLog.content ?? []))
+      if (!isSameJson(data.content, selectedHealthLog.content ?? []))
         changes.content = data.content
+      if (!isSameJson(data.reminders ?? [], selectedHealthLog.reminders ?? []))
+        changes.reminders = data.reminders ?? []
       if (Object.keys(changes).length === 0) return
       setSaveStatus('saving')
       const isSaved = await mutateUpdate({
@@ -150,6 +154,7 @@ export const Form = (properties: TFormProperties) => {
       values.sex,
       String(values.calorieTarget ?? ''),
       JSON.stringify(values.content),
+      JSON.stringify(values.reminders ?? []),
     ],
     saveWhenIdle: !!selectedHealthLog,
   })
@@ -175,7 +180,7 @@ export const Form = (properties: TFormProperties) => {
 
   // Sections, kept in the address so Back and reloading keep them. Period
   // tracking shows for women and girls from 8.
-  const showPeriod =
+  const shouldShowPeriod =
     values.sex === 'female' &&
     (!values.birthDate || ageInYears(values.birthDate, today()) >= 8)
   const tabs: TTab[] = [
@@ -185,7 +190,7 @@ export const Form = (properties: TFormProperties) => {
     'uricAcid',
     'cholesterol',
     'calories',
-    ...(showPeriod ? (['period'] as const) : []),
+    ...(shouldShowPeriod ? (['period'] as const) : []),
   ]
   const requested = searchParameters.get('section') as TTab | null
   const tab: TTab =
@@ -295,16 +300,27 @@ export const Form = (properties: TFormProperties) => {
           </fieldset>
         </form>
 
+        <Reminders
+          log={values}
+          isReadOnly={isReadOnly}
+          showPeriod={shouldShowPeriod}
+          onChange={(reminders) =>
+            setValue('reminders', reminders, { shouldDirty: true })
+          }
+          onOpen={openTab}
+        />
+
         <div className="-mx-4 overflow-x-auto px-4">
           <Segmented
             label={t('health.sections')}
             value={tab}
             options={tabs.map((value) => ({
               value,
-              label:
+              label: t(
                 value === 'overview'
-                  ? t('health.overview')
-                  : t(`health.kinds.${value}`),
+                  ? 'health.overview'
+                  : `health.kinds.${value}`,
+              ),
             }))}
             onChange={openTab}
           />

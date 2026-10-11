@@ -9,25 +9,23 @@ import { waitForAuth } from '~/lib/utils/wait-for-auth'
 export const useLiveData = <T>(
   subscribe: TLiveSubscription<T>,
   emptyData?: T,
-  enabled = true,
+  isEnabled = true,
 ) => {
-  const [data, setData] = useState<T>()
-  const [isLoading, setIsLoading] = useState(true)
+  // What the current subscription last delivered. Until it delivers (a new
+  // id, say), the hook is loading: an earlier subscription's data is never
+  // shown for it.
+  const [received, setReceived] = useState<{
+    subscribe: TLiveSubscription<T>
+    data: T | undefined
+  }>()
 
   useEffect(() => {
-    if (!enabled) {
-      setData(emptyData)
-      setIsLoading(false)
-      return
-    }
+    if (!isEnabled) return
     let isCurrent = true
     let unsubscribe: (() => void) | undefined
-    setData(undefined)
-    setIsLoading(true)
     const receive = (value: T | undefined) => {
       if (!isCurrent) return
-      setData(value)
-      setIsLoading(false)
+      setReceived({ subscribe, data: value })
     }
     const listen = async () => {
       try {
@@ -47,7 +45,10 @@ export const useLiveData = <T>(
       isCurrent = false
       unsubscribe?.()
     }
-  }, [subscribe, emptyData, enabled])
+  }, [subscribe, emptyData, isEnabled])
 
-  return { data, isLoading }
+  if (!isEnabled) return { data: emptyData, isLoading: false }
+  return received?.subscribe === subscribe
+    ? { data: received.data, isLoading: false }
+    : { data: undefined, isLoading: true }
 }

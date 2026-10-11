@@ -256,12 +256,10 @@ export const unlockWithPasskeySecret = async (
 ) => {
   const { uid } = requireUser()
   try {
+    const sealingKey = await deriveFromSecret(secret, fromBase64(seal.salt))
     await startSession(
       uid,
-      await openPrivateKey(
-        seal,
-        await deriveFromSecret(secret, fromBase64(seal.salt)),
-      ),
+      await openPrivateKey(seal, sealingKey),
       keyring.publicKey,
     )
   } catch {

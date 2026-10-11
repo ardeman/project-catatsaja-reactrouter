@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -31,21 +31,11 @@ export const Profile = () => {
   const { handleSubmit, formState } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateUpdateProfile(data)
+    void mutateUpdateProfile(data).then(() => setDisabled(false))
   })
 
-  const {
-    mutate: mutateUpdateProfile,
-    isPending: isUpdateProfilePending,
-    isSuccess: isUpdateProfileSuccess,
-    isError: isUpdateProfileError,
-  } = useUpdateProfile()
-
-  useEffect(() => {
-    if (isUpdateProfileError || isUpdateProfileSuccess) {
-      setDisabled(false)
-    }
-  }, [isUpdateProfileSuccess, isUpdateProfileError])
+  const { mutate: mutateUpdateProfile, isPending: isUpdateProfilePending } =
+    useUpdateProfile()
 
   return (
     <Card>

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { FcGoogle } from 'react-icons/fc'
@@ -31,7 +31,9 @@ export const SignInPage = () => {
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateLogin(data)
+    void mutateLogin(data).then((isDone) => {
+      if (!isDone) setDisabled(false)
+    })
   })
   const togglePassword = () => {
     setPasswordType((previous) =>
@@ -39,28 +41,17 @@ export const SignInPage = () => {
     )
   }
 
-  const {
-    mutate: mutateLogin,
-    isPending: isLoginPending,
-    isError: isLoginError,
-  } = useLogin()
+  const { mutate: mutateLogin, isPending: isLoginPending } = useLogin()
 
-  const {
-    mutate: mutateLoginGoogle,
-    isPending: isLoginGooglePending,
-    isError: isLoginGoogleError,
-  } = useLoginGoogle()
+  const { mutate: mutateLoginGoogle, isPending: isLoginGooglePending } =
+    useLoginGoogle()
 
   const handleLoginGoogle = () => {
-    mutateLoginGoogle()
+    void mutateLoginGoogle().then((isDone) => {
+      if (!isDone) setDisabled(false)
+    })
     setDisabled(true)
   }
-
-  useEffect(() => {
-    if (isLoginError || isLoginGoogleError) {
-      setDisabled(false)
-    }
-  }, [isLoginError, isLoginGoogleError])
 
   return (
     <Card className="relative w-full max-w-md rounded-2xl [&_a]:min-h-[44px] [&_button]:min-h-[44px] [&_input]:h-11 [&_input]:min-h-[44px] [&_input]:text-[max(1rem,16px)] md:[&_input]:text-sm">

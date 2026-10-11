@@ -1,6 +1,7 @@
-// Turns a receipt read by Gemini into finance entries. Pure logic, no app
-// imports, so it can be tested on its own (tests/receipt.test.mjs): the
-// caller passes the currency, its rate and how to pick a category.
+// Turns what Gemini read (a receipt photo, or text someone typed) into
+// finance entries. Pure logic, no app imports, so it can be tested on its
+// own (tests/receipt.test.mjs): the caller passes the currency, its rate
+// and how to pick a category.
 
 type TReceiptLine = {
   description: string
@@ -30,10 +31,12 @@ type TReceipt = {
 
 type TCurrency = { code: string; symbol: string; maximumFractionDigits: number }
 
+type TType = 'income' | 'expense'
+
 type TEntry = {
   id: string
   date: string
-  type: 'expense'
+  type: TType
   category: string
   description: string
   quantity: number
@@ -78,15 +81,15 @@ export const receiptDate = (
   if (!read.trim()) return { date: today, issue: 'missing' }
   if (!isRealDay(read)) return { date: today, issue: 'unreadable' }
   if (read > today) {
-    const [year, month, day] = read.split('-')
+    const [year, month, day] = read.split('-', 3)
     const swapped = `${year}-${day}-${month}`
-    if (isRealDay(swapped) && swapped <= today)
-      return { date: swapped, issue: 'swapped' }
-    return { date: today, issue: 'future' }
+    return isRealDay(swapped) && swapped <= today
+      ? { date: swapped, issue: 'swapped' }
+      : { date: today, issue: 'future' }
   }
-  if (daysBetween(read, today) > OLD_AFTER_DAYS)
-    return { date: read, issue: 'old' }
-  return { date: read }
+  return daysBetween(read, today) > OLD_AFTER_DAYS
+    ? { date: read, issue: 'old' }
+    : { date: read }
 }
 
 // Its lines: items, each with its own discount taken off and a discount on
@@ -166,15 +169,15 @@ export const receiptDiscount = (receipt: TReceipt, fractionDigits: number) =>
 // What the receipt adds up to: its printed total, or the sum of its lines
 // when the total couldn't be read.
 export const receiptTotal = (receipt: TReceipt, fractionDigits: number) =>
-  isPositive(receipt.total)
-    ? round(receipt.total, fractionDigits)
-    : round(
-        receiptLines(receipt, fractionDigits).reduce(
+  round(
+    isPositive(receipt.total)
+      ? receipt.total
+      : receiptLines(receipt, fractionDigits).reduce(
           (sum, line) => sum + line.quantity * line.amount,
           0,
         ),
-        fractionDigits,
-      )
+    fractionDigits,
+  )
 
 // What the lines add up to, and whether that is too far from the total to
 // be rounding (a spread discount can be off by half a unit per item bought):
@@ -244,3 +247,61 @@ export const receiptToEntries = ({
     rate,
   }))
 }
+
+type TTyped = {
+  entries: {
+    description: string
+    type: TType
+    quantity: number
+    unitPrice: number
+    date: string
+  }[]
+}
+
+// Entries from typed text, one per thing paid or received, with each
+// entry's date checked like a receipt's (`receiptDate`) and why it is worth
+// a look, if it is. Entries without a positive price are left out.
+export const typedToEntries = ({
+  typed,
+  today,
+  currency,
+  rate,
+  categoryFor,
+  fallbackCategory,
+  newId,
+}: {
+  typed: TTyped
+  today: string
+  currency: TCurrency
+  rate: number
+  categoryFor: (description: string, type: TType) => string | undefined
+  fallbackCategory: (type: TType) => string
+  newId: () => string
+}): { entry: TEntry; dateIssue?: TReceiptDateIssue }[] =>
+  typed.entries
+    .filter(
+      (item) =>
+        isPositive(item.unitPrice) &&
+        (item.type === 'income' || item.type === 'expense'),
+    )
+    .map((item) => {
+      const description = item.description.trim()
+      const { date, issue } = receiptDate(item.date, today)
+      return {
+        entry: {
+          id: newId(),
+          date,
+          type: item.type,
+          category:
+            (description && categoryFor(description, item.type)) ||
+            fallbackCategory(item.type),
+          description,
+          quantity: isPositive(item.quantity) ? item.quantity : 1,
+          amount: round(item.unitPrice, currency.maximumFractionDigits),
+          currency,
+          rate,
+        },
+        // A missing day just means today when typing.
+        dateIssue: issue === 'missing' ? undefined : issue,
+      }
+    })

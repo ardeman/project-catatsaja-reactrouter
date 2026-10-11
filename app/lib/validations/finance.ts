@@ -41,25 +41,47 @@ export const bookSchema = z.object({
 // What Gemini reads from a receipt photo (`app/apis/ai/receipt.ts`). Checked
 // before use, since a model's answer can be malformed. Unknown text is "",
 // unknown numbers 0.
+const receiptItemSchema = z.object({
+  description: z.string(),
+  quantity: z.number(),
+  // The printed price of one.
+  unitPrice: z.number(),
+  // A discount printed for this line, as a positive number for the line.
+  discount: z.number(),
+})
+
+const receiptChargeSchema = z.object({
+  description: z.string(),
+  amount: z.number(),
+})
+
 export const receiptSchema = z.object({
   merchant: z.string(),
   // YYYY-MM-DD, or "" when the receipt has no readable date.
   date: z.string(),
   // ISO 4217, or "" when the receipt doesn't show one.
   currency: z.string(),
-  items: z.array(
-    z.object({
-      description: z.string(),
-      quantity: z.number(),
-      // The printed price of one.
-      unitPrice: z.number(),
-      // A discount printed for this line, as a positive number for the line.
-      discount: z.number(),
-    }),
-  ),
+  items: z.array(receiptItemSchema),
   // Tax, service charge, delivery and other additions to the whole receipt.
-  charges: z.array(z.object({ description: z.string(), amount: z.number() })),
+  charges: z.array(receiptChargeSchema),
   // A discount on the whole receipt, as a positive number.
   discount: z.number(),
   total: z.number(),
+})
+
+const typedEntrySchema = z.object({
+  description: z.string(),
+  type: z.enum(['income', 'expense']),
+  quantity: z.number(),
+  unitPrice: z.number(),
+  // YYYY-MM-DD, or "" when the text gives no day.
+  date: z.string(),
+})
+
+// What Gemini reads from text someone typed, such as "makan siang 45rb
+// kemarin, gaji 5jt" (`app/apis/ai/entries.ts`). Checked before use.
+export const typedEntriesSchema = z.object({
+  // ISO 4217 when the text names or implies one (like "$"), else "".
+  currency: z.string(),
+  entries: z.array(typedEntrySchema),
 })

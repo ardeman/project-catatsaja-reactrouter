@@ -3,23 +3,22 @@ import { useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { AiNotice } from '~/components/base/ai-notice'
 import { Button } from '~/components/base/button'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { DatePicker } from '~/components/base/date-picker'
-import { Modal } from '~/components/base/modal'
 import { Segmented } from '~/components/base/segmented'
 import { Checkbox } from '~/components/ui/checkbox'
 import { categoryKeywords } from '~/lib/constants/category-keywords'
 import { financeCategories } from '~/lib/constants/finance'
-import { useUserData } from '~/lib/hooks/use-get-user'
+import { useAiConsent } from '~/lib/hooks/use-ai-consent'
 import { useMoney } from '~/lib/hooks/use-money'
 import { useScanReceipt } from '~/lib/hooks/use-scan-receipt'
-import { useUpdateAiConsent } from '~/lib/hooks/use-update-ai-consent'
-import { TFinanceCurrency, TReceipt, TReceiptMode } from '~/lib/types/finance'
-import { TCurrency } from '~/lib/types/settings'
+import { TReceipt, TReceiptMode } from '~/lib/types/finance'
 import { suggestCategory } from '~/lib/utils/category-classifier'
 import {
   lastCategory,
+  matchCurrency,
   newEntryId,
   suggestRate,
   today,
@@ -36,27 +35,6 @@ import { cn } from '~/lib/utils/shadcn'
 
 import { TReceiptScanProperties } from './type'
 
-// The receipt's currency when the person has it (or it is the book's);
-// otherwise the book's, with a note.
-const receiptCurrency = (
-  receipt: TReceipt | undefined,
-  book: TFinanceCurrency,
-  currencies: TCurrency[],
-) => {
-  const code = receipt?.currency.toUpperCase()
-  const known = [book, ...currencies].find((option) => option.code === code)
-  return {
-    currency: known
-      ? {
-          code: known.code,
-          symbol: known.symbol,
-          maximumFractionDigits: known.maximumFractionDigits,
-        }
-      : book,
-    isCurrencyUnknown: !!code && !known,
-  }
-}
-
 // Whether text is a YYYY-MM-DD date that can be shown as a day.
 const isRealDayText = (text: string) =>
   /^\d{4}-\d{2}-\d{2}$/.test(text) &&
@@ -64,16 +42,14 @@ const isRealDayText = (text: string) =>
 
 // Reads a receipt photo with Gemini and turns it into entries, which the
 // person checks before they are added. The photo goes to Google only when
-// they choose one, after agreeing once to a notice saying so.
+// they choose one, after agreeing once to a notice saying so (`AiNotice`).
 export const ReceiptScan = (properties: TReceiptScanProperties) => {
   const { book, currencies, history, onAdd } = properties
   const { t, i18n } = useTranslation()
-  const { data: userData } = useUserData()
   const money = useMoney()
   const { mutate: scan, isPending } = useScanReceipt()
-  const { mutate: saveConsent } = useUpdateAiConsent()
+  const { run, notice } = useAiConsent()
   const fileInput = useRef<HTMLInputElement>(null)
-  const [isNoticeOpen, setIsNoticeOpen] = useState(false)
   const [receipt, setReceipt] = useState<TReceipt>()
   const [mode, setMode] = useState<TReceiptMode>('total')
   // Lines left out when adding each item, by their place on the receipt.
@@ -90,7 +66,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
   )
 
   const { currency, isCurrencyUnknown } = useMemo(
-    () => receiptCurrency(receipt, book, currencies),
+    () => matchCurrency(receipt?.currency, book, currencies),
     [receipt, book, currencies],
   )
   const entries = useMemo(() => {
@@ -160,18 +136,8 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
   const dateIssue =
     readDate?.issue && date === readDate.date ? readDate.issue : undefined
 
-  const handleScanClick = () => {
-    if (userData?.aiConsent) fileInput.current?.click()
-    else setIsNoticeOpen(true)
-  }
-
-  const handleAgree = () => {
-    setIsNoticeOpen(false)
-    // Opened right away, while the click still counts as the person's own
-    // (browsers block a file picker opened later); the consent saves meanwhile.
-    fileInput.current?.click()
-    saveConsent(true)
-  }
+  // The file picker opens inside the click (or the notice's button).
+  const handleScanClick = () => run(() => fileInput.current?.click())
 
   const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -379,10 +345,11 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
           onClick={handleScanClick}
           isLoading={isPending}
           disabled={isPending}
+          aria-label={t('finances.receipt.scan')}
           title={t('finances.receipt.scanHint')}
         >
           <ScanText className="size-4" />
-          {t('finances.receipt.scan')}
+          <span className="hidden sm:inline">{t('finances.receipt.scan')}</span>
         </Button>
       )}
       {isPending && (
@@ -393,19 +360,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
           {t('finances.receipt.reading')}
         </p>
       )}
-      <Modal
-        open={isNoticeOpen}
-        setOpen={setIsNoticeOpen}
-        title={t('finances.receipt.notice.title')}
-        handleConfirm={handleAgree}
-        confirmLabel={t('finances.receipt.notice.confirm')}
-      >
-        <div className="grid gap-2 text-sm text-muted-foreground">
-          <p>{t('finances.receipt.notice.send')}</p>
-          <p>{t('finances.receipt.notice.encryption')}</p>
-          <p>{t('finances.receipt.notice.check')}</p>
-        </div>
-      </Modal>
+      <AiNotice {...notice} />
     </>
   )
 }

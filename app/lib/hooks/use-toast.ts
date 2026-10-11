@@ -19,11 +19,11 @@ const _actionTypes = {
   REMOVE_TOAST: 'REMOVE_TOAST',
 } as const
 
-let count = 0
+const counter = { value: 0 }
 
 function genId() {
-  count = (count + 1) % Number.MAX_SAFE_INTEGER
-  return count.toString()
+  counter.value = (counter.value + 1) % Number.MAX_SAFE_INTEGER
+  return counter.value.toString()
 }
 
 type ActionType = typeof _actionTypes
@@ -102,7 +102,7 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         toasts: state.toasts.map((t) =>
-          t.id === toastId || toastId === undefined
+          toastId === undefined || t.id === toastId
             ? {
                 ...t,
                 open: false,
@@ -128,12 +128,12 @@ const reducer = (state: State, action: Action): State => {
 
 const listeners: Array<(state: State) => void> = []
 
-let memoryState: State = { toasts: [] }
+const memory: { state: State } = { state: { toasts: [] } }
 
 function dispatch(action: Action) {
-  memoryState = reducer(memoryState, action)
+  memory.state = reducer(memory.state, action)
   for (const listener of listeners) {
-    listener(memoryState)
+    listener(memory.state)
   }
 }
 
@@ -169,7 +169,7 @@ const toast = ({ ...properties }: Toast) => {
 }
 
 const useToast = () => {
-  const [state, setState] = React.useState<State>(memoryState)
+  const [state, setState] = React.useState<State>(memory.state)
 
   React.useEffect(() => {
     listeners.push(setState)

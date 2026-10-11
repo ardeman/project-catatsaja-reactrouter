@@ -14,7 +14,8 @@ type TBeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
-let installPrompt: TBeforeInstallPromptEvent | undefined
+// The prompt the browser offered, until it is used or the app is installed.
+const pending: { prompt?: TBeforeInstallPromptEvent } = {}
 const listeners = new Set<() => void>()
 const notify = () => {
   for (const listener of listeners) listener()
@@ -22,13 +23,13 @@ const notify = () => {
 
 // Called once at start-up (entry.client), before the event can fire.
 export const listenForInstallPrompt = () => {
-  globalThis.addEventListener('beforeinstallprompt', (event) => {
+  addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault()
-    installPrompt = event as TBeforeInstallPromptEvent
+    pending.prompt = event as TBeforeInstallPromptEvent
     notify()
   })
-  globalThis.addEventListener('appinstalled', () => {
-    installPrompt = undefined
+  addEventListener('appinstalled', () => {
+    pending.prompt = undefined
     notify()
   })
 }
@@ -42,7 +43,7 @@ const subscribe = (listener: () => void) => {
 const noSubscribe = () => () => {}
 
 const isStandalone = () =>
-  globalThis.matchMedia('(display-mode: standalone)').matches ||
+  matchMedia('(display-mode: standalone)').matches ||
   (navigator as Navigator & { standalone?: boolean }).standalone === true
 
 // null: this browser can't install web apps (e.g. Firefox on desktop).
@@ -59,8 +60,7 @@ const detectSteps = (): TInstallSteps | null => {
   if (/chrome|chromium|crios|edg|opr|samsungbrowser/i.test(agent)) {
     return 'chromium'
   }
-  if (/macintosh/i.test(agent) && /safari/i.test(agent)) return 'safariMac'
-  return null
+  return /macintosh/i.test(agent) && /safari/i.test(agent) ? 'safariMac' : null
 }
 
 // Whether the app runs installed (its own window, no browser bars). Pages
@@ -73,18 +73,18 @@ export const useInstallApp = () => {
   // otherwise.
   const canPrompt = useSyncExternalStore(
     subscribe,
-    () => installPrompt !== undefined,
+    () => pending.prompt !== undefined,
     () => false,
   )
   const standalone = useSyncExternalStore(noSubscribe, isStandalone, () => true)
   const steps = useSyncExternalStore(noSubscribe, detectSteps, () => null)
 
   const install = async () => {
-    if (!installPrompt) return
-    const prompt = installPrompt
+    if (!pending.prompt) return
+    const prompt = pending.prompt
     await prompt.prompt()
     await prompt.userChoice
-    installPrompt = undefined
+    pending.prompt = undefined
     notify()
   }
 

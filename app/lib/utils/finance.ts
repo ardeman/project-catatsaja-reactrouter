@@ -86,6 +86,28 @@ export const suggestRate = (
   if (code === book.code) return 1
   const from = currencies.find((currency) => currency.code === code)
   const to = currencies.find((currency) => currency.code === book.code)
-  if (!from?.rate || !to?.rate) return 1
-  return Number((from.rate / to.rate).toPrecision(8))
+  return !from?.rate || !to?.rate
+    ? 1
+    : Number((from.rate / to.rate).toPrecision(8))
+}
+
+// A currency Gemini read (ISO 4217, or ""): the person's own or the book's
+// when they have it; otherwise the book's, noting that it wasn't known.
+export const matchCurrency = (
+  read: string | undefined,
+  book: TFinanceCurrency,
+  currencies: TCurrency[],
+) => {
+  const code = read?.trim().toUpperCase()
+  const known = [book, ...currencies].find((option) => option.code === code)
+  return {
+    currency: known
+      ? {
+          code: known.code,
+          symbol: known.symbol,
+          maximumFractionDigits: known.maximumFractionDigits,
+        }
+      : book,
+    isCurrencyUnknown: !!code && !known,
+  }
 }

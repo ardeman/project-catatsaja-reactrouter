@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
@@ -24,6 +25,9 @@ import { cn } from '~/lib/utils/shadcn'
 
 // Results shown per section; the rest are one "See all" away.
 const LIMIT = 5
+
+const noSubscribe = () => () => {}
+const isMacSnapshot = () => /mac|iphone|ipad/i.test(navigator.userAgent)
 
 type TOption = {
   id: string
@@ -54,15 +58,22 @@ export const Search = () => {
   const [isOpen, setIsOpen] = useState(false)
   const inputReference = useRef<HTMLInputElement>(null)
   const listId = useId()
-  const [isMac, setIsMac] = useState(false)
+  // Pages rendered at build time show the Ctrl shortcut until hydrated.
+  const isMac = useSyncExternalStore(noSubscribe, isMacSnapshot, () => false)
   const [activeDescendant, setActiveDescendant] = useState<string>()
 
-  // Follow the list's own search (back, forward, "Clear search").
-  useEffect(() => setQuery(listQuery), [listQuery])
-  useEffect(() => setIsOpen(false), [pathname])
-  useEffect(() => {
-    setIsMac(/mac|iphone|ipad/i.test(navigator.userAgent))
-  }, [])
+  // Follow the list's own search (back, forward, "Clear search"), and close
+  // on another page: adjusted while rendering, before anything is shown.
+  const [followedQuery, setFollowedQuery] = useState(listQuery)
+  if (listQuery !== followedQuery) {
+    setFollowedQuery(listQuery)
+    setQuery(listQuery)
+  }
+  const [openedOn, setOpenedOn] = useState(pathname)
+  if (pathname !== openedOn) {
+    setOpenedOn(pathname)
+    setIsOpen(false)
+  }
 
   // "/" or Ctrl/⌘ K jumps to the search from anywhere.
   useEffect(() => {
@@ -79,8 +90,8 @@ export const Search = () => {
       inputReference.current?.focus()
       inputReference.current?.select()
     }
-    globalThis.addEventListener('keydown', handleKeyDown)
-    return () => globalThis.removeEventListener('keydown', handleKeyDown)
+    addEventListener('keydown', handleKeyDown)
+    return () => removeEventListener('keydown', handleKeyDown)
   }, [])
 
   const handleOpen = (option: TOption) => {
@@ -164,6 +175,12 @@ const Results = (properties: TResultsProperties) => {
   const isLoading =
     isLoadingNotes || isLoadingTasks || isLoadingFinances || isLoadingHealth
   const [active, setActive] = useState(0)
+  // A new query highlights its first result.
+  const [activeFor, setActiveFor] = useState(query)
+  if (query !== activeFor) {
+    setActiveFor(query)
+    setActive(0)
+  }
   const groups = useMemo(() => {
     // Default order: the search groups results by page, not by the menu.
     const [noteNav, taskNav, financeNav, healthNav] = navs(t)
@@ -243,8 +260,6 @@ const Results = (properties: TResultsProperties) => {
     () => groups.flatMap((group) => group.options),
     [groups],
   )
-
-  useEffect(() => setActive(0), [query])
 
   // The keyboard stays in the search box; arrows move the highlight.
   useEffect(() => {

@@ -3,12 +3,14 @@ import * as React from 'react'
 
 import { cn } from '~/lib/utils/shadcn'
 
-const ScrollArea = React.forwardRef<
-  React.ElementRef<typeof ScrollAreaPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
->(({ className, children, ...properties }, reference) => (
+const ScrollArea = ({
+  className,
+  children,
+  ref,
+  ...properties
+}: React.ComponentProps<typeof ScrollAreaPrimitive.Root>) => (
   <ScrollAreaPrimitive.Root
-    ref={reference}
+    ref={ref}
     className={cn('relative overflow-hidden', className)}
     {...properties}
   >
@@ -18,15 +20,16 @@ const ScrollArea = React.forwardRef<
     <ScrollBar />
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>
-))
-ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName
+)
 
-const ScrollBar = React.forwardRef<
-  React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
->(({ className, orientation = 'vertical', ...properties }, reference) => (
+const ScrollBar = ({
+  className,
+  orientation = 'vertical',
+  ref,
+  ...properties
+}: React.ComponentProps<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>) => (
   <ScrollAreaPrimitive.ScrollAreaScrollbar
-    ref={reference}
+    ref={ref}
     orientation={orientation}
     className={cn(
       'flex touch-none transition-colors select-none',
@@ -40,7 +43,6 @@ const ScrollBar = React.forwardRef<
   >
     <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-border" />
   </ScrollAreaPrimitive.ScrollAreaScrollbar>
-))
-ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName
+)
 
 export { ScrollArea, ScrollBar }

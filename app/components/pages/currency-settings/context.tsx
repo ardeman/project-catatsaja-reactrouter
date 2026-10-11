@@ -36,12 +36,14 @@ export const CurrencySettingsProvider = ({
 
   // Reset disabled state after a delay
   useEffect(() => {
-    if (disabled) {
-      const timer = setTimeout(() => {
-        setDisabled(false)
-      }, 1000)
-      return () => clearTimeout(timer)
+    if (!disabled) {
+      return
     }
+
+    const timer = setTimeout(() => {
+      setDisabled(false)
+    }, 1000)
+    return () => clearTimeout(timer)
   }, [disabled])
 
   return (

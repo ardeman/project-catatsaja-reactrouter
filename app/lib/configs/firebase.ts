@@ -75,7 +75,7 @@ if (typeof window !== 'undefined') {
       }
     }
 
-    if (!useEmulators) initializeAnalytics() // Call the async function
+    if (!useEmulators) void initializeAnalytics() // Call the async function
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error initializing Firebase app:', error)

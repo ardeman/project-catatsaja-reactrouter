@@ -36,23 +36,27 @@ const variantClassName = cva(
 
 export interface ButtonProperties
   extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    React.ComponentProps<'button'>,
     VariantProps<typeof variantClassName> {
   asChild?: boolean
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(
-  ({ className, variant, size, asChild = false, ...properties }, reference) => {
-    const Comp = asChild ? Slot : 'button'
-    return (
-      <Comp
-        className={cn(variantClassName({ variant, size, className }))}
-        ref={reference}
-        {...properties}
-      />
-    )
-  },
-)
-Button.displayName = 'Button'
+const Button = ({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ref,
+  ...properties
+}: ButtonProperties) => {
+  const Comp = asChild ? Slot : 'button'
+  return (
+    <Comp
+      className={cn(variantClassName({ variant, size, className }))}
+      ref={ref}
+      {...properties}
+    />
+  )
+}
 
 export { Button, variantClassName }

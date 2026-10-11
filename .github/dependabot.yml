@@ -1,0 +1,13 @@
+# Keeps the GitHub Actions in .github/workflows current: old action versions
+# are what usually stops working first as GitHub updates its runners. Each
+# update is a pull request, checked by the workflow before it is merged.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - '*'

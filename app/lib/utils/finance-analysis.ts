@@ -37,8 +37,7 @@ const weekStart = (date: string) => {
 
 const periodStart = (date: string, granularity: TGranularity) => {
   if (granularity === 'day') return date
-  if (granularity === 'week') return weekStart(date)
-  return `${date.slice(0, 7)}-01`
+  return granularity === 'week' ? weekStart(date) : `${date.slice(0, 7)}-01`
 }
 
 const nextStart = (start: string, granularity: TGranularity) => {
@@ -59,8 +58,7 @@ export const spanDays = (entries: TFinanceEntry[]) => {
 export const pickGranularity = (entries: TFinanceEntry[]): TGranularity => {
   const days = spanDays(entries)
   if (days <= 31) return 'day'
-  if (days <= 183) return 'week'
-  return 'month'
+  return days <= 183 ? 'week' : 'month'
 }
 
 // Every period from the first entry to the last, empty ones included, so
@@ -147,8 +145,8 @@ export const largestEntry = (
 export const spendingChange = (periods: TPeriod[]) => {
   if (periods.length < 2) return
   const previous = periods.at(-2)?.expense ?? 0
-  const current = periods.at(-1)?.expense ?? 0
   if (previous === 0) return
+  const current = periods.at(-1)?.expense ?? 0
   return (current - previous) / previous
 }
 

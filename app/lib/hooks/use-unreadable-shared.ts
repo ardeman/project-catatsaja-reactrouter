@@ -26,8 +26,11 @@ export const useUnreadableShared = (isEnabled: boolean) => {
   }, [])
 
   useEffect(() => {
-    if (isEnabled) void load()
-  }, [isEnabled, load])
+    if (!isEnabled) return
+    void findUnreadableForOthers()
+      .then(setItems)
+      .catch(() => setItems([]))
+  }, [isEnabled])
 
   const shareThem = async () => {
     setIsPending(true)

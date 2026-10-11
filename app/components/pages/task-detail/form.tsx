@@ -163,9 +163,9 @@ export const Form = (properties: TFormProperties) => {
   })
 
   const handleToggleCheckAll = () => {
-    const newValue = !checkedAll
+    const shouldCheck = !checkedAll
     for (const [index, item] of watchContent.entries()) {
-      update(index, { ...item, checked: newValue })
+      update(index, { ...item, checked: shouldCheck })
     }
   }
 
@@ -227,31 +227,39 @@ export const Form = (properties: TFormProperties) => {
     index: number,
   ) => {
     const item = getValues(`content.${index}.item`)
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      if (item.trim().length === 0) {
-        handleRemoveItem(index)
-        focusNextOpen(index - 1)
-      } else {
-        focusNextOpen(index)
+    switch (event.key) {
+      case 'Enter': {
+        event.preventDefault()
+        if (item.trim().length === 0) {
+          handleRemoveItem(index)
+          focusNextOpen(index - 1)
+        } else {
+          focusNextOpen(index)
+        }
+        break
       }
-    }
-    if (event.key === 'Escape') {
-      event.preventDefault()
-      setSelectedEdit(undefined)
-    }
-    if (event.key === 'Backspace' && item.length === 0) {
-      event.preventDefault()
-      handleRemoveItem(index)
-      focusPreviousOpen(index)
-    }
-    if (event.key === 'ArrowUp') {
-      event.preventDefault()
-      focusPreviousOpen(index)
-    }
-    if (event.key === 'ArrowDown') {
-      event.preventDefault()
-      focusNextOpen(index)
+      case 'Escape': {
+        event.preventDefault()
+        setSelectedEdit(undefined)
+        break
+      }
+      case 'Backspace': {
+        if (item.length > 0) break
+        event.preventDefault()
+        handleRemoveItem(index)
+        focusPreviousOpen(index)
+        break
+      }
+      case 'ArrowUp': {
+        event.preventDefault()
+        focusPreviousOpen(index)
+        break
+      }
+      case 'ArrowDown': {
+        event.preventDefault()
+        focusNextOpen(index)
+        break
+      }
     }
   }
 
@@ -267,14 +275,14 @@ export const Form = (properties: TFormProperties) => {
       requestAnimationFrame(() => {
         setFocus('item')
       })
+      return
     }
-    if (
+    const isBackOut =
       (event.key === 'Backspace' && watchItem.length === 0) ||
       event.key === 'ArrowUp'
-    ) {
-      event.preventDefault()
-      focusPreviousOpen(watchContent.length)
-    }
+    if (!isBackOut) return
+    event.preventDefault()
+    focusPreviousOpen(watchContent.length)
   }
 
   const handleNewItemPaste = (
@@ -285,17 +293,19 @@ export const Form = (properties: TFormProperties) => {
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter((line) => line.length > 0)
-    if (lines.length > 1) {
-      event.preventDefault()
-      setSelectedEdit(undefined)
-      for (const line of lines) {
-        append({ checked: false, item: line })
-      }
-      setValue('item', '')
-      requestAnimationFrame(() => {
-        setFocus('item')
-      })
+    if (lines.length <= 1) {
+      return
     }
+
+    event.preventDefault()
+    setSelectedEdit(undefined)
+    for (const line of lines) {
+      append({ checked: false, item: line })
+    }
+    setValue('item', '')
+    requestAnimationFrame(() => {
+      setFocus('item')
+    })
   }
 
   const renderItem = (index: number) => {
@@ -451,10 +461,12 @@ export const Form = (properties: TFormProperties) => {
           autoFocus={!task} // eslint-disable-line jsx-a11y/no-autofocus -- new lists only; `task` is set from the first render
           rows={1}
           onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === 'ArrowDown') {
-              event.preventDefault()
-              setFocus('item')
+            if (event.key !== 'Enter' && event.key !== 'ArrowDown') {
+              return
             }
+
+            event.preventDefault()
+            setFocus('item')
           }}
           onFocus={() => setSelectedEdit(undefined)}
           readOnly={isReadOnly}

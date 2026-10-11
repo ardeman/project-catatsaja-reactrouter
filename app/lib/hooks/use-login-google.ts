@@ -17,6 +17,7 @@ export const useLoginGoogle = () => {
     try {
       await loginWithGoogle()
       revalidate()
+      return true
     } catch (error: unknown) {
       setIsError(true)
       const message = getErrorMessage(error)
@@ -24,6 +25,7 @@ export const useLoginGoogle = () => {
         variant: 'destructive',
         description: message,
       })
+      return false
     } finally {
       setIsPending(false)
     }

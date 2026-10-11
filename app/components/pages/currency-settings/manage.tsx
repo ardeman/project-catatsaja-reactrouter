@@ -60,7 +60,7 @@ export const ManageCurrencies = () => {
 
   // Sort currencies: default first, then by latest rate ascending
   const sortedCurrencies = React.useMemo(() => {
-    return [...currencies].sort((a, b) => {
+    return currencies.toSorted((a, b) => {
       // Default currency should be first
       if (a.isDefault && !b.isDefault) return -1
       if (!a.isDefault && b.isDefault) return 1
@@ -154,15 +154,17 @@ export const ManageCurrencies = () => {
   })
 
   const handleDelete = () => {
-    if (deletingCurrency) {
-      setDisabled(true)
-      deleteCurrency(deletingCurrency.id!)
-      handleCloseDeleteDialog()
+    if (!deletingCurrency) {
+      return
     }
+
+    setDisabled(true)
+    deleteCurrency(deletingCurrency.id!)
+    handleCloseDeleteDialog()
   }
 
   // Preview amount
-  const previewAmount = 1234.123_456_789
+  const previewAmount = 1234.123456789
   const displayFormat = currentCurrencyFormat || getDefaultCurrencyFormat()
   const defaultCurrency = currencies.find((currency) => currency.isDefault)
 
@@ -228,7 +230,7 @@ export const ManageCurrencies = () => {
                       )}
                     </p>
                     <p className="truncate text-xs text-muted-foreground">
-                      {currency.isDefault || !defaultCurrency
+                      {!defaultCurrency || currency.isDefault
                         ? t('settings.manageCurrencies.decimals', {
                             count: currency.maximumFractionDigits,
                           })
@@ -296,14 +298,18 @@ export const ManageCurrencies = () => {
         <DialogContent className="glass-surface">
           <DialogHeader>
             <DialogTitle>
-              {editingCurrency
-                ? t('settings.manageCurrencies.button.edit')
-                : t('settings.manageCurrencies.button.add')}
+              {t(
+                editingCurrency
+                  ? 'settings.manageCurrencies.button.edit'
+                  : 'settings.manageCurrencies.button.add',
+              )}
             </DialogTitle>
             <DialogDescription>
-              {editingCurrency
-                ? t('settings.manageCurrencies.dialog.editDescription')
-                : t('settings.manageCurrencies.dialog.addDescription')}
+              {t(
+                editingCurrency
+                  ? 'settings.manageCurrencies.dialog.editDescription'
+                  : 'settings.manageCurrencies.dialog.addDescription',
+              )}
             </DialogDescription>
           </DialogHeader>
           <FormProvider {...formMethods}>
@@ -344,7 +350,8 @@ export const ManageCurrencies = () => {
                       .toLocaleString('en-US')
                       .replaceAll(
                         ',',
-                        currentCurrencyFormat?.thousandSeparator ??
+                        () =>
+                          currentCurrencyFormat?.thousandSeparator ??
                           getDefaultCurrencyFormat().thousandSeparator,
                       ),
                   })}

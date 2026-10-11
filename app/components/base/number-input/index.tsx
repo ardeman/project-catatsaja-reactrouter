@@ -1,11 +1,5 @@
 import { Calculator } from 'lucide-react'
-import {
-  ChangeEvent,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+import { ChangeEvent, useLayoutEffect, useRef, useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -53,8 +47,8 @@ type TProperties = {
 // mark with nothing after it ("12.") is kept so typing can continue.
 const display = (raw: string, thousand: string, decimal: string) => {
   if (raw === '') return ''
-  const [integer, fraction] = raw.split('.')
-  const grouped = integer.replaceAll(/\B(?=(\d{3})+(?!\d))/g, thousand)
+  const [integer, fraction] = raw.split('.', 2)
+  const grouped = integer.replaceAll(/\B(?=(\d{3})+(?!\d))/g, () => thousand)
   return fraction === undefined ? grouped : `${grouped}${decimal}${fraction}`
 }
 
@@ -64,9 +58,9 @@ const parse = (text: string, thousand: string, decimal: string) => {
   // Phone keyboards may offer only "." or ",": take either as the decimal
   // mark when it isn't the thousands separator.
   if (decimal !== '.' && thousand !== '.')
-    cleaned = cleaned.replaceAll('.', decimal)
+    cleaned = cleaned.replaceAll('.', () => decimal)
   if (decimal !== ',' && thousand !== ',')
-    cleaned = cleaned.replaceAll(',', decimal)
+    cleaned = cleaned.replaceAll(',', () => decimal)
   cleaned = cleaned.replaceAll(decimal, '.').replaceAll(/[^\d.]/g, '')
   const [integer, ...rest] = cleaned.split('.')
   const fraction = rest.join('')
@@ -110,12 +104,9 @@ export const NumberInput = (properties: TProperties) => {
   const [draft, setDraft] = useState<{ text: string; value: string }>()
   const [isCalculatorKeyboard, setIsCalculatorKeyboard] = useState(false)
   // A value set from elsewhere (a reset after saving) ends the calculation.
+  if (draft && String(value ?? '') !== draft.value) setDraft(undefined)
   const activeDraft =
     draft && String(value ?? '') === draft.value ? draft : undefined
-
-  useEffect(() => {
-    if (draft && String(value ?? '') !== draft.value) setDraft(undefined)
-  }, [draft, value])
 
   useLayoutEffect(() => {
     const element = inputReference.current

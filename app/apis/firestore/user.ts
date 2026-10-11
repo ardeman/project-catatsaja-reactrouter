@@ -33,7 +33,7 @@ const ensureUserProfile = async (user: User) => {
   const snap = await getDoc(reference)
   if (snap.exists()) return snap
   await setDoc(reference, {
-    displayName: user.displayName || user.email?.split('@')[0] || '',
+    displayName: user.displayName || user.email?.split('@', 1)[0] || '',
     email: user.email,
     photoURL: user.photoURL || '',
     createdAt: new Date(),
@@ -203,39 +203,38 @@ export const login = async (userData: TSignInRequest) => {
   // Sign in with email and password
   const result = await signInWithEmailAndPassword(auth, email, password)
   const user = result.user
+  if (!user) return
 
-  if (user) {
-    const snap = await ensureUserProfile(user)
-    const userData = snap.data()
+  const snap = await ensureUserProfile(user)
+  const profile = snap.data()
 
-    // Update the email in Firestore if it's different
-    if (userData && user.email && userData.email !== user.email) {
-      return await updateDoc(snap.ref, {
-        email,
-        updatedAt: new Date(),
-      })
-    }
+  // Update the email in Firestore if it's different
+  if (profile && user.email && profile.email !== user.email) {
+    return await updateDoc(snap.ref, {
+      email,
+      updatedAt: new Date(),
+    })
   }
 }
 
 export const loginWithGoogle = async () => {
-  const provider = new GoogleAuthProvider()
   if (!auth || !firestore) {
     throw new Error('Firebase is not initialized.')
   }
+  const provider = new GoogleAuthProvider()
 
   // Sign in with Google
   const result = await signInWithPopup(auth, provider)
   const user = result.user
 
-  if (user) {
-    await ensureUserProfile(user)
-    // A new account starts with end-to-end encryption (set up right after).
-    if (getAdditionalUserInfo(result)?.isNewUser)
-      await updateDoc(doc(firestore, 'users', user.uid), {
-        encryptionRequired: true,
-      })
-  }
+  if (!user) return
+
+  await ensureUserProfile(user)
+  // A new account starts with end-to-end encryption (set up right after).
+  if (getAdditionalUserInfo(result)?.isNewUser)
+    await updateDoc(doc(firestore, 'users', user.uid), {
+      encryptionRequired: true,
+    })
 }
 
 export const register = async (userData: TSignUpRequest) => {
@@ -283,7 +282,7 @@ export const register = async (userData: TSignUpRequest) => {
 
 // Agreeing to AI features sending what they work on to Google: saved on the
 // profile, so the notice isn't shown again on any device.
-export const updateAiConsent = async (aiConsent: boolean) => {
+export const updateAiConsent = async (hasConsented: boolean) => {
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
@@ -292,7 +291,7 @@ export const updateAiConsent = async (aiConsent: boolean) => {
   }
   const reference = doc(firestore, 'users', auth.currentUser.uid)
   return await updateDoc(reference, {
-    aiConsent,
+    aiConsent: hasConsented,
     updatedAt: new Date(),
   })
 }

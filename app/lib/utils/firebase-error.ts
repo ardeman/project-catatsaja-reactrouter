@@ -36,12 +36,15 @@ const errorKeys: Record<string, string> = {
   'receipt/unreadable': 'errors.receiptUnreadable',
   'receipt/empty': 'errors.receiptEmpty',
   'image/unreadable': 'errors.imageUnreadable',
+  'typed/unreadable': 'errors.typedUnreadable',
+  'typed/empty': 'errors.typedEmpty',
+  'note/unreadable': 'errors.noteUnreadable',
   // A passkey prompt dismissed or timed out.
   NotAllowedError: 'errors.passkeyCancelled',
 }
 
 // Codes the app throws itself, as the error's message.
-const appCodes = ['encryption/', 'receipt/', 'image/']
+const appCodes = ['encryption/', 'receipt/', 'image/', 'typed/', 'note/']
 
 const codeOf = (error: unknown) => {
   if (error instanceof FirebaseError) {
@@ -49,16 +52,13 @@ const codeOf = (error: unknown) => {
     const { customErrorData } = error as {
       customErrorData?: { status?: number }
     }
-    if (customErrorData?.status === 429) return 'resource-exhausted'
-    return error.code
+    return customErrorData?.status === 429 ? 'resource-exhausted' : error.code
   }
   if (error instanceof DOMException) return error.name
-  if (
-    error instanceof Error &&
+  return error instanceof Error &&
     appCodes.some((prefix) => error.message.startsWith(prefix))
-  )
-    return error.message
-  return ''
+    ? error.message
+    : ''
 }
 
 export const getErrorMessage = (error: unknown) =>

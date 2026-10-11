@@ -55,11 +55,10 @@ const TaskProvider = (properties: PropsWithChildren) => {
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
     if (selectedConfirmation.kind === 'delete') {
       await mutateDeleteTask(selectedConfirmation.detail)
-      if (pathname.startsWith('/tasks/') && pathname !== '/tasks/create') {
+      if (pathname !== '/tasks/create' && pathname.startsWith('/tasks/')) {
         navigate('/tasks', { replace: true })
       }
-    }
-    if (selectedConfirmation.kind === 'unlink') {
+    } else if (selectedConfirmation.kind === 'unlink') {
       mutateUnlinkTask(selectedConfirmation.detail)
     }
   }

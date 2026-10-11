@@ -11,8 +11,9 @@ export const generalSettingSchema = (t: TFunction) =>
 export const currencyFormatSchema = (
   t: TFunction,
   maxFractionDigitsMin: number = 0,
-) =>
-  z
+) => {
+  const minimumFractionDigitsMax = Math.min(10, maxFractionDigitsMin)
+  return z
     .object({
       thousandSeparator: z.string().min(1, {
         error: t(
@@ -29,10 +30,10 @@ export const currencyFormatSchema = (
         .min(0, {
           error: t('zod:errors.too_small.number.inclusive', { minimum: 0 }),
         })
-        .max(Math.min(10, maxFractionDigitsMin), {
+        .max(minimumFractionDigitsMax, {
           error: t(
             'settings.currencyFormat.validation.minimumFractionDigits.max',
-            { max: Math.min(10, maxFractionDigitsMin) },
+            { max: minimumFractionDigitsMax },
           ),
         }),
       currencyPlacement: z.enum(['before', 'after']),
@@ -43,6 +44,7 @@ export const currencyFormatSchema = (
       error: t('settings.currencyFormat.validation.separators.same'),
       path: ['decimalSeparator'],
     })
+}
 
 export const currencySchema = (t: TFunction, minFractionDigits: number = 0) =>
   z.object({

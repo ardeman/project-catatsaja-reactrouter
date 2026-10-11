@@ -197,15 +197,15 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       setValue('type', match.type, { shouldDirty: true })
     }
     if (
-      match.type === getValues('type') &&
-      match.category !== getValues('category')
-    ) {
-      setValue('category', match.category, {
-        shouldDirty: true,
-        shouldValidate: true,
-      })
-      setIsSuggested(true)
-    }
+      match.type !== getValues('type') ||
+      match.category === getValues('category')
+    )
+      return
+    setValue('category', match.category, {
+      shouldDirty: true,
+      shouldValidate: true,
+    })
+    setIsSuggested(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description])
 
@@ -219,14 +219,13 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     )?.type
     if (currentType) categoryByType.current[currentType] = current
     setValue('type', next, { shouldDirty: true })
-    if (currentType !== next) {
-      const remembered =
-        categoryByType.current[next] ?? lastCategory(next, pastEntries) ?? ''
-      setValue('category', remembered, {
-        shouldDirty: true,
-        shouldValidate: remembered !== '',
-      })
-    }
+    if (currentType === next) return
+    const remembered =
+      categoryByType.current[next] ?? lastCategory(next, pastEntries) ?? ''
+    setValue('category', remembered, {
+      shouldDirty: true,
+      shouldValidate: remembered !== '',
+    })
   }
 
   // Start at the description when the form opens and after each saved

@@ -3,7 +3,7 @@ export const animatePage = (container: HTMLDivElement | null) => {
   if (
     !page ||
     !('animate' in page) ||
-    globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
+    matchMedia('(prefers-reduced-motion: reduce)').matches
   )
     return
 

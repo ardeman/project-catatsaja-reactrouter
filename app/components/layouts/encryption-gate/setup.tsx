@@ -208,9 +208,11 @@ export const SetupEncryption = ({
               disabled={!hasSaved || isPending}
               onClick={() => void handleCreate()}
             >
-              {isPending
-                ? t('encryption.setup.creating')
-                : t('encryption.setup.turnOn')}
+              {t(
+                isPending
+                  ? 'encryption.setup.creating'
+                  : 'encryption.setup.turnOn',
+              )}
             </Button>
           </div>
         </div>
@@ -245,10 +247,12 @@ export const SetupEncryption = ({
               className="gap-1.5"
               disabled={passkeys.isPending}
               onClick={async () => {
-                if (await passkeys.addPasskey(passphrase)) {
-                  toast({ description: t('encryption.passkey.added') })
-                  finish()
+                if (!(await passkeys.addPasskey(passphrase))) {
+                  return
                 }
+
+                toast({ description: t('encryption.passkey.added') })
+                finish()
               }}
             >
               <Fingerprint className="size-4" />

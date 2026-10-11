@@ -28,6 +28,7 @@ export const useForgotPassword = () => {
       })
       setIsSuccess(true)
       revalidate()
+      return true
     } catch (error: unknown) {
       setIsError(true)
       const message = getErrorMessage(error)
@@ -35,6 +36,7 @@ export const useForgotPassword = () => {
         variant: 'destructive',
         description: message,
       })
+      return false
     } finally {
       setIsPending(false)
     }

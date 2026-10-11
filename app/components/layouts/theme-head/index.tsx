@@ -60,6 +60,7 @@ export const ThemeHead = () => {
     () => false,
     () => true,
   )
-  if (!isServerHtml) return null
-  return <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+  return isServerHtml ? (
+    <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+  ) : null
 }

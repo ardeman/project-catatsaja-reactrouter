@@ -7,9 +7,9 @@ type TStatus = 'unknown' | 'locked' | 'unlocked'
 
 type TState = { status: TStatus; uid?: string }
 
-let state: TState = { status: 'unknown' }
-let privateKey: CryptoKey | undefined
-let publicKey: string | undefined
+const session: { state: TState; privateKey?: CryptoKey; publicKey?: string } = {
+  state: { status: 'unknown' },
+}
 const listeners = new Set<() => void>()
 
 // Item keys and their decrypted content, by `collection/id`.
@@ -17,7 +17,7 @@ export const contentKeys = new Map<string, CryptoKey>()
 export const plainContent = new Map<string, Record<string, unknown>>()
 
 const setState = (next: TState) => {
-  state = next
+  session.state = next
   for (const listener of listeners) listener()
 }
 
@@ -26,14 +26,14 @@ export const subscribeToSession = (listener: () => void) => {
   return () => listeners.delete(listener)
 }
 
-export const getSessionState = () => state
+export const getSessionState = () => session.state
 
 export const getPrivateKey = () =>
-  state.status === 'unlocked' ? privateKey : undefined
+  session.state.status === 'unlocked' ? session.privateKey : undefined
 
 // The signed-in person's public key (spki, base64), to seal their own items.
 export const getPublicKey = () =>
-  state.status === 'unlocked' ? publicKey : undefined
+  session.state.status === 'unlocked' ? session.publicKey : undefined
 
 // --- IndexedDB --------------------------------------------------------------
 
@@ -70,14 +70,15 @@ const withStore = async <T>(
 
 // On load: unlocked if this browser kept the key for this person.
 export const restoreSession = async (uid: string) => {
-  if (state.status === 'unlocked' && state.uid === uid) return true
+  if (session.state.status === 'unlocked' && session.state.uid === uid)
+    return true
   try {
     const kept = await withStore<
       { privateKey: CryptoKey; publicKey: string } | undefined
     >('readonly', (store) => store.get(uid))
     if (kept?.privateKey) {
-      privateKey = kept.privateKey
-      publicKey = kept.publicKey
+      session.privateKey = kept.privateKey
+      session.publicKey = kept.publicKey
       setState({ status: 'unlocked', uid })
       return true
     }
@@ -93,8 +94,8 @@ export const startSession = async (
   key: CryptoKey,
   ownPublicKey: string,
 ) => {
-  privateKey = key
-  publicKey = ownPublicKey
+  session.privateKey = key
+  session.publicKey = ownPublicKey
   try {
     await withStore('readwrite', (store) =>
       store.put({ privateKey: key, publicKey: ownPublicKey }, uid),
@@ -106,9 +107,9 @@ export const startSession = async (
 }
 
 export const lockSession = async () => {
-  const uid = state.uid
-  privateKey = undefined
-  publicKey = undefined
+  const uid = session.state.uid
+  session.privateKey = undefined
+  session.publicKey = undefined
   contentKeys.clear()
   plainContent.clear()
   if (uid) {

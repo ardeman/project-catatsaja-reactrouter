@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { noteSchema } from '~/lib/validations/note'
+import { noteHelperSchema, noteSchema } from '~/lib/validations/note'
 
 import { THandleSetPermission, TPermissions, TTime } from './common'
 
@@ -27,3 +27,7 @@ export type TNoteResponse = {
 export type TNotePermissionRequest = THandleSetPermission & {
   note: TNoteResponse
 }
+
+export type TNoteHelper = 'summarise' | 'tidy' | 'translate' | 'checklist'
+
+export type TNoteHelperResult = z.infer<typeof noteHelperSchema>

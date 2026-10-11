@@ -190,9 +190,11 @@ export const Email = () => {
                         )}
                       </TooltipTrigger>
                       <TooltipContent>
-                        {authData?.emailVerified
-                          ? t('settings.email.tooltip.verified')
-                          : t('settings.email.tooltip.unverified')}
+                        {t(
+                          authData?.emailVerified
+                            ? 'settings.email.tooltip.verified'
+                            : 'settings.email.tooltip.unverified',
+                        )}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

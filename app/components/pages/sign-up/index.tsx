@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -36,7 +36,14 @@ export const SignUpPage = () => {
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateRegister({ ...data, theme, language: i18n.language, size })
+    void mutateRegister({
+      ...data,
+      theme,
+      language: i18n.language,
+      size,
+    }).then((isDone) => {
+      if (!isDone) setDisabled(false)
+    })
   })
   const togglePassword = () => {
     setPasswordType((previous) =>
@@ -44,17 +51,7 @@ export const SignUpPage = () => {
     )
   }
 
-  const {
-    mutate: mutateRegister,
-    isPending: isRegisterPending,
-    isError: isRegisterError,
-  } = useRegister()
-
-  useEffect(() => {
-    if (isRegisterError) {
-      setDisabled(false)
-    }
-  }, [isRegisterError])
+  const { mutate: mutateRegister, isPending: isRegisterPending } = useRegister()
 
   return (
     <Card className="relative w-full max-w-md rounded-2xl [&_a]:min-h-[44px] [&_button]:min-h-[44px] [&_input]:h-11 [&_input]:min-h-[44px] [&_input]:text-[max(1rem,16px)] md:[&_input]:text-sm">

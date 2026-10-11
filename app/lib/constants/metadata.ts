@@ -19,7 +19,7 @@ export const appDescription =
   'Write notes, keep checklists, track your money and health, and share them with the people you choose.'
 const manifest = '/site.webmanifest'
 export const githubUser = 'ardeman'
-export const githubRepo = 'project-catatsaja-reactrouter'
+export const githubRepository = 'project-catatsaja-reactrouter'
 
 // Tags every page needs; a route's own `meta` replaces the root's, so
 // routes with their own meta add these through `withAppMeta`.

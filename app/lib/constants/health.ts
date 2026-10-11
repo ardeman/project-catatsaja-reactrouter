@@ -103,8 +103,7 @@ export const uricAcidRange: Record<THealthSex, [number, number]> = {
 export const classifyUricAcid = (value: number, sex: THealthSex) => {
   const [low, high] = uricAcidRange[sex]
   if (value < low) return warning('belowRange')
-  if (value > high) return warning('high')
-  return good('normal')
+  return value > high ? warning('high') : good('normal')
 }
 
 // Cholesterol (NCEP ATP III).
@@ -131,8 +130,7 @@ export const classifyCholesterol = {
     ),
   hdl: (value: number, sex: THealthSex) => {
     if (value < (sex === 'male' ? 40 : 50)) return warning('low')
-    if (value >= 60) return good('protective')
-    return good('normal')
+    return good(value >= 60 ? 'protective' : 'normal')
   },
   triglycerides: (value: number) =>
     classify(

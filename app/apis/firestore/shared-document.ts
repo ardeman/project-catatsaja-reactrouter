@@ -5,6 +5,7 @@ import {
   doc,
   DocumentData,
   FieldPath,
+  Firestore,
   getDoc,
   getDocs,
   onSnapshot,
@@ -48,6 +49,13 @@ const requireUser = () => {
   if (!uid) throw new Error('No user is currently signed in.')
   return { database: firestore, uid }
 }
+
+// A collection's items that a person can read.
+const readableBy = (database: Firestore, name: TCollection, uid: string) =>
+  query(
+    collection(database, name),
+    where(new FieldPath('permissions', 'read'), 'array-contains', uid),
+  )
 
 export const createShared = async (
   name: TCollection,
@@ -166,10 +174,7 @@ export const subscribeShared = <T>(
   const { database } = requireUser()
   let latest = 0
   return onSnapshot(
-    query(
-      collection(database, name),
-      where(new FieldPath('permissions', 'read'), 'array-contains', uid),
-    ),
+    readableBy(database, name, uid),
     (snap) => {
       const run = ++latest
       void (async () => {
@@ -246,12 +251,7 @@ export const encryptOwnItems = async () => {
   let encrypted = 0
   let waiting = 0
   for (const name of Object.keys(contentFields) as TCollection[]) {
-    const snap = await getDocs(
-      query(
-        collection(database, name),
-        where(new FieldPath('permissions', 'read'), 'array-contains', uid),
-      ),
-    )
+    const snap = await getDocs(readableBy(database, name, uid))
     for (const document of snap.docs) {
       const data = document.data() as DocumentData
       if (data.owner !== uid || isEncrypted(data)) continue
@@ -286,12 +286,7 @@ const storedItems = async () => {
   const { database, uid } = requireUser()
   const items: { name: TCollection; document: QueryDocumentSnapshot }[] = []
   for (const name of Object.keys(contentFields) as TCollection[]) {
-    const snap = await getDocs(
-      query(
-        collection(database, name),
-        where(new FieldPath('permissions', 'read'), 'array-contains', uid),
-      ),
-    )
+    const snap = await getDocs(readableBy(database, name, uid))
     for (const document of snap.docs) items.push({ name, document })
   }
   return { uid, items }

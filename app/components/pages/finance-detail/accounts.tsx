@@ -35,12 +35,13 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
   const accounts = useWatch({ control, name: 'accounts' }) ?? []
   const [addedId, setAddedId] = useState<string>()
   const [isDifferenceHintOpen, setIsDifferenceHintOpen] = useState(false)
+
+  if (isReadOnly && accounts.length === 0) return null
+
   const actual = sumAccounts(accounts)
   // Rounded to the book's smallest unit, so float noise reads as a match.
   const unit = 10 ** book.maximumFractionDigits
   const difference = Math.round((actual - balance) * unit) / unit
-
-  if (isReadOnly && accounts.length === 0) return null
 
   const handleAdd = () => {
     const id = crypto.randomUUID()

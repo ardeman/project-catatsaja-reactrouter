@@ -1,3 +1,4 @@
+import { Ai } from './ai'
 import { AccountSettingsProvider } from './context'
 import { Email } from './email'
 import { Google } from './google'
@@ -10,6 +11,7 @@ export const AccountSettingsPage = () => {
         <Email />
         <Google />
         <Security />
+        <Ai />
       </div>
     </AccountSettingsProvider>
   )

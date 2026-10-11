@@ -1,7 +1,7 @@
 import { TFunction } from 'i18next'
 import { Bug, Settings } from 'lucide-react'
 
-import { githubRepo, githubUser } from '~/lib/constants/metadata'
+import { githubRepository, githubUser } from '~/lib/constants/metadata'
 import { TMenu } from '~/lib/types/common'
 
 export const userMenus = (t: TFunction): TMenu[] => [
@@ -12,7 +12,7 @@ export const userMenus = (t: TFunction): TMenu[] => [
   },
   {
     name: t('navigation.reportIssues'),
-    href: `https://github.com/${githubUser}/${githubRepo}/issues`,
+    href: `https://github.com/${githubUser}/${githubRepository}/issues`,
     icon: Bug,
   },
 ]

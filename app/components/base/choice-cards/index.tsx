@@ -41,7 +41,13 @@ export const ChoiceCards = <T extends string>(properties: TProperties<T>) => {
           if (next) onChange(next as T)
         }}
         disabled={disabled}
-        className={cn('grid grid-cols-2 gap-2 sm:grid-cols-3', className)}
+        className={cn(
+          'grid grid-cols-2 gap-2',
+          // Full rows: four as 2 × 2 on phones and one row of four wider
+          // up, not three and one left over.
+          options.length === 4 ? 'sm:grid-cols-4' : 'sm:grid-cols-3',
+          className,
+        )}
       >
         {options.map((option) => (
           <RadioGroupPrimitive.Item
