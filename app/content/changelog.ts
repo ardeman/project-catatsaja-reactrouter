@@ -20,8 +20,8 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: 'A Tools category for expenses.',
-          id: 'Kategori Perkakas untuk pengeluaran.',
+          en: 'A Household category for expenses: appliances, houseware, furniture, tools and repairs.',
+          id: 'Kategori Rumah tangga untuk pengeluaran: peralatan rumah tangga, perabot, elektronik rumah, perkakas, dan perbaikan.',
         },
       },
       {
