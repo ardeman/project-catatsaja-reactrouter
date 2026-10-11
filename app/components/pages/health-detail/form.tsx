@@ -7,8 +7,10 @@ import { Action } from '~/components/base/action'
 import { DatePicker } from '~/components/base/date-picker'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Segmented } from '~/components/base/segmented'
+import { SexIcon } from '~/components/base/sex-icon'
 import { Textarea } from '~/components/base/textarea'
 import { useHealthLog } from '~/components/pages/health'
+import { Label } from '~/components/ui/label'
 import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateHealthLog } from '~/lib/hooks/use-create-health-log'
@@ -259,7 +261,7 @@ export const Form = (properties: TFormProperties) => {
           />
           <fieldset
             disabled={isReadOnly}
-            className="flex flex-wrap items-end gap-3 [&_input]:h-8 [&_label]:text-xs"
+            className="flex flex-wrap items-start gap-3 [&_button[aria-haspopup=dialog]]:h-8 [&_input]:h-8 [&_label]:block [&_label]:text-xs"
           >
             <div className="w-44">
               <DatePicker
@@ -267,16 +269,25 @@ export const Form = (properties: TFormProperties) => {
                 label={t('health.form.birthDate')}
               />
             </div>
+            {/* A label like the date's, and the same 32px height, so the two
+                line up. ♀ and ♂ in their colours (as on the card). */}
             <div className="grid gap-1">
-              <span className="text-xs font-medium">
-                {t('health.form.sex.label')}
-              </span>
+              <Label>{t('health.form.sex.label')}</Label>
               <Segmented
                 label={t('health.form.sex.label')}
                 value={values.sex}
+                className="h-8"
                 options={[
-                  { value: 'female', label: t('health.form.sex.female') },
-                  { value: 'male', label: t('health.form.sex.male') },
+                  {
+                    value: 'female',
+                    label: t('health.form.sex.female'),
+                    icon: <SexIcon sex="female" />,
+                  },
+                  {
+                    value: 'male',
+                    label: t('health.form.sex.male'),
+                    icon: <SexIcon sex="male" />,
+                  },
                 ]}
                 onChange={(sex) => setValue('sex', sex, { shouldDirty: true })}
               />

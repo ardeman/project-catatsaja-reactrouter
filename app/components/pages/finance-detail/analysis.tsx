@@ -1,3 +1,4 @@
+import { BanknoteArrowDown, BanknoteArrowUp } from 'lucide-react'
 import { ReactNode, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -328,8 +329,26 @@ export const Analysis = ({ entries, book }: TProperties) => {
                 label={t('finances.analysis.categories.title')}
                 value={shownType}
                 options={[
-                  { value: 'expense', label: t('finances.summary.expense') },
-                  { value: 'income', label: t('finances.summary.income') },
+                  {
+                    value: 'expense',
+                    label: t('finances.summary.expense'),
+                    icon: (
+                      <BanknoteArrowUp
+                        aria-hidden="true"
+                        className="size-3.5 text-expense"
+                      />
+                    ),
+                  },
+                  {
+                    value: 'income',
+                    label: t('finances.summary.income'),
+                    icon: (
+                      <BanknoteArrowDown
+                        aria-hidden="true"
+                        className="size-3.5 text-income"
+                      />
+                    ),
+                  },
                 ]}
                 onChange={setType}
               />

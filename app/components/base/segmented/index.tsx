@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { cn } from '~/lib/utils/shadcn'
 
 // A small switch between a few views (Entries/Analysis, Chart/Table),
@@ -7,16 +9,22 @@ export const Segmented = <TValue extends string>({
   value,
   options,
   onChange,
+  className,
 }: {
   label: string
   value: TValue
-  options: { value: TValue; label: string }[]
+  // An icon shows before the label (e.g. ♀ and ♂ in their colours).
+  options: { value: TValue; label: string; icon?: ReactNode }[]
   onChange: (value: TValue) => void
+  className?: string
 }) => (
   <div
     role="group"
     aria-label={label}
-    className="inline-flex rounded-full border bg-muted/60 p-0.5 text-xs"
+    className={cn(
+      'inline-flex rounded-full border bg-muted/60 p-0.5 text-xs',
+      className,
+    )}
   >
     {options.map((option) => (
       <button
@@ -25,12 +33,13 @@ export const Segmented = <TValue extends string>({
         aria-pressed={value === option.value}
         onClick={() => onChange(option.value)}
         className={cn(
-          'rounded-full px-3 py-1 whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
+          'inline-flex items-center gap-1 rounded-full px-3 py-1 whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
           value === option.value
             ? 'bg-background font-medium text-foreground shadow-xs'
             : 'text-muted-foreground hover:text-foreground',
         )}
       >
+        {option.icon}
         {option.label}
       </button>
     ))}

@@ -1,4 +1,9 @@
-import { CalendarDays } from 'lucide-react'
+import {
+  CalendarDays,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
 import { useState } from 'react'
 import { enUS, id as indonesian } from 'react-day-picker/locale'
 import { useFormContext } from 'react-hook-form'
@@ -44,6 +49,31 @@ const daysAgo = (days: number) => {
   const date = new Date()
   date.setDate(date.getDate() - days)
   return toValue(date)
+}
+
+// The years offered: from 1900 (birth dates) to ten years ahead.
+const FIRST_MONTH = new Date(1900, 0)
+const lastMonth = () => new Date(new Date().getFullYear() + 10, 11)
+
+const dropdownClassNames = {
+  month_caption: 'flex h-8 items-center justify-center',
+  dropdowns: 'flex items-center gap-1.5',
+  // The native select sits invisibly over its label, so phones get their
+  // own month and year wheels.
+  dropdown_root:
+    'relative inline-flex h-8 items-center rounded-md border px-2 text-sm font-medium hover:bg-accent has-focus-visible:ring-2 has-focus-visible:ring-ring',
+  dropdown: 'absolute inset-0 cursor-pointer opacity-0',
+  caption_label: 'flex items-center gap-1 text-sm font-medium',
+}
+
+const Chevron = ({
+  orientation,
+}: {
+  orientation?: 'up' | 'down' | 'left' | 'right'
+}) => {
+  if (orientation === 'left') return <ChevronLeft className="size-4" />
+  if (orientation === 'right') return <ChevronRight className="size-4" />
+  return <ChevronDown className="size-3.5 text-muted-foreground" />
 }
 
 export const DatePicker = (properties: TProperties) => {
@@ -106,6 +136,17 @@ export const DatePicker = (properties: TProperties) => {
                 <Calendar
                   mode="single"
                   locale={locale}
+                  // Month and year chosen directly (a birth date is decades
+                  // back), as well as stepped with the arrows.
+                  captionLayout="dropdown"
+                  startMonth={FIRST_MONTH}
+                  endMonth={lastMonth()}
+                  formatters={{
+                    formatMonthDropdown: (month) =>
+                      month.toLocaleString(i18n.language, { month: 'short' }),
+                  }}
+                  classNames={dropdownClassNames}
+                  components={{ Chevron }}
                   selected={value ? toDate(value) : undefined}
                   defaultMonth={value ? toDate(value) : undefined}
                   onSelect={(date) => date && choose(toValue(date))}

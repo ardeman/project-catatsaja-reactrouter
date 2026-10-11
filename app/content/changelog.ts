@@ -18,6 +18,27 @@ export const releases: TRelease[] = [
     title: { en: 'End-to-end encryption', id: 'Enkripsi end-to-end' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Choose the month and year directly in the date picker, handy for birth dates.',
+          id: 'Pilih bulan dan tahun langsung di pemilih tanggal, praktis untuk tanggal lahir.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Sex is colour-coded in health logs, and the expenses and income switch in the analysis matches the entry form.',
+          id: 'Jenis kelamin kini diberi warna di catatan kesehatan, dan tombol pengeluaran dan pemasukan di analisis sama dengan formulir entri.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Fields line up in the entry form and the health log header.',
+          id: 'Kolom di formulir entri dan judul catatan kesehatan kini sejajar.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'The custom currency format fields line up, even when a label wraps.',

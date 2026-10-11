@@ -1,4 +1,4 @@
-import { Lock, Mars, Venus } from 'lucide-react'
+import { Lock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from '~/components/base/card'
 import { HealthStatus } from '~/components/base/health-status'
+import { SexIcon } from '~/components/base/sex-icon'
 import { auth } from '~/lib/configs/firebase'
 import {
   classifyGlucose,
@@ -86,7 +87,6 @@ export const Card = (properties: TCardProperties) => {
   const age = healthLog.birthDate
     ? ageInYears(healthLog.birthDate, now)
     : undefined
-  const SexIcon = healthLog.sex === 'female' ? Venus : Mars
   const number = new Intl.NumberFormat(i18n.language, {
     maximumFractionDigits: 1,
   })
@@ -140,8 +140,9 @@ export const Card = (properties: TCardProperties) => {
             {healthLog.name || t('health.untitled')}
           </Link>
           <SexIcon
-            aria-label={t(`health.form.sex.${healthLog.sex}`)}
-            className="size-4 shrink-0 text-muted-foreground"
+            sex={healthLog.sex}
+            isLabelled
+            className="size-4"
           />
         </CardTitle>
         {age !== undefined && age >= 0 && (

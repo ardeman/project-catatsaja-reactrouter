@@ -281,7 +281,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       ref={panelReference}
       aria-labelledby="finance-entry-title"
       className={cn(
-        'motion-enter scroll-mt-36 p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_button[aria-haspopup=dialog]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight',
+        'motion-enter scroll-mt-36 p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_button[aria-haspopup=dialog]]:h-8 [&_input]:h-8 [&_label]:block [&_label]:text-xs [&_label]:leading-tight',
         !isEditing && 'glass-surface rounded-xl border',
       )}
     >
@@ -382,7 +382,9 @@ export const EntryForm = (properties: TEntryFormProperties) => {
             </div>
           </div>
 
-          <div className="grid items-end gap-2.5 sm:grid-cols-2">
+          {/* Top-aligned: the category's "chosen from earlier entries" note
+              must not push the description down. */}
+          <div className="grid items-start gap-2.5 sm:grid-cols-2">
             <Input
               name="description"
               label={t('finances.form.description.label')}
