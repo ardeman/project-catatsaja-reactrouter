@@ -32,7 +32,7 @@ export const List = () => {
 
   const handleShare = (parameters: THandleSetPermission) => {
     if (!sharedTask) return
-    mutateShare({ ...parameters, task: sharedTask })
+    return mutateShare({ ...parameters, task: sharedTask })
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {

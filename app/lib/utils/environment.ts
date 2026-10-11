@@ -13,6 +13,10 @@ export const environment = {
 
   VITE_GRAVATAR_API_KEY: import.meta.env.VITE_GRAVATAR_API_KEY as string,
 
+  // Development only: 'true' connects to the local Firebase emulators
+  // (`pnpm emulators`) instead of the real project.
+  VITE_USE_EMULATORS: import.meta.env.VITE_USE_EMULATORS as string | undefined,
+
   // reCAPTCHA Enterprise site key for Firebase App Check; App Check is off
   // without it.
   VITE_APP_CHECK_SITE_KEY: import.meta.env.VITE_APP_CHECK_SITE_KEY as

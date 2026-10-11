@@ -31,6 +31,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - **Saving:** notes and tasks save as you type and when you leave the page, with a "Saving… / Saved" status; a new note or task is kept when you leave it.
 - **Search:** one search box finds notes, tasks, finances and health logs together by title and content (Ctrl/⌘ K or `/` from anywhere); "See all" filters a list.
 - **Sharing:** find users by email and give them read or write access to a note or task; read-only is enforced by the database rules; copy a link; undo removing someone; shared items update in real time; a reader can remove a shared item from their own list.
+- **End-to-end encryption:** notes, tasks, books and health logs encrypted on the device (Web Crypto) so nobody else, including the database, can read them; a passphrase, a recovery code and optional passkey unlock; shared items sealed for each person; on for new accounts, opt-in in Settings → Security for existing ones; works alongside unencrypted accounts.
 - **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and the Google profile photo when signing in with Google.
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Finances:** books (for a month, a trip, a project) of income and expense entries with categories, quantity and date; totals and balance in the book's currency; entries in other currencies keep the exchange rate used, so totals never shift; pin and share like notes.
@@ -91,12 +92,13 @@ pnpm refuses package versions published less than a day ago (its `minimumRelease
 
 `.env` is git-ignored. In CI the same names come from repository secrets.
 
-| Variable                  | Used for                                                                                    |
-| ------------------------- | ------------------------------------------------------------------------------------------- |
-| `VITE_FIREBASE_*`         | Firebase web app config (Project settings → Your apps)                                      |
-| `VITE_GRAVATAR_API_KEY`   | Profile avatars from Gravatar                                                               |
-| `VITE_APP_CHECK_SITE_KEY` | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it |
-| `VITE_GEMINI_API_KEY`     | Gemini API (passed to the build; not read by the app code yet)                              |
+| Variable                  | Used for                                                                                                                                            |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_FIREBASE_*`         | Firebase web app config (Project settings → Your apps)                                                                                              |
+| `VITE_GRAVATAR_API_KEY`   | Profile avatars from Gravatar                                                                                                                       |
+| `VITE_APP_CHECK_SITE_KEY` | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it                                                         |
+| `VITE_USE_EMULATORS`      | Development only (not set in the workflow): `true` runs `pnpm dev` against the local Auth and Firestore emulators (`pnpm emulators`, needs Java 21) |
+| `VITE_GEMINI_API_KEY`     | Gemini API (passed to the build; not read by the app code yet)                                                                                      |
 
 Variables are read in one place, `app/lib/utils/environment.ts`.
 
@@ -113,6 +115,7 @@ Variables are read in one place, `app/lib/utils/environment.ts`.
 | Regenerate `public/site.webmanifest` from `scripts/generate-manifest.mjs` and `app/lib/constants/metadata.ts` | `pnpm generate:manifest`           |
 | Production build (includes the manifest)                                                                      | `pnpm build`                       |
 | Preview the production build                                                                                  | `pnpm preview`                     |
+| Run the Auth and Firestore emulators (with `VITE_USE_EMULATORS=true`; Java 21)                                | `pnpm emulators`                   |
 | Deploy Firestore rules and indexes                                                                            | `firebase deploy --only firestore` |
 | Reinstall Git hooks                                                                                           | `pnpm prepare`                     |
 

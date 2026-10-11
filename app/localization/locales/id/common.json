@@ -465,12 +465,13 @@
     "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi untuk catatan, daftar tugas, dan keuangan."
   },
   "privacyPolicy": {
-    "updated": "Terakhir diperbarui: 10 Oktober 2026",
-    "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, dan pengaturan yang kamu buat.",
+    "updated": "Terakhir diperbarui: 11 Oktober 2026",
+    "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google.",
-    "sharing": "Saat kamu membagikan catatan atau tugas, orang yang kamu bagikan bisa melihat isinya. Nama, alamat email, dan fotomu bisa dilihat oleh pengguna lain yang sudah masuk, agar mereka bisa menemukanmu untuk berbagi.",
-    "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, bukan isi catatan atau tugasmu.",
+    "encryption": "Dengan enkripsi end-to-end (aktif untuk akun baru, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, dan kapan item berubah. Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
+    "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu bagikan bisa melihat isinya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna.",
+    "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "contact": "Untuk meminta salinan datamu, atau menghapus akun beserta semua isinya, kirim email ke <a>{{email}}</a>."
   },
   "termsOfService": {
@@ -722,7 +723,14 @@
     "recentLogin": "Silakan masuk lagi untuk melakukan ini.",
     "popupClosed": "Jendela masuk ditutup sebelum selesai.",
     "credentialInUse": "Akun ini sudah terhubung dengan pengguna lain.",
-    "unknown": "Terjadi kesalahan. Silakan coba lagi."
+    "unknown": "Terjadi kesalahan. Silakan coba lagi.",
+    "wrongPassphrase": "Frasa sandi itu salah",
+    "wrongRecoveryCode": "Kode pemulihan itu salah",
+    "passkeyFailed": "Passkey ini tidak bisa membuka datamu. Gunakan frasa sandi.",
+    "passkeyUnsupported": "Passkey di perangkat ini tidak bisa membuka data terenkripsi. Gunakan frasa sandi.",
+    "passkeyCancelled": "Permintaan passkey dibatalkan",
+    "encryptionLocked": "Buka perangkat ini untuk mengubah item terenkripsi",
+    "encryptionNotSetUp": "Enkripsi belum diatur untuk akun ini"
   },
   "actions": {
     "back": "Kembali",
@@ -1056,5 +1064,75 @@
       "severelyWasted": "Gizi buruk",
       "wasted": "Gizi kurang"
     }
+  },
+  "encryption": {
+    "form": {
+      "passphrase": "Frasa sandi",
+      "confirm": "Ketik sekali lagi",
+      "newPassphrase": "Frasa sandi baru",
+      "currentPassphrase": "Frasa sandi saat ini",
+      "mismatch": "Frasa sandi tidak sama"
+    },
+    "setup": {
+      "title": "Aktifkan enkripsi end-to-end",
+      "titleRequired": "Lindungi datamu",
+      "description": "Catatan, daftar, buku, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan. Tidak ada orang lain yang bisa membacanya: bukan kami, bukan Google, dan bukan siapa pun yang mendapat salinan database.",
+      "passphraseHint": "Minimal 10 karakter. Pilih yang mudah kamu ingat: tidak ada yang bisa meresetnya untukmu.",
+      "next": "Lanjut",
+      "back": "Kembali",
+      "turnOn": "Aktifkan enkripsi",
+      "creating": "Menyiapkan…"
+    },
+    "recovery": {
+      "title": "Simpan kode pemulihanmu",
+      "description": "Jika kamu lupa frasa sandi, kode ini satu-satunya cara masuk kembali ke data terenkripsimu. Simpan di tempat aman, terpisah dari perangkat ini.",
+      "label": "Kode pemulihan",
+      "copy": "Salin",
+      "download": "Unduh",
+      "copied": "Kode pemulihan disalin",
+      "fileHeading": "Kode pemulihan Catat Saja. Simpan dengan aman dan rahasiakan.",
+      "confirm": "Saya sudah menyimpan kode pemulihan di tempat aman"
+    },
+    "passkey": {
+      "title": "Buka dengan passkey (opsional)",
+      "description": "Gunakan sidik jari, wajah, atau PIN perangkat alih-alih mengetik frasa sandi di perangkat ini.",
+      "add": "Tambah passkey",
+      "added": "Passkey ditambahkan",
+      "skip": "Nanti saja"
+    },
+    "unlock": {
+      "title": "Buka datamu",
+      "description": "Masukkan frasa sandi untuk membaca item terenkripsi di perangkat ini. Tetap terbuka sampai kamu menguncinya atau keluar.",
+      "recoverDescription": "Masukkan kode pemulihan dan pilih frasa sandi baru.",
+      "submit": "Buka",
+      "passkey": "Gunakan passkey",
+      "forgot": "Lupa frasa sandi?",
+      "recover": "Buka dan simpan frasa sandi baru",
+      "back": "Kembali ke frasa sandi"
+    },
+    "settings": {
+      "title": "Keamanan",
+      "description": "Enkripsi end-to-end tidak aktif. Item-mu dilindungi oleh akun dan aturan database.",
+      "on": "Enkripsi end-to-end aktif, dan perangkat ini terbuka.",
+      "howItWorks": "Aktifkan enkripsi end-to-end agar hanya kamu, dan orang yang kamu ajak berbagi, yang bisa membaca item-mu. Kamu akan memilih frasa sandi dan mendapat kode pemulihan.",
+      "turnOn": "Aktifkan enkripsi",
+      "changePassphrase": "Ubah frasa sandi",
+      "newRecoveryCode": "Kode pemulihan baru",
+      "lock": "Kunci perangkat ini",
+      "passphraseChanged": "Frasa sandi diubah",
+      "recoveryDescription": "Kode baru ini menggantikan kode lama, yang tidak berlaku lagi.",
+      "recoveryReplaced": "Kode pemulihan diganti",
+      "useNewCode": "Pakai kode baru",
+      "passkeys_zero": "Belum ada passkey",
+      "passkeys_one": "{{count}} passkey",
+      "passkeys_other": "{{count}} passkey",
+      "removePasskeys": "Hapus passkey",
+      "sharedNote": "Item yang dibagikan dengan orang yang belum mengaktifkan enkripsi tetap tidak terenkripsi sampai mereka mengaktifkannya."
+    },
+    "share": {
+      "notSetUp": "{{email}} belum mengaktifkan enkripsi, jadi tidak bisa membaca item terenkripsi ini. Bagikan tanpa enkripsi? Item akan disimpan tanpa enkripsi untuk semua orang.",
+      "withoutEncryption": "Bagikan tanpa enkripsi"
+    },
+    "encrypted": "Terenkripsi"
   }
 }

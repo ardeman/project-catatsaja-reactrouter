@@ -89,7 +89,7 @@ export const Content = () => {
       ...parameters,
       healthLog: healthLogData,
     } as THealthLogPermissionRequest
-    mutateShare(data)
+    return mutateShare(data)
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {

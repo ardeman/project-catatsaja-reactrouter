@@ -1,14 +1,4 @@
-import {
-  onSnapshot,
-  query,
-  where,
-  FieldPath,
-  addDoc,
-  collection,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from 'firebase/firestore'
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
 import { TLiveSubscription } from '~/lib/types/common'
@@ -20,38 +10,21 @@ import {
   TUpdateFinanceRequest,
 } from '~/lib/types/finance'
 
-export const createFinance = async (data: TCreateFinanceRequest) => {
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const reference = collection(firestore, 'finances')
-  return await addDoc(reference, {
-    ...data,
-    owner: auth.currentUser.uid,
-    permissions: {
-      read: [auth.currentUser.uid],
-      write: [auth.currentUser.uid],
-    },
-    createdAt: new Date(),
-  })
-}
+import {
+  createShared,
+  setSharedPermission,
+  subscribeShared,
+  subscribeSharedOne,
+  unlinkShared,
+  updateShared,
+} from './shared-document'
 
-export const updateFinance = async (data: TUpdateFinanceRequest) => {
+export const createFinance = (data: TCreateFinanceRequest) =>
+  createShared('finances', data)
+
+export const updateFinance = (data: TUpdateFinanceRequest) => {
   const { id, ...rest } = data
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const reference = doc(firestore, 'finances', id)
-  return await updateDoc(reference, {
-    ...rest,
-    updatedAt: new Date(),
-  })
+  return updateShared('finances', id, rest)
 }
 
 export const pinFinance = async (data: TPinFinanceRequest) => {
@@ -88,115 +61,23 @@ export const deleteFinance = async (finance: TFinanceResponse) => {
   return finance
 }
 
-export const unlinkFinance = async (finance: TFinanceResponse) => {
-  const { id, permissions } = finance
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const data = {
-    permissions: {
-      read: permissions?.read.filter((r) => r !== auth?.currentUser?.uid) || [],
-      write:
-        permissions?.write.filter((w) => w !== auth?.currentUser?.uid) || [],
-    },
-  }
+export const unlinkFinance = (finance: TFinanceResponse) =>
+  unlinkShared('finances', finance)
 
-  const reference = doc(firestore, 'finances', id)
-  return await updateDoc(reference, data)
-}
-
-export const setFinancePermission = async (form: TFinancePermissionRequest) => {
-  const { finance, uid, permission } = form
-  const readPermission = new Set(finance.permissions?.read || [])
-  const writePermission = new Set(finance.permissions?.write || [])
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  switch (permission) {
-    case 'delete': {
-      readPermission.delete(uid)
-      writePermission.delete(uid)
-      break
-    }
-    case 'read': {
-      readPermission.add(uid)
-      writePermission.delete(uid)
-      break
-    }
-    case 'write': {
-      readPermission.add(uid)
-      writePermission.add(uid)
-      break
-    }
-    default: {
-      throw new Error(`Unknown permission: ${permission}`)
-    }
-  }
-  const reference = doc(firestore, 'finances', finance.id)
-  const data = {
-    permissions: {
-      read: [...readPermission],
-      write: [...writePermission],
-    },
-  }
-  return await updateDoc(reference, data)
-}
+export const setFinancePermission = (form: TFinancePermissionRequest) =>
+  setSharedPermission('finances', form.finance, form.uid, form.permission, {
+    allowPlain: form.allowPlain,
+  })
 
 export const subscribeToFinances: TLiveSubscription<TFinanceResponse[]> = (
   uid,
   onData,
   onError,
-) => {
-  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
-  const reference = query(
-    collection(firestore, 'finances'),
-    where(new FieldPath('permissions', 'read'), 'array-contains', uid),
-  )
-  return onSnapshot(
-    reference,
-    (snap) => {
-      onData(
-        snap.docs.map((document) => {
-          const data = document.data()
-          return {
-            ...data,
-            id: document.id,
-            isPinned: data.pinnedBy?.includes(uid),
-          } as TFinanceResponse
-        }),
-      )
-    },
-    onError,
-  )
-}
+) => subscribeShared<TFinanceResponse>('finances', uid, onData, onError)
 
 export const subscribeToFinance = (
   id: string,
   uid: string,
   onData: (data: TFinanceResponse | undefined) => void,
   onError: (error: unknown) => void,
-) => {
-  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
-  return onSnapshot(
-    doc(firestore, 'finances', id),
-    (snap) => {
-      const data = snap.data()
-      onData(
-        data
-          ? ({
-              ...data,
-              id: snap.id,
-              isPinned: data.pinnedBy?.includes(uid),
-            } as TFinanceResponse)
-          : undefined,
-      )
-    },
-    onError,
-  )
-}
+) => subscribeSharedOne<TFinanceResponse>('finances', id, uid, onData, onError)

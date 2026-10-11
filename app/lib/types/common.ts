@@ -14,6 +14,9 @@ export type TShareForm = z.infer<ReturnType<typeof shareSchema>>
 
 export type THandleSetPermission = {
   permission: 'read' | 'write' | 'delete'
+  // Share an encrypted item with someone who hasn't turned encryption on:
+  // it is stored plain again.
+  allowPlain?: boolean
 } & Pick<TUserResponse, 'uid'>
 
 export type THandleDeletePermission = Pick<TUserResponse, 'uid' | 'email'>
@@ -21,7 +24,10 @@ export type THandleDeletePermission = Pick<TUserResponse, 'uid' | 'email'>
 export type TPermissions = {
   read: string[]
   write: string[]
-  handleShare: (parameters: THandleSetPermission) => void
+  // 'needsPlain': encrypted, and the person hasn't turned encryption on.
+  handleShare: (
+    parameters: THandleSetPermission,
+  ) => Promise<'shared' | 'needsPlain' | 'failed' | undefined> | void
   handleUnshare: (parameters: Pick<THandleDeletePermission, 'uid'>) => void
   path?: string
 }

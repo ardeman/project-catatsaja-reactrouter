@@ -465,12 +465,13 @@
     "description": "<span>{{appName}}</span> is a personal productivity app for notes, checklists and finances."
   },
   "privacyPolicy": {
-    "updated": "Last updated: 10 October 2026",
-    "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books and settings you create.",
+    "updated": "Last updated: 11 October 2026",
+    "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books, health logs and settings you create.",
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices.",
-    "sharing": "When you share a note or task, the people you share it with see its content. Your name, email address and photo are visible to other signed-in users, so they can find you to share with you.",
-    "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, not the content of your notes or tasks.",
+    "encryption": "With end-to-end encryption (on for new accounts, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
+    "sharing": "When you share a note, task, book or health log, the people you share it with see its content. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
+    "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
     "contact": "To get a copy of your data, or to delete your account and everything in it, email <a>{{email}}</a>."
   },
   "termsOfService": {
@@ -722,7 +723,14 @@
     "recentLogin": "Please sign in again to do this.",
     "popupClosed": "The sign-in window was closed before finishing.",
     "credentialInUse": "This account is already linked to another user.",
-    "unknown": "Something went wrong. Please try again."
+    "unknown": "Something went wrong. Please try again.",
+    "wrongPassphrase": "That passphrase isn't right",
+    "wrongRecoveryCode": "That recovery code isn't right",
+    "passkeyFailed": "This passkey couldn't unlock your data. Use your passphrase instead.",
+    "passkeyUnsupported": "This device's passkeys can't unlock encrypted data. Use your passphrase instead.",
+    "passkeyCancelled": "The passkey request was cancelled",
+    "encryptionLocked": "Unlock this device to change encrypted items",
+    "encryptionNotSetUp": "Encryption isn't set up for this account"
   },
   "actions": {
     "back": "Back",
@@ -1056,5 +1064,75 @@
       "severelyWasted": "Severely wasted",
       "wasted": "Wasted"
     }
+  },
+  "encryption": {
+    "form": {
+      "passphrase": "Passphrase",
+      "confirm": "Type it again",
+      "newPassphrase": "New passphrase",
+      "currentPassphrase": "Current passphrase",
+      "mismatch": "The passphrases don't match"
+    },
+    "setup": {
+      "title": "Turn on end-to-end encryption",
+      "titleRequired": "Protect your data",
+      "description": "Your notes, lists, books and health logs are encrypted on your device before they're saved. Nobody else can read them: not us, not Google, and not anyone who gets a copy of the database.",
+      "passphraseHint": "At least 10 characters. Use something you'll remember: nobody can reset it for you.",
+      "next": "Next",
+      "back": "Back",
+      "turnOn": "Turn on encryption",
+      "creating": "Setting up…"
+    },
+    "recovery": {
+      "title": "Save your recovery code",
+      "description": "If you forget your passphrase, this code is the only way back into your encrypted data. Keep it somewhere safe, away from this device.",
+      "label": "Recovery code",
+      "copy": "Copy",
+      "download": "Download",
+      "copied": "Recovery code copied",
+      "fileHeading": "Catat Saja recovery code. Keep it private and safe.",
+      "confirm": "I've saved my recovery code somewhere safe"
+    },
+    "passkey": {
+      "title": "Unlock with a passkey (optional)",
+      "description": "Use your fingerprint, face or device PIN instead of typing your passphrase on this device.",
+      "add": "Add a passkey",
+      "added": "Passkey added",
+      "skip": "Not now"
+    },
+    "unlock": {
+      "title": "Unlock your data",
+      "description": "Enter your passphrase to read your encrypted items on this device. It stays unlocked until you lock it or sign out.",
+      "recoverDescription": "Enter your recovery code and choose a new passphrase.",
+      "submit": "Unlock",
+      "passkey": "Use a passkey",
+      "forgot": "Forgot your passphrase?",
+      "recover": "Unlock and save the new passphrase",
+      "back": "Back to passphrase"
+    },
+    "settings": {
+      "title": "Security",
+      "description": "End-to-end encryption is off. Your items are protected by your account and the database rules.",
+      "on": "End-to-end encryption is on, and this device is unlocked.",
+      "howItWorks": "Turn on end-to-end encryption so only you, and the people you share with, can read your items. You'll choose a passphrase and get a recovery code.",
+      "turnOn": "Turn on encryption",
+      "changePassphrase": "Change passphrase",
+      "newRecoveryCode": "New recovery code",
+      "lock": "Lock this device",
+      "passphraseChanged": "Passphrase changed",
+      "recoveryDescription": "This new code replaces your old one, which stops working.",
+      "recoveryReplaced": "Recovery code replaced",
+      "useNewCode": "Use the new code",
+      "passkeys_zero": "No passkeys yet",
+      "passkeys_one": "{{count}} passkey",
+      "passkeys_other": "{{count}} passkeys",
+      "removePasskeys": "Remove passkeys",
+      "sharedNote": "Items shared with people who haven't turned on encryption stay unencrypted until they do."
+    },
+    "share": {
+      "notSetUp": "{{email}} hasn't turned on encryption, so they can't read this encrypted item. Share it without encryption? It will be stored unencrypted for everyone.",
+      "withoutEncryption": "Share without encryption"
+    },
+    "encrypted": "Encrypted"
   }
 }

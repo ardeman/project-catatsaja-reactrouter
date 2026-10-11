@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { RecipientWithoutEncryption } from '~/apis/firestore/shared-document'
 import { setTaskPermission } from '~/apis/firestore/task'
 import { TTaskPermissionRequest } from '~/lib/types/task'
 import { getErrorMessage } from '~/lib/utils/firebase-error'
@@ -15,13 +16,19 @@ export const useShareTask = () => {
     setIsError(false)
     try {
       await setTaskPermission(data)
+      return 'shared' as const
     } catch (error: unknown) {
+      // Encrypted, and the person hasn't turned encryption on: the share
+      // dialog asks whether to share it without encryption.
+      if (error instanceof RecipientWithoutEncryption)
+        return 'needsPlain' as const
       setIsError(true)
       const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,
       })
+      return 'failed' as const
     } finally {
       setIsPending(false)
     }

@@ -1,5 +1,6 @@
 import {
   createUserWithEmailAndPassword,
+  getAdditionalUserInfo,
   GoogleAuthProvider,
   sendEmailVerification,
   signInWithEmailAndPassword,
@@ -229,6 +230,11 @@ export const loginWithGoogle = async () => {
 
   if (user) {
     await ensureUserProfile(user)
+    // A new account starts with end-to-end encryption (set up right after).
+    if (getAdditionalUserInfo(result)?.isNewUser)
+      await updateDoc(doc(firestore, 'users', user.uid), {
+        encryptionRequired: true,
+      })
   }
 }
 
@@ -258,6 +264,8 @@ export const register = async (userData: TSignUpRequest) => {
       language,
       theme,
       size,
+      // New accounts start with end-to-end encryption (set up right after).
+      encryptionRequired: true,
       createdAt: new Date(),
     })
 

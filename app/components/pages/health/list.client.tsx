@@ -34,7 +34,7 @@ export const List = () => {
 
   const handleShare = (parameters: THandleSetPermission) => {
     if (!sharedHealthLog) return
-    mutateShare({ ...parameters, healthLog: sharedHealthLog })
+    return mutateShare({ ...parameters, healthLog: sharedHealthLog })
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {

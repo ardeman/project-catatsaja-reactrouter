@@ -1,14 +1,4 @@
-import {
-  onSnapshot,
-  query,
-  where,
-  FieldPath,
-  addDoc,
-  collection,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from 'firebase/firestore'
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
 import { TLiveSubscription } from '~/lib/types/common'
@@ -20,38 +10,21 @@ import {
   TUpdateTaskRequest,
 } from '~/lib/types/task'
 
-export const createTask = async (data: TCreateTaskRequest) => {
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const reference = collection(firestore, 'tasks')
-  return await addDoc(reference, {
-    ...data,
-    owner: auth.currentUser.uid,
-    permissions: {
-      read: [auth.currentUser.uid],
-      write: [auth.currentUser.uid],
-    },
-    createdAt: new Date(),
-  })
-}
+import {
+  createShared,
+  setSharedPermission,
+  subscribeShared,
+  subscribeSharedOne,
+  unlinkShared,
+  updateShared,
+} from './shared-document'
 
-export const updateTask = async (data: TUpdateTaskRequest) => {
+export const createTask = (data: TCreateTaskRequest) =>
+  createShared('tasks', data)
+
+export const updateTask = (data: TUpdateTaskRequest) => {
   const { id, ...rest } = data
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const reference = doc(firestore, 'tasks', id)
-  return await updateDoc(reference, {
-    ...rest,
-    updatedAt: new Date(),
-  })
+  return updateShared('tasks', id, rest)
 }
 
 export const pinTask = async (data: TPinTaskRequest) => {
@@ -88,115 +61,22 @@ export const deleteTask = async (task: TTaskResponse) => {
   return task
 }
 
-export const unlinkTask = async (task: TTaskResponse) => {
-  const { id, permissions } = task
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const data = {
-    permissions: {
-      read: permissions?.read.filter((r) => r !== auth?.currentUser?.uid) || [],
-      write:
-        permissions?.write.filter((w) => w !== auth?.currentUser?.uid) || [],
-    },
-  }
+export const unlinkTask = (task: TTaskResponse) => unlinkShared('tasks', task)
 
-  const reference = doc(firestore, 'tasks', id)
-  return await updateDoc(reference, data)
-}
-
-export const setTaskPermission = async (form: TTaskPermissionRequest) => {
-  const { task, uid, permission } = form
-  const readPermission = new Set(task.permissions?.read || [])
-  const writePermission = new Set(task.permissions?.write || [])
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  switch (permission) {
-    case 'delete': {
-      readPermission.delete(uid)
-      writePermission.delete(uid)
-      break
-    }
-    case 'read': {
-      readPermission.add(uid)
-      writePermission.delete(uid)
-      break
-    }
-    case 'write': {
-      readPermission.add(uid)
-      writePermission.add(uid)
-      break
-    }
-    default: {
-      throw new Error(`Unknown permission: ${permission}`)
-    }
-  }
-  const reference = doc(firestore, 'tasks', task.id)
-  const data = {
-    permissions: {
-      read: [...readPermission],
-      write: [...writePermission],
-    },
-  }
-  return await updateDoc(reference, data)
-}
+export const setTaskPermission = (form: TTaskPermissionRequest) =>
+  setSharedPermission('tasks', form.task, form.uid, form.permission, {
+    allowPlain: form.allowPlain,
+  })
 
 export const subscribeToTasks: TLiveSubscription<TTaskResponse[]> = (
   uid,
   onData,
   onError,
-) => {
-  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
-  const reference = query(
-    collection(firestore, 'tasks'),
-    where(new FieldPath('permissions', 'read'), 'array-contains', uid),
-  )
-  return onSnapshot(
-    reference,
-    (snap) => {
-      onData(
-        snap.docs.map((document) => {
-          const data = document.data()
-          return {
-            ...data,
-            id: document.id,
-            isPinned: data.pinnedBy?.includes(uid),
-          } as TTaskResponse
-        }),
-      )
-    },
-    onError,
-  )
-}
+) => subscribeShared<TTaskResponse>('tasks', uid, onData, onError)
 
 export const subscribeToTask = (
   id: string,
   uid: string,
   onData: (data: TTaskResponse | undefined) => void,
   onError: (error: unknown) => void,
-) => {
-  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
-  return onSnapshot(
-    doc(firestore, 'tasks', id),
-    (snap) => {
-      const data = snap.data()
-      onData(
-        data
-          ? ({
-              ...data,
-              id: snap.id,
-              isPinned: data.pinnedBy?.includes(uid),
-            } as TTaskResponse)
-          : undefined,
-      )
-    },
-    onError,
-  )
-}
+) => subscribeSharedOne<TTaskResponse>('tasks', id, uid, onData, onError)

@@ -83,6 +83,14 @@ describe('users', () => {
     )
   })
 
+  test('the sealed private key is private to its owner', async () => {
+    const path = `users/${OWNER}/keys/main`
+    await assertSucceeds(as(OWNER).doc(path).set({ v: 1, publicKey: 'pk' }))
+    await assertSucceeds(as(OWNER).doc(path).get())
+    await assertFails(as(STRANGER).doc(path).get())
+    await assertFails(as(STRANGER).doc(path).set({ v: 1 }))
+  })
+
   test('currencies are private to their owner', async () => {
     const path = `users/${OWNER}/currencies/usd`
     await assertSucceeds(as(OWNER).doc(path).set({ code: 'USD' }))
@@ -298,6 +306,55 @@ for (const [collection, content] of Object.entries(collections)) {
             permissions: { read: [OWNER, READER], write: [OWNER] },
           }),
       )
+    })
+
+    describe('encrypted', () => {
+      const encrypted = {
+        owner: OWNER,
+        permissions: { read: [OWNER, WRITER, READER], write: [OWNER, WRITER] },
+        pinnedBy: [],
+        encrypted: { v: 1, iv: 'iv', ct: 'ct' },
+        keys: { [OWNER]: 'k1', [WRITER]: 'k2', [READER]: 'k3' },
+      }
+
+      test('a writer changes the encrypted content, never plain text into it', async () => {
+        await seed(path, encrypted)
+        await assertSucceeds(
+          as(WRITER)
+            .doc(path)
+            .update({
+              encrypted: { v: 1, iv: 'iv2', ct: 'ct2' },
+              updatedAt: new Date(),
+            }),
+        )
+        await assertFails(
+          as(WRITER)
+            .doc(path)
+            .update({ [firstField]: 'Readable' }),
+        )
+        await assertFails(as(WRITER).doc(path).update({ 'keys.stranger': 'k' }))
+      })
+
+      test("leaving removes your own key, and nobody else's", async () => {
+        await seed(path, encrypted)
+        await assertSucceeds(
+          as(READER)
+            .doc(path)
+            .update({
+              permissions: { read: [OWNER, WRITER], write: [OWNER, WRITER] },
+              keys: { [OWNER]: 'k1', [WRITER]: 'k2' },
+            }),
+        )
+        await seed(path, encrypted)
+        await assertFails(
+          as(READER)
+            .doc(path)
+            .update({
+              permissions: { read: [OWNER, WRITER], write: [OWNER, WRITER] },
+              keys: { [OWNER]: 'k1' },
+            }),
+        )
+      })
     })
 
     test('only the owner deletes it', async () => {

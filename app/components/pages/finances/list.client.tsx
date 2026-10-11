@@ -34,7 +34,7 @@ export const List = () => {
 
   const handleShare = (parameters: THandleSetPermission) => {
     if (!sharedFinance) return
-    mutateShare({ ...parameters, finance: sharedFinance })
+    return mutateShare({ ...parameters, finance: sharedFinance })
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {

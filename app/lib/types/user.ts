@@ -29,6 +29,10 @@ export type TUserResponse = {
   navOrder?: TNavPage[]
   startPage?: TNavPage
   // How health values are judged and shown.
+  // End-to-end encryption: the public key once it is turned on, and whether
+  // the account must set it up (new accounts).
+  publicKey?: string
+  encryptionRequired?: boolean
   // The email its `userLookup` entry is filed under.
   lookupEmail?: string
   bmiStandard?: TBmiStandard

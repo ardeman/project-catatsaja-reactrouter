@@ -90,7 +90,7 @@ export const Content = () => {
       ...parameters,
       task: taskData,
     } as TTaskPermissionRequest
-    mutateShare(data)
+    return mutateShare(data)
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {

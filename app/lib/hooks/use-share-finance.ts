@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { setFinancePermission } from '~/apis/firestore/finance'
+import { RecipientWithoutEncryption } from '~/apis/firestore/shared-document'
 import { TFinancePermissionRequest } from '~/lib/types/finance'
 import { getErrorMessage } from '~/lib/utils/firebase-error'
 
@@ -15,13 +16,19 @@ export const useShareFinance = () => {
     setIsError(false)
     try {
       await setFinancePermission(data)
+      return 'shared' as const
     } catch (error: unknown) {
+      // Encrypted, and the person hasn't turned encryption on: the share
+      // dialog asks whether to share it without encryption.
+      if (error instanceof RecipientWithoutEncryption)
+        return 'needsPlain' as const
       setIsError(true)
       const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,
       })
+      return 'failed' as const
     } finally {
       setIsPending(false)
     }

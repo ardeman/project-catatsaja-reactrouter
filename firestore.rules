@@ -44,10 +44,16 @@ service cloud.firestore {
         && request.resource.data.owner == resource.data.owner;
     }
 
-    // Writers may change the content fields only.
+    // Writers may change the content fields only. An encrypted item's content
+    // is its `encrypted` blob: nothing plain may be written into it, so an
+    // older app can't overwrite it with readable text.
     function isContentUpdate(contentKeys) {
       return canWrite(resource.data.permissions.write)
-        && changedKeys().hasOnly(contentKeys.concat(['updatedAt']));
+        && (
+          'encrypted' in resource.data
+            ? changedKeys().hasOnly(['encrypted', 'updatedAt'])
+            : changedKeys().hasOnly(contentKeys.concat(['updatedAt']))
+        );
     }
 
     // Anyone with access may pin or unpin it for themselves only.
@@ -59,12 +65,17 @@ service cloud.firestore {
         && before.difference(after).union(after.difference(before)).hasOnly([request.auth.uid]);
     }
 
-    // Someone it is shared with may remove themselves, and nobody else.
+    // Someone it is shared with may remove themselves (and their sealed key
+    // of an encrypted item), and nobody else.
     function isLeaveUpdate() {
       let me = [request.auth.uid].toSet();
       return canRead(resource.data.permissions.read)
         && !isOwner(resource.data.owner)
-        && changedKeys().hasOnly(['permissions'])
+        && changedKeys().hasOnly(['permissions', 'keys'])
+        && (
+          !('keys' in resource.data)
+            || resource.data.keys.diff(request.resource.data.get('keys', {})).affectedKeys().hasOnly([request.auth.uid])
+        )
         && request.resource.data.permissions.read.toSet() == resource.data.permissions.read.toSet().difference(me)
         && request.resource.data.permissions.write.toSet() == resource.data.permissions.write.toSet().difference(me);
     }
@@ -85,6 +96,11 @@ service cloud.firestore {
       match /currencies/{currencyId} {
         allow read, write: if isOwner(userId);
       }
+
+      // The sealed private key (end-to-end encryption): its owner only.
+      match /keys/{keyId} {
+        allow read, write: if isOwner(userId);
+      }
     }
 
     // Finding someone by email to share with: `userLookup/{email}` holds
@@ -103,21 +119,21 @@ service cloud.firestore {
     match /notes/{noteId} {
       allow read: if canRead(resource.data.permissions.read);
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['title', 'content']);
+      allow update: if canUpdateShared(['title', 'content', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
 
     match /tasks/{taskId} {
       allow read: if canRead(resource.data.permissions.read);
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['title', 'content']);
+      allow update: if canUpdateShared(['title', 'content', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
 
     match /finances/{financeId} {
       allow read: if canRead(resource.data.permissions.read);
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['title', 'content', 'currency', 'accounts']);
+      allow update: if canUpdateShared(['title', 'content', 'currency', 'accounts', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
 
@@ -125,7 +141,7 @@ service cloud.firestore {
     match /healthLogs/{healthLogId} {
       allow read: if canRead(resource.data.permissions.read);
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content']);
+      allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
   }

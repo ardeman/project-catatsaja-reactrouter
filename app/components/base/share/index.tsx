@@ -47,6 +47,11 @@ export const Share = (properties: TPermissions) => {
   const [removed, setRemoved] = useState<
     { uid: string; email: string; permission: 'read' | 'write' } | undefined
   >()
+  // An encrypted item, and the person hasn't turned encryption on: asked in
+  // the dialog (a modal dialog blocks toasts outside it).
+  const [needsPlain, setNeedsPlain] = useState<
+    { uid: string; email: string; permission: 'read' | 'write' } | undefined
+  >()
   const currentLink = `${globalThis.location.origin}${path}`
 
   const onSubmit = handleSubmit(async (data) => {
@@ -95,13 +100,27 @@ export const Share = (properties: TPermissions) => {
     setRemoved(undefined)
   }
 
-  const handleSetPermission = (parameters: THandleSetPermission) => {
+  const handleSetPermission = async (parameters: THandleSetPermission) => {
     const { permission, uid } = parameters
     setRemoved(undefined)
-    handleShare({ uid, permission })
+    setNeedsPlain(undefined)
+    const email =
+      searchResults?.find((user) => user.uid === uid)?.email ??
+      usersById.get(uid)?.email ??
+      ''
     setEmail('')
     setDisabled(false)
     setValue('user', '')
+    const result = await handleShare({ uid, permission })
+    if (result === 'needsPlain' && permission !== 'delete')
+      setNeedsPlain({ uid, email, permission })
+  }
+
+  const handleSharePlain = async () => {
+    if (!needsPlain) return
+    const { uid, permission } = needsPlain
+    setNeedsPlain(undefined)
+    await handleShare({ uid, permission, allowPlain: true })
   }
 
   const handleCopyLink = async () => {
@@ -198,6 +217,32 @@ export const Share = (properties: TPermissions) => {
             />
           )
         })}
+        {needsPlain && (
+          <div
+            role="alert"
+            className="grid gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm"
+          >
+            <p>{t('encryption.share.notSetUp', { email: needsPlain.email })}</p>
+            <div className="flex flex-wrap justify-end gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                className="h-8 px-3"
+                onClick={() => setNeedsPlain(undefined)}
+              >
+                {t('form.cancel')}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-8 px-3"
+                onClick={() => void handleSharePlain()}
+              >
+                {t('encryption.share.withoutEncryption')}
+              </Button>
+            </div>
+          </div>
+        )}
         {removed && (
           <div
             role="status"

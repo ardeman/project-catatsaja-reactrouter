@@ -1,14 +1,4 @@
-import {
-  onSnapshot,
-  query,
-  where,
-  FieldPath,
-  addDoc,
-  collection,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from 'firebase/firestore'
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
 import { TLiveSubscription } from '~/lib/types/common'
@@ -20,38 +10,21 @@ import {
   TUpdateNoteRequest,
 } from '~/lib/types/note'
 
-export const createNote = async (data: TCreateNoteRequest) => {
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const reference = collection(firestore, 'notes')
-  return await addDoc(reference, {
-    ...data,
-    owner: auth.currentUser.uid,
-    permissions: {
-      read: [auth.currentUser.uid],
-      write: [auth.currentUser.uid],
-    },
-    createdAt: new Date(),
-  })
-}
+import {
+  createShared,
+  setSharedPermission,
+  subscribeShared,
+  subscribeSharedOne,
+  unlinkShared,
+  updateShared,
+} from './shared-document'
 
-export const updateNote = async (data: TUpdateNoteRequest) => {
+export const createNote = (data: TCreateNoteRequest) =>
+  createShared('notes', data)
+
+export const updateNote = (data: TUpdateNoteRequest) => {
   const { id, ...rest } = data
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const reference = doc(firestore, 'notes', id)
-  return await updateDoc(reference, {
-    ...rest,
-    updatedAt: new Date(),
-  })
+  return updateShared('notes', id, rest)
 }
 
 export const pinNote = async (data: TPinNoteRequest) => {
@@ -88,115 +61,22 @@ export const deleteNote = async (note: TNoteResponse) => {
   return note
 }
 
-export const unlinkNote = async (note: TNoteResponse) => {
-  const { id, permissions } = note
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const data = {
-    permissions: {
-      read: permissions?.read.filter((r) => r !== auth?.currentUser?.uid) || [],
-      write:
-        permissions?.write.filter((w) => w !== auth?.currentUser?.uid) || [],
-    },
-  }
+export const unlinkNote = (note: TNoteResponse) => unlinkShared('notes', note)
 
-  const reference = doc(firestore, 'notes', id)
-  return await updateDoc(reference, data)
-}
-
-export const setNotePermission = async (form: TNotePermissionRequest) => {
-  const { note, uid, permission } = form
-  const readPermission = new Set(note.permissions?.read || [])
-  const writePermission = new Set(note.permissions?.write || [])
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  switch (permission) {
-    case 'delete': {
-      readPermission.delete(uid)
-      writePermission.delete(uid)
-      break
-    }
-    case 'read': {
-      readPermission.add(uid)
-      writePermission.delete(uid)
-      break
-    }
-    case 'write': {
-      readPermission.add(uid)
-      writePermission.add(uid)
-      break
-    }
-    default: {
-      throw new Error(`Unknown permission: ${permission}`)
-    }
-  }
-  const reference = doc(firestore, 'notes', note.id)
-  const data = {
-    permissions: {
-      read: [...readPermission],
-      write: [...writePermission],
-    },
-  }
-  return await updateDoc(reference, data)
-}
+export const setNotePermission = (form: TNotePermissionRequest) =>
+  setSharedPermission('notes', form.note, form.uid, form.permission, {
+    allowPlain: form.allowPlain,
+  })
 
 export const subscribeToNotes: TLiveSubscription<TNoteResponse[]> = (
   uid,
   onData,
   onError,
-) => {
-  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
-  const reference = query(
-    collection(firestore, 'notes'),
-    where(new FieldPath('permissions', 'read'), 'array-contains', uid),
-  )
-  return onSnapshot(
-    reference,
-    (snap) => {
-      onData(
-        snap.docs.map((document) => {
-          const data = document.data()
-          return {
-            ...data,
-            id: document.id,
-            isPinned: data.pinnedBy?.includes(uid),
-          } as TNoteResponse
-        }),
-      )
-    },
-    onError,
-  )
-}
+) => subscribeShared<TNoteResponse>('notes', uid, onData, onError)
 
 export const subscribeToNote = (
   id: string,
   uid: string,
   onData: (data: TNoteResponse | undefined) => void,
   onError: (error: unknown) => void,
-) => {
-  if (!firestore) throw new Error('Firebase Firestore is not initialized.')
-  return onSnapshot(
-    doc(firestore, 'notes', id),
-    (snap) => {
-      const data = snap.data()
-      onData(
-        data
-          ? ({
-              ...data,
-              id: snap.id,
-              isPinned: data.pinnedBy?.includes(uid),
-            } as TNoteResponse)
-          : undefined,
-      )
-    },
-    onError,
-  )
-}
+) => subscribeSharedOne<TNoteResponse>('notes', id, uid, onData, onError)

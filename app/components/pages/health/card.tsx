@@ -1,4 +1,4 @@
-import { Mars, Venus } from 'lucide-react'
+import { Lock, Mars, Venus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
@@ -116,7 +116,15 @@ export const Card = (properties: TCardProperties) => {
       />
       <CardHeader className="pb-3">
         <CardDescription className="flex justify-between text-xs">
-          <span>{dateLabel}</span>
+          <span className="flex items-center gap-1">
+            {healthLog.isEncrypted && (
+              <Lock
+                aria-label={t('encryption.encrypted')}
+                className="size-3 shrink-0"
+              />
+            )}
+            {dateLabel}
+          </span>
           <span>
             {isEditable
               ? !isOwner && t('form.permissions.shared')

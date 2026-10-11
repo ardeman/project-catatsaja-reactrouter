@@ -1,4 +1,4 @@
-import { CircleUser, ExternalLink, LogOut } from 'lucide-react'
+import { CircleUser, ExternalLink, Lock, LogOut } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 
@@ -14,9 +14,11 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { appName } from '~/lib/constants/metadata'
+import { useEncryptionSession } from '~/lib/hooks/use-encryption-session'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useLogout } from '~/lib/hooks/use-logout'
 import { TMenu } from '~/lib/types/common'
+import { lockSession } from '~/lib/utils/encryption-session'
 import { cn } from '~/lib/utils/shadcn'
 
 import { aboutMenus, userMenus } from './constant'
@@ -55,6 +57,7 @@ export const Navbar = (properties: TProperties) => {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { data: userData } = useUserData()
+  const encryption = useEncryptionSession()
   const handleLogout = () => {
     mutateLogout()
     navigate('/', { replace: true })
@@ -137,6 +140,15 @@ export const Navbar = (properties: TProperties) => {
                 />
               ))}
               <DropdownMenuSeparator />
+              {userData?.publicKey && encryption.status === 'unlocked' && (
+                <DropdownMenuItem
+                  onClick={() => void lockSession()}
+                  className="cursor-pointer gap-2"
+                >
+                  <Lock className="size-4 text-muted-foreground" />
+                  {t('encryption.settings.lock')}
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onClick={handleLogout}
                 className="cursor-pointer gap-2"

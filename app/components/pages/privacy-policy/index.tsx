@@ -2,7 +2,14 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import { contactEmail } from '~/lib/constants/metadata'
 
-const paragraphs = ['collect', 'use', 'storage', 'sharing', 'analytics']
+const paragraphs = [
+  'collect',
+  'use',
+  'storage',
+  'encryption',
+  'sharing',
+  'analytics',
+]
 
 export const PrivacyPolicyPage = () => {
   const { t } = useTranslation()

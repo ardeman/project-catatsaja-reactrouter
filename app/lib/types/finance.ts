@@ -38,6 +38,8 @@ export type TPinFinanceRequest = {
 export type TFinanceResponse = {
   id: string
   isPinned?: boolean
+  // Stored end-to-end encrypted (set when read, never saved).
+  isEncrypted?: boolean
   pinnedBy?: string[]
   createdAt: TTime
   updatedAt?: TTime

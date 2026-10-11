@@ -91,7 +91,7 @@ export const Content = () => {
       ...parameters,
       note: noteData,
     } as TNotePermissionRequest
-    mutateShare(data)
+    return mutateShare(data)
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {

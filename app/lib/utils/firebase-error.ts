@@ -20,9 +20,24 @@ const errorKeys: Record<string, string> = {
   'auth/popup-closed-by-user': 'errors.popupClosed',
   'auth/cancelled-popup-request': 'errors.popupClosed',
   'auth/credential-already-in-use': 'errors.credentialInUse',
+  // End-to-end encryption (thrown by the app itself).
+  'encryption/wrong-passphrase': 'errors.wrongPassphrase',
+  'encryption/wrong-recovery-code': 'errors.wrongRecoveryCode',
+  'encryption/passkey-failed': 'errors.passkeyFailed',
+  'encryption/passkey-unsupported': 'errors.passkeyUnsupported',
+  'encryption/locked': 'errors.encryptionLocked',
+  'encryption/not-set-up': 'errors.encryptionNotSetUp',
+  // A passkey prompt dismissed or timed out.
+  NotAllowedError: 'errors.passkeyCancelled',
 }
 
-export const getErrorMessage = (error: unknown) => {
-  const code = error instanceof FirebaseError ? error.code : ''
-  return i18next.t(errorKeys[code] ?? 'errors.unknown')
+const codeOf = (error: unknown) => {
+  if (error instanceof FirebaseError) return error.code
+  if (error instanceof DOMException) return error.name
+  if (error instanceof Error && error.message.startsWith('encryption/'))
+    return error.message
+  return ''
 }
+
+export const getErrorMessage = (error: unknown) =>
+  i18next.t(errorKeys[codeOf(error)] ?? 'errors.unknown')

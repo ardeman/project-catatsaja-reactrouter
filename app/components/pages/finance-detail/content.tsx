@@ -90,7 +90,7 @@ export const Content = () => {
       ...parameters,
       finance: financeData,
     } as TFinancePermissionRequest
-    mutateShare(data)
+    return mutateShare(data)
   }
 
   const handleUnshare = (parameters: Pick<THandleDeletePermission, 'uid'>) => {

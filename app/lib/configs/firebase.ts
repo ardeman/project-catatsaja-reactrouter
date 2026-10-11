@@ -3,15 +3,26 @@ import {
   initializeAppCheck,
   ReCaptchaEnterpriseProvider,
 } from 'firebase/app-check'
-import { getAuth, Auth } from 'firebase/auth'
-import { getFirestore, Firestore } from 'firebase/firestore'
+import { connectAuthEmulator, getAuth, Auth } from 'firebase/auth'
+import {
+  connectFirestoreEmulator,
+  getFirestore,
+  Firestore,
+} from 'firebase/firestore'
 
 import { environment } from '~/lib/utils/environment'
+
+// Development against the local emulators: a `demo-` project id, which can
+// never reach a real Firebase project.
+const useEmulators =
+  import.meta.env.DEV && environment.VITE_USE_EMULATORS === 'true'
 
 const firebaseConfig = {
   apiKey: environment.VITE_FIREBASE_API_KEY,
   authDomain: environment.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: environment.VITE_FIREBASE_PROJECT_ID,
+  projectId: useEmulators
+    ? 'demo-catatsaja'
+    : environment.VITE_FIREBASE_PROJECT_ID,
   storageBucket: environment.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: environment.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: environment.VITE_FIREBASE_APP_ID,
@@ -33,7 +44,7 @@ if (typeof window !== 'undefined') {
     // development a debug token is printed to the console, to register
     // there.
     const appCheckSiteKey = environment.VITE_APP_CHECK_SITE_KEY
-    if (appCheckSiteKey) {
+    if (appCheckSiteKey && !useEmulators) {
       if (import.meta.env.DEV)
         Object.assign(globalThis, { FIREBASE_APPCHECK_DEBUG_TOKEN: true })
       initializeAppCheck(firebase, {
@@ -43,6 +54,12 @@ if (typeof window !== 'undefined') {
     }
     auth = getAuth(firebase)
     firestore = getFirestore(firebase)
+    if (useEmulators) {
+      connectAuthEmulator(auth, 'http://127.0.0.1:9099', {
+        disableWarnings: true,
+      })
+      connectFirestoreEmulator(firestore, '127.0.0.1', 8080)
+    }
 
     // Async function to initialize Analytics if supported
     const initializeAnalytics = async () => {
@@ -58,7 +75,7 @@ if (typeof window !== 'undefined') {
       }
     }
 
-    initializeAnalytics() // Call the async function
+    if (!useEmulators) initializeAnalytics() // Call the async function
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error initializing Firebase app:', error)

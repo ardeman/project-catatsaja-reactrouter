@@ -15,6 +15,33 @@ export type TRelease = {
 export const releases: TRelease[] = [
   {
     date: '2026-10-11',
+    title: { en: 'End-to-end encryption', id: 'Enkripsi end-to-end' },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'End-to-end encryption: your notes, lists, books and health logs are encrypted on your device, so nobody else can read them, not even us. New accounts start with it; turn it on in Settings → Security.',
+          id: 'Enkripsi end-to-end: catatan, daftar, buku, dan catatan kesehatanmu dienkripsi di perangkatmu, jadi tidak ada orang lain yang bisa membacanya, bahkan kami. Akun baru langsung memakainya; aktifkan di Pengaturan → Keamanan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Unlock with your passphrase or a passkey, keep a recovery code in case you forget, and lock a device from the account menu.',
+          id: 'Buka dengan frasa sandi atau passkey, simpan kode pemulihan jika lupa, dan kunci perangkat dari menu akun.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: "Sharing works with everyone: items shared with people who haven't turned on encryption stay readable to them, and you're asked before anything is shared unencrypted.",
+          id: 'Berbagi tetap berjalan untuk semua orang: item yang dibagikan dengan orang yang belum mengaktifkan enkripsi tetap bisa mereka baca, dan kamu ditanya dulu sebelum ada yang dibagikan tanpa enkripsi.',
+        },
+      },
+    ],
+  },
+  {
+    date: '2026-10-11',
     title: { en: 'Health', id: 'Kesehatan' },
     changes: [
       {
