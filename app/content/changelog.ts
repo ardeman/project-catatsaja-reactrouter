@@ -18,6 +18,20 @@ export const releases: TRelease[] = [
     title: { en: 'End-to-end encryption', id: 'Enkripsi end-to-end' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Smarter category suggestions: they recognise common shops, apps and words (like Grab, Indomaret or PLN) from your first entry, and learn from your own entries, all on your device.',
+          id: 'Saran kategori lebih pintar: langsung mengenali toko, aplikasi, dan kata umum (seperti Grab, Indomaret, atau PLN) sejak entri pertama, dan belajar dari entri-entrimu sendiri, semuanya di perangkatmu.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The home page shows health logs and end-to-end encryption.',
+          id: 'Halaman utama kini menampilkan catatan kesehatan dan enkripsi end-to-end.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'A Household category for expenses: appliances, houseware, furniture, tools and repairs.',

@@ -774,9 +774,9 @@
     "signIn": "Masuk",
     "getStarted": "Buat akun",
     "hero": {
-      "eyebrow": "Catatan · Tugas · Keuangan",
+      "eyebrow": "Catatan · Tugas · Keuangan · Kesehatan",
       "title": "Catat saja.",
-      "description": "<span>{{appName}}</span> menyimpan catatan, daftar tugas, dan keuanganmu di satu tempat sederhana, di ponsel maupun komputer, dan bisa dibagikan ke orang yang kamu pilih."
+      "description": "<span>{{appName}}</span> menyimpan catatan, daftar tugas, keuangan, dan kesehatanmu di satu tempat sederhana, di ponsel maupun komputer, terenkripsi sehingga hanya kamu dan orang yang kamu ajak berbagi yang bisa membacanya."
     },
     "features": {
       "title": "Semua yang perlu kamu ingat, tanpa ribet",
@@ -790,15 +790,15 @@
       },
       "finances": {
         "title": "Keuangan yang rapi",
-        "description": "Buat buku untuk sebulan, perjalanan, atau proyek, dalam mata uang apa pun. Ketik hitungan seperti 24/22*28.500.000 langsung di nominal, dan cocokkan saldo dengan rekeningmu."
+        "description": "Buku untuk sebulan, perjalanan, atau proyek, dalam mata uang apa pun. Kategori muncul sendiri saat kamu mengetik, grafik menunjukkan ke mana uangmu pergi, dan saldo bisa dicocokkan dengan rekeningmu."
       },
-      "analysis": {
-        "title": "Lihat ke mana uangmu pergi",
-        "description": "Grafik arus kas dan saldo, pengeluaran per kategori berwarna, dan tingkat tabunganmu, dihitung di perangkatmu."
+      "health": {
+        "title": "Kesehatan untuk seluruh keluarga",
+        "description": "Berat badan dan IMT, tumbuh kembang anak menurut standar WHO, gula darah, asam urat, kolesterol, kalori, dan menstruasi, dengan rentang normal yang jelas."
       },
-      "sharing": {
-        "title": "Berbagi sesukamu",
-        "description": "Beri orang lain akses hanya baca atau boleh ubah ke catatan, daftar, atau buku. Perubahan langsung terlihat oleh semua."
+      "private": {
+        "title": "Privat, dan berbagi sesukamu",
+        "description": "Item-mu dienkripsi end-to-end di perangkatmu: bahkan kami tidak bisa membacanya. Bagikan dengan akses baca saja atau boleh ubah, dan perubahan langsung terlihat oleh semua."
       },
       "everywhere": {
         "title": "Di mana pun kamu berada",

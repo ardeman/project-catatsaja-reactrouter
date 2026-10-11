@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '~/components/base/select'
 import { Label } from '~/components/ui/label'
+import { categoryKeywords } from '~/lib/constants/category-keywords'
 import { financeCategories } from '~/lib/constants/finance'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import {
@@ -26,12 +27,8 @@ import {
   TFinanceEntryForm,
 } from '~/lib/types/finance'
 import { TCurrency } from '~/lib/types/settings'
-import {
-  lastCategory,
-  newEntryId,
-  suggestFromHistory,
-  today,
-} from '~/lib/utils/finance'
+import { suggestCategory } from '~/lib/utils/category-classifier'
+import { lastCategory, newEntryId, today } from '~/lib/utils/finance'
 import {
   formatExchangeRate,
   getDefaultCurrencyFormat,
@@ -191,17 +188,20 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     // The form's current text: right after opening, `description` from this
     // render still holds the previous entry's.
     const text = getValues('description')
-    const found = suggestFromHistory(text, pastEntries)
+    const options = {
+      description: text,
+      history: pastEntries,
+      keywords: categoryKeywords,
+      categories: financeCategories,
+    }
+    const found = suggestCategory(options)
     if (!found) return
-    // A weak match (one shared word, say a bank's name) never switches
-    // income and expense: look among entries of the current type instead.
+    // Only a sure guess switches income and expense (a word like "sewa" can
+    // be either); otherwise the best category of the current type.
     const match =
-      found.isStrong || found.entry.type === getValues('type')
-        ? found.entry
-        : suggestFromHistory(
-            text,
-            pastEntries.filter((item) => item.type === getValues('type')),
-          )?.entry
+      found.confidence >= 0.9 || found.type === getValues('type')
+        ? found
+        : suggestCategory({ ...options, type: getValues('type') })
     if (!match) return
     if (!isTypeChosen.current && match.type !== getValues('type')) {
       setValue('type', match.type, { shouldDirty: true })

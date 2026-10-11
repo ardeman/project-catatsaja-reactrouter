@@ -774,9 +774,9 @@
     "signIn": "Sign in",
     "getStarted": "Create an account",
     "hero": {
-      "eyebrow": "Notes · Tasks · Finances",
+      "eyebrow": "Notes · Tasks · Finances · Health",
       "title": "Just write it down.",
-      "description": "<span>{{appName}}</span> keeps your notes, checklists and money in one simple place, on your phone and your computer, and shares them with the people you choose."
+      "description": "<span>{{appName}}</span> keeps your notes, checklists, money and health in one simple place, on your phone and your computer, encrypted so only you and the people you share with can read it."
     },
     "features": {
       "title": "Everything you need to remember, nothing you don't",
@@ -790,15 +790,15 @@
       },
       "finances": {
         "title": "Money, sorted",
-        "description": "Keep books for a month, a trip or a project, in any currency. Type a sum like 24/22*28,500,000 right into the amount, and check the balance against your real accounts."
+        "description": "Books for a month, a trip or a project, in any currency. Categories suggest themselves as you type, charts show where your money goes, and you can check the balance against your real accounts."
       },
-      "analysis": {
-        "title": "See where your money goes",
-        "description": "Charts of your cash flow and balance, spending by colour-coded category, and your savings rate, worked out on your device."
+      "health": {
+        "title": "Health, for the whole family",
+        "description": "Weight and BMI, a child's growth against the WHO standards, blood sugar, uric acid, cholesterol, calories and periods, with clear normal ranges."
       },
-      "sharing": {
-        "title": "Share it your way",
-        "description": "Give someone read-only or edit access to a note, list or book. Changes show up for everyone right away."
+      "private": {
+        "title": "Private, and shared your way",
+        "description": "Your items are end-to-end encrypted on your device: not even we can read them. Share any of them read-only or editable, and changes show up for everyone right away."
       },
       "everywhere": {
         "title": "Wherever you are",

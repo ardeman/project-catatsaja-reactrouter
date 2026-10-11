@@ -1,10 +1,10 @@
 import {
-  ChartColumn,
+  HeartPulse,
   ListTodo,
+  LockKeyhole,
   LucideIcon,
   MonitorSmartphone,
   StickyNote,
-  Users,
   Wallet,
 } from 'lucide-react'
 import { Trans, useTranslation } from 'react-i18next'
@@ -28,8 +28,8 @@ const features: TFeature[] = [
   { key: 'notes', icon: StickyNote },
   { key: 'tasks', icon: ListTodo },
   { key: 'finances', icon: Wallet },
-  { key: 'analysis', icon: ChartColumn },
-  { key: 'sharing', icon: Users },
+  { key: 'health', icon: HeartPulse },
+  { key: 'private', icon: LockKeyhole },
   { key: 'everywhere', icon: MonitorSmartphone },
 ]
 

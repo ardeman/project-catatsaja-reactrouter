@@ -11,11 +11,12 @@
     "generate:manifest": "node ./scripts/generate-manifest.mjs",
     "preview": "vite preview",
     "typecheck": "react-router typegen && tsc",
+    "test:unit": "node --test tests/category-classifier.test.mjs",
     "test:rules": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only firestore --project demo-catatsaja 'node --test tests/firestore-rules.test.mjs'",
     "test:e2e": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja 'node --test tests/e2e/encryption.test.mjs'",
     "format": "prettier --write .",
     "prepare": "husky",
-    "validate": "pnpm lint && pnpm typecheck && pnpm knip"
+    "validate": "pnpm lint && pnpm typecheck && pnpm knip && pnpm test:unit"
   },
   "dependencies": {
     "@codemirror/language": "6.13.1",

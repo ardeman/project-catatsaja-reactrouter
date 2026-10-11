@@ -121,7 +121,7 @@ Variables are read in one place, `app/lib/utils/environment.ts`.
 **Checks** — run before every commit and pull request. It must pass with no errors:
 
 ```sh
-pnpm validate   # lint + typecheck + knip
+pnpm validate   # lint + typecheck + knip + unit tests
 ```
 
 **Rules tests** — `pnpm test:rules` runs `tests/firestore-rules.test.mjs` against the Firestore emulator (it needs Java 21). The deploy workflow runs them before every deploy, so they don't have to pass locally.
