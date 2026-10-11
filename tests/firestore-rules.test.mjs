@@ -153,6 +153,8 @@ for (const [collection, content] of Object.entries(collections)) {
     permissions: { read: [OWNER, WRITER, READER], write: [OWNER, WRITER] },
     pinnedBy: [],
   }
+  // A text field every collection has (a title or a name). Writes use a new
+  // value: writing the current one changes nothing, which Firestore allows.
   const firstField = Object.keys(content)[0]
 
   describe(collection, () => {
@@ -223,7 +225,7 @@ for (const [collection, content] of Object.entries(collections)) {
         as(OWNER)
           .doc(path)
           .update({
-            [firstField]: content[firstField],
+            [firstField]: 'Changed',
             'permissions.read': [OWNER, READER],
             'permissions.write': [OWNER],
           }),
@@ -236,7 +238,7 @@ for (const [collection, content] of Object.entries(collections)) {
       await assertSucceeds(
         as(WRITER)
           .doc(path)
-          .update({ [firstField]: content[firstField], updatedAt: new Date() }),
+          .update({ [firstField]: 'Changed', updatedAt: new Date() }),
       )
       await assertFails(
         as(WRITER)
@@ -251,7 +253,7 @@ for (const [collection, content] of Object.entries(collections)) {
       await assertFails(
         as(READER)
           .doc(path)
-          .update({ [firstField]: content[firstField] }),
+          .update({ [firstField]: 'Changed' }),
       )
       await assertFails(
         as(STRANGER)
@@ -275,7 +277,7 @@ for (const [collection, content] of Object.entries(collections)) {
       await assertFails(
         as(READER)
           .doc(path)
-          .update({ pinnedBy: [READER], [firstField]: content[firstField] }),
+          .update({ pinnedBy: [READER], [firstField]: 'Changed' }),
       )
     })
 
