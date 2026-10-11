@@ -1,0 +1,193 @@
+// Helpers for the end-to-end tests: the app on the local emulators, driven
+// by Playwright (the installed Chrome), with the database read past the
+// rules to check what is really stored.
+
+import { spawn } from 'node:child_process'
+
+import { chromium } from 'playwright'
+
+export const APP = 'http://localhost:5199'
+const PROJECT = 'demo-catatsaja'
+const DATABASE = `http://127.0.0.1:8080/v1/projects/${PROJECT}/databases/(default)/documents`
+// The emulators' admin access (bypasses the rules).
+const ADMIN = { Authorization: 'Bearer owner' }
+
+export const resetEmulators = async () => {
+  await fetch(
+    `http://127.0.0.1:9099/emulator/v1/projects/${PROJECT}/accounts`,
+    { method: 'DELETE' },
+  )
+  await fetch(
+    `http://127.0.0.1:8080/emulator/v1/projects/${PROJECT}/databases/(default)/documents`,
+    { method: 'DELETE' },
+  )
+}
+
+export const dbList = async (collection) => {
+  const response = await fetch(`${DATABASE}/${collection}?pageSize=300`, {
+    headers: ADMIN,
+  })
+  const json = await response.json()
+  return (json.documents ?? []).map((document) => ({
+    id: document.name.split('/').pop(),
+    fields: document.fields,
+  }))
+}
+
+export const dbGet = async (path) => {
+  const response = await fetch(`${DATABASE}/${path}`, { headers: ADMIN })
+  if (!response.ok) return
+  const json = await response.json()
+  return json.fields
+}
+
+export const dbPatch = async (path, fields) => {
+  const mask = Object.keys(fields)
+    .map((field) => `updateMask.fieldPaths=${field}`)
+    .join('&')
+  await fetch(`${DATABASE}/${path}?${mask}`, {
+    method: 'PATCH',
+    headers: { ...ADMIN, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fields }),
+  })
+}
+
+export const keysOf = (fields) =>
+  Object.keys(fields?.keys?.mapValue?.fields ?? {})
+
+export const readersOf = (fields) =>
+  (fields?.permissions?.mapValue?.fields?.read?.arrayValue?.values ?? []).map(
+    (value) => value.stringValue,
+  )
+
+export const uidOf = async (email) => {
+  const lookup = await dbGet(`userLookup/${email.toLowerCase()}`)
+  return lookup?.uid?.stringValue
+}
+
+// The dev server against the emulators. Placeholder Firebase settings when
+// there is no .env (CI): the emulator mode never reaches a real project.
+export const startApp = async () => {
+  const server = spawn(
+    'pnpm',
+    ['exec', 'react-router', 'dev', '--port', '5199', '--strictPort'],
+    {
+      env: {
+        VITE_FIREBASE_API_KEY: 'fake-api-key',
+        VITE_FIREBASE_AUTH_DOMAIN: 'localhost',
+        VITE_FIREBASE_APP_ID: '1:1:web:1',
+        ...process.env,
+        VITE_USE_EMULATORS: 'true',
+      },
+      stdio: 'ignore',
+      detached: true,
+    },
+  )
+  // A busy port (another dev server) stops it at once: fail clearly rather
+  // than test whatever else is answering there.
+  let exited = false
+  server.on('exit', () => {
+    exited = true
+  })
+  for (let attempt = 0; attempt < 120; attempt++) {
+    if (exited) throw new Error('The dev server stopped: is port 5199 in use?')
+    try {
+      const response = await fetch(APP)
+      if (response.ok) return server
+    } catch {
+      // Not up yet.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500))
+  }
+  throw new Error('The dev server did not start')
+}
+
+export const stopApp = (server) => {
+  if (server?.pid) process.kill(-server.pid)
+}
+
+export const launch = () => chromium.launch({ channel: 'chrome' })
+
+// A browser of its own: a separate device (nothing kept between them).
+export const newDevice = async (browser) => {
+  const context = await browser.newContext({
+    viewport: { width: 1100, height: 900 },
+  })
+  const page = await context.newPage()
+  return { context, page }
+}
+
+export const signUp = async (page, name, email, password = 'password123') => {
+  await page.goto(`${APP}/auth/sign-up`)
+  await page.locator('input[name=displayName]').fill(name)
+  await page.locator('input[name=email]').fill(email)
+  await page.locator('input[name=password]').fill(password)
+  await page.locator('input[name=confirmPassword]').fill(password)
+  await page.locator('form button[type=submit]').last().click()
+}
+
+export const signIn = async (page, email, password = 'password123') => {
+  await page.goto(`${APP}/auth/sign-in`)
+  await page.locator('input[name=email]').fill(email)
+  await page.locator('input[name=password]').fill(password)
+  await page.locator('form button[type=submit]').first().click()
+}
+
+const unlockScreen = (page) => page.getByText('Unlock your data')
+
+export const unlock = async (page, passphrase) => {
+  await unlockScreen(page).waitFor({ timeout: 30_000 })
+  await page.locator('input[name=passphrase]').fill(passphrase)
+  await page.getByRole('button', { name: 'Unlock', exact: true }).click()
+  await unlockScreen(page).waitFor({ state: 'hidden', timeout: 30_000 })
+}
+
+export const signInAndUnlock = async (browser, email, passphrase) => {
+  const device = await newDevice(browser)
+  await signIn(device.page, email)
+  await unlock(device.page, passphrase)
+  return device
+}
+
+// The setup new accounts get: passphrase, recovery code, no passkey.
+export const setUpEncryption = async (page, passphrase, scope = page) => {
+  await scope.locator('input[name=passphrase]').fill(passphrase)
+  await scope.locator('input[name=confirm]').fill(passphrase)
+  await scope.getByRole('button', { name: 'Next' }).click()
+  const code = await scope
+    .getByLabel('Recovery code', { exact: true })
+    .textContent()
+  await scope.getByLabel(/saved my recovery code/).click()
+  await scope.getByRole('button', { name: 'Turn on encryption' }).click()
+  await scope
+    .getByRole('button', { name: 'Not now' })
+    .click({ timeout: 30_000 })
+  return code.trim()
+}
+
+export const createNote = async (page, title) => {
+  await page.goto(`${APP}/notes/create`)
+  await page.locator('textarea[name=title]').fill(title)
+  await page.getByRole('button', { name: 'Save' }).click()
+  await page.waitForURL(/\/notes\/(?!create)/, { timeout: 30_000 })
+  return page.url().split('/').pop()
+}
+
+// Whether the notes list shows a title (after the live data arrives).
+export const sees = async (page, text) => {
+  await page.goto(`${APP}/notes`)
+  await page.waitForTimeout(3000)
+  return page.getByText(text).isVisible()
+}
+
+export const shareWith = async (page, email, access) => {
+  await page.getByRole('button', { name: 'Share', exact: true }).first().click()
+  const dialog = page.getByRole('dialog')
+  await dialog.locator('input[name=user]').fill(email)
+  await dialog.locator('input[name=user]').press('Enter')
+  await dialog.getByText(email).waitFor({ timeout: 15_000 })
+  await dialog.getByRole('combobox').last().click()
+  await page.getByRole('option', { name: access }).click()
+  await page.waitForTimeout(1500)
+  return dialog
+}

@@ -70,6 +70,10 @@ jobs:
           java-version: '21'
       - name: Test the Firestore rules
         run: ${{ steps.detect-package-manager.outputs.runner }} test:rules
+      # Encryption and sharing, end to end: the app on the emulators in the
+      # runner's Chrome, with three accounts. A few minutes.
+      - name: End-to-end tests
+        run: ${{ steps.detect-package-manager.outputs.runner }} test:e2e
       - name: Generate web manifest
         run: node ./scripts/generate-manifest.mjs
       - name: Build with Vite

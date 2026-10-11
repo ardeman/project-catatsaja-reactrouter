@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repo. Read `README.md` for the
 
 ## Definition of done
 
-A change is done only when the **Checks** command in `README.md` passes. If you can't run it, say so; don't claim it passed. The Firestore rules have tests (`pnpm test:rules`, run before every deploy); the app has none yet, so for UI changes also look at the result in `pnpm dev`, in both light and dark mode and both languages.
+A change is done only when the **Checks** command in `README.md` passes. If you can't run it, say so; don't claim it passed. The Firestore rules have tests (`pnpm test:rules`) and encryption and sharing have end-to-end tests (`pnpm test:e2e`), both run before every deploy; extend `tests/e2e/` when you change how items are stored, shared or unlocked. Other UI has no tests yet, so for UI changes also look at the result in `pnpm dev`, in both light and dark mode and both languages.
 
 ## Conventions
 

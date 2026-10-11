@@ -51,11 +51,10 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 **Technical**
 
-- [ ] Automated tests for the app (the Firestore rules have tests; the app has none yet).
+- [ ] More end-to-end tests (today they cover encryption and sharing; the rules have their own tests).
 - [ ] Turn back on the ESLint rules that the 2026-10-09 upgrade switched off, and fix what they find (`eslint.config.mjs`).
 - [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
 - [ ] TypeScript 7, once typescript-eslint supports it.
-- [ ] Stop signed-in users from listing every profile: the rules still allow reading the whole `users` collection, which the email lookup for sharing needs. An email-lookup document per user (or a Cloud Function) would allow only exact lookups. When this is done, update the sharing paragraph of the privacy policy (`privacyPolicy.sharing`).
 - [ ] Pass `ref` as a prop instead of `forwardRef` in `app/components/ui/` (React 19 style, before React removes `forwardRef`).
 
 ## Tech stack
@@ -127,6 +126,8 @@ pnpm validate   # lint + typecheck + knip
 
 **Rules tests** — `pnpm test:rules` runs `tests/firestore-rules.test.mjs` against the Firestore emulator (it needs Java 21). The deploy workflow runs them before every deploy, so they don't have to pass locally.
 
+**End-to-end tests** — `pnpm test:e2e` runs `tests/e2e/encryption.test.mjs`: the app on the Auth and Firestore emulators, driven by Playwright in the installed Google Chrome, through encryption and sharing with three accounts (about three minutes; needs Java 21 and port 5199 free). The deploy workflow runs them before every deploy too.
+
 ### Git hooks and commit messages
 
 Husky installs two hooks:
@@ -138,7 +139,7 @@ Commit subjects use `type(scope)!: description`, with optional scope and `!` for
 
 ## Deployment
 
-Every push to `main` runs `.github/workflows/firebase-remix.yml`: install, `pnpm validate`, the Firestore rules tests (`pnpm test:rules`, with Java), build with the secrets above, and deploy `build/client` to the live channel of Firebase Hosting. It can also be started by hand from the Actions tab. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
+Every push to `main` runs `.github/workflows/firebase-remix.yml`: install, `pnpm validate`, the Firestore rules tests (`pnpm test:rules`, with Java), the end-to-end tests (`pnpm test:e2e`), build with the secrets above, and deploy `build/client` to the live channel of Firebase Hosting. It can also be started by hand from the Actions tab. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
 
 Hosting (`firebase.json`) serves the prerendered pages as files and every other path `__spa-fallback.html`, without trailing slashes. Pages are sent with `Cache-Control: no-cache` and the hashed files in `/assets/` are cached for a year, so a deploy never leaves browsers with pages that point at deleted files.
 

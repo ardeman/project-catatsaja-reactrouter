@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "typecheck": "react-router typegen && tsc",
     "test:rules": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only firestore --project demo-catatsaja 'node --test tests/firestore-rules.test.mjs'",
+    "test:e2e": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja 'node --test tests/e2e/encryption.test.mjs'",
     "format": "prettier --write .",
     "prepare": "husky",
     "validate": "pnpm lint && pnpm typecheck && pnpm knip"
@@ -86,6 +87,7 @@
     "husky": "^9.1.7",
     "knip": "^6.40.0",
     "lint-staged": "^17.6.0",
+    "playwright": "1.64.0",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4.3.3",
