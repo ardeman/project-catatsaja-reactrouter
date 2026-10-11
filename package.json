@@ -10,7 +10,7 @@
     "generate:manifest": "node ./scripts/generate-manifest.mjs",
     "preview": "vite preview",
     "typecheck": "react-router typegen && tsc",
-    "test:rules": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only firestore --project demo-catatsaja 'node --test tests/'",
+    "test:rules": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only firestore --project demo-catatsaja 'node --test tests/firestore-rules.test.mjs'",
     "format": "prettier --write .",
     "prepare": "husky",
     "validate": "pnpm lint && pnpm typecheck && pnpm knip"
