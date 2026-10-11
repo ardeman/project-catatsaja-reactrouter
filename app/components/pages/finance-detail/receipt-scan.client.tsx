@@ -6,6 +6,7 @@ import { Button } from '~/components/base/button'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { Modal } from '~/components/base/modal'
 import { Segmented } from '~/components/base/segmented'
+import { Checkbox } from '~/components/ui/checkbox'
 import { categoryKeywords } from '~/lib/constants/category-keywords'
 import { financeCategories } from '~/lib/constants/finance'
 import { useUserData } from '~/lib/hooks/use-get-user'
@@ -27,6 +28,7 @@ import {
   receiptToEntries,
   receiptTotal,
 } from '~/lib/utils/receipt'
+import { cn } from '~/lib/utils/shadcn'
 
 import { TReceiptScanProperties } from './type'
 
@@ -65,6 +67,8 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
   const [isNoticeOpen, setIsNoticeOpen] = useState(false)
   const [receipt, setReceipt] = useState<TReceipt>()
   const [mode, setMode] = useState<TReceiptMode>('total')
+  // Lines left out when adding each item, by their place on the receipt.
+  const [skipped, setSkipped] = useState<Set<number>>(new Set())
 
   const { currency, isCurrencyUnknown } = useMemo(
     () => receiptCurrency(receipt, book, currencies),
@@ -97,7 +101,20 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
   const { lines: linesTotal, isMismatch: isOff } = receipt
     ? receiptMismatch(receipt, fractionDigits)
     : { lines: 0, isMismatch: false }
-  const isMismatch = mode === 'items' && isOff
+  // Only worth saying while every line is going to be added.
+  const isMismatch = mode === 'items' && isOff && skipped.size === 0
+  const chosen =
+    mode === 'items'
+      ? entries.filter((_, index) => !skipped.has(index))
+      : entries
+
+  const toggleLine = (index: number) =>
+    setSkipped((current) => {
+      const next = new Set(current)
+      if (next.has(index)) next.delete(index)
+      else next.add(index)
+      return next
+    })
   const date = entries[0]?.date
   const dateLabel = date
     ? new Intl.DateTimeFormat(i18n.language, {
@@ -127,11 +144,12 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
     const read = await scan(file)
     if (!read) return
     setMode(read.items.length > 1 ? 'items' : 'total')
+    setSkipped(new Set())
     setReceipt(read)
   }
 
   const handleAdd = () => {
-    onAdd(entries)
+    onAdd(chosen)
     setReceipt(undefined)
   }
 
@@ -179,31 +197,54 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
             </p>
           ) : (
             <ul className="grid divide-y rounded-lg border">
-              {entries.map((entry) => (
-                <li
-                  key={entry.id}
-                  className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 py-2"
-                >
-                  <CategoryIcon
-                    category={entry.category}
-                    chip
-                  />
-                  <span className="grid min-w-0">
-                    <span className="truncate text-sm font-medium">
-                      {entry.description ||
-                        t(`finances.form.category.${entry.category}.label`)}
-                    </span>
-                    {entry.quantity !== 1 && (
-                      <span className="truncate text-xs text-muted-foreground">
-                        {entry.quantity} × {money(entry.amount, currency)}
+              {entries.map((entry, index) => {
+                const isSkipped = mode === 'items' && skipped.has(index)
+                const content = (
+                  <>
+                    <CategoryIcon
+                      category={entry.category}
+                      chip
+                    />
+                    <span className="grid min-w-0">
+                      <span className="truncate text-sm font-medium">
+                        {entry.description ||
+                          t(`finances.form.category.${entry.category}.label`)}
                       </span>
+                      {entry.quantity !== 1 && (
+                        <span className="truncate text-xs text-muted-foreground">
+                          {entry.quantity} × {money(entry.amount, currency)}
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-sm font-medium text-expense tabular-nums">
+                      {money(entry.quantity * entry.amount, currency)}
+                    </span>
+                  </>
+                )
+                return (
+                  <li key={entry.id}>
+                    {mode === 'items' ? (
+                      // Each item can be left out; the whole row toggles it.
+                      <label
+                        className={cn(
+                          'grid cursor-pointer grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-3 px-3 py-2 hover:bg-muted/50',
+                          isSkipped && 'opacity-50',
+                        )}
+                      >
+                        <Checkbox
+                          checked={!isSkipped}
+                          onCheckedChange={() => toggleLine(index)}
+                        />
+                        {content}
+                      </label>
+                    ) : (
+                      <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 py-2">
+                        {content}
+                      </div>
                     )}
-                  </span>
-                  <span className="text-sm font-medium text-expense tabular-nums">
-                    {money(entry.quantity * entry.amount, currency)}
-                  </span>
-                </li>
-              ))}
+                  </li>
+                )
+              })}
             </ul>
           )}
           {isMismatch && (
@@ -234,9 +275,9 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
             </Button>
             <Button
               onClick={handleAdd}
-              disabled={entries.length === 0}
+              disabled={chosen.length === 0}
             >
-              {t('finances.receipt.add', { count: entries.length })}
+              {t('finances.receipt.add', { count: chosen.length })}
             </Button>
           </div>
         </section>

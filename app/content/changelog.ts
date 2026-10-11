@@ -20,8 +20,8 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: 'Scan a receipt into a finance book: take or choose a photo, check what was read, and add it as one entry or one per item. The photo is read by Google’s Gemini, and only when you choose one.',
-          id: 'Pindai struk ke buku keuangan: ambil atau pilih foto, periksa hasil bacaannya, lalu tambahkan sebagai satu entri atau per barang. Foto dibaca oleh Gemini milik Google, dan hanya saat kamu memilihnya.',
+          en: 'Scan a receipt into a finance book: take or choose a photo, check what was read, and add it as one entry or one per item, choosing which items to keep. The photo is read by Google’s Gemini, and only when you choose one.',
+          id: 'Pindai struk ke buku keuangan: ambil atau pilih foto, periksa hasil bacaannya, lalu tambahkan sebagai satu entri atau per barang, dengan memilih barang mana yang disimpan. Foto dibaca oleh Gemini milik Google, dan hanya saat kamu memilihnya.',
         },
       },
       {
