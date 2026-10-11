@@ -1188,7 +1188,9 @@
       "severelyWasted": "Severely wasted",
       "wasted": "Wasted",
       "severelyThin": "Severely thin",
-      "thin": "Thin"
+      "thin": "Thin",
+      "goodNutrition": "Normal",
+      "riskOfOverNutrition": "Possible risk of overweight"
     },
     "reminders": {
       "title": "Reminders",

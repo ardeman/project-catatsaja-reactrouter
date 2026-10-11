@@ -179,16 +179,41 @@ describe('status', () => {
   test('BMI-for-age from 5 uses the PMK No. 2/2020 5–18 categories', () => {
     assert.equal(bmiStatus(-3.5), 'severelyThin')
     assert.equal(bmiStatus(-2.5), 'thin')
-    assert.equal(bmiStatus(0), 'normal')
-    assert.equal(bmiStatus(0.99), 'normal')
+    assert.equal(bmiStatus(0), 'goodNutrition')
+    assert.equal(bmiStatus(0.99), 'goodNutrition')
     assert.equal(bmiStatus(1.5), 'childOverweight')
     assert.equal(bmiStatus(2.5), 'childObese')
   })
 
   test('under 5 keeps the 0–60 month categories', () => {
-    assert.equal(bmiStatus(1.5, 48), 'childRiskOverweight')
+    assert.equal(bmiStatus(0, 48), 'goodNutrition')
+    assert.equal(bmiStatus(1.5, 48), 'riskOfOverNutrition')
     assert.equal(bmiStatus(2.5, 48), 'childOverweight')
+    assert.equal(bmiStatus(3.5, 48), 'childObese')
     assert.equal(bmiStatus(-2.5, 48), 'wasted')
+  })
+
+  test('weight-for-age has a status to 5 years, then only a percentile', () => {
+    const weightAt = (z, age) =>
+      valueAtZ(
+        growthLms({
+          tables,
+          indicator: 'weightForAge',
+          sex: 'male',
+          day: months(age),
+        }),
+        z,
+      )
+    const under5 = assess(
+      'weightForAge',
+      'male',
+      months(48),
+      weightAt(-2.5, 48),
+    )
+    assert.equal(under5.status.key, 'childUnderweight')
+    const at8 = assess('weightForAge', 'male', months(96), weightAt(-2.5, 96))
+    assert.equal(at8.status, undefined)
+    assert.ok(at8.percentile > 0 && at8.percentile < 1)
   })
 
   test('height-for-age by the WHO cut-offs', () => {

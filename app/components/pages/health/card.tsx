@@ -195,7 +195,7 @@ export const Card = (properties: TCardProperties) => {
                   })}
                 </span>
                 {/* From 18 the adult BMI category above takes its place. */}
-                {!body.bmiStatus && (
+                {!body.bmiStatus && body.growthLead.status && (
                   <HealthStatus status={body.growthLead.status} />
                 )}
               </span>

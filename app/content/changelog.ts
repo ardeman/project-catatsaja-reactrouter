@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Child growth follows Kemenkes PMK No. 2/2020 more closely: BMI results use its terms (gizi baik, berisiko gizi lebih), and weight for ages 5 to 10 shows its percentile without a status, as neither Kemenkes nor WHO classifies weight alone at that age.',
+          id: 'Tumbuh kembang anak kini lebih sesuai dengan PMK No. 2/2020: hasil IMT memakai istilahnya (gizi baik, berisiko gizi lebih), dan berat badan usia 5 sampai 10 tahun hanya menampilkan persentil tanpa status, karena Kemenkes maupun WHO tidak mengklasifikasikan berat badan saja di usia itu.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'Quick add in finance books: type what you paid or received, like “lunch 45rb, parking 5rb yesterday, salary 8jt”, check the entries Gemini reads from it, and add the ones you want.',

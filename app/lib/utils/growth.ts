@@ -151,14 +151,18 @@ const percentile = (z: number) => {
 // 2/2020 for 5–18 years (the WHO 2007 cut-offs: thinness below −2,
 // overweight above +1, obesity above +2); height-for-age by the WHO
 // cut-offs (stunted below −2, severely below −3), which PMK applies only
-// to 0–60 months; weight-for-age (to 10 years) as for under-fives.
+// to 0–60 months. Weight-for-age from 5 (WHO publishes it to 10) gets no
+// status: neither PMK nor WHO classifies it then, as weight alone can't
+// tell a heavy child from a tall one; its percentile still shows. BMI
+// categories use PMK's own words (gizi baik, berisiko gizi lebih).
 const classifyGrowth = (
   indicator: TGrowthIndicator,
   z: number,
   source: TGrowthSource,
-): TStatus => {
+): TStatus | undefined => {
   switch (indicator) {
     case 'weightForAge': {
+      if (source === 'reference') return
       if (z < -3) return { key: 'childSeverelyUnderweight', tone: 'serious' }
       if (z < -2) return { key: 'childUnderweight', tone: 'warning' }
       return z <= 1
@@ -182,15 +186,15 @@ const classifyGrowth = (
       if (source === 'reference') {
         if (z < -3) return { key: 'severelyThin', tone: 'serious' }
         if (z < -2) return { key: 'thin', tone: 'warning' }
-        if (z <= 1) return { key: 'normal', tone: 'good' }
+        if (z <= 1) return { key: 'goodNutrition', tone: 'good' }
         return z <= 2
           ? { key: 'childOverweight', tone: 'warning' }
           : { key: 'childObese', tone: 'serious' }
       }
       if (z < -3) return { key: 'severelyWasted', tone: 'serious' }
       if (z < -2) return { key: 'wasted', tone: 'warning' }
-      if (z <= 1) return { key: 'normal', tone: 'good' }
-      if (z <= 2) return { key: 'childRiskOverweight', tone: 'warning' }
+      if (z <= 1) return { key: 'goodNutrition', tone: 'good' }
+      if (z <= 2) return { key: 'riskOfOverNutrition', tone: 'warning' }
       return { key: z <= 3 ? 'childOverweight' : 'childObese', tone: 'serious' }
     }
   }
