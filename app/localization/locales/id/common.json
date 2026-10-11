@@ -475,6 +475,15 @@
         "items": "Per barang"
       },
       "noLines": "Tidak ada jumlah yang terbaca dari struk ini.",
+      "dateIssue": {
+        "missing": "Tidak ada tanggal di struk, jadi tanggal hari ini yang dipakai. Ubah jika perlu.",
+        "unreadable": "Tanggal di struk tidak terbaca, jadi tanggal hari ini yang dipakai. Ubah jika perlu.",
+        "future": "Tanggal struk terbaca {{read}}, yang belum terjadi, jadi tanggal hari ini yang dipakai. Periksa lagi.",
+        "swapped": "Tanggal struk terbaca {{read}}, yang belum terjadi, jadi dianggap {{date}} (hari dan bulan ditukar). Periksa lagi.",
+        "old": "Struk ini dari {{date}}, lebih dari sebulan lalu. Periksa tanggalnya."
+      },
+      "discount": "Diskon {{amount}}",
+      "lineDiscount": "hemat {{amount}}",
       "chosenTotal_one": "Total {{count}} barang",
       "chosenTotal_other": "Total {{count}} barang",
       "mismatch": "Jumlah barang {{lines}}, tetapi struk menulis {{total}}. Periksa apakah ada baris yang salah terbaca.",

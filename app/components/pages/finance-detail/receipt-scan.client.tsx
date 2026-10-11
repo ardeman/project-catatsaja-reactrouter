@@ -1,9 +1,11 @@
 import { ScanText } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
 import { CategoryIcon } from '~/components/base/category-icon'
+import { DatePicker } from '~/components/base/date-picker'
 import { Modal } from '~/components/base/modal'
 import { Segmented } from '~/components/base/segmented'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -24,6 +26,8 @@ import {
 } from '~/lib/utils/finance'
 import {
   receiptDate,
+  receiptDiscount,
+  receiptLines,
   receiptMismatch,
   receiptToEntries,
   receiptTotal,
@@ -53,6 +57,11 @@ const receiptCurrency = (
   }
 }
 
+// Whether text is a YYYY-MM-DD date that can be shown as a day.
+const isRealDayText = (text: string) =>
+  /^\d{4}-\d{2}-\d{2}$/.test(text) &&
+  !Number.isNaN(Date.parse(`${text}T00:00:00Z`))
+
 // Reads a receipt photo with Gemini and turns it into entries, which the
 // person checks before they are added. The photo goes to Google only when
 // they choose one, after agreeing once to a notice saying so.
@@ -69,6 +78,16 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
   const [mode, setMode] = useState<TReceiptMode>('total')
   // Lines left out when adding each item, by their place on the receipt.
   const [skipped, setSkipped] = useState<Set<number>>(new Set())
+  // The date the entries get: the receipt's, which the person can change.
+  const dateForm = useForm<{ date: string }>({
+    defaultValues: { date: today() },
+  })
+  const date = dateForm.watch('date')
+  // The date as read, and why it is worth checking, if it is.
+  const readDate = useMemo(
+    () => (receipt ? receiptDate(receipt.date, today()) : undefined),
+    [receipt],
+  )
 
   const { currency, isCurrencyUnknown } = useMemo(
     () => receiptCurrency(receipt, book, currencies),
@@ -87,17 +106,27 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
     return receiptToEntries({
       receipt,
       mode,
-      date: receiptDate(receipt.date, today()),
+      date,
       currency,
       rate: suggestRate(currency.code, book, currencies),
       categoryFor,
       fallbackCategory: lastCategory('expense', history) ?? 'otherExpenses',
       newId: newEntryId,
     })
-  }, [receipt, mode, currency, book, currencies, history])
+  }, [receipt, mode, date, currency, book, currencies, history])
 
   const fractionDigits = currency.maximumFractionDigits
   const total = receipt ? receiptTotal(receipt, fractionDigits) : 0
+  const discount = receipt ? receiptDiscount(receipt, fractionDigits) : 0
+  // Each item's discount, in the same order as the entries when adding
+  // each item.
+  const lineDiscounts = useMemo(
+    () =>
+      receipt
+        ? receiptLines(receipt, fractionDigits).map((line) => line.discount)
+        : [],
+    [receipt, fractionDigits],
+  )
   const { lines: linesTotal, isMismatch: isOff } = receipt
     ? receiptMismatch(receipt, fractionDigits)
     : { lines: 0, isMismatch: false }
@@ -122,13 +151,14 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
       else next.add(index)
       return next
     })
-  const date = entries[0]?.date
-  const dateLabel = date
-    ? new Intl.DateTimeFormat(i18n.language, {
-        dateStyle: 'medium',
-        timeZone: 'UTC',
-      }).format(new Date(`${date}T00:00:00Z`))
-    : ''
+  const formatDay = (day: string) =>
+    new Intl.DateTimeFormat(i18n.language, {
+      dateStyle: 'medium',
+      timeZone: 'UTC',
+    }).format(new Date(`${day}T00:00:00Z`))
+  // Shown until the person picks a date themselves.
+  const dateIssue =
+    readDate?.issue && date === readDate.date ? readDate.issue : undefined
 
   const handleScanClick = () => {
     if (userData?.aiConsent) fileInput.current?.click()
@@ -152,6 +182,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
     if (!read) return
     setMode(read.items.length > 1 ? 'items' : 'total')
     setSkipped(new Set())
+    dateForm.reset({ date: receiptDate(read.date, today()).date })
     setReceipt(read)
   }
 
@@ -194,10 +225,39 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
             />
           </div>
           <p className="text-sm text-muted-foreground">
-            {[receipt.merchant.trim(), dateLabel, money(total, currency)]
+            {[
+              receipt.merchant.trim(),
+              money(total, currency),
+              discount > 0
+                ? t('finances.receipt.discount', {
+                    amount: money(discount, currency),
+                  })
+                : '',
+            ]
               .filter(Boolean)
               .join(' · ')}
           </p>
+          <FormProvider {...dateForm}>
+            <div className="grid max-w-xs gap-1">
+              <DatePicker
+                name="date"
+                label={t('finances.form.date.label')}
+              />
+            </div>
+          </FormProvider>
+          {dateIssue && (
+            <p
+              role="status"
+              className="text-xs text-muted-foreground"
+            >
+              {t(`finances.receipt.dateIssue.${dateIssue}`, {
+                read: isRealDayText(receipt.date)
+                  ? formatDay(receipt.date)
+                  : receipt.date,
+                date: formatDay(date),
+              })}
+            </p>
+          )}
           {entries.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               {t('finances.receipt.noLines')}
@@ -206,6 +266,8 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
             <ul className="grid divide-y rounded-lg border">
               {entries.map((entry, index) => {
                 const isSkipped = mode === 'items' && skipped.has(index)
+                const lineDiscount =
+                  mode === 'items' ? (lineDiscounts[index] ?? 0) : 0
                 const content = (
                   <>
                     <CategoryIcon
@@ -217,9 +279,20 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
                         {entry.description ||
                           t(`finances.form.category.${entry.category}.label`)}
                       </span>
-                      {entry.quantity !== 1 && (
+                      {(entry.quantity !== 1 || lineDiscount > 0) && (
                         <span className="truncate text-xs text-muted-foreground">
-                          {entry.quantity} × {money(entry.amount, currency)}
+                          {[
+                            entry.quantity === 1
+                              ? ''
+                              : `${entry.quantity} × ${money(entry.amount, currency)}`,
+                            lineDiscount > 0
+                              ? t('finances.receipt.lineDiscount', {
+                                  amount: money(lineDiscount, currency),
+                                })
+                              : '',
+                          ]
+                            .filter(Boolean)
+                            .join(' · ')}
                         </span>
                       )}
                     </span>

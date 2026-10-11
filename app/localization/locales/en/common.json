@@ -475,6 +475,15 @@
         "items": "Each item"
       },
       "noLines": "No amounts could be read from this receipt.",
+      "dateIssue": {
+        "missing": "No date was found on the receipt, so today is used. Change it if needed.",
+        "unreadable": "The receipt’s date couldn’t be read, so today is used. Change it if needed.",
+        "future": "The receipt’s date was read as {{read}}, which hasn’t come yet, so today is used. Check it.",
+        "swapped": "The receipt’s date was read as {{read}}, which hasn’t come yet, so it’s taken as {{date}} (day and month swapped). Check it.",
+        "old": "This receipt is from {{date}}, over a month ago. Check the date."
+      },
+      "discount": "Discount {{amount}}",
+      "lineDiscount": "{{amount}} off",
       "chosenTotal_one": "Total of {{count}} item",
       "chosenTotal_other": "Total of {{count}} items",
       "mismatch": "The items add up to {{lines}}, but the receipt says {{total}}. Check for a misread line.",

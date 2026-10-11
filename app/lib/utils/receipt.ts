@@ -2,13 +2,27 @@
 // imports, so it can be tested on its own (tests/receipt.test.mjs): the
 // caller passes the currency, its rate and how to pick a category.
 
-type TReceiptLine = { description: string; quantity: number; amount: number }
+type TReceiptLine = {
+  description: string
+  quantity: number
+  // The price of one, after discounts.
+  amount: number
+  // How much less the line costs than its printed price (its own discount
+  // and its share of one on the whole bill), to show while checking.
+  discount: number
+}
 
 type TReceipt = {
   merchant: string
   date: string
   currency: string
-  items: { description: string; quantity: number; unitPrice: number }[]
+  items: {
+    description: string
+    quantity: number
+    unitPrice: number
+    // A discount printed for this line, as a positive number for the line.
+    discount: number
+  }[]
   charges: { description: string; amount: number }[]
   discount: number
   total: number
@@ -35,56 +49,83 @@ const round = (value: number, digits: number) => {
 
 const isPositive = (value: number) => Number.isFinite(value) && value > 0
 
-// The receipt's date when it is a real day, not in the future; otherwise
-// `today` (both YYYY-MM-DD).
-export const receiptDate = (date: string, today: string) => {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return today
+const isRealDay = (date: string) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false
   const parsed = new Date(`${date}T00:00:00Z`)
-  if (
-    Number.isNaN(parsed.getTime()) ||
-    parsed.toISOString().slice(0, 10) !== date
+  return (
+    !Number.isNaN(parsed.getTime()) &&
+    parsed.toISOString().slice(0, 10) === date
   )
-    return today
-  return date > today ? today : date
 }
 
-// Its lines: items with a receipt-wide discount spread over them by price,
-// then charges such as tax. Lines without a positive price are left out.
+const daysBetween = (from: string, to: string) =>
+  (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000
+
+// Older than this, a receipt's date is worth a second look.
+const OLD_AFTER_DAYS = 31
+
+export type TReceiptDateIssue =
+  'missing' | 'unreadable' | 'future' | 'swapped' | 'old'
+
+// The date to use for a receipt (YYYY-MM-DD; dates are compared as text),
+// and why it is worth checking, if it is. A future date that is a past one
+// with day and month swapped (12/10 read as 10 December) is taken as that
+// past date; other unusable dates become `today`.
+export const receiptDate = (
+  read: string,
+  today: string,
+): { date: string; issue?: TReceiptDateIssue } => {
+  if (!read.trim()) return { date: today, issue: 'missing' }
+  if (!isRealDay(read)) return { date: today, issue: 'unreadable' }
+  if (read > today) {
+    const [year, month, day] = read.split('-')
+    const swapped = `${year}-${day}-${month}`
+    if (isRealDay(swapped) && swapped <= today)
+      return { date: swapped, issue: 'swapped' }
+    return { date: today, issue: 'future' }
+  }
+  if (daysBetween(read, today) > OLD_AFTER_DAYS)
+    return { date: read, issue: 'old' }
+  return { date: read }
+}
+
+// Its lines: items, each with its own discount taken off and a discount on
+// the whole bill spread over them by price, then charges such as tax. Lines
+// without a positive price are left out.
 export const receiptLines = (
   receipt: TReceipt,
   fractionDigits: number,
 ): TReceiptLine[] => {
   const items = receipt.items
-    .map((item) => ({
-      description: item.description.trim(),
-      quantity: isPositive(item.quantity) ? item.quantity : 1,
-      amount: item.unitPrice,
-    }))
-    .filter((item) => isPositive(item.amount))
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.quantity * item.amount,
-    0,
-  )
-  const discount = isPositive(receipt.discount)
+    .map((item) => {
+      const quantity = isPositive(item.quantity) ? item.quantity : 1
+      const printed = quantity * item.unitPrice
+      const discount = isPositive(item.discount)
+        ? Math.min(item.discount, printed)
+        : 0
+      return {
+        description: item.description.trim(),
+        quantity,
+        printed,
+        // What the line costs after its own discount.
+        cost: printed - discount,
+      }
+    })
+    .filter((item) => isPositive(item.cost))
+  const subtotal = items.reduce((sum, item) => sum + item.cost, 0)
+  const billDiscount = isPositive(receipt.discount)
     ? Math.min(receipt.discount, subtotal)
     : 0
-  const factor = subtotal > 0 ? 1 - discount / subtotal : 1
-  const charges = receipt.charges
-    .filter((charge) => isPositive(charge.amount))
-    .map((charge) => ({
-      description: charge.description.trim(),
-      quantity: 1,
-      amount: charge.amount,
-    }))
+  const factor = subtotal > 0 ? 1 - billDiscount / subtotal : 1
   const discounted = items.map((item) => ({
     ...item,
-    amount: round(item.amount * factor, fractionDigits),
+    amount: round((item.cost * factor) / item.quantity, fractionDigits),
   }))
   // Rounding each price can leave the items a little off what was paid for
   // them; the most expensive single item takes up the difference.
   const leftover = round(
     subtotal -
-      discount -
+      billDiscount -
       discounted.reduce((sum, item) => sum + item.quantity * item.amount, 0),
     fractionDigits,
   )
@@ -93,14 +134,34 @@ export const receiptLines = (
     .toSorted((a, b) => b.amount - a.amount)[0]
   if (single && leftover !== 0)
     single.amount = round(single.amount + leftover, fractionDigits)
-  return [
-    ...discounted,
-    ...charges.map((charge) => ({
-      ...charge,
+  const charges = receipt.charges
+    .filter((charge) => isPositive(charge.amount))
+    .map((charge) => ({
+      description: charge.description.trim(),
+      quantity: 1,
       amount: round(charge.amount, fractionDigits),
+      discount: 0,
+    }))
+  return [
+    ...discounted.map(({ description, quantity, amount, printed }) => ({
+      description,
+      quantity,
+      amount,
+      discount: round(printed - quantity * amount, fractionDigits),
     })),
+    ...charges,
   ].filter((line) => isPositive(line.amount))
 }
+
+// All the discounts on the receipt: on its lines and on the whole bill.
+export const receiptDiscount = (receipt: TReceipt, fractionDigits: number) =>
+  round(
+    receipt.items.reduce(
+      (sum, item) => sum + (isPositive(item.discount) ? item.discount : 0),
+      0,
+    ) + (isPositive(receipt.discount) ? receipt.discount : 0),
+    fractionDigits,
+  )
 
 // What the receipt adds up to: its printed total, or the sum of its lines
 // when the total couldn't be read.

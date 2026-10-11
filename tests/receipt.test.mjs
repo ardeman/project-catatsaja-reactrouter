@@ -7,6 +7,7 @@ import { describe, test } from 'node:test'
 
 import {
   receiptDate,
+  receiptDiscount,
   receiptLines,
   receiptMismatch,
   receiptToEntries,
@@ -21,8 +22,13 @@ const receipt = (overrides = {}) => ({
   date: '2026-10-10',
   currency: 'IDR',
   items: [
-    { description: 'Indomie Goreng', quantity: 5, unitPrice: 3500 },
-    { description: 'Aqua 600ml', quantity: 1, unitPrice: 4000 },
+    {
+      description: 'Indomie Goreng',
+      quantity: 5,
+      unitPrice: 3500,
+      discount: 0,
+    },
+    { description: 'Aqua 600ml', quantity: 1, unitPrice: 4000, discount: 0 },
   ],
   charges: [],
   discount: 0,
@@ -47,15 +53,50 @@ const entriesFor = (read, mode, options = {}) => {
 }
 
 describe('receipt dates', () => {
-  test('keeps a real past date', () => {
-    assert.equal(receiptDate('2026-10-01', '2026-10-11'), '2026-10-01')
+  const today = '2026-10-12'
+
+  test('keeps a recent past date', () => {
+    assert.deepEqual(receiptDate('2026-10-01', today), { date: '2026-10-01' })
+    assert.deepEqual(receiptDate(today, today), { date: today })
   })
 
-  test('uses today for a missing, impossible or future date', () => {
-    assert.equal(receiptDate('', '2026-10-11'), '2026-10-11')
-    assert.equal(receiptDate('10/01/2026', '2026-10-11'), '2026-10-11')
-    assert.equal(receiptDate('2026-02-30', '2026-10-11'), '2026-10-11')
-    assert.equal(receiptDate('2027-01-01', '2026-10-11'), '2026-10-11')
+  test('uses today for a missing date, and says so', () => {
+    assert.deepEqual(receiptDate('', today), { date: today, issue: 'missing' })
+  })
+
+  test('uses today for a date that isn’t a real day', () => {
+    for (const read of ['10/01/2026', '2026-02-30', '2026-13-01'])
+      assert.deepEqual(receiptDate(read, today), {
+        date: today,
+        issue: 'unreadable',
+      })
+  })
+
+  test('swaps day and month back when that makes a future date past', () => {
+    // 11/10/2026 (11 October) read month first as 10 November.
+    assert.deepEqual(receiptDate('2026-11-10', today), {
+      date: '2026-10-11',
+      issue: 'swapped',
+    })
+  })
+
+  test('uses today for a future date that swapping doesn’t fix', () => {
+    assert.deepEqual(receiptDate('2026-12-25', today), {
+      date: today,
+      issue: 'future',
+    })
+    assert.deepEqual(receiptDate('2027-01-05', today), {
+      date: today,
+      issue: 'future',
+    })
+  })
+
+  test('keeps an old date, flagged to check', () => {
+    assert.deepEqual(receiptDate('2026-08-17', today), {
+      date: '2026-08-17',
+      issue: 'old',
+    })
+    assert.deepEqual(receiptDate('2026-09-11', today), { date: '2026-09-11' })
   })
 })
 
@@ -64,8 +105,18 @@ describe('receipt lines', () => {
     const lines = receiptLines(
       receipt({
         items: [
-          { description: 'Nasi goreng', quantity: 2, unitPrice: 25_000 },
-          { description: 'Free sambal', quantity: 1, unitPrice: 0 },
+          {
+            description: 'Nasi goreng',
+            quantity: 2,
+            unitPrice: 25_000,
+            discount: 0,
+          },
+          {
+            description: 'Free sambal',
+            quantity: 1,
+            unitPrice: 0,
+            discount: 0,
+          },
         ],
         charges: [
           { description: 'PB1 10%', amount: 5000 },
@@ -75,8 +126,8 @@ describe('receipt lines', () => {
       0,
     )
     assert.deepEqual(lines, [
-      { description: 'Nasi goreng', quantity: 2, amount: 25_000 },
-      { description: 'PB1 10%', quantity: 1, amount: 5000 },
+      { description: 'Nasi goreng', quantity: 2, amount: 25_000, discount: 0 },
+      { description: 'PB1 10%', quantity: 1, amount: 5000, discount: 0 },
     ])
   })
 
@@ -84,8 +135,8 @@ describe('receipt lines', () => {
     const lines = receiptLines(
       receipt({
         items: [
-          { description: 'Shirt', quantity: 1, unitPrice: 30 },
-          { description: 'Socks', quantity: 2, unitPrice: 5 },
+          { description: 'Shirt', quantity: 1, unitPrice: 30, discount: 0 },
+          { description: 'Socks', quantity: 2, unitPrice: 5, discount: 0 },
         ],
         discount: 4,
         total: 36,
@@ -98,10 +149,83 @@ describe('receipt lines', () => {
     )
   })
 
+  test('takes a line’s own discount off that line only', () => {
+    // As printed by Indomaret: "HEMAT SUSU -4.000" under the milk.
+    const lines = receiptLines(
+      receipt({
+        items: [
+          { description: 'Indomie', quantity: 5, unitPrice: 3500, discount: 0 },
+          { description: 'Aqua', quantity: 1, unitPrice: 4000, discount: 0 },
+          {
+            description: 'Susu UHT',
+            quantity: 2,
+            unitPrice: 19_900,
+            discount: 4000,
+          },
+        ],
+        total: 57_300,
+      }),
+      0,
+    )
+    assert.deepEqual(
+      lines.map((line) => [line.quantity, line.amount, line.discount]),
+      [
+        [5, 3500, 0],
+        [1, 4000, 0],
+        [2, 17_900, 4000],
+      ],
+    )
+  })
+
+  test('applies line discounts before spreading one on the whole bill', () => {
+    const lines = receiptLines(
+      receipt({
+        items: [
+          { description: 'Shirt', quantity: 1, unitPrice: 40, discount: 10 },
+          { description: 'Socks', quantity: 2, unitPrice: 5, discount: 0 },
+        ],
+        discount: 4,
+        total: 36,
+      }),
+      2,
+    )
+    // 30 and 10 after the shirt's own discount; the bill's 4 is 10% of 40.
+    assert.deepEqual(
+      lines.map((line) => [line.amount, line.discount]),
+      [
+        [27, 13],
+        [4.5, 1],
+      ],
+    )
+  })
+
+  test('a line discount can’t make a line cost less than nothing', () => {
+    const lines = receiptLines(
+      receipt({
+        items: [
+          {
+            description: 'Free gift',
+            quantity: 1,
+            unitPrice: 5000,
+            discount: 9000,
+          },
+          { description: 'Kopi', quantity: 1, unitPrice: 18_000, discount: 0 },
+        ],
+      }),
+      0,
+    )
+    assert.deepEqual(
+      lines.map((line) => line.description),
+      ['Kopi'],
+    )
+  })
+
   test('treats a missing quantity as one', () => {
     const [line] = receiptLines(
       receipt({
-        items: [{ description: 'Kopi', quantity: 0, unitPrice: 18_000 }],
+        items: [
+          { description: 'Kopi', quantity: 0, unitPrice: 18_000, discount: 0 },
+        ],
       }),
       0,
     )
@@ -111,11 +235,26 @@ describe('receipt lines', () => {
   test('rounds to the currency’s decimals', () => {
     const [line] = receiptLines(
       receipt({
-        items: [{ description: 'Gas', quantity: 1, unitPrice: 12.345 }],
+        items: [
+          { description: 'Gas', quantity: 1, unitPrice: 12.345, discount: 0 },
+        ],
       }),
       2,
     )
     assert.equal(line.amount, 12.35)
+  })
+})
+
+describe('receipt discount', () => {
+  test('adds up the lines’ discounts and the bill’s', () => {
+    const read = receipt({
+      items: [
+        { description: 'Susu', quantity: 2, unitPrice: 19_900, discount: 4000 },
+        { description: 'Roti', quantity: 1, unitPrice: 15_000, discount: 1500 },
+      ],
+      discount: 2000,
+    })
+    assert.equal(receiptDiscount(read, 0), 7500)
   })
 })
 
@@ -134,9 +273,14 @@ describe('lines against the total', () => {
     const lines = receiptLines(
       receipt({
         items: [
-          { description: 'Indomie', quantity: 5, unitPrice: 3500 },
-          { description: 'Aqua', quantity: 1, unitPrice: 4000 },
-          { description: 'Susu UHT', quantity: 2, unitPrice: 19_900 },
+          { description: 'Indomie', quantity: 5, unitPrice: 3500, discount: 0 },
+          { description: 'Aqua', quantity: 1, unitPrice: 4000, discount: 0 },
+          {
+            description: 'Susu UHT',
+            quantity: 2,
+            unitPrice: 19_900,
+            discount: 0,
+          },
         ],
         discount: 4000,
         total: 57_300,
@@ -158,9 +302,14 @@ describe('lines against the total', () => {
     // came back as a discount on the whole bill.
     const read = receipt({
       items: [
-        { description: 'Indomie', quantity: 5, unitPrice: 3500 },
-        { description: 'Aqua', quantity: 1, unitPrice: 4000 },
-        { description: 'Susu UHT', quantity: 2, unitPrice: 19_900 },
+        { description: 'Indomie', quantity: 5, unitPrice: 3500, discount: 0 },
+        { description: 'Aqua', quantity: 1, unitPrice: 4000, discount: 0 },
+        {
+          description: 'Susu UHT',
+          quantity: 2,
+          unitPrice: 19_900,
+          discount: 0,
+        },
       ],
       discount: 4000,
       total: 57_300,

@@ -51,8 +51,10 @@ export const receiptSchema = z.object({
     z.object({
       description: z.string(),
       quantity: z.number(),
-      // The price of one, after any discount on that line.
+      // The printed price of one.
       unitPrice: z.number(),
+      // A discount printed for this line, as a positive number for the line.
+      discount: z.number(),
     }),
   ),
   // Tax, service charge, delivery and other additions to the whole receipt.

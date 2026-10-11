@@ -14,6 +14,29 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-12',
+    title: {
+      en: 'Receipt discounts and dates',
+      id: 'Diskon dan tanggal di struk',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'When checking a scanned receipt you can change its date. You’re told when the receipt has no readable date, when it is over a month old, or when a date that hasn’t come yet was taken as day and month swapped.',
+          id: 'Saat memeriksa struk yang dipindai, tanggalnya bisa diubah. Kamu diberi tahu jika struk tidak punya tanggal yang terbaca, sudah lebih dari sebulan, atau tanggal yang belum terjadi dianggap tertukar hari dan bulannya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Scanning a receipt takes each discount off the item it was printed under, and spreads only a discount on the whole bill over all items. The review shows each item’s discount and the receipt’s total discount.',
+          id: 'Saat memindai struk, setiap diskon kini dipotong dari barang yang tertulis di atasnya, dan hanya diskon untuk seluruh tagihan yang dibagi ke semua barang. Pemeriksaan struk menampilkan diskon tiap barang dan total diskonnya.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-11',
     title: { en: 'End-to-end encryption', id: 'Enkripsi end-to-end' },
     changes: [
