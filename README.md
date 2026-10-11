@@ -47,7 +47,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 - [ ] Finances: budgets.
 - [ ] Health: WHO growth references for 5–19 years, and reminders.
-- [ ] Gemini integration: the API key is set up in `.env.example` and the deploy workflow, but no feature uses it yet and its scope is not decided.
+- [ ] Gemini integration through Firebase AI Logic (Gemini Developer API, App Check enforced; no API key in the app): set up in the Firebase console, but no feature uses it yet and its scope is not decided.
 
 **Technical**
 
@@ -97,7 +97,6 @@ pnpm refuses package versions published less than a day ago (its `minimumRelease
 | `VITE_GRAVATAR_API_KEY`   | Profile avatars from Gravatar                                                                                                                       |
 | `VITE_APP_CHECK_SITE_KEY` | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it                                                         |
 | `VITE_USE_EMULATORS`      | Development only (not set in the workflow): `true` runs `pnpm dev` against the local Auth and Firestore emulators (`pnpm emulators`, needs Java 21) |
-| `VITE_GEMINI_API_KEY`     | Gemini API (passed to the build; not read by the app code yet)                                                                                      |
 
 Variables are read in one place, `app/lib/utils/environment.ts`.
 
