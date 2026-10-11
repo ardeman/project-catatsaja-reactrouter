@@ -1,4 +1,11 @@
-import { deleteField, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import {
+  deleteDoc,
+  deleteField,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
 import {
@@ -264,6 +271,18 @@ export const unlockWithPasskeySecret = async (
 
 export const removePasskeys = async () => {
   await updateDoc(keyringReference(), { passkeys: deleteField() })
+}
+
+// Turning encryption off (after the person's own items are plain again):
+// the sealed keys and the public key go, and new accounts' "must set up"
+// mark with them.
+export const removeKeyring = async () => {
+  const { database, uid } = requireUser()
+  await updateDoc(doc(database, 'users', uid), {
+    publicKey: deleteField(),
+    encryptionRequired: false,
+  })
+  await deleteDoc(keyringReference())
 }
 
 // --- Public keys ----------------------------------------------------------

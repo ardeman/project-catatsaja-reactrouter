@@ -5,9 +5,11 @@ import {
   doc,
   DocumentData,
   FieldPath,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
+  QueryDocumentSnapshot,
   updateDoc,
   where,
 } from 'firebase/firestore'
@@ -277,4 +279,101 @@ export const encryptOwnItems = async () => {
     }
   }
   return { encrypted, waiting }
+}
+
+// The person's items by kind, as stored (one read per collection).
+const storedItems = async () => {
+  const { database, uid } = requireUser()
+  const items: { name: TCollection; document: QueryDocumentSnapshot }[] = []
+  for (const name of Object.keys(contentFields) as TCollection[]) {
+    const snap = await getDocs(
+      query(
+        collection(database, name),
+        where(new FieldPath('permissions', 'read'), 'array-contains', uid),
+      ),
+    )
+    for (const document of snap.docs) items.push({ name, document })
+  }
+  return { uid, items }
+}
+
+// Before turning encryption off: encrypted items others shared with the
+// person, which they won't be able to read afterwards.
+export const countEncryptedFromOthers = async () => {
+  const { uid, items } = await storedItems()
+  return items.filter(
+    ({ document }) =>
+      isEncrypted(document.data()) && document.data().owner !== uid,
+  ).length
+}
+
+// Turning encryption off: the person's own encrypted items stored plain
+// again (everyone they're shared with keeps access). Needs this device
+// unlocked. Doesn't touch `updatedAt`: it isn't an edit.
+export const decryptOwnItems = async () => {
+  const { uid, items } = await storedItems()
+  let decrypted = 0
+  for (const { name, document } of items) {
+    const data = document.data()
+    if (data.owner !== uid || !isEncrypted(data)) continue
+    const plain = await decodeDocument(name, document.id, data, uid)
+    if (!plain) throw new Error('encryption/locked')
+    await updateDoc(document.ref, {
+      ...Object.fromEntries(
+        contentFields[name]
+          .filter((field) => Object.hasOwn(plain, field))
+          .map((field) => [field, plain[field]]),
+      ),
+      encrypted: deleteField(),
+      keys: deleteField(),
+    })
+    forget(name, document.id)
+    decrypted++
+  }
+  return decrypted
+}
+
+// The owner's encrypted items that someone with access can't read (they
+// turned encryption off): found on each visit, stored plain only if the
+// owner chooses to.
+export const findUnreadableForOthers = async () => {
+  const { uid, items } = await storedItems()
+  const found: { name: TCollection; id: string; readers: string[] }[] = []
+  for (const { name, document } of items) {
+    const data = document.data()
+    if (data.owner !== uid || !isEncrypted(data)) continue
+    const readers: string[] = data.permissions?.read ?? []
+    const sealed = Object.keys((data.keys as Record<string, string>) ?? {})
+    if (readers.some((reader) => !sealed.includes(reader)))
+      found.push({ name, id: document.id, readers })
+    else {
+      const publicKeys = await fetchPublicKeys(readers)
+      if (readers.some((reader) => !publicKeys.get(reader)))
+        found.push({ name, id: document.id, readers })
+    }
+  }
+  return found
+}
+
+export const shareUnencrypted = async (
+  items: { name: TCollection; id: string }[],
+) => {
+  const { database, uid } = requireUser()
+  for (const { name, id } of items) {
+    const snapshot = await getDoc(doc(database, name, id))
+    const data = snapshot.data()
+    if (!data || !isEncrypted(data)) continue
+    const plain = await decodeDocument(name, id, data, uid)
+    if (!plain) throw new Error('encryption/locked')
+    await updateDoc(snapshot.ref, {
+      ...Object.fromEntries(
+        contentFields[name]
+          .filter((field) => Object.hasOwn(plain, field))
+          .map((field) => [field, plain[field]]),
+      ),
+      encrypted: deleteField(),
+      keys: deleteField(),
+    })
+    forget(name, id)
+  }
 }

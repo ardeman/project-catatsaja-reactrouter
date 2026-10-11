@@ -135,7 +135,11 @@ export const CurrencyFormat = () => {
             <div
               className={cn(
                 'grid grid-cols-1 gap-4',
-                numberStyle === 'custom' ? 'sm:grid-cols-3' : 'sm:grid-cols-1',
+                // Side by side, the fields share rows (subgrid): a label that
+                // wraps to two lines doesn't push its box below the others.
+                numberStyle === 'custom'
+                  ? 'sm:grid-cols-3 sm:grid-rows-[auto_auto_auto_auto] sm:gap-y-0'
+                  : 'sm:grid-cols-1',
               )}
             >
               {numberStyle === 'custom' && (
@@ -149,7 +153,7 @@ export const CurrencyFormat = () => {
                       'settings.currencyFormat.form.thousandSeparator.placeholder',
                     )}
                     maxLength={1}
-                    className="w-full"
+                    className="w-full sm:row-span-4 sm:grid sm:grid-rows-subgrid"
                   />
                   <Input
                     label={t(
@@ -160,7 +164,7 @@ export const CurrencyFormat = () => {
                       'settings.currencyFormat.form.decimalSeparator.placeholder',
                     )}
                     maxLength={1}
-                    className="w-full"
+                    className="w-full sm:row-span-4 sm:grid sm:grid-rows-subgrid"
                   />
                 </>
               )}
@@ -182,7 +186,9 @@ export const CurrencyFormat = () => {
                 )}
                 className={cn(
                   'w-full',
-                  numberStyle !== 'custom' && 'sm:max-w-sm',
+                  numberStyle === 'custom'
+                    ? 'sm:row-span-4 sm:grid sm:grid-rows-subgrid'
+                    : 'sm:max-w-sm',
                 )}
               />
             </div>

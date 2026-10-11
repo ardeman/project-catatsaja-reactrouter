@@ -1127,12 +1127,26 @@
       "passkeys_one": "{{count}} passkey",
       "passkeys_other": "{{count}} passkey",
       "removePasskeys": "Hapus passkey",
-      "sharedNote": "Item yang dibagikan dengan orang yang belum mengaktifkan enkripsi tetap tidak terenkripsi sampai mereka mengaktifkannya."
+      "sharedNote": "Item yang dibagikan dengan orang yang belum mengaktifkan enkripsi tetap tidak terenkripsi sampai mereka mengaktifkannya.",
+      "unreadable_one": "{{count}} item terenkripsimu dibagikan dengan orang yang menonaktifkan enkripsi, jadi mereka tidak bisa membacanya.",
+      "unreadable_other": "{{count}} item terenkripsimu dibagikan dengan orang yang menonaktifkan enkripsi, jadi mereka tidak bisa membacanya.",
+      "shareUnencrypted": "Bagikan tanpa enkripsi",
+      "sharedPlain": "Dibagikan tanpa enkripsi: semua bisa membacanya lagi"
     },
     "share": {
       "notSetUp": "{{email}} belum mengaktifkan enkripsi, jadi tidak bisa membaca item terenkripsi ini. Bagikan tanpa enkripsi? Item akan disimpan tanpa enkripsi untuk semua orang.",
       "withoutEncryption": "Bagikan tanpa enkripsi"
     },
-    "encrypted": "Terenkripsi"
+    "encrypted": "Terenkripsi",
+    "off": {
+      "button": "Nonaktifkan enkripsi",
+      "title": "Nonaktifkan enkripsi end-to-end?",
+      "own": "Catatan, daftar, buku, dan catatan kesehatan terenkripsimu akan disimpan tanpa enkripsi lagi, sehingga secara teknis kami dan Google bisa membacanya. Orang yang kamu ajak berbagi tetap punya akses. Frasa sandi, kode pemulihan, dan passkey-mu tidak berlaku lagi.",
+      "fromOthers_one": "{{count}} item yang dienkripsi dan dibagikan orang lain kepadamu tidak bisa kamu baca lagi, sampai pemiliknya membagikannya lagi tanpa enkripsi.",
+      "fromOthers_other": "{{count}} item yang dienkripsi dan dibagikan orang lain kepadamu tidak bisa kamu baca lagi, sampai pemiliknya membagikannya lagi tanpa enkripsi.",
+      "confirm": "Nonaktifkan enkripsi",
+      "working": "Menonaktifkan…",
+      "done": "Enkripsi dinonaktifkan"
+    }
   }
 }

@@ -4,6 +4,7 @@ import {
   KeyRound,
   Lock,
   LockKeyhole,
+  LockKeyholeOpen,
   RefreshCw,
 } from 'lucide-react'
 import { ReactNode, useState } from 'react'
@@ -26,9 +27,12 @@ import {
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
+import { useEncryptionSession } from '~/lib/hooks/use-encryption-session'
 import { useGetKeyring } from '~/lib/hooks/use-get-keyring'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { toast } from '~/lib/hooks/use-toast'
+import { useTurnOffEncryption } from '~/lib/hooks/use-turn-off-encryption'
+import { useUnreadableShared } from '~/lib/hooks/use-unreadable-shared'
 import { useUpdateEncryption } from '~/lib/hooks/use-update-encryption'
 import { generateRecoveryCode } from '~/lib/utils/crypto'
 import { canUsePasskeys } from '~/lib/utils/passkey'
@@ -39,7 +43,8 @@ import {
   unlockSchema,
 } from '~/lib/validations/encryption'
 
-type TDialog = 'setup' | 'passphrase' | 'recovery' | 'passkey' | undefined
+type TDialog =
+  'setup' | 'passphrase' | 'recovery' | 'passkey' | 'off' | undefined
 
 const Action = ({
   icon: Icon,
@@ -88,7 +93,13 @@ export const Security = () => {
   const [reloadKeyring, setReloadKeyring] = useState(0)
   const { data: keyring } = useGetKeyring(reloadKeyring)
   const update = useUpdateEncryption()
+  const turnOff = useTurnOffEncryption()
+  const session = useEncryptionSession()
   const hasKeys = !!userData?.publicKey
+  const unreadable = useUnreadableShared(
+    hasKeys && session.status === 'unlocked',
+  )
+  const [fromOthers, setFromOthers] = useState<number>()
   const passkeyCount = keyring?.passkeys?.length ?? 0
   const [newCode, setNewCode] = useState(() => generateRecoveryCode())
   const [hasSavedCode, setHasSavedCode] = useState(false)
@@ -104,14 +115,27 @@ export const Security = () => {
   const close = () => {
     setDialog(undefined)
     update.clearError()
+    turnOff.clearError()
     passphraseForm.reset()
     checkForm.reset()
     setHasSavedCode(false)
   }
 
+  const loadFromOthers = async () => {
+    try {
+      setFromOthers(await turnOff.countFromOthers())
+    } catch {
+      setFromOthers(0)
+    }
+  }
+
   const open = (next: TDialog) => {
     close()
     if (next === 'recovery') setNewCode(generateRecoveryCode())
+    if (next === 'off') {
+      setFromOthers(undefined)
+      void loadFromOthers()
+    }
     setDialog(next)
   }
 
@@ -187,6 +211,42 @@ export const Security = () => {
             <p className="text-xs text-muted-foreground">
               {t('encryption.settings.sharedNote')}
             </p>
+            {unreadable.items.length > 0 && (
+              <div
+                role="status"
+                className="grid gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm"
+              >
+                <p>
+                  {t('encryption.settings.unreadable', {
+                    count: unreadable.items.length,
+                  })}
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  disabled={unreadable.isPending}
+                  onClick={async () => {
+                    if (await unreadable.shareThem())
+                      toast({
+                        description: t('encryption.settings.sharedPlain'),
+                      })
+                  }}
+                >
+                  {t('encryption.settings.shareUnencrypted')}
+                </Button>
+              </div>
+            )}
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-fit gap-2 text-destructive-text"
+              onClick={() => open('off')}
+            >
+              <LockKeyholeOpen className="size-4" />
+              {t('encryption.off.button')}
+            </Button>
           </>
         ) : (
           <>
@@ -306,6 +366,51 @@ export const Security = () => {
               disabled={!hasSavedCode || update.isPending}
             >
               {t('encryption.settings.useNewCode')}
+            </Button>
+          </form>
+        </FormProvider>
+      </Modal>
+
+      <Modal
+        open={dialog === 'off'}
+        setOpen={(value) => (value ? setDialog('off') : close())}
+        title={t('encryption.off.title')}
+      >
+        <FormProvider {...checkForm}>
+          <form
+            className="grid gap-3"
+            onSubmit={checkForm.handleSubmit(async (values) => {
+              if (await turnOff.mutate(values.passphrase)) {
+                toast({ description: t('encryption.off.done') })
+                close()
+              }
+            })}
+          >
+            <p className="text-sm text-muted-foreground">
+              {t('encryption.off.own')}
+            </p>
+            {fromOthers !== undefined && fromOthers > 0 && (
+              <p className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
+                {t('encryption.off.fromOthers', { count: fromOthers })}
+              </p>
+            )}
+            <PassphraseCheck />
+            {turnOff.error && (
+              <p
+                role="alert"
+                className="text-sm text-destructive-text"
+              >
+                {turnOff.error}
+              </p>
+            )}
+            <Button
+              type="submit"
+              variant="destructive"
+              disabled={turnOff.isPending || fromOthers === undefined}
+            >
+              {turnOff.isPending
+                ? t('encryption.off.working')
+                : t('encryption.off.confirm')}
             </Button>
           </form>
         </FormProvider>

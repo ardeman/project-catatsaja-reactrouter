@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'End-to-end encryption', id: 'Enkripsi end-to-end' },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'The custom currency format fields line up, even when a label wraps.',
+          id: 'Kolom format mata uang kustom kini sejajar, meski labelnya terbagi dua baris.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'End-to-end encryption: your notes, lists, books and health logs are encrypted on your device, so nobody else can read them, not even us. New accounts start with it; turn it on in Settings → Security.',
@@ -27,8 +34,8 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: 'Unlock with your passphrase or a passkey, keep a recovery code in case you forget, and lock a device from the account menu.',
-          id: 'Buka dengan frasa sandi atau passkey, simpan kode pemulihan jika lupa, dan kunci perangkat dari menu akun.',
+          en: 'Unlock with your passphrase or a passkey, keep a recovery code in case you forget, lock a device from the account menu, and turn encryption off again in Settings if you prefer.',
+          id: 'Buka dengan frasa sandi atau passkey, simpan kode pemulihan jika lupa, kunci perangkat dari menu akun, dan nonaktifkan enkripsi lagi di Pengaturan jika kamu mau.',
         },
       },
       {

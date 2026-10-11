@@ -1127,12 +1127,26 @@
       "passkeys_one": "{{count}} passkey",
       "passkeys_other": "{{count}} passkeys",
       "removePasskeys": "Remove passkeys",
-      "sharedNote": "Items shared with people who haven't turned on encryption stay unencrypted until they do."
+      "sharedNote": "Items shared with people who haven't turned on encryption stay unencrypted until they do.",
+      "unreadable_one": "{{count}} of your encrypted items is shared with someone who turned off encryption, so they can't read it.",
+      "unreadable_other": "{{count}} of your encrypted items are shared with people who turned off encryption, so they can't read them.",
+      "shareUnencrypted": "Share them unencrypted",
+      "sharedPlain": "Shared unencrypted: everyone can read them again"
     },
     "share": {
       "notSetUp": "{{email}} hasn't turned on encryption, so they can't read this encrypted item. Share it without encryption? It will be stored unencrypted for everyone.",
       "withoutEncryption": "Share without encryption"
     },
-    "encrypted": "Encrypted"
+    "encrypted": "Encrypted",
+    "off": {
+      "button": "Turn off encryption",
+      "title": "Turn off end-to-end encryption?",
+      "own": "Your encrypted notes, lists, books and health logs will be stored unencrypted again, so we and Google could technically read them. People you share them with keep access. Your passphrase, recovery code and passkeys stop working.",
+      "fromOthers_one": "{{count}} item someone else encrypted and shared with you will no longer be readable for you, until its owner shares it again without encryption.",
+      "fromOthers_other": "{{count}} items others encrypted and shared with you will no longer be readable for you, until their owners share them again without encryption.",
+      "confirm": "Turn off encryption",
+      "working": "Turning off…",
+      "done": "Encryption turned off"
+    }
   }
 }
