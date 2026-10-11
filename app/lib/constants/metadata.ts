@@ -6,7 +6,7 @@ export const contactEmail = 'mail@ardeman.com'
 export const appleIcon = '/apple-touch-icon.png'
 const shortcutIcon = '/android-chrome-512x512.png'
 const favicon = '/favicon.ico'
-const author = 'Ardeman'
+export const author = 'Ardeman'
 // Browser and installed-app bars match the page background.
 export const themeColor = '#ffffff'
 export const themeColors = { light: themeColor, dark: '#0c0a09' }
@@ -14,7 +14,7 @@ export const themeColors = { light: themeColor, dark: '#0c0a09' }
 // theme-color: white with dark text, or black with light text.
 export const statusBarStyles = { light: 'default', dark: 'black' }
 export const appDescription =
-  'Write notes, keep checklists, track your money and share them with the people you choose.'
+  'Write notes, keep checklists, track your money and health, and share them with the people you choose.'
 const manifest = '/site.webmanifest'
 export const githubUser = 'ardeman'
 export const githubRepo = 'project-catatsaja-reactrouter'

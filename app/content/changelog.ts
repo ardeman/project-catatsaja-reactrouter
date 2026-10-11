@@ -20,6 +20,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'The About page explains what the app does, how it keeps your data private, and who makes it.',
+          id: 'Halaman Tentang aplikasi kini menjelaskan apa yang bisa dilakukan, bagaimana datamu dijaga tetap privat, dan siapa pembuatnya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Settings are regrouped: encryption sits with your email and sign-in under Account, and BMI and lab units have their own Health page.',
           id: 'Pengaturan dikelompokkan ulang: enkripsi kini bersama email dan cara masuk di Akun, dan IMT serta satuan lab punya halaman Kesehatan sendiri.',
         },

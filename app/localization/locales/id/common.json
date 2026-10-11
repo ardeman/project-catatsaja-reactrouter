@@ -466,7 +466,23 @@
     }
   },
   "about": {
-    "description": "<span>{{appName}}</span> adalah aplikasi produktivitas pribadi untuk catatan, daftar tugas, dan keuangan."
+    "description": "<span>{{appName}}</span> menyimpan catatan, daftar tugas, keuangan, dan kesehatanmu di satu tempat sederhana, jadi kamu tinggal mencatat dan mudah menemukannya lagi.",
+    "features": {
+      "title": "Apa yang bisa dilakukan",
+      "description": "Catatan yang terformat sendiri saat kamu mengetik, daftar tugas yang bisa dibagikan ke keluarga, buku keuangan dalam mata uang apa pun dengan grafik dan saran kategori, serta catatan kesehatan untuk seluruh keluarga, dari berat badan dan gula darah sampai pertumbuhan anak dan haid."
+    },
+    "private": {
+      "title": "Privat sejak awal",
+      "description": "Itemmu dienkripsi end-to-end di perangkatmu, jadi hanya kamu dan orang yang kamu ajak berbagi yang bisa membacanya; kami pun tidak. Saran kategori juga dihitung di perangkatmu. Datamu tidak pernah dijual atau dipakai untuk iklan."
+    },
+    "everywhere": {
+      "title": "Di mana pun kamu berada",
+      "description": "Bisa dipakai di browser apa pun di ponsel atau komputer, dipasang seperti aplikasi, dan tetap terbuka saat offline. Pilih tema terang atau gelap, ukuran teks, serta bahasa Inggris atau Indonesia."
+    },
+    "made": {
+      "title": "Siapa pembuatnya",
+      "description": "Dibuat oleh {{author}}. Gratis, dan <github>kode sumbernya</github> terbuka di GitHub. Lihat yang baru di <changelog>catatan perubahan</changelog>."
+    }
   },
   "privacyPolicy": {
     "updated": "Terakhir diperbarui: 11 Oktober 2026",

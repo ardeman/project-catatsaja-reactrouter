@@ -92,7 +92,7 @@ export const LandingPage = () => {
               <Trans
                 i18nKey="landing.hero.description"
                 values={{ appName }}
-                components={{ span: <span className="text-foreground" /> }}
+                components={{ span: <span className="text-primary" /> }}
               />
             </p>
             <div className="flex flex-wrap gap-3">

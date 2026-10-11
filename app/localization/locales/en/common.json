@@ -466,7 +466,23 @@
     }
   },
   "about": {
-    "description": "<span>{{appName}}</span> is a personal productivity app for notes, checklists and finances."
+    "description": "<span>{{appName}}</span> keeps your notes, checklists, money and health in one simple place, so you can just write it down and find it again.",
+    "features": {
+      "title": "What it does",
+      "description": "Notes that format themselves as you type, checklists you can share with your household, finance books in any currency with charts and category suggestions, and health logs for the whole family, from weight and blood sugar to a child's growth and periods."
+    },
+    "private": {
+      "title": "Private by design",
+      "description": "Your items are end-to-end encrypted on your device, so only you and the people you share with can read them; not even we can. Category suggestions are worked out on your device too. Your data is never sold or used for advertising."
+    },
+    "everywhere": {
+      "title": "Wherever you are",
+      "description": "It works in any browser on your phone or computer, installs like an app and opens even when you are offline. Choose light or dark, a text size, and English or Bahasa Indonesia."
+    },
+    "made": {
+      "title": "Who makes it",
+      "description": "Made by {{author}}. It is free, and its <github>source code</github> is open on GitHub. See what is new in the <changelog>changelog</changelog>."
+    }
   },
   "privacyPolicy": {
     "updated": "Last updated: 11 October 2026",
