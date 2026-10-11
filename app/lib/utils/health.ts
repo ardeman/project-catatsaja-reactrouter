@@ -8,8 +8,9 @@ import {
 } from '~/lib/types/health'
 import {
   assessGrowth,
-  growthMaxDay,
-  TGrowthStandards,
+  growthSourceOn,
+  TGrowthIndicator,
+  TGrowthTables,
 } from '~/lib/utils/growth'
 
 const DAY = 86_400_000
@@ -30,9 +31,9 @@ export const newHealthEntryId = () => crypto.randomUUID()
 export const ageInYears = (birthDate: string, on: string) => {
   const [birthYear, birthMonth, birthDay] = birthDate.split('-').map(Number)
   const [year, month, day] = on.split('-').map(Number)
-  const hadBirthday =
+  const hasHadBirthday =
     month > birthMonth || (month === birthMonth && day >= birthDay)
-  return year - birthYear - (hadBirthday ? 0 : 1)
+  return year - birthYear - (hasHadBirthday ? 0 : 1)
 }
 
 // Entries of one kind, newest first (by date, then time, then the order
@@ -151,73 +152,50 @@ export const compactEntry = (entry: THealthEntry): THealthEntry =>
   ) as THealthEntry
 
 // A body measurement judged for the person's age: adults by BMI category
-// (the chosen standard), children up to 5 against the WHO standards. In
-// between, BMI is shown without a category (adult cut-offs don't apply).
+// (the chosen standard), children up to 19 against the WHO growth tables
+// (the standards to 5, the 2007 reference after). From 18 to 19 both show:
+// the adult category, and the reference's percentiles.
 export const assessBody = ({
   entry,
   entries,
   birthDate,
   sex,
   bmiStandard,
-  standards,
+  tables,
 }: {
   entry: THealthEntryOf<'body'>
   entries: THealthEntry[]
   birthDate: string
   sex: THealthSex
   bmiStandard: TBmiStandard
-  standards?: TGrowthStandards
+  tables?: TGrowthTables
 }) => {
   const day = daysBetween(birthDate, entry.date)
   const isAdult = ageInYears(birthDate, entry.date) >= 18
   const height = entry.height ?? heightOn(entries, entry.date)
   const bmiValue =
-    entry.weight && height ? bmi(entry.weight, height) : undefined
-  const growth =
-    standards && day >= 0 && day <= growthMaxDay
-      ? {
-          weightForAge:
-            entry.weight === undefined
-              ? undefined
-              : assessGrowth({
-                  standards,
-                  indicator: 'weightForAge',
-                  sex,
-                  day,
-                  value: entry.weight,
-                }),
-          lengthForAge:
-            entry.height === undefined
-              ? undefined
-              : assessGrowth({
-                  standards,
-                  indicator: 'lengthForAge',
-                  sex,
-                  day,
-                  value: entry.height,
-                }),
-          headForAge:
-            entry.head === undefined
-              ? undefined
-              : assessGrowth({
-                  standards,
-                  indicator: 'headForAge',
-                  sex,
-                  day,
-                  value: entry.head,
-                }),
-          bmiForAge:
-            bmiValue === undefined
-              ? undefined
-              : assessGrowth({
-                  standards,
-                  indicator: 'bmiForAge',
-                  sex,
-                  day,
-                  value: bmiValue,
-                }),
-        }
+    height && entry.weight ? bmi(entry.weight, height) : undefined
+  const source = tables ? growthSourceOn(day) : undefined
+  const measure = (indicator: TGrowthIndicator, value?: number) =>
+    tables && value !== undefined
+      ? assessGrowth({ tables, indicator, sex, day, value })
       : undefined
+  const growth = source
+    ? {
+        weightForAge: measure('weightForAge', entry.weight),
+        lengthForAge: measure('lengthForAge', entry.height),
+        headForAge: measure('headForAge', entry.head),
+        bmiForAge: measure('bmiForAge', bmiValue),
+      }
+    : undefined
+  // The one to lead with: weight under 5, BMI from 5 (the index PMK No.
+  // 2/2020 uses for 5–18 years).
+  const order: TGrowthIndicator[] =
+    source === 'reference'
+      ? ['bmiForAge', 'lengthForAge', 'weightForAge']
+      : ['weightForAge', 'lengthForAge']
+  const leadIndicator = growth && order.find((indicator) => growth[indicator])
+  const leadAssessment = leadIndicator && growth?.[leadIndicator]
   return {
     bmi: bmiValue,
     bmiStatus:
@@ -225,11 +203,9 @@ export const assessBody = ({
         ? classifyBmi(bmiValue, bmiStandard)
         : undefined,
     growth,
+    growthLead:
+      leadIndicator && leadAssessment
+        ? { indicator: leadIndicator, ...leadAssessment }
+        : undefined,
   }
-}
-
-// Whether the WHO child standards apply on a date (birth to 5 years).
-export const isUnderFive = (birthDate: string, date: string) => {
-  const day = daysBetween(birthDate, date)
-  return day >= 0 && day <= growthMaxDay
 }

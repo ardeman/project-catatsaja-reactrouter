@@ -7,19 +7,24 @@ import { useElementWidth } from '~/lib/hooks/use-element-width'
 import { THealthSex } from '~/lib/types/health'
 import {
   assessGrowth,
+  DAYS_PER_MONTH,
+  growthLastDay,
+  growthLms,
   growthMaxDay,
-  lmsAt,
   TGrowthIndicator,
-  TGrowthStandards,
+  TGrowthTables,
+  TLms,
   valueAtZ,
 } from '~/lib/utils/growth'
 
 type TProperties = {
-  standards: TGrowthStandards
+  tables: TGrowthTables
   indicator: TGrowthIndicator
   sex: THealthSex
   // Age in days and the measurement, oldest first.
   points: { day: number; value: number }[]
+  // The child's age today, in days: the range to show before any point.
+  ageDay: number
   label: string
   unit: string
 }
@@ -29,37 +34,58 @@ const TOP = 12
 const AXIS_BAND = 24
 const LEFT = 36
 const RIGHT = 28
-const DAYS_PER_MONTH = 30.4375
+const DAYS_PER_YEAR = 12 * DAYS_PER_MONTH
 
 // The WHO lines: the median, ±2 and ±3 SD. Between ±2 is the usual range.
 const LINES = [-3, -2, 0, 2, 3] as const
 
-// A child's measurements against the WHO standard for their sex: the
-// reference lines by age, the child's points joined in order.
+// A child's measurements against WHO's lines for their sex: the reference
+// lines by age, the child's points joined in order. Under 5 against the
+// Child Growth Standards; from 5 the 2007 reference continues the lines.
 export const GrowthChart = ({
-  standards,
+  tables,
   indicator,
   sex,
   points,
+  ageDay,
   label,
   unit,
 }: TProperties) => {
   const { t, i18n } = useTranslation()
   const { reference, width } = useElementWidth<HTMLDivElement>()
   const { index, setIndex, focusProps } = useChartCursor(points.length)
-  const table = standards[indicator][sex]
-  // From birth to a little past the latest measurement (at least a year).
-  const lastDay = Math.max(...points.map((point) => point.day), 0)
-  const endDay = Math.min(Math.max(lastDay + 90, 365), growthMaxDay)
-  const samples = Array.from({ length: 60 }, (_, step) =>
-    Math.round((step / 59) * endDay),
+  const days = points.map((point) => point.day)
+  const lastWhoDay = growthLastDay(indicator)
+  const firstDay = Math.min(
+    points.length > 0 ? Math.min(...days) : ageDay,
+    lastWhoDay,
   )
+  const lastDay = Math.min(
+    points.length > 0 ? Math.max(...days) : ageDay,
+    lastWhoDay,
+  )
+  // From birth, or from 5 years when every point is past it, to a little
+  // past the latest measurement (at least a year). Under-fives stay within
+  // the standards.
+  const startDay = firstDay <= growthMaxDay ? 0 : growthMaxDay + 1
+  const endDay = Math.min(
+    Math.max(lastDay + 90, startDay + 365),
+    lastDay <= growthMaxDay ? growthMaxDay : lastWhoDay,
+  )
+  const span = endDay - startDay || 1
+  const isInYears = endDay > growthMaxDay
+  const sampleCount = isInYears ? 90 : 60
+  const samples = Array.from({ length: sampleCount }, (_, step) =>
+    Math.round(startDay + (step / (sampleCount - 1)) * (endDay - startDay)),
+  )
+    .map((day) => ({ day, lms: growthLms({ tables, indicator, sex, day }) }))
+    .filter(
+      (sample): sample is { day: number; lms: TLms } =>
+        sample.lms !== undefined,
+    )
   const curves = LINES.map((z) => ({
     z,
-    values: samples.map((day) => {
-      const lms = lmsAt(table, day)
-      return lms ? valueAtZ(lms, z) : 0
-    }),
+    values: samples.map(({ lms }) => valueAtZ(lms, z)),
   }))
   const all = [
     ...curves.flatMap((curve) => curve.values),
@@ -70,24 +96,41 @@ export const GrowthChart = ({
   const y = (value: number) =>
     TOP + ((high - value) / (high - low || 1)) * PLOT_HEIGHT
   const plotWidth = Math.max(width - LEFT - RIGHT, 0)
-  const x = (day: number) => LEFT + (day / (endDay || 1)) * plotWidth
+  const x = (day: number) => LEFT + ((day - startDay) / span) * plotWidth
   const height = TOP + PLOT_HEIGHT + AXIS_BAND
   const number = new Intl.NumberFormat(i18n.language, {
     maximumFractionDigits: 1,
   })
-  const monthStep = endDay > 730 ? 12 : endDay > 365 ? 6 : 3
-  const months = Array.from(
-    { length: Math.floor(endDay / DAYS_PER_MONTH / monthStep) + 1 },
-    (_, step) => step * monthStep,
+  // Ticks in months under 5, in years after (labelled with their number).
+  const tickStep = isInYears
+    ? span > 12 * DAYS_PER_YEAR
+      ? 3 * DAYS_PER_YEAR
+      : span > 6 * DAYS_PER_YEAR
+        ? 2 * DAYS_PER_YEAR
+        : DAYS_PER_YEAR
+    : (endDay > 730 ? 12 : endDay > 365 ? 6 : 3) * DAYS_PER_MONTH
+  const ticks = Array.from(
+    {
+      length:
+        Math.floor(endDay / tickStep) - Math.ceil(startDay / tickStep) + 1,
+    },
+    (_, step) => {
+      const day = (Math.ceil(startDay / tickStep) + step) * tickStep
+      return {
+        day,
+        label: Math.round(day / (isInYears ? DAYS_PER_YEAR : DAYS_PER_MONTH)),
+      }
+    },
   )
   const yTicks = Array.from({ length: 5 }, (_, step) =>
     Math.round(low + ((high - low) * step) / 4),
   )
   const active = index === undefined ? undefined : points[index]
+  const activeMonths = active && Math.floor(active.day / DAYS_PER_MONTH)
   const activeAssessment =
     active &&
     assessGrowth({
-      standards,
+      tables,
       indicator,
       sex,
       day: active.day,
@@ -123,10 +166,10 @@ export const GrowthChart = ({
         >
           {/* The usual range (−2 to +2 SD), lightly shaded. */}
           <path
-            d={`M${samples.map((day, step) => `${x(day)},${y(curves[3].values[step])}`).join(' L')} L${samples
+            d={`M${samples.map(({ day }, step) => `${x(day)},${y(curves[3].values[step])}`).join(' L')} L${samples
               .toReversed()
               .map(
-                (day, step) =>
+                ({ day }, step) =>
                   `${x(day)},${y(curves[1].values[samples.length - 1 - step])}`,
               )
               .join(' L')} Z`}
@@ -144,11 +187,11 @@ export const GrowthChart = ({
               {tick}
             </text>
           ))}
-          {months.map((month) => (
-            <g key={month}>
+          {ticks.map((tick) => (
+            <g key={tick.day}>
               <line
-                x1={x(month * DAYS_PER_MONTH)}
-                x2={x(month * DAYS_PER_MONTH)}
+                x1={x(tick.day)}
+                x2={x(tick.day)}
                 y1={TOP}
                 y2={TOP + PLOT_HEIGHT}
                 className="stroke-border"
@@ -156,19 +199,19 @@ export const GrowthChart = ({
                 shapeRendering="crispEdges"
               />
               <text
-                x={x(month * DAYS_PER_MONTH)}
+                x={x(tick.day)}
                 y={TOP + PLOT_HEIGHT + 16}
                 textAnchor="middle"
                 className="fill-muted-foreground text-[10px]"
               >
-                {month}
+                {tick.label}
               </text>
             </g>
           ))}
           {curves.map(({ z, values }) => (
             <g key={z}>
               <path
-                d={`M${samples.map((day, step) => `${x(day)},${y(values[step])}`).join(' L')}`}
+                d={`M${samples.map(({ day }, step) => `${x(day)},${y(values[step])}`).join(' L')}`}
                 fill="none"
                 className={
                   z === 0
@@ -224,13 +267,22 @@ export const GrowthChart = ({
         </svg>
       )}
       <p className="mt-1 text-[11px] text-muted-foreground">
-        {t('health.growth.axis', { unit })}
+        {t(isInYears ? 'health.growth.axisYears' : 'health.growth.axis', {
+          unit,
+          // Plain text React escapes itself; "kg/m²" must keep its slash.
+          interpolation: { escapeValue: false },
+        })}
       </p>
-      {active && index !== undefined && (
+      {active && activeMonths !== undefined && index !== undefined && (
         <ChartTooltip
-          title={t('health.growth.ageMonths', {
-            count: Math.floor(active.day / DAYS_PER_MONTH),
-          })}
+          title={
+            active.day > growthMaxDay
+              ? t('health.growth.ageYearsMonths', {
+                  years: Math.floor(activeMonths / 12),
+                  months: activeMonths % 12,
+                })
+              : t('health.growth.ageMonths', { count: activeMonths })
+          }
           rows={[
             {
               label,

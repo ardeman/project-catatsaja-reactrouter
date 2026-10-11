@@ -103,7 +103,12 @@ export const startApp = async () => {
 }
 
 export const stopApp = (server) => {
-  if (server?.pid) process.kill(-server.pid)
+  if (!server?.pid) return
+  try {
+    process.kill(-server.pid)
+  } catch {
+    // Already stopped.
+  }
 }
 
 export const launch = () => chromium.launch({ channel: 'chrome' })

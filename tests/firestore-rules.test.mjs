@@ -150,6 +150,7 @@ const collections = {
     sex: 'female',
     calorieTarget: null,
     content: [],
+    reminders: [],
   },
 }
 
@@ -254,6 +255,25 @@ for (const [collection, content] of Object.entries(collections)) {
           .update({ 'permissions.write': [OWNER, WRITER, READER] }),
       )
       await assertFails(as(WRITER).doc(path).update({ owner: WRITER }))
+    })
+
+    test('a writer changes every content field; a reader none', async () => {
+      await seed(path, shared)
+      for (const field of Object.keys(content)) {
+        const changed = Array.isArray(content[field])
+          ? [{ id: 'changed' }]
+          : `Changed ${field}`
+        await assertSucceeds(
+          as(WRITER)
+            .doc(path)
+            .update({ [field]: changed }),
+        )
+        await assertFails(
+          as(READER)
+            .doc(path)
+            .update({ [field]: [{ id: 'reader' }] }),
+        )
+      }
     })
 
     test('a reader cannot change the content', async () => {

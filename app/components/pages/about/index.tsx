@@ -6,7 +6,7 @@ import {
   appName,
   author,
   authorUrl,
-  githubRepo,
+  githubRepository,
   githubUser,
 } from '~/lib/constants/metadata'
 
@@ -75,7 +75,7 @@ export const AboutPage = () => {
               portfolio: <ExternalLink href={authorUrl} />,
               github: (
                 <ExternalLink
-                  href={`https://github.com/${githubUser}/${githubRepo}`}
+                  href={`https://github.com/${githubUser}/${githubRepository}`}
                 />
               ),
               changelog: (

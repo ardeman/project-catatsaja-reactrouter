@@ -52,7 +52,7 @@ export const Share = (properties: TPermissions) => {
   const [needsPlain, setNeedsPlain] = useState<
     { uid: string; email: string; permission: 'read' | 'write' } | undefined
   >()
-  const currentLink = `${globalThis.location.origin}${path}`
+  const currentLink = `${location.origin}${path}`
 
   const onSubmit = handleSubmit(async (data) => {
     setEmail(data.user)
@@ -76,6 +76,7 @@ export const Share = (properties: TPermissions) => {
 
   useEffect(() => {
     if (!searchResults?.some((user) => !permissions.has(user.uid))) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reacts to results that arrive after the submit; doing it while rendering could loop, as `permissions` is rebuilt whenever `read` or `write` is a new array
       setDisabled(false)
     }
   }, [searchResults, permissions])

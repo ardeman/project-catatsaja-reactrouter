@@ -54,6 +54,18 @@ export type THealthEntryOf<TKind extends THealthKind> = Extract<
   { kind: TKind }
 >
 
+// A reminder to log a measurement every few days (at a time, or any time
+// that day), or that a period is expected in a few days. Shown when due;
+// a calendar file lets the phone alert on time.
+export type THealthReminder =
+  | {
+      id: string
+      kind: Exclude<THealthKind, 'period'>
+      everyDays: number
+      time?: string
+    }
+  | { id: string; kind: 'period'; daysBefore: number }
+
 // A health log: one person (the owner, a child, a parent) and their
 // measurements.
 export type THealthLogForm = {
@@ -63,6 +75,8 @@ export type THealthLogForm = {
   // kcal a day; null until set.
   calorieTarget: number | null
   content: THealthEntry[]
+  // Missing on logs made before reminders.
+  reminders?: THealthReminder[]
 }
 
 export type TCreateHealthLogRequest = THealthLogForm

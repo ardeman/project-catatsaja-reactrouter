@@ -2,16 +2,21 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Segmented } from '~/components/base/segmented'
-import { useGrowthStandards } from '~/lib/hooks/use-growth-standards'
+import { Button } from '~/components/ui/button'
+import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
 import { today } from '~/lib/utils/finance'
-import { TGrowthIndicator } from '~/lib/utils/growth'
+import {
+  growthLastDay,
+  growthMaxDay,
+  growthSourceOn,
+  TGrowthIndicator,
+} from '~/lib/utils/growth'
 import {
   assessBody,
   bmi,
   daysBetween,
   entriesOf,
   heightOn,
-  isUnderFive,
 } from '~/lib/utils/health'
 
 import { EntryList } from './entry-list'
@@ -27,16 +32,38 @@ const indicators: TGrowthIndicator[] = [
 ]
 
 // Weight, height and head circumference. Adults: weight over time and BMI
-// by the chosen standard. Children up to 5: growth against the WHO
-// standards.
+// by the chosen standard. Children up to 19: growth against WHO's tables
+// (the Child Growth Standards to 5, the 2007 reference from 5 to 19), and
+// from 5 also weight over time.
 export const BodySection = (properties: TSectionProperties) => {
   const { log, bmiStandard } = properties
   const { t, i18n } = useTranslation()
-  const [indicator, setIndicator] = useState<TGrowthIndicator>('weightForAge')
   const entries = entriesOf(log.content, 'body')
   const hasBirthDate = !!log.birthDate
-  const isChild = hasBirthDate && isUnderFive(log.birthDate, today())
-  const standards = useGrowthStandards(isChild)
+  const ageDay = hasBirthDate ? daysBetween(log.birthDate, today()) : -1
+  const source = growthSourceOn(ageDay)
+  const isChild = source !== undefined
+  const isPastWeightForAge = ageDay > growthLastDay('weightForAge')
+  // The person's choice; until they make one, BMI past 10 (where WHO has no
+  // weight-for-age), else weight. Worked out each render: the log, and so
+  // the age, arrives after the first one.
+  const [chosen, setIndicator] = useState<TGrowthIndicator>()
+  const indicator =
+    chosen ?? (isPastWeightForAge ? 'bmiForAge' : 'weightForAge')
+  const entryDays = entries.map((entry) =>
+    daysBetween(log.birthDate, entry.date),
+  )
+  const tables = useGrowthTables(isChild ? [ageDay, ...entryDays] : [])
+  // Head circumference has WHO lines to 5 years only.
+  const hasHead =
+    ageDay <= growthMaxDay ||
+    entries.some(
+      (entry, position) =>
+        entry.head !== undefined && entryDays[position] <= growthMaxDay,
+    )
+  // Past 10: earlier weights still show on their chart, with a note.
+  const isWeightPastReference =
+    indicator === 'weightForAge' && isPastWeightForAge
   const number = new Intl.NumberFormat(i18n.language, {
     maximumFractionDigits: 1,
   })
@@ -50,7 +77,7 @@ export const BodySection = (properties: TSectionProperties) => {
     if (which === 'lengthForAge') return entry.height
     if (which === 'headForAge') return entry.head
     const height = entry.height ?? heightOn(log.content, entry.date)
-    return entry.weight && height ? bmi(entry.weight, height) : undefined
+    return height && entry.weight ? bmi(entry.weight, height) : undefined
   }
   const growthPoints = entries
     .toReversed()
@@ -60,7 +87,9 @@ export const BodySection = (properties: TSectionProperties) => {
     }))
     .filter(
       (point): point is { day: number; value: number } =>
-        point.value !== undefined && point.day >= 0 && point.day <= 1856,
+        point.value !== undefined &&
+        point.day >= 0 &&
+        point.day <= growthLastDay(indicator),
     )
   const weightPoints = entries
     .toReversed()
@@ -87,7 +116,7 @@ export const BodySection = (properties: TSectionProperties) => {
           birthDate: log.birthDate,
           sex: log.sex,
           bmiStandard,
-          standards,
+          tables,
         })
         const measures = [
           entry.weight !== undefined && `${number.format(entry.weight)} kg`,
@@ -96,12 +125,19 @@ export const BodySection = (properties: TSectionProperties) => {
             `${t('health.form.head')} ${number.format(entry.head)} cm`,
         ].filter(Boolean)
         const growth = assessment.growth
+        // BMI for age from 5, where it is the main index.
         const percentiles = growth
           ? (
               [
                 ['weightForAge', growth.weightForAge],
                 ['lengthForAge', growth.lengthForAge],
                 ['headForAge', growth.headForAge],
+                [
+                  'bmiForAge',
+                  growth.bmiForAge?.source === 'reference'
+                    ? growth.bmiForAge
+                    : undefined,
+                ],
               ] as const
             )
               .filter(([, value]) => value)
@@ -119,10 +155,7 @@ export const BodySection = (properties: TSectionProperties) => {
           ]
             .filter(Boolean)
             .join(' · '),
-          status:
-            assessment.bmiStatus ??
-            growth?.weightForAge?.status ??
-            growth?.lengthForAge?.status,
+          status: assessment.bmiStatus ?? assessment.growthLead?.status,
           secondary: percentiles,
         }
       }}
@@ -139,33 +172,56 @@ export const BodySection = (properties: TSectionProperties) => {
             <Segmented
               label={t('health.growth.title')}
               value={indicator}
-              options={indicators.map((value) => ({
-                value,
-                label: t(`health.growth.short.${value}`),
-              }))}
+              options={indicators
+                .filter((value) => value !== 'headForAge' || hasHead)
+                .map((value) => ({
+                  value,
+                  label: t(`health.growth.short.${value}`),
+                }))}
               onChange={setIndicator}
             />
           </div>
-          {standards ? (
-            <GrowthChart
-              standards={standards}
-              indicator={indicator}
-              sex={log.sex}
-              points={growthPoints}
-              label={t(`health.growth.indicators.${indicator}`)}
-              unit={units[indicator]}
-            />
-          ) : (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              {t('health.growth.loading')}
-            </p>
+          {(!isWeightPastReference || growthPoints.length > 0) &&
+            (tables.isLoaded ? (
+              <GrowthChart
+                tables={tables}
+                indicator={indicator}
+                sex={log.sex}
+                points={growthPoints}
+                ageDay={ageDay}
+                label={t(`health.growth.indicators.${indicator}`)}
+                unit={units[indicator]}
+              />
+            ) : (
+              <p className="py-8 text-center text-sm text-muted-foreground">
+                {t('health.growth.loading')}
+              </p>
+            ))}
+          {isWeightPastReference && (
+            <div className="grid justify-items-center gap-2 py-4 text-center">
+              <p className="max-w-sm text-sm text-muted-foreground">
+                {t('health.growth.noWeightForAge')}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIndicator('bmiForAge')}
+              >
+                {t('health.growth.showBmiForAge')}
+              </Button>
+            </div>
           )}
           <p className="text-xs text-muted-foreground">
-            {t('health.growth.source')}
+            {t(
+              source === 'reference'
+                ? 'health.growth.sourceReference'
+                : 'health.growth.source',
+            )}
           </p>
         </section>
       )}
-      {!isChild && weightPoints.length > 0 && (
+      {source !== 'standards' && weightPoints.length > 0 && (
         <section className="glass-surface grid gap-3 rounded-xl border p-4">
           <h2 className="text-sm font-medium">{t('health.chart.weight')}</h2>
           <MetricChart

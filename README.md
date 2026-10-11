@@ -35,9 +35,12 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and the Google profile photo when signing in with Google.
 - **Appearance:** light, dark or system theme, three text sizes, English or Bahasa Indonesia; previewed before saving and kept per user.
 - **Finances:** books (for a month, a trip, a project) of income and expense entries with categories, quantity and date; totals and balance in the book's currency; entries in other currencies keep the exchange rate used, so totals never shift; pin and share like notes.
-- **Receipt scanning:** in a finance book, a photo of a receipt is read by Gemini (Firebase AI Logic) into one entry for its total or one per item (choosing which items to add), checked before adding; categories still come from the on-device suggestions. Opt-in: the photo is sent only when chosen, after a one-time notice.
+- **Gemini helpers** (Firebase AI Logic, opt-in after a one-time notice that can be taken back in Settings → Account; something is sent only when the person uses a feature, and the result is checked before anything changes):
+  - **Receipt scanning:** in a finance book, a photo of a receipt is read by Gemini (Firebase AI Logic) into one entry for its total or one per item (choosing which items to add), checked before adding (discounts per item, the date checked); categories still come from the on-device suggestions.
+  - **Quick add:** typed text such as "makan siang 45rb, gaji 8jt kemarin" read into entries to check and choose from.
+  - **Note helpers:** summarise, tidy up, translate English ↔ Indonesian (previewed, undoable), or turn a note into a new task list.
 - **Finance analysis:** per book, insight tiles, cash flow and balance charts and spending by colour-coded category, with a table view; accounts to check the balance against; calculations in amount fields.
-- **Health:** a log per person (yourself, a child, a parent), shared like notes: weight, height and BMI (Kemenkes, WHO or WHO Asia-Pacific categories), child growth against the WHO Child Growth Standards (birth to 5 years, percentiles and Kemenkes PMK 2/2020 status), blood sugar, uric acid and cholesterol with adult reference ranges (mg/dL or SI units), calories against a daily target, and period cycle estimates.
+- **Health:** a log per person (yourself, a child, a parent), shared like notes: weight, height and BMI (Kemenkes, WHO or WHO Asia-Pacific categories), child growth from birth to 19 years against the WHO Child Growth Standards (to 5 years) and the WHO Growth Reference for school-age children and adolescents (5 to 19 years; weight for age to 10), with percentiles and Kemenkes PMK 2/2020 status, blood sugar, uric acid and cholesterol with adult reference ranges (mg/dL or SI units), calories against a daily target, and period cycle estimates; reminders to measure every few days or before an expected period, shown when due (on the log, its card and the Health menu) and exportable to the phone's calendar (.ics).
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
 - **Landing page:** what the app does, with previews of a note and a checklist, in both languages and themes; signed-in visitors go straight to their notes.
 - **App:** installable as a standalone app ("Install app" on the landing page and in the account menu: the browser's install prompt, or the right steps for Safari, Firefox on Android and Chrome before it offers the prompt), opens offline, a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
@@ -47,16 +50,14 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 **Planned**
 
 - [ ] Finances: budgets.
-- [ ] Health: WHO growth references for 5–19 years, and reminders.
-- [ ] More Gemini features through Firebase AI Logic (receipt scanning is the first); which ones is not decided.
+- [ ] Push notifications for health reminders (needs Cloud Functions and the Blaze plan; today reminders show in the app and go to the phone's calendar).
 
 **Technical**
 
-- [ ] More end-to-end tests (today they cover encryption and sharing; the rules have their own tests).
-- [ ] Turn back on the ESLint rules that the 2026-10-09 upgrade switched off, and fix what they find (`eslint.config.mjs`).
+- [ ] More end-to-end tests (today they cover encryption, sharing, the AI features and health reminders; the rules have their own tests).
+- [ ] Read form values with `useWatch` instead of react-hook-form's `watch()`, then turn on `react-hooks/incompatible-library` (`eslint.config.mjs`).
 - [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
 - [ ] TypeScript 7, once typescript-eslint supports it.
-- [ ] Pass `ref` as a prop instead of `forwardRef` in `app/components/ui/` (React 19 style, before React removes `forwardRef`).
 
 ## Tech stack
 
@@ -126,7 +127,7 @@ pnpm validate   # lint + typecheck + knip + unit tests
 
 **Rules tests** — `pnpm test:rules` runs `tests/firestore-rules.test.mjs` against the Firestore emulator (it needs Java 21). The deploy workflow runs them before every deploy, so they don't have to pass locally.
 
-**End-to-end tests** — `pnpm test:e2e` runs `tests/e2e/encryption.test.mjs`: the app on the Auth and Firestore emulators, driven by Playwright in the installed Google Chrome, through encryption and sharing with three accounts (about three minutes; needs Java 21 and port 5199 free). The deploy workflow runs them before every deploy too.
+**End-to-end tests** — `pnpm test:e2e` runs `tests/e2e/encryption.test.mjs` (encryption and sharing with three accounts) and `tests/e2e/ai.test.mjs` (receipt scanning, quick add, note helpers and taking back consent, with Gemini replaced by fixed answers, plus health reminders), one after the other: the app on the Auth and Firestore emulators, driven by Playwright in the installed Google Chrome (about four minutes; needs Java 21 and port 5199 free). The deploy workflow runs them before every deploy too.
 
 ### Git hooks and commit messages
 
@@ -139,7 +140,7 @@ Commit subjects use `type(scope)!: description`, with optional scope and `!` for
 
 ## Deployment
 
-Every push to `main` runs `.github/workflows/firebase-remix.yml`: install, `pnpm validate`, the Firestore rules tests (`pnpm test:rules`, with Java), the end-to-end tests (`pnpm test:e2e`), build with the secrets above, and deploy `build/client` to the live channel of Firebase Hosting. It can also be started by hand from the Actions tab. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
+`.github/workflows/firebase-remix.yml` has two jobs. **checks** runs on every push, pull request, every Monday (to catch a runner, Chrome or emulator change before it blocks a deploy) and by hand: install, `pnpm validate`, the Firestore rules tests (`pnpm test:rules`, with Java) and the end-to-end tests (`pnpm test:e2e`, with Chrome installed by Playwright). **deploy** runs after it, only for a push to `main` or a run by hand on `main`: build with the secrets above and deploy `build/client` to the live channel of Firebase Hosting, one deploy at a time. Nothing comes from the runner image (Node from `.nvmrc`, pnpm from `packageManager`, Java, Chrome and the Firebase CLI pinned or installed), so moving `ubuntu-latest` to a new Ubuntu doesn't change the build; Dependabot (`.github/dependabot.yml`) proposes action updates monthly. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
 
 Hosting (`firebase.json`) serves the prerendered pages as files and every other path `__spa-fallback.html`, without trailing slashes. Pages are sent with `Cache-Control: no-cache` and the hashed files in `/assets/` are cached for a year, so a deploy never leaves browsers with pages that point at deleted files.
 
@@ -156,7 +157,7 @@ app/
                         _layout.auth.*    sign in, sign up, forgot password
                         _layout._main.*   signed-in app (notes, tasks, finances, health, settings)
   apis/firestore/     Firestore reads and writes per collection (note, task, finance, health-log, user, currency)
-  apis/ai/            Gemini calls through Firebase AI Logic (receipt)
+  apis/ai/            Gemini calls through Firebase AI Logic (receipt, typed entries, note helpers)
   components/
     ui/               shadcn/ui primitives (generated)
     base/             Shared app components built on ui/

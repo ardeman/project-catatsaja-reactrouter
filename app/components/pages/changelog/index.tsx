@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { releases, TChangeKind } from '~/content/changelog'
-import { githubRepo, githubUser } from '~/lib/constants/metadata'
+import { githubRepository, githubUser } from '~/lib/constants/metadata'
 import { cn } from '~/lib/utils/shadcn'
 
 const kindClassName: Record<TChangeKind, string> = {
@@ -74,7 +74,7 @@ export const ChangelogPage = () => {
       ))}
       <p className="text-sm text-muted-foreground">
         <a
-          href={`https://github.com/${githubUser}/${githubRepo}/commits/main/`}
+          href={`https://github.com/${githubUser}/${githubRepository}/commits/main/`}
           target="_blank"
           rel="noreferrer"
           className="underline underline-offset-4 hover:text-foreground"

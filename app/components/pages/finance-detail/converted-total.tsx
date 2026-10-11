@@ -76,22 +76,23 @@ export const ConvertedTotal = (
       return
     }
     if (!isPositive(total) || !isPositive(units)) return
-    if (target === 'amount' && isPositive(exchangeRate)) {
+    if (target === 'amount') {
+      if (!isPositive(exchangeRate)) return
       const next = precise(total / (units * exchangeRate))
       if (next !== String(getValues('amount')))
         setValue('amount', next as unknown as number, {
           shouldDirty: true,
           shouldValidate: true,
         })
+      return
     }
-    if (target === 'rate' && isPositive(unitAmount)) {
-      const next = precise(total / (unitAmount * units))
-      if (next !== String(getValues('rate')))
-        setValue('rate', next as unknown as number, {
-          shouldDirty: true,
-          shouldValidate: true,
-        })
-    }
+    if (target !== 'rate' || !isPositive(unitAmount)) return
+    const next = precise(total / (unitAmount * units))
+    if (next !== String(getValues('rate')))
+      setValue('rate', next as unknown as number, {
+        shouldDirty: true,
+        shouldValidate: true,
+      })
   }
 
   // What the person types in amount or rate; a reset (after saving, or
@@ -139,18 +140,18 @@ export const ConvertedTotal = (
   // for the extra preview when their default currency differs from the book.
   const defaultTotal =
     defaultCurrency &&
-    defaultCurrency.code !== book.code &&
-    defaultCurrency.code !== currency.code &&
     bookRate &&
     bookRate > 0 &&
+    defaultCurrency.code !== book.code &&
+    defaultCurrency.code !== currency.code &&
     defaultCurrency.rate > 0 &&
     isPositive(bookTotal)
       ? (bookTotal * bookRate) / defaultCurrency.rate
       : undefined
-  const showDefault =
+  const shouldShowDefault =
     defaultTotal !== undefined && Number.isFinite(defaultTotal)
 
-  if (!isForeign && !showDefault) return null
+  if (!isForeign && !shouldShowDefault) return null
 
   return (
     <div className="motion-fade grid gap-1.5">
@@ -165,7 +166,7 @@ export const ConvertedTotal = (
           />
         </FormProvider>
       )}
-      {showDefault && defaultCurrency && (
+      {shouldShowDefault && defaultCurrency && (
         <p
           role="status"
           aria-atomic="true"

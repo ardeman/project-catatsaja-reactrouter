@@ -26,6 +26,20 @@ export const readReceipt = async (image: {
   const { getAI, getGenerativeModel, GoogleAIBackend, Schema } =
     await import('firebase/ai')
   const ai = getAI(firebase, { backend: new GoogleAIBackend() })
+  const itemSchema = Schema.object({
+    properties: {
+      description: Schema.string(),
+      quantity: Schema.number(),
+      unitPrice: Schema.number(),
+      discount: Schema.number(),
+    },
+  })
+  const chargeSchema = Schema.object({
+    properties: {
+      description: Schema.string(),
+      amount: Schema.number(),
+    },
+  })
   const model = getGenerativeModel(ai, {
     model: geminiModel,
     generationConfig: {
@@ -35,24 +49,8 @@ export const readReceipt = async (image: {
           merchant: Schema.string(),
           date: Schema.string(),
           currency: Schema.string(),
-          items: Schema.array({
-            items: Schema.object({
-              properties: {
-                description: Schema.string(),
-                quantity: Schema.number(),
-                unitPrice: Schema.number(),
-                discount: Schema.number(),
-              },
-            }),
-          }),
-          charges: Schema.array({
-            items: Schema.object({
-              properties: {
-                description: Schema.string(),
-                amount: Schema.number(),
-              },
-            }),
-          }),
+          items: Schema.array({ items: itemSchema }),
+          charges: Schema.array({ items: chargeSchema }),
           discount: Schema.number(),
           total: Schema.number(),
         },

@@ -65,14 +65,12 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
             const isBackspace = event.key === 'Backspace'
             const isArrowUp = event.key === 'ArrowUp'
             const isEmpty = view.state.doc.textContent.length === 0
-            const atStart = view.state.selection.from === 1
-            if (isBackspace && isEmpty) {
-              event.preventDefault()
-              setFocus(previousName)
-            } else if (isArrowUp && atStart) {
-              event.preventDefault()
-              setFocus(previousName)
-            }
+            const isAtStart = view.state.selection.from === 1
+            const isLeaving =
+              (isBackspace && isEmpty) || (isArrowUp && isAtStart)
+            if (!isLeaving) return
+            event.preventDefault()
+            setFocus(previousName)
           }
           dom.addEventListener('keydown', handler as EventListener)
           listener.destroy(() => {
@@ -101,8 +99,11 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
     } catch {
       return // not ready yet
     }
-    if (markdown === appliedMarkdown.current) return
-    if (markdown === ((getValues(name) as string) || '')) return
+    if (
+      markdown === appliedMarkdown.current ||
+      markdown === ((getValues(name) as string) || '')
+    )
+      return
     setValue(name, markdown as PathValue<TFormValues, typeof name>, {
       shouldDirty: true,
     })
@@ -121,8 +122,12 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
     if (value === undefined || !crepe) return
     try {
       const view = crepe.editor.ctx.get(editorViewCtx)
-      if (view.hasFocus() || getFieldState(name).isDirty) return
-      if (crepe.getMarkdown() === value) return
+      if (
+        view.hasFocus() ||
+        getFieldState(name).isDirty ||
+        crepe.getMarkdown() === value
+      )
+        return
       appliedMarkdown.current = value
       crepe.editor.action(replaceAll(value))
     } catch {

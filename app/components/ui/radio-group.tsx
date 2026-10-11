@@ -4,27 +4,28 @@ import * as React from 'react'
 
 import { cn } from '~/lib/utils/shadcn'
 
-const RadioGroup = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
->(({ className, ...properties }, reference) => {
+const RadioGroup = ({
+  className,
+  ref,
+  ...properties
+}: React.ComponentProps<typeof RadioGroupPrimitive.Root>) => {
   return (
     <RadioGroupPrimitive.Root
       className={cn('grid gap-2', className)}
       {...properties}
-      ref={reference}
+      ref={ref}
     />
   )
-})
-RadioGroup.displayName = RadioGroupPrimitive.Root.displayName
+}
 
-const RadioGroupItem = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, ...properties }, reference) => {
+const RadioGroupItem = ({
+  className,
+  ref,
+  ...properties
+}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) => {
   return (
     <RadioGroupPrimitive.Item
-      ref={reference}
+      ref={ref}
       className={cn(
         'aspect-square h-4 w-4 rounded-full border border-primary text-primary shadow-sm focus:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-20',
         className,
@@ -36,7 +37,6 @@ const RadioGroupItem = React.forwardRef<
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   )
-})
-RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
+}
 
 export { RadioGroup, RadioGroupItem }

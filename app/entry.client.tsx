@@ -43,7 +43,7 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   const register = () => void navigator.serviceWorker.register('/sw.js')
   // This script is loaded dynamically, often after the page's load event.
   if (document.readyState === 'complete') register()
-  else globalThis.addEventListener('load', register, { once: true })
+  else addEventListener('load', register, { once: true })
 }
 
 async function hydrate() {
@@ -82,10 +82,10 @@ async function hydrate() {
   })
 }
 
-if (globalThis.requestIdleCallback) {
-  globalThis.requestIdleCallback(hydrate)
+if (typeof requestIdleCallback === 'function') {
+  requestIdleCallback(hydrate)
 } else {
   // Safari doesn't support requestIdleCallback
   // https://caniuse.com/requestidlecallback
-  globalThis.setTimeout(hydrate, 1)
+  setTimeout(hydrate, 1)
 }

@@ -72,8 +72,11 @@ const Chevron = ({
   orientation?: 'up' | 'down' | 'left' | 'right'
 }) => {
   if (orientation === 'left') return <ChevronLeft className="size-4" />
-  if (orientation === 'right') return <ChevronRight className="size-4" />
-  return <ChevronDown className="size-3.5 text-muted-foreground" />
+  return orientation === 'right' ? (
+    <ChevronRight className="size-4" />
+  ) : (
+    <ChevronDown className="size-3.5 text-muted-foreground" />
+  )
 }
 
 export const DatePicker = (properties: TProperties) => {

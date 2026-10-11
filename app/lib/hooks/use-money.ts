@@ -7,9 +7,9 @@ export const useMoney = () => {
   const { data: userData } = useUserData()
   const format = userData?.currencyFormat ?? getDefaultCurrencyFormat()
 
-  return (amount: number, currency: TFinanceCurrency, signed = false) => {
+  return (amount: number, currency: TFinanceCurrency, isSigned = false) => {
     const text = formatCurrency({ amount: Math.abs(amount), format, currency })
-    if (!signed || amount === 0) return text
+    if (!isSigned || amount === 0) return text
     return `${amount < 0 ? '−' : '+'}${text}`
   }
 }

@@ -141,7 +141,7 @@ service cloud.firestore {
     match /healthLogs/{healthLogId} {
       allow read: if canRead(resource.data.permissions.read);
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content', 'encrypted']);
+      allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content', 'reminders', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
   }

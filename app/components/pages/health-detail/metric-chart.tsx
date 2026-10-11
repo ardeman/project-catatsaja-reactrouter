@@ -64,9 +64,10 @@ export const MetricChart = ({ points, label, format, band }: TProperties) => {
   const last = times.at(-1) ?? 0
   const plotWidth = Math.max(width - LEFT - RIGHT, 0)
   const x = (position: number) =>
-    last === first
-      ? LEFT + plotWidth / 2
-      : LEFT + ((times[position] - first) / (last - first)) * plotWidth
+    LEFT +
+    (last === first
+      ? plotWidth / 2
+      : ((times[position] - first) / (last - first)) * plotWidth)
   const height = TOP + PLOT_HEIGHT + AXIS_BAND
   const dateLabel = new Intl.DateTimeFormat(i18n.language, {
     day: 'numeric',

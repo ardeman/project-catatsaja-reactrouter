@@ -9,12 +9,10 @@ type TProperties = {
   saveWhenIdle?: boolean
 }
 
-/**
- * Calls `save` once `watch` has stopped changing for `delay` ms, and always
- * once more when the component unmounts (Back, a link, another route), so
- * `save` must only write what differs from the stored copy. The browser asks
- * before the tab closes while a change is waiting.
- */
+// Calls `save` once `watch` has stopped changing for `delay` ms, and always
+// once more when the component unmounts (Back, a link, another route), so
+// `save` must only write what differs from the stored copy. The browser asks
+// before the tab closes while a change is waiting.
 export const useAutosave = (properties: TProperties) => {
   const { save, watch, delay = 500, saveWhenIdle = true } = properties
   const saveReference = useRef(save)
@@ -50,9 +48,9 @@ export const useAutosave = (properties: TProperties) => {
       flush()
       event.preventDefault()
     }
-    globalThis.addEventListener('beforeunload', handleBeforeUnload)
+    addEventListener('beforeunload', handleBeforeUnload)
     return () => {
-      globalThis.removeEventListener('beforeunload', handleBeforeUnload)
+      removeEventListener('beforeunload', handleBeforeUnload)
       clearTimeout(timer.current)
       pending.current = false
       void saveReference.current()

@@ -124,14 +124,14 @@ export const formatCurrency = ({
   })
 
   // Split the number into integer and decimal parts
-  const [integerPart, decimalPart] = formattedNumber.split('.')
+  const [integerPart, decimalPart] = formattedNumber.split('.', 2)
 
   // Add thousand separators to the integer part
   const addThousandSeparators = (
     number_: string,
     separator: string,
   ): string => {
-    return number_.replaceAll(/\B(?=(\d{3})+(?!\d))/g, separator)
+    return number_.replaceAll(/\B(?=(\d{3})+(?!\d))/g, () => separator)
   }
 
   let result = addThousandSeparators(integerPart, format.thousandSeparator)
@@ -176,10 +176,10 @@ export const formatExchangeRate = (
       useGrouping: false,
       maximumSignificantDigits: 21,
     })
-    .split('.')
+    .split('.', 2)
   const grouped = integer.replaceAll(
     /\B(?=(\d{3})+(?!\d))/g,
-    format.thousandSeparator,
+    () => format.thousandSeparator,
   )
   return fraction === undefined
     ? grouped

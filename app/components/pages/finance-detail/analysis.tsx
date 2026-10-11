@@ -130,9 +130,11 @@ export const Analysis = ({ entries, book }: TProperties) => {
   const change = granularity === 'day' ? undefined : spendingChange(periods)
   const topExpense = analysis.expenseCategories[0]
   const categoryLabel = (category: string) =>
-    category === 'rest'
-      ? t('finances.analysis.categories.rest')
-      : t(`finances.form.category.${category}.label`)
+    t(
+      category === 'rest'
+        ? 'finances.analysis.categories.rest'
+        : `finances.form.category.${category}.label`,
+    )
   const hasBothTypes =
     analysis.expenseCategories.length > 0 &&
     analysis.incomeCategories.length > 0
@@ -153,11 +155,11 @@ export const Analysis = ({ entries, book }: TProperties) => {
           <Tile
             label={t('finances.analysis.insights.savingsRate')}
             value={share.format(savingsRate)}
-            detail={
+            detail={t(
               savingsRate < 0
-                ? t('finances.analysis.insights.overspent')
-                : t('finances.analysis.insights.ofIncome')
-            }
+                ? 'finances.analysis.insights.overspent'
+                : 'finances.analysis.insights.ofIncome',
+            )}
             tone={savingsRate < 0 ? 'bad' : 'good'}
           />
         )}

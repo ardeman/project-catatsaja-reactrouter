@@ -240,7 +240,7 @@ export const HealthEntryForm = ({
     value: string,
     options: readonly TValue[],
     labelKey: string,
-    allowNone = false,
+    canChooseNone = false,
   ) => (
     <div className="grid gap-1">
       <Label>{t(`health.form.${name}`)}</Label>
@@ -254,7 +254,7 @@ export const HealthEntryForm = ({
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {allowNone && (
+          {canChooseNone && (
             <SelectItem value="none">{t('health.form.notSet')}</SelectItem>
           )}
           {options.map((option) => (

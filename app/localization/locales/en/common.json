@@ -149,6 +149,35 @@
     "empty": {
       "title": "No notes yet",
       "description": "Write down ideas, plans or anything you want to remember."
+    },
+    "ai": {
+      "menu": "Gemini",
+      "working": "Working…",
+      "applied": "Note changed",
+      "summarise": {
+        "action": "Summarise",
+        "title": "Summary",
+        "hint": "Added to the top of the note. You can undo it afterwards.",
+        "apply": "Add to note"
+      },
+      "tidy": {
+        "action": "Tidy up",
+        "title": "Tidied note",
+        "hint": "Replaces the note with this version. You can undo it afterwards.",
+        "apply": "Replace note"
+      },
+      "translate": {
+        "action": "Translate (English ↔ Indonesian)",
+        "title": "Translated note",
+        "hint": "Replaces the note with the translation. You can undo it afterwards.",
+        "apply": "Replace note"
+      },
+      "checklist": {
+        "action": "Turn into a checklist",
+        "title": "New task list",
+        "hint": "Creates a new task list; the note stays as it is.",
+        "apply": "Create task list"
+      }
     }
   },
   "tasks": {
@@ -490,14 +519,17 @@
       "currencyUnknown": "The receipt is in {{code}}, which isn’t in your currencies, so the amounts are in {{book}}. Add {{code}} in Settings to record it as such.",
       "check": "Gemini can misread receipts. Check the amounts and categories; you can change each entry after adding it.",
       "add_one": "Add {{count}} entry",
-      "add_other": "Add {{count}} entries",
-      "notice": {
-        "title": "Scan receipts with Gemini?",
-        "send": "The photo you choose is sent to Google’s Gemini to read the shop, date, items and amounts. Google may keep it and use it to improve its services, so leave out anything you don’t want to share.",
-        "encryption": "This happens even in end-to-end encrypted books: the photo leaves your device, while the entries you add are encrypted as usual. The photo itself is not saved in Catat Saja.",
-        "check": "Nothing is sent until you choose a photo, and you check every entry before it is added.",
-        "confirm": "Choose a photo"
-      }
+      "add_other": "Add {{count}} entries"
+    },
+    "quickAdd": {
+      "title": "Quick add",
+      "label": "What did you pay or receive?",
+      "placeholder": "lunch 45rb, parking 5rb, groceries 230rb yesterday, salary 8jt",
+      "hint": "Write each thing with its amount, and a day if it wasn’t today. Gemini reads it into entries for you to check.",
+      "read": "Read",
+      "check": "Gemini can misread. Check the amounts, dates and categories; you can change each entry after adding it.",
+      "checkDate": "check the date",
+      "edit": "Edit text"
     }
   },
   "about": {
@@ -520,12 +552,12 @@
     }
   },
   "privacyPolicy": {
-    "updated": "Last updated: 11 October 2026",
+    "updated": "Last updated: 12 October 2026",
     "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books, health logs and settings you create.",
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices.",
     "encryption": "With end-to-end encryption (on for new accounts, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
-    "ai": "Scanning a receipt in a finance book is optional. Only when you choose a photo is it sent to Google’s Gemini (through Firebase AI Logic) to read the shop, date, items and amounts, even in an end-to-end encrypted book. Google may keep these photos and use them to improve its services. We don’t store the photo; the entries you add are stored like any others. You agree to this once, the first time you scan.",
+    "ai": "Receipt scanning, quick add and note helpers are optional. Only when you use one is what you chose sent to Google’s Gemini (through Firebase AI Logic): a receipt photo, the text you typed, or the note’s title and text, even for end-to-end encrypted items. Google may keep it and use it to improve its services. We don’t store what is sent; what you add or change is stored like anything else. You agree to this once, before the first use, and can take it back in Settings → Account.",
     "sharing": "When you share a note, task, book or health log, the people you share it with see its content. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
     "security": "To keep out abuse, the app uses Firebase App Check with Google reCAPTCHA, which checks that requests come from this app using signals from your browser.",
@@ -764,6 +796,13 @@
         "si": "mmol/L"
       },
       "labUnitsHint": "Blood sugar, cholesterol and uric acid. In SI units uric acid is shown in µmol/L, as labs report it."
+    },
+    "ai": {
+      "title": "AI features",
+      "description": "Scanning receipts, quick add and note helpers use Google’s Gemini. Only what you use them on is sent, and only when you do.",
+      "agreed": "You’ve agreed to send content to Gemini when you use an AI feature.",
+      "notAgreed": "You’ll be asked before an AI feature first sends anything.",
+      "withdraw": "Take back my agreement"
     }
   },
   "notFound": {
@@ -796,7 +835,10 @@
     "aiUnavailable": "The receipt reader isn’t available right now. Try again later.",
     "receiptUnreadable": "This receipt couldn’t be read. Try a sharper, well-lit photo of the whole receipt.",
     "receiptEmpty": "No receipt was found in this photo.",
-    "imageUnreadable": "This image can’t be opened. Try a JPEG or PNG photo."
+    "imageUnreadable": "This image can’t be opened. Try a JPEG or PNG photo.",
+    "typedUnreadable": "That couldn’t be read. Try writing each thing with its amount, like “lunch 45rb, parking 5rb”.",
+    "typedEmpty": "No amounts were found. Write each thing with its amount, like “lunch 45rb”.",
+    "noteUnreadable": "Gemini’s answer couldn’t be used. Try again."
   },
   "actions": {
     "back": "Back",
@@ -952,7 +994,7 @@
     "overview": "Overview",
     "sections": "Sections",
     "all": "All",
-    "disclaimer": "Ranges are general guides for adults (children by the WHO standards), not a diagnosis. Talk to a doctor about your results.",
+    "disclaimer": "Ranges are general guides for adults (children by WHO’s growth standards and reference), not a diagnosis. Talk to a doctor about your results.",
     "empty": {
       "title": "No health logs yet",
       "description": "Keep a log for yourself, a child or a parent: weight and growth, blood sugar, uric acid, cholesterol, calories and periods.",
@@ -1054,14 +1096,19 @@
       "cholesterol": "Adult guide (NCEP ATP III): total under 200, LDL under 100, HDL 40 or more for men and 50 or more for women, triglycerides under 150 mg/dL."
     },
     "growth": {
-      "title": "Growth (WHO standards)",
-      "loading": "Loading the WHO standards…",
+      "title": "Growth (WHO)",
+      "loading": "Loading the WHO tables…",
       "needBirthDate": "Add a birth date to see growth and age-based ranges.",
       "source": "WHO Child Growth Standards, birth to 5 years. Status as in Kemenkes PMK No. 2/2020. Length is measured lying down until 2 years, height standing after.",
+      "sourceReference": "From 5 to 19 years: WHO Growth Reference for school-age children and adolescents (2007); before 5, the WHO Child Growth Standards. BMI for age status as in Kemenkes PMK No. 2/2020 (5 to 18 years), height for age by WHO’s cut-offs.",
+      "noWeightForAge": "WHO publishes weight for age only up to 10 years: after that it can’t tell a heavy child from a tall one. BMI for age shows whether weight fits height.",
+      "showBmiForAge": "Show BMI for age",
       "axis": "Age in months · {{unit}} · lines: WHO median, ±2 and ±3 SD",
+      "axisYears": "Age in years · {{unit}} · lines: WHO median, ±2 and ±3 SD",
       "ageMonths_one": "{{count}} month old",
       "ageMonths_other": "{{count}} months old",
-      "percentile": "Percentile {{value}}",
+      "ageYearsMonths": "{{years}} y {{months}} m old",
+      "percentileOf": "{{indicator}} percentile {{value}}",
       "percentileLabel": "percentile",
       "short": {
         "weightForAge": "Weight",
@@ -1139,7 +1186,51 @@
       "small": "Below range",
       "large": "Above range",
       "severelyWasted": "Severely wasted",
-      "wasted": "Wasted"
+      "wasted": "Wasted",
+      "severelyThin": "Severely thin",
+      "thin": "Thin"
+    },
+    "reminders": {
+      "title": "Reminders",
+      "add": "Add reminder",
+      "empty": "No reminders yet. Add one to be reminded to measure, and put it in your phone’s calendar.",
+      "hint": "Due reminders show here, on the Health menu and on this log’s card. For an alert on time, add a reminder to your phone’s calendar.",
+      "kind": "What",
+      "everyDays": "Every (days)",
+      "daysBefore": "Days before",
+      "time": "Time (optional)",
+      "save": "Add",
+      "every_one": "Every day",
+      "every_other": "Every {{count}} days",
+      "at": "at {{time}}",
+      "next": "next {{date}}",
+      "periodBefore_one": "{{count}} day before the expected period",
+      "periodBefore_other": "{{count}} days before the expected period",
+      "dueNow": "Due now",
+      "dueCount_one": "{{count}} reminder due",
+      "dueCount_other": "{{count}} reminders due",
+      "due": {
+        "never": "Not logged yet.",
+        "last_one": "Last logged yesterday.",
+        "last_other": "Last logged {{count}} days ago.",
+        "expected": "Expected {{date}}.",
+        "kind": {
+          "body": "Time to weigh and measure.",
+          "glucose": "Time to check blood sugar.",
+          "uricAcid": "Time to check uric acid.",
+          "cholesterol": "Time to check cholesterol.",
+          "calories": "Time to log what you ate.",
+          "period": "Your period is expected soon."
+        }
+      },
+      "logNow": "Log now",
+      "remove": "Remove reminder",
+      "calendar": {
+        "add": "Add to calendar",
+        "measure": "{{kind}}: {{name}}",
+        "period": "Period expected: {{name}}",
+        "description": "A reminder from Catat Saja."
+      }
     }
   },
   "encryption": {
@@ -1224,6 +1315,15 @@
       "confirm": "Turn off encryption",
       "working": "Turning off…",
       "done": "Encryption turned off"
+    }
+  },
+  "ai": {
+    "notice": {
+      "title": "Use Gemini?",
+      "send": "What you use it on (a receipt photo, text you type or a note) is sent to Google’s Gemini to read or rewrite it. Google may keep it and use it to improve its services, so leave out anything you don’t want to share.",
+      "encryption": "This happens even for end-to-end encrypted items: that content leaves your device, while what you save is encrypted as usual. Catat Saja doesn’t keep what is sent.",
+      "check": "Nothing is sent until you use one of these features, and you check the result before anything is added or changed. You can take this back in Settings → Account.",
+      "confirm": "Continue"
     }
   }
 }

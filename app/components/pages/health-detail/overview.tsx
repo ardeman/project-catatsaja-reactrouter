@@ -9,15 +9,15 @@ import {
   toDisplayUnit,
   TStatus,
 } from '~/lib/constants/health'
-import { useGrowthStandards } from '~/lib/hooks/use-growth-standards'
+import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
 import { THealthKind } from '~/lib/types/health'
 import { today } from '~/lib/utils/finance'
 import {
   ageInYears,
   assessBody,
   caloriesByDay,
+  daysBetween,
   entriesOf,
-  isUnderFive,
   periodStats,
 } from '~/lib/utils/health'
 
@@ -49,8 +49,8 @@ export const Overview = (
     timeZone: 'UTC',
   })
   const body = entriesOf(log.content, 'body')[0]
-  const standards = useGrowthStandards(
-    !!body && !!log.birthDate && isUnderFive(log.birthDate, body.date),
+  const tables = useGrowthTables(
+    body && log.birthDate ? [daysBetween(log.birthDate, body.date)] : [],
   )
   const tiles: TTile[] = []
 
@@ -61,7 +61,7 @@ export const Overview = (
       birthDate: log.birthDate,
       sex: log.sex,
       bmiStandard,
-      standards,
+      tables,
     })
     tiles.push({
       kind: 'body',
@@ -75,7 +75,7 @@ export const Overview = (
         assessment.bmi === undefined
           ? undefined
           : `BMI ${number.format(assessment.bmi)}`,
-      status: assessment.bmiStatus ?? assessment.growth?.weightForAge?.status,
+      status: assessment.bmiStatus ?? assessment.growthLead?.status,
       date: body.date,
     })
   }
@@ -159,9 +159,11 @@ export const Overview = (
               className="glass-surface motion-enter grid h-full w-full content-start gap-0.5 rounded-xl border p-3 text-left hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
             >
               <span className="text-xs text-muted-foreground">
-                {tile.kind === 'period'
-                  ? t('health.period.next')
-                  : t(`health.kinds.${tile.kind}`)}
+                {t(
+                  tile.kind === 'period'
+                    ? 'health.period.next'
+                    : `health.kinds.${tile.kind}`,
+                )}
               </span>
               <span className="truncate font-semibold">{tile.value}</span>
               {tile.detail && (

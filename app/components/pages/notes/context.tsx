@@ -55,11 +55,10 @@ const NoteProvider = (properties: PropsWithChildren) => {
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
     if (selectedConfirmation.kind === 'delete') {
       await mutateDeleteNote(selectedConfirmation.detail)
-      if (pathname.startsWith('/notes/') && pathname !== '/notes/create') {
+      if (pathname !== '/notes/create' && pathname.startsWith('/notes/')) {
         navigate('/notes', { replace: true })
       }
-    }
-    if (selectedConfirmation.kind === 'unlink') {
+    } else if (selectedConfirmation.kind === 'unlink') {
       mutateUnlinkNote(selectedConfirmation.detail)
     }
   }

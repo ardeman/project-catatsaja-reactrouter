@@ -11,6 +11,7 @@ import { Link, useLocation, useNavigate } from 'react-router'
 
 import { appleIcon, appName } from '~/lib/constants/metadata'
 import { navs, readStartPage } from '~/lib/constants/navigation'
+import { useGetDueReminders } from '~/lib/hooks/use-get-due-reminders'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -29,8 +30,9 @@ export const Navigation = (properties: TProperties) => {
   const { data: userData } = useUserData()
   const isBottom = variant === 'bottom'
   const items = navs(t, userData?.navOrder)
+  const dueCount = useGetDueReminders()
   const activeIndex = items.findIndex(
-    (nav) => pathname.split('/')[1] === nav.href.split('/')[1],
+    (nav) => pathname.split('/', 2)[1] === nav.href.split('/', 2)[1],
   )
 
   // The phone pill: a highlight that slides to the current page, and that
@@ -102,7 +104,7 @@ export const Navigation = (properties: TProperties) => {
   const handlePointerUp = () => {
     const current = press.current
     press.current = undefined
-    if (!current?.isSwipe || !drag) return
+    if (!drag || !current?.isSwipe) return
     wasSwipe.current = true
     setDrag(undefined)
     if (drag.index !== activeIndex) navigate(items[drag.index].href)
@@ -213,12 +215,25 @@ export const Navigation = (properties: TProperties) => {
             )}
           >
             {Icon && (
-              <Icon
-                aria-hidden="true"
-                className={cn('size-4', isBottom && 'size-5')}
-              />
+              <span className="relative">
+                <Icon
+                  aria-hidden="true"
+                  className={cn('size-4', isBottom && 'size-5')}
+                />
+                {nav.href === '/health' && dueCount > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-1 -right-1.5 size-2 rounded-full bg-destructive ring-2 ring-background"
+                  />
+                )}
+              </span>
             )}
             {nav.name}
+            {nav.href === '/health' && dueCount > 0 && (
+              <span className="sr-only">
+                {t('health.reminders.dueCount', { count: dueCount })}
+              </span>
+            )}
           </Link>
         )
       })}

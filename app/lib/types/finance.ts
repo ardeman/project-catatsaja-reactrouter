@@ -4,6 +4,7 @@ import {
   bookSchema,
   entrySchema,
   receiptSchema,
+  typedEntriesSchema,
 } from '~/lib/validations/finance'
 
 import { THandleSetPermission, TPermissions, TTime } from './common'
@@ -59,3 +60,5 @@ export type TReceipt = z.infer<typeof receiptSchema>
 
 // A receipt becomes one entry for its total, or one per line.
 export type TReceiptMode = 'total' | 'items'
+
+export type TTypedEntries = z.infer<typeof typedEntriesSchema>

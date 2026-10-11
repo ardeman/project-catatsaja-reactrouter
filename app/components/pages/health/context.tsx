@@ -62,11 +62,10 @@ const HealthLogProvider = (properties: PropsWithChildren) => {
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
     if (selectedConfirmation.kind === 'delete') {
       await mutateDeleteHealthLog(selectedConfirmation.detail)
-      if (pathname.startsWith('/health/') && pathname !== '/health/create') {
+      if (pathname !== '/health/create' && pathname.startsWith('/health/')) {
         navigate('/health', { replace: true })
       }
-    }
-    if (selectedConfirmation.kind === 'unlink') {
+    } else if (selectedConfirmation.kind === 'unlink') {
       mutateUnlinkHealthLog(selectedConfirmation.detail)
     }
   }

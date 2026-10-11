@@ -8,7 +8,7 @@
 //   the public key of everyone it is shared with. The item's content is one
 //   AES-GCM blob with a fresh 12-byte IV per write.
 
-const subtle = () => globalThis.crypto.subtle
+const subtle = () => crypto.subtle
 
 // Bytes on a plain ArrayBuffer, as Web Crypto takes them.
 export type TBytes = Uint8Array<ArrayBuffer>
@@ -34,7 +34,7 @@ export const fromBase64 = (text: string): TBytes =>
   Uint8Array.from(atob(text), (character) => character.codePointAt(0) ?? 0)
 
 export const randomBytes = (length: number): TBytes =>
-  globalThis.crypto.getRandomValues(new Uint8Array(new ArrayBuffer(length)))
+  crypto.getRandomValues(new Uint8Array(new ArrayBuffer(length)))
 
 // --- Keys -----------------------------------------------------------------
 

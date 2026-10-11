@@ -126,7 +126,8 @@ export const AddCurrency = (properties: TProperties) => {
                   .toLocaleString('en-US')
                   .replaceAll(
                     ',',
-                    userData?.currencyFormat?.thousandSeparator ??
+                    () =>
+                      userData?.currencyFormat?.thousandSeparator ??
                       getDefaultCurrencyFormat().thousandSeparator,
                   ),
               })}

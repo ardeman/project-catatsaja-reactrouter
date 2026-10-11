@@ -64,33 +64,13 @@ export default tseslint.config(
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/no-useless-promise-resolve-reject': 'off',
       'unicorn/no-null': 'off',
-      // Added to the recommended sets by eslint-plugin-unicorn 77 and
-      // eslint-plugin-react-hooks 7; off until the code is migrated.
-      'unicorn/default-export-style': 'off',
-      'unicorn/prefer-early-return': 'off',
-      'unicorn/no-unnecessary-global-this': 'off',
-      'unicorn/prefer-simple-condition-first': 'off',
-      'unicorn/no-declarations-before-early-exit': 'off',
-      'unicorn/no-array-sort': 'off',
-      'unicorn/max-nested-calls': 'off',
-      'unicorn/consistent-boolean-name': 'off',
-      'unicorn/prefer-split-limit': 'off',
-      'unicorn/prefer-minimal-ternary': 'off',
-      'unicorn/no-top-level-side-effects': 'off',
-      'unicorn/no-top-level-assignment-in-function': 'off',
-      'unicorn/no-duplicate-logical-operands': 'off',
-      'unicorn/prefer-ternary': 'off',
-      'unicorn/prefer-combined-guards': 'off',
-      'unicorn/prefer-else-if': 'off',
-      'unicorn/no-duplicate-if-branches': 'off',
-      'unicorn/numeric-separators-style': 'off',
-      'unicorn/no-array-reverse': 'off',
-      'unicorn/prefer-array-last-methods': 'off',
-      'unicorn/no-asterisk-prefix-in-documentation-comments': 'off',
-      'unicorn/prefer-top-level-await': 'off',
-      'unicorn/name-replacements': 'off',
-      'unicorn/no-unsafe-string-replacement': 'off',
-      'react-hooks/set-state-in-effect': 'off',
+      // Components are arrow functions, so a default export is a separate
+      // `const X = () => ...` followed by `export default X`.
+      'unicorn/default-export-style': ['error', { functions: 'separate' }],
+      // Only says the React Compiler would skip forms that call
+      // react-hook-form's `watch()`; the app doesn't use the compiler.
+      // Moving them to `useWatch` changes when the forms (field arrays,
+      // autosave) re-render, which needs testing in the browser first.
       'react-hooks/incompatible-library': 'off',
       'jsx-a11y/no-static-element-interactions': 'off',
       'jsx-a11y/click-events-have-key-events': 'off',
@@ -158,6 +138,13 @@ export default tseslint.config(
           warnOnDuplicates: true,
         },
       ],
+    },
+  },
+  {
+    // Tool config modules: the tool runs them for their default export.
+    files: ['vite.config.ts', 'app/routes.ts'],
+    rules: {
+      'unicorn/no-top-level-side-effects': 'off',
     },
   },
 )

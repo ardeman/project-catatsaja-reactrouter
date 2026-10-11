@@ -44,7 +44,7 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
           className={cn('[&>:not([hidden])~:not([hidden])]:mt-1', className)}
         >
           <div className={cn('flex items-center gap-2', containerClassName)}>
-            {LeftNode && LeftNode}
+            {LeftNode}
             <FormControl>
               <UICheckbox
                 id={id}
@@ -71,7 +71,7 @@ export const Checkbox = <TFormValues extends Record<string, unknown>>(
                 {label} {required && <sup className="text-destructive">*</sup>}
               </FormLabel>
             )}
-            {RightNode && RightNode}
+            {RightNode}
           </div>
           {hint && <FormDescription>{hint}</FormDescription>}
           <FormMessage />

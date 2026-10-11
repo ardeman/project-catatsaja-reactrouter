@@ -50,9 +50,7 @@ export const Content = () => {
   useEffect(() => {
     const hasFinishedLoading = previousLoading.current && !noteIsLoading
     previousLoading.current = noteIsLoading
-    if (!hasFinishedLoading) return
-
-    if (note === 'create' || noteData) {
+    if (!hasFinishedLoading || note === 'create' || noteData) {
       return
     }
 
@@ -86,6 +84,14 @@ export const Content = () => {
     selectedConfirmation,
   ])
 
+  if (noteIsLoading)
+    return (
+      <LoadingScreen
+        isLoading
+        classname="min-h-fit flex-1"
+      />
+    )
+
   const handleShare = (parameters: THandleSetPermission) => {
     const data = {
       ...parameters,
@@ -102,14 +108,6 @@ export const Content = () => {
     } as TNotePermissionRequest
     mutateShare(data)
   }
-
-  if (noteIsLoading)
-    return (
-      <LoadingScreen
-        isLoading
-        classname="min-h-fit flex-1"
-      />
-    )
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">

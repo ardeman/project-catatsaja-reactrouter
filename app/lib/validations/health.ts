@@ -70,10 +70,11 @@ export const healthEntrySchema = (t: TFunction, kind: THealthKind) =>
         context.addIssue({
           code: 'custom',
           path: [needed[0]],
-          message:
+          message: t(
             needed.length === 1
-              ? t('zod:errors.invalid_type_received_null')
-              : t('health.form.atLeastOne'),
+              ? 'zod:errors.invalid_type_received_null'
+              : 'health.form.atLeastOne',
+          ),
         })
       if (kind === 'period' && values.end && values.end < values.date)
         context.addIssue({

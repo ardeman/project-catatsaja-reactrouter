@@ -132,7 +132,7 @@ export const Security = () => {
   const open = (next: TDialog) => {
     close()
     if (next === 'recovery') setNewCode(generateRecoveryCode())
-    if (next === 'off') {
+    else if (next === 'off') {
       setFromOthers(undefined)
       void loadFromOthers()
     }
@@ -282,13 +282,18 @@ export const Security = () => {
             className="grid gap-3"
             onSubmit={passphraseForm.handleSubmit(async (values) => {
               if (
-                await update.changePassphrase(values.current, values.passphrase)
+                !(await update.changePassphrase(
+                  values.current,
+                  values.passphrase,
+                ))
               ) {
-                toast({
-                  description: t('encryption.settings.passphraseChanged'),
-                })
-                close()
+                return
               }
+
+              toast({
+                description: t('encryption.settings.passphraseChanged'),
+              })
+              close()
             })}
           >
             <Input
@@ -333,13 +338,15 @@ export const Security = () => {
             className="grid gap-3"
             onSubmit={checkForm.handleSubmit(async (values) => {
               if (
-                await update.replaceRecoveryCode(values.passphrase, newCode)
+                !(await update.replaceRecoveryCode(values.passphrase, newCode))
               ) {
-                toast({
-                  description: t('encryption.settings.recoveryReplaced'),
-                })
-                close()
+                return
               }
+
+              toast({
+                description: t('encryption.settings.recoveryReplaced'),
+              })
+              close()
             })}
           >
             <p className="text-sm text-muted-foreground">
@@ -380,10 +387,12 @@ export const Security = () => {
           <form
             className="grid gap-3"
             onSubmit={checkForm.handleSubmit(async (values) => {
-              if (await turnOff.mutate(values.passphrase)) {
-                toast({ description: t('encryption.off.done') })
-                close()
+              if (!(await turnOff.mutate(values.passphrase))) {
+                return
               }
+
+              toast({ description: t('encryption.off.done') })
+              close()
             })}
           >
             <p className="text-sm text-muted-foreground">
@@ -408,9 +417,11 @@ export const Security = () => {
               variant="destructive"
               disabled={turnOff.isPending || fromOthers === undefined}
             >
-              {turnOff.isPending
-                ? t('encryption.off.working')
-                : t('encryption.off.confirm')}
+              {t(
+                turnOff.isPending
+                  ? 'encryption.off.working'
+                  : 'encryption.off.confirm',
+              )}
             </Button>
           </form>
         </FormProvider>
@@ -425,11 +436,13 @@ export const Security = () => {
           <form
             className="grid gap-3"
             onSubmit={checkForm.handleSubmit(async (values) => {
-              if (await update.addPasskey(values.passphrase)) {
-                toast({ description: t('encryption.passkey.added') })
-                setReloadKeyring((value) => value + 1)
-                close()
+              if (!(await update.addPasskey(values.passphrase))) {
+                return
               }
+
+              toast({ description: t('encryption.passkey.added') })
+              setReloadKeyring((value) => value + 1)
+              close()
             })}
           >
             <p className="text-sm text-muted-foreground">

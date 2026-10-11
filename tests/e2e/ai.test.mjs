@@ -1,0 +1,311 @@
+// End-to-end tests of the AI features (receipt scanning, quick add, note
+// helpers, taking back consent) and health reminders, on the local
+// emulators:
+//   pnpm test:e2e
+// Gemini is replaced by fixed answers (nothing reaches Google, and runs cost
+// nothing); what is tested is everything around it: the notice, checking
+// and choosing before adding, what is stored, and that it stays encrypted.
+// One account; each scenario builds on the one before, so they run in order.
+
+import assert from 'node:assert/strict'
+import { mkdtemp, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import { after, before, describe, test } from 'node:test'
+
+import {
+  APP,
+  createNote,
+  dbGet,
+  dbList,
+  launch,
+  newDevice,
+  resetEmulators,
+  setUpEncryption,
+  signUp,
+  startApp,
+  stopApp,
+  uidOf,
+} from './helpers.mjs'
+
+const RINA = 'rina@example.com'
+
+// Gemini's answers, by what each feature asks it.
+const answers = [
+  [
+    'Read this shopping receipt',
+    {
+      merchant: 'INDOMARET',
+      // Read month first: the app takes it back as 11 October.
+      date: '2026-11-10',
+      currency: 'IDR',
+      items: [
+        {
+          description: 'INDOMIE GORENG',
+          quantity: 5,
+          unitPrice: 3500,
+          discount: 0,
+        },
+        {
+          description: 'AQUA 600ML',
+          quantity: 1,
+          unitPrice: 4000,
+          discount: 0,
+        },
+        {
+          description: 'SUSU UHT 1L',
+          quantity: 2,
+          unitPrice: 19_900,
+          discount: 4000,
+        },
+      ],
+      charges: [],
+      discount: 0,
+      total: 57_300,
+    },
+  ],
+  [
+    'Turn this note of money',
+    {
+      currency: '',
+      entries: [
+        {
+          description: 'Makan siang',
+          type: 'expense',
+          quantity: 1,
+          unitPrice: 45_000,
+          date: '',
+        },
+        {
+          description: 'Gaji',
+          type: 'income',
+          quantity: 1,
+          unitPrice: 8_000_000,
+          date: '',
+        },
+      ],
+    },
+  ],
+  [
+    'Tidy up this note',
+    { title: 'Shopping', markdown: 'Buy milk and bread.', items: [] },
+  ],
+  [
+    'Turn this note into a checklist',
+    { title: 'Shopping list', markdown: '', items: ['Buy milk', 'Buy bread'] },
+  ],
+]
+
+// Answers Gemini's requests for a device; counts them.
+const fakeGemini = async (context) => {
+  const calls = []
+  await context.route('**/firebasevertexai.googleapis.com/**', (route) => {
+    const body = route.request().postData() ?? ''
+    const [prompt, answer] = answers.find(([key]) => body.includes(key)) ?? []
+    calls.push(prompt ?? 'unknown')
+    return route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        candidates: [
+          {
+            index: 0,
+            finishReason: 'STOP',
+            content: {
+              role: 'model',
+              parts: [{ text: JSON.stringify(answer ?? {}) }],
+            },
+          },
+        ],
+      }),
+    })
+  })
+  return calls
+}
+
+let server
+let browser
+let device
+let calls
+let receiptPhoto
+let bookUrl
+
+before(async () => {
+  server = await startApp()
+  browser = await launch()
+  // A first visit to each kind of page: the dev server prepares its
+  // dependencies on first use and reloads, which mustn't happen mid-test.
+  await resetEmulators()
+  const warmUp = await newDevice(browser)
+  await fakeGemini(warmUp.context)
+  await signUp(warmUp.page, 'Warm-up', 'warm-up@example.com')
+  await warmUp.page.getByText('Protect your data').waitFor({ timeout: 60_000 })
+  for (const page of [
+    '/finances/create',
+    '/notes/create',
+    '/tasks/create',
+    '/health/create',
+    '/health',
+    '/settings/account',
+  ]) {
+    await warmUp.page.goto(`${APP}${page}`)
+    await warmUp.page.waitForTimeout(2000)
+  }
+  await warmUp.context.close()
+  await resetEmulators()
+  device = await newDevice(browser)
+  calls = await fakeGemini(device.context)
+  // A receipt photo to choose (its content doesn't matter: Gemini is fake).
+  const directory = await mkdtemp(path.join(tmpdir(), 'catatsaja-e2e-'))
+  receiptPhoto = path.join(directory, 'receipt.jpg')
+  const photo = await device.page.screenshot({ type: 'jpeg' })
+  await writeFile(receiptPhoto, photo)
+})
+
+after(async () => {
+  await browser?.close()
+  stopApp(server)
+})
+
+const shows = (page, text) =>
+  page.getByText(text).first().waitFor({ timeout: 30_000 })
+
+describe('AI features and reminders', () => {
+  test('a receipt is scanned after the notice, checked and added in part', async () => {
+    const { page } = device
+    await signUp(page, 'Rina', RINA)
+    await page.getByText('Protect your data').waitFor({ timeout: 60_000 })
+    await setUpEncryption(page, 'rina passphrase 1')
+    await page.waitForURL(/\/notes/, { timeout: 30_000 })
+
+    await page.goto(`${APP}/finances/create`)
+    await page.locator('textarea[name=title]').fill('Belanja')
+    await page.getByRole('button', { name: 'Save' }).click()
+    await page.waitForURL(/\/finances\/(?!create)/, { timeout: 30_000 })
+    bookUrl = page.url()
+
+    // The first time: the notice, then the file picker from its button.
+    await page.getByRole('button', { name: 'Scan receipt' }).click()
+    await shows(page, 'Use Gemini?')
+    const chooser = page.waitForEvent('filechooser')
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await (await chooser).setFiles(receiptPhoto)
+    await shows(page, 'Check the receipt')
+    const uid = await uidOf(RINA)
+    assert.equal((await dbGet(`users/${uid}`)).aiConsent?.booleanValue, true)
+
+    // The line discount stays on its item; the misread date is swapped back
+    // and said so; the total follows what is ticked.
+    await shows(page, 'Discount Rp4,000')
+    await shows(page, '2 × Rp17,900 · Rp4,000 off')
+    await shows(page, /day and month swapped/)
+    await page.getByText('AQUA 600ML').click()
+    await shows(page, 'Total of 2 items')
+    await shows(page, 'Rp53,300')
+    await page.getByRole('button', { name: 'Add 2 entries' }).click()
+    await shows(page, 'Sunday, October 11, 2026')
+    assert.equal(await page.getByText('AQUA 600ML').count(), 0)
+    await page.waitForTimeout(4000)
+
+    // Stored encrypted, like any other entry.
+    const book = await dbGet(`finances/${bookUrl.split('/').pop()}`)
+    assert.ok(book.encrypted && !book.content, 'the book is encrypted')
+  })
+
+  test('quick add reads typed text into entries to check', async () => {
+    const { page } = device
+    await page.getByRole('button', { name: 'Quick add' }).click()
+    await page.locator('textarea[name=text]').fill('makan siang 45rb, gaji 8jt')
+    await page.getByRole('button', { name: 'Read', exact: true }).click()
+    await shows(page, 'Makan siang')
+    await page.getByText('Gaji').click() // leave the salary out
+    await page.getByRole('button', { name: 'Add 1 entry' }).click()
+    await shows(page, 'Makan siang')
+    assert.equal(await page.getByText('Gaji').count(), 0)
+    assert.deepEqual(calls, [
+      'Read this shopping receipt',
+      'Turn this note of money',
+    ])
+  })
+
+  test('note helpers preview, apply, undo, and make a task list', async () => {
+    const { page } = device
+    await createNote(page, 'shoping')
+    // The editor settles after the page switches to the new note.
+    await page.waitForTimeout(2000)
+    await page.locator('.ProseMirror[contenteditable=true]').first().click()
+    await page.keyboard.type('buy milk and bread')
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    await page.getByRole('menuitem', { name: 'Tidy up' }).click()
+    await shows(page, 'Tidied note')
+    await page.getByRole('button', { name: 'Replace note' }).click()
+    await shows(page, 'Buy milk and bread.')
+    assert.equal(
+      await page.locator('textarea[name=title]').inputValue(),
+      'Shopping',
+    )
+    await page.getByRole('button', { name: 'Undo' }).click()
+    await shows(page, 'buy milk and bread')
+    assert.equal(
+      await page.locator('textarea[name=title]').inputValue(),
+      'shoping',
+    )
+
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    await page.getByRole('menuitem', { name: 'Turn into a checklist' }).click()
+    await page.getByRole('button', { name: 'Create task list' }).click()
+    await page.waitForURL(/\/tasks\/(?!create)/, { timeout: 30_000 })
+    await shows(page, 'Buy bread')
+    const tasks = await dbList('tasks')
+    assert.equal(tasks.length, 1)
+    assert.ok(tasks[0].fields.encrypted, 'the new task list is encrypted')
+  })
+
+  test('taking back consent shows the notice again', async () => {
+    const { page } = device
+    await page.goto(`${APP}/settings/account`)
+    await page.getByRole('button', { name: 'Take back my agreement' }).click()
+    await shows(
+      page,
+      'You’ll be asked before an AI feature first sends anything.',
+    )
+    const uid = await uidOf(RINA)
+    assert.equal((await dbGet(`users/${uid}`)).aiConsent?.booleanValue, false)
+
+    const sent = calls.length
+    await page.goto(bookUrl)
+    await page.getByRole('button', { name: 'Scan receipt' }).click()
+    await shows(page, 'Use Gemini?')
+    assert.equal(calls.length, sent, 'nothing sent before agreeing')
+  })
+
+  test('a health reminder is due until it is logged, and stays encrypted', async () => {
+    const { page } = device
+    await page.goto(`${APP}/health/create`)
+    await page.locator('textarea[name=name]').fill('Rara')
+    await page.getByRole('button', { name: 'Save' }).click()
+    await page.waitForURL(/\/health\/(?!create)/, { timeout: 30_000 })
+    const logId = page.url().split('/').pop().split('?')[0]
+
+    await page.getByRole('button', { name: 'Add reminder' }).click()
+    await page.getByRole('button', { name: 'Add', exact: true }).click()
+    await shows(page, 'Time to weigh and measure.')
+    await shows(page, 'Every 7 days')
+    await page.waitForTimeout(4000)
+
+    // On the menu and the log's card too.
+    await page.goto(`${APP}/health`)
+    await shows(page, '1 reminder due')
+    const log = await dbGet(`healthLogs/${logId}`)
+    assert.ok(log.encrypted && !log.reminders, 'reminders are encrypted')
+
+    await page.goto(`${APP}/health/${logId}`)
+    await page.getByRole('button', { name: 'Log now' }).click()
+    await page.getByRole('button', { name: 'Add measurement' }).click()
+    await page.locator('input[name=weight]').fill('20')
+    await page.getByRole('button', { name: 'Save', exact: true }).last().click()
+    await page
+      .getByText('Time to weigh and measure.')
+      .waitFor({ state: 'hidden' })
+    await shows(page, /next /)
+  })
+})

@@ -76,10 +76,12 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
                 {...field}
                 ref={(textarea) => {
                   field.ref(textarea)
-                  if (textarea) {
-                    textarea.style.height = 'auto'
-                    textarea.style.height = `${textarea.scrollHeight}px`
+                  if (!textarea) {
+                    return
                   }
+
+                  textarea.style.height = 'auto'
+                  textarea.style.height = `${textarea.scrollHeight}px`
                 }}
                 {...rest}
               />

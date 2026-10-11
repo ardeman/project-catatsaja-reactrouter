@@ -8,9 +8,9 @@ import { TProperties } from './type'
 export const LoadingScreen = (properties: PropsWithChildren<TProperties>) => {
   const { isLoading, children, classname } = properties
 
-  if (isLoading) {
-    return <LoadingSpinner classname={cn('min-h-fit flex-1', classname)} />
-  }
-
-  return <>{children}</>
+  return isLoading ? (
+    <LoadingSpinner classname={cn('min-h-fit flex-1', classname)} />
+  ) : (
+    <>{children}</>
+  )
 }

@@ -8,6 +8,10 @@ export const useChartCursor = (count: number) => {
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (count === 0) return
+    if (event.key === 'Escape') {
+      setIndex(undefined)
+      return
+    }
     const last = count - 1
     const moves = new Map([
       ['ArrowLeft', Math.max((index ?? count) - 1, 0)],
@@ -15,10 +19,6 @@ export const useChartCursor = (count: number) => {
       ['Home', 0],
       ['End', last],
     ])
-    if (event.key === 'Escape') {
-      setIndex(undefined)
-      return
-    }
     const next = moves.get(event.key)
     if (next === undefined) return
     event.preventDefault()

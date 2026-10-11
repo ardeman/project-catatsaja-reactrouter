@@ -149,6 +149,35 @@
     "empty": {
       "title": "Belum ada catatan",
       "description": "Tulis ide, rencana, atau apa saja yang ingin kamu ingat."
+    },
+    "ai": {
+      "menu": "Gemini",
+      "working": "Memproses…",
+      "applied": "Catatan diubah",
+      "summarise": {
+        "action": "Ringkas",
+        "title": "Ringkasan",
+        "hint": "Ditambahkan di awal catatan. Bisa dibatalkan setelahnya.",
+        "apply": "Tambahkan ke catatan"
+      },
+      "tidy": {
+        "action": "Rapikan",
+        "title": "Catatan yang dirapikan",
+        "hint": "Mengganti catatan dengan versi ini. Bisa dibatalkan setelahnya.",
+        "apply": "Ganti catatan"
+      },
+      "translate": {
+        "action": "Terjemahkan (Inggris ↔ Indonesia)",
+        "title": "Catatan terjemahan",
+        "hint": "Mengganti catatan dengan terjemahannya. Bisa dibatalkan setelahnya.",
+        "apply": "Ganti catatan"
+      },
+      "checklist": {
+        "action": "Jadikan daftar tugas",
+        "title": "Daftar tugas baru",
+        "hint": "Membuat daftar tugas baru; catatan tetap seperti semula.",
+        "apply": "Buat daftar tugas"
+      }
     }
   },
   "tasks": {
@@ -490,14 +519,17 @@
       "currencyUnknown": "Struk ini dalam {{code}}, yang tidak ada di mata uangmu, jadi jumlahnya dicatat dalam {{book}}. Tambahkan {{code}} di Pengaturan untuk mencatatnya dalam mata uang itu.",
       "check": "Gemini bisa salah membaca struk. Periksa jumlah dan kategorinya; setiap entri bisa diubah setelah ditambahkan.",
       "add_one": "Tambah {{count}} entri",
-      "add_other": "Tambah {{count}} entri",
-      "notice": {
-        "title": "Pindai struk dengan Gemini?",
-        "send": "Foto yang kamu pilih dikirim ke Gemini milik Google untuk membaca nama toko, tanggal, barang, dan jumlahnya. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
-        "encryption": "Ini berlaku juga untuk buku yang terenkripsi end-to-end: fotonya keluar dari perangkatmu, sedangkan entri yang kamu tambahkan tetap dienkripsi seperti biasa. Fotonya sendiri tidak disimpan di Catat Saja.",
-        "check": "Tidak ada yang dikirim sampai kamu memilih foto, dan kamu memeriksa setiap entri sebelum ditambahkan.",
-        "confirm": "Pilih foto"
-      }
+      "add_other": "Tambah {{count}} entri"
+    },
+    "quickAdd": {
+      "title": "Tambah cepat",
+      "label": "Apa yang kamu bayar atau terima?",
+      "placeholder": "makan siang 45rb, parkir 5rb, belanja 230rb kemarin, gaji 8jt",
+      "hint": "Tulis setiap hal dengan jumlahnya, dan harinya jika bukan hari ini. Gemini membacanya menjadi entri untuk kamu periksa.",
+      "read": "Baca",
+      "check": "Gemini bisa salah baca. Periksa jumlah, tanggal, dan kategorinya; setiap entri bisa diubah setelah ditambahkan.",
+      "checkDate": "periksa tanggalnya",
+      "edit": "Ubah teks"
     }
   },
   "about": {
@@ -520,12 +552,12 @@
     }
   },
   "privacyPolicy": {
-    "updated": "Terakhir diperbarui: 11 Oktober 2026",
+    "updated": "Terakhir diperbarui: 12 Oktober 2026",
     "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google.",
     "encryption": "Dengan enkripsi end-to-end (aktif untuk akun baru, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, dan kapan item berubah. Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
-    "ai": "Memindai struk di buku keuangan bersifat opsional. Hanya saat kamu memilih foto, foto itu dikirim ke Gemini milik Google (melalui Firebase AI Logic) untuk membaca nama toko, tanggal, barang, dan jumlahnya, termasuk di buku yang terenkripsi end-to-end. Google dapat menyimpan foto ini dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan fotonya; entri yang kamu tambahkan disimpan seperti entri lainnya. Kamu menyetujuinya sekali, saat pertama kali memindai.",
+    "ai": "Pindai struk, tambah cepat, dan bantuan catatan bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, atau judul dan isi catatan, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu bagikan bisa melihat isinya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
@@ -764,6 +796,13 @@
         "si": "mmol/L"
       },
       "labUnitsHint": "Gula darah, kolesterol, dan asam urat. Dalam satuan SI asam urat ditampilkan dalam µmol/L, seperti laporan laboratorium."
+    },
+    "ai": {
+      "title": "Fitur AI",
+      "description": "Pindai struk, tambah cepat, dan bantuan catatan memakai Gemini milik Google. Hanya yang kamu proses yang dikirim, dan hanya saat kamu memakainya.",
+      "agreed": "Kamu sudah setuju mengirim isi ke Gemini saat memakai fitur AI.",
+      "notAgreed": "Kamu akan ditanya sebelum fitur AI pertama kali mengirim sesuatu.",
+      "withdraw": "Batalkan persetujuan"
     }
   },
   "notFound": {
@@ -796,7 +835,10 @@
     "aiUnavailable": "Pembaca struk sedang tidak tersedia. Coba lagi nanti.",
     "receiptUnreadable": "Struk ini tidak terbaca. Coba foto seluruh struk yang lebih tajam dan terang.",
     "receiptEmpty": "Tidak ada struk di foto ini.",
-    "imageUnreadable": "Gambar ini tidak bisa dibuka. Coba foto JPEG atau PNG."
+    "imageUnreadable": "Gambar ini tidak bisa dibuka. Coba foto JPEG atau PNG.",
+    "typedUnreadable": "Teksnya tidak terbaca. Tulis setiap hal dengan jumlahnya, misalnya “makan siang 45rb, parkir 5rb”.",
+    "typedEmpty": "Tidak ada jumlah yang ditemukan. Tulis setiap hal dengan jumlahnya, misalnya “makan siang 45rb”.",
+    "noteUnreadable": "Jawaban Gemini tidak bisa dipakai. Coba lagi."
   },
   "actions": {
     "back": "Kembali",
@@ -952,7 +994,7 @@
     "overview": "Ringkasan",
     "sections": "Bagian",
     "all": "Semua",
-    "disclaimer": "Rentang ini panduan umum untuk dewasa (anak menurut standar WHO), bukan diagnosis. Diskusikan hasilmu dengan dokter.",
+    "disclaimer": "Rentang ini panduan umum untuk dewasa (anak menurut standar dan referensi pertumbuhan WHO), bukan diagnosis. Diskusikan hasilmu dengan dokter.",
     "empty": {
       "title": "Belum ada catatan kesehatan",
       "description": "Buat catatan untuk dirimu, anak, atau orang tua: berat badan dan tumbuh kembang, gula darah, asam urat, kolesterol, kalori, dan menstruasi.",
@@ -1054,14 +1096,19 @@
       "cholesterol": "Panduan dewasa (NCEP ATP III): total di bawah 200, LDL di bawah 100, HDL 40 ke atas untuk laki-laki dan 50 ke atas untuk perempuan, trigliserida di bawah 150 mg/dL."
     },
     "growth": {
-      "title": "Tumbuh kembang (standar WHO)",
-      "loading": "Memuat standar WHO…",
+      "title": "Tumbuh kembang (WHO)",
+      "loading": "Memuat tabel WHO…",
       "needBirthDate": "Isi tanggal lahir untuk melihat tumbuh kembang dan rentang sesuai usia.",
       "source": "Standar Pertumbuhan Anak WHO, lahir sampai 5 tahun. Status menurut Permenkes No. 2 Tahun 2020. Panjang badan diukur berbaring sampai 2 tahun, tinggi badan berdiri setelahnya.",
+      "sourceReference": "Usia 5 sampai 19 tahun: Referensi Pertumbuhan WHO untuk anak usia sekolah dan remaja (2007); sebelum 5 tahun, Standar Pertumbuhan Anak WHO. Status IMT menurut umur sesuai Permenkes No. 2 Tahun 2020 (5 sampai 18 tahun), tinggi badan menurut umur dengan ambang batas WHO.",
+      "noWeightForAge": "WHO hanya menerbitkan berat badan menurut umur sampai usia 10 tahun: setelahnya, angka ini tidak bisa membedakan anak yang berat dari anak yang tinggi. IMT menurut umur menunjukkan apakah berat badan sesuai dengan tinggi badan.",
+      "showBmiForAge": "Lihat IMT menurut umur",
       "axis": "Usia dalam bulan · {{unit}} · garis: median WHO, ±2 dan ±3 SD",
+      "axisYears": "Usia dalam tahun · {{unit}} · garis: median WHO, ±2 dan ±3 SD",
       "ageMonths_one": "{{count}} bulan",
       "ageMonths_other": "{{count}} bulan",
-      "percentile": "Persentil {{value}}",
+      "ageYearsMonths": "{{years}} tahun {{months}} bulan",
+      "percentileOf": "Persentil {{indicator}} {{value}}",
       "percentileLabel": "persentil",
       "short": {
         "weightForAge": "Berat",
@@ -1139,7 +1186,51 @@
       "small": "Di bawah rentang",
       "large": "Di atas rentang",
       "severelyWasted": "Gizi buruk",
-      "wasted": "Gizi kurang"
+      "wasted": "Gizi kurang",
+      "severelyThin": "Gizi buruk",
+      "thin": "Gizi kurang"
+    },
+    "reminders": {
+      "title": "Pengingat",
+      "add": "Tambah pengingat",
+      "empty": "Belum ada pengingat. Tambahkan agar diingatkan untuk mengukur, dan masukkan ke kalender HP-mu.",
+      "hint": "Pengingat yang jatuh tempo muncul di sini, di menu Kesehatan, dan di kartu catatan ini. Agar ada notifikasi tepat waktu, tambahkan pengingat ke kalender HP-mu.",
+      "kind": "Apa",
+      "everyDays": "Setiap (hari)",
+      "daysBefore": "Hari sebelumnya",
+      "time": "Jam (opsional)",
+      "save": "Tambah",
+      "every_one": "Setiap hari",
+      "every_other": "Setiap {{count}} hari",
+      "at": "pukul {{time}}",
+      "next": "berikutnya {{date}}",
+      "periodBefore_one": "{{count}} hari sebelum perkiraan haid",
+      "periodBefore_other": "{{count}} hari sebelum perkiraan haid",
+      "dueNow": "Jatuh tempo",
+      "dueCount_one": "{{count}} pengingat jatuh tempo",
+      "dueCount_other": "{{count}} pengingat jatuh tempo",
+      "due": {
+        "never": "Belum pernah dicatat.",
+        "last_one": "Terakhir dicatat kemarin.",
+        "last_other": "Terakhir dicatat {{count}} hari lalu.",
+        "expected": "Perkiraan {{date}}.",
+        "kind": {
+          "body": "Saatnya menimbang dan mengukur.",
+          "glucose": "Saatnya cek gula darah.",
+          "uricAcid": "Saatnya cek asam urat.",
+          "cholesterol": "Saatnya cek kolesterol.",
+          "calories": "Saatnya mencatat makanan.",
+          "period": "Haidmu diperkirakan segera datang."
+        }
+      },
+      "logNow": "Catat sekarang",
+      "remove": "Hapus pengingat",
+      "calendar": {
+        "add": "Tambah ke kalender",
+        "measure": "{{kind}}: {{name}}",
+        "period": "Perkiraan haid: {{name}}",
+        "description": "Pengingat dari Catat Saja."
+      }
     }
   },
   "encryption": {
@@ -1224,6 +1315,15 @@
       "confirm": "Nonaktifkan enkripsi",
       "working": "Menonaktifkan…",
       "done": "Enkripsi dinonaktifkan"
+    }
+  },
+  "ai": {
+    "notice": {
+      "title": "Pakai Gemini?",
+      "send": "Yang kamu proses (foto struk, teks yang kamu ketik, atau catatan) dikirim ke Gemini milik Google untuk dibaca atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
+      "encryption": "Ini berlaku juga untuk item yang terenkripsi end-to-end: isinya keluar dari perangkatmu, sedangkan yang kamu simpan tetap dienkripsi seperti biasa. Catat Saja tidak menyimpan apa yang dikirim.",
+      "check": "Tidak ada yang dikirim sampai kamu memakai salah satu fitur ini, dan kamu memeriksa hasilnya sebelum ada yang ditambahkan atau diubah. Persetujuan ini bisa dibatalkan di Pengaturan → Akun.",
+      "confirm": "Lanjutkan"
     }
   }
 }

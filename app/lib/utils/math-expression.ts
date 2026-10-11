@@ -20,9 +20,9 @@ export const normalizeExpression = (
   // Phone keyboards may offer only "." or ",": either works as the decimal
   // mark when it isn't the thousands separator.
   if (decimal !== '.' && thousand !== '.')
-    cleaned = cleaned.replaceAll('.', decimal)
+    cleaned = cleaned.replaceAll('.', () => decimal)
   if (decimal !== ',' && thousand !== ',')
-    cleaned = cleaned.replaceAll(',', decimal)
+    cleaned = cleaned.replaceAll(',', () => decimal)
   return cleaned.replaceAll(decimal, '.')
 }
 
@@ -47,8 +47,7 @@ export const evaluateExpression = (normalized: string) => {
     if (token === '+') return factor()
     if (token === '(') {
       const value = expression()
-      if (take() !== ')') return NaN
-      return value
+      return take() === ')' ? value : NaN
     }
     return token === undefined ? NaN : Number(token)
   }

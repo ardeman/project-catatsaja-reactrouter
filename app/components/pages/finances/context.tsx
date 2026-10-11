@@ -73,13 +73,12 @@ const FinanceProvider = (properties: PropsWithChildren) => {
     if (selectedConfirmation.kind === 'delete') {
       await mutateDeleteFinance(selectedConfirmation.detail)
       if (
-        pathname.startsWith('/finances/') &&
-        pathname !== '/finances/create'
+        pathname !== '/finances/create' &&
+        pathname.startsWith('/finances/')
       ) {
         navigate('/finances', { replace: true })
       }
-    }
-    if (selectedConfirmation.kind === 'unlink') {
+    } else if (selectedConfirmation.kind === 'unlink') {
       mutateUnlinkFinance(selectedConfirmation.detail)
     }
   }

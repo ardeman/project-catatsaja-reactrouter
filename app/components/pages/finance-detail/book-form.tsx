@@ -57,10 +57,11 @@ import { Accounts } from './accounts'
 import { AddCurrency } from './add-currency'
 import { Analysis } from './analysis'
 import { EntryForm } from './entry-form.client'
+import { QuickAdd } from './quick-add.client'
 import { ReceiptScan } from './receipt-scan.client'
 import { TFormProperties } from './type'
 
-const sameJson = (a: unknown, b: unknown) =>
+const isSameJson = (a: unknown, b: unknown) =>
   JSON.stringify(a) === JSON.stringify(b)
 
 export const Form = (properties: TFormProperties) => {
@@ -187,11 +188,11 @@ export const Form = (properties: TFormProperties) => {
       const changes: Partial<TFinanceForm> = {}
       if (data.title !== (selectedFinance.title || ''))
         changes.title = data.title
-      if (!sameJson(data.currency, selectedFinance.currency))
+      if (!isSameJson(data.currency, selectedFinance.currency))
         changes.currency = data.currency
-      if (!sameJson(data.content, selectedFinance.content || []))
+      if (!isSameJson(data.content, selectedFinance.content || []))
         changes.content = data.content
-      if (!sameJson(data.accounts, selectedFinance.accounts || []))
+      if (!isSameJson(data.accounts, selectedFinance.accounts || []))
         changes.accounts = data.accounts
       if (Object.keys(changes).length === 0) return
       setSaveStatus('saving')
@@ -501,7 +502,7 @@ export const Form = (properties: TFormProperties) => {
                   onDelete={handleDeleteEntry}
                 />
               ) : (
-                <div className="motion-fade grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+                <div className="motion-fade grid grid-cols-[minmax(0,1fr)_auto_auto] gap-2">
                   <Button
                     type="button"
                     className="w-full gap-2"
@@ -511,6 +512,12 @@ export const Form = (properties: TFormProperties) => {
                     {t('finances.entry.add')}
                   </Button>
                   <ReceiptScan
+                    book={book}
+                    currencies={currencies}
+                    history={history}
+                    onAdd={handleAddEntries}
+                  />
+                  <QuickAdd
                     book={book}
                     currencies={currencies}
                     history={history}

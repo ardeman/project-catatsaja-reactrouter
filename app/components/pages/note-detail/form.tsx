@@ -9,15 +9,18 @@ import { MilkdownEditor } from '~/components/base/milkdown-editor'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Textarea } from '~/components/base/textarea'
 import { useNote } from '~/components/pages/notes'
+import { ToastAction } from '~/components/ui/toast'
 import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateNote } from '~/lib/hooks/use-create-note'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { toast } from '~/lib/hooks/use-toast'
 import { useUpdateNote } from '~/lib/hooks/use-update-note'
 import { TNoteForm } from '~/lib/types/note'
 import { getDateLabel } from '~/lib/utils/parser'
 import { noteSchema } from '~/lib/validations/note'
 
+import { AiHelpers } from './ai-helpers'
 import { TFormProperties } from './type'
 
 export const Form = (properties: TFormProperties) => {
@@ -67,6 +70,7 @@ export const Form = (properties: TFormProperties) => {
   const {
     watch,
     getValues,
+    setValue,
     formState: { isDirty },
     setFocus,
   } = formMethods
@@ -77,6 +81,9 @@ export const Form = (properties: TFormProperties) => {
     syncEditor.current = sync
   }, [])
   const isCreating = useRef(false)
+  // Bumped to start the editor again from the form, after an AI helper
+  // changed the note (the editor only takes outside changes when idle).
+  const [editorVersion, setEditorVersion] = useState(0)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
 
   // Writes only what differs from the stored note, so it is safe to call at
@@ -112,6 +119,36 @@ export const Form = (properties: TFormProperties) => {
     event.preventDefault()
     const reference = await save()
     if (reference) navigate(`/notes/${reference.id}`, { replace: true })
+  }
+
+  // The note as on screen, with the editor's last words.
+  const getNote = () => {
+    syncEditor.current?.()
+    const { title, content } = getValues()
+    return { title, content }
+  }
+
+  const replaceNote = (next: { title: string; content: string }) => {
+    setValue('title', next.title, { shouldDirty: true })
+    setValue('content', next.content, { shouldDirty: true })
+    setEditorVersion((version) => version + 1)
+  }
+
+  // An AI helper's result, after the person accepted the preview; undoable.
+  const handleApply = (next: { title: string; content: string }) => {
+    const previous = getNote()
+    replaceNote(next)
+    toast({
+      description: t('notes.ai.applied'),
+      action: (
+        <ToastAction
+          altText={t('form.undo')}
+          onClick={() => replaceNote(previous)}
+        >
+          {t('form.undo')}
+        </ToastAction>
+      ),
+    })
   }
 
   useAutosave({
@@ -159,15 +196,26 @@ export const Form = (properties: TFormProperties) => {
           autoFocus={!note} // eslint-disable-line jsx-a11y/no-autofocus -- new notes only; `note` is set from the first render
           rows={1}
           onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === 'ArrowDown') {
-              event.preventDefault()
-              setFocus('content')
+            if (event.key !== 'Enter' && event.key !== 'ArrowDown') {
+              return
             }
+
+            event.preventDefault()
+            setFocus('content')
           }}
           readOnly={isReadOnly}
         />
+        {watchContent.trim() && (
+          <div className="flex justify-end">
+            <AiHelpers
+              getNote={getNote}
+              isEditable={!isReadOnly}
+              onApply={handleApply}
+            />
+          </div>
+        )}
         <MilkdownEditor
-          key={selectedNote?.id ?? 'create'}
+          key={`${selectedNote?.id ?? 'create'}-${editorVersion}`}
           name="content"
           placeholder={t('notes.form.content.label')}
           previousName="title"

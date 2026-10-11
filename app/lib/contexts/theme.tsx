@@ -70,11 +70,11 @@ export const ThemeProvider = ({
   )
 
   useEffect(() => {
-    const query = globalThis.matchMedia('(prefers-color-scheme: dark)')
+    const query = matchMedia('(prefers-color-scheme: dark)')
     const apply = () => {
       const resolved =
         theme === 'system' ? (query.matches ? 'dark' : 'light') : theme
-      const root = globalThis.document.documentElement
+      const root = document.documentElement
       root.classList.remove('light', 'dark')
       root.classList.add(resolved)
       // The browser and installed-app bars follow the app's theme.
@@ -93,7 +93,7 @@ export const ThemeProvider = ({
   }, [theme])
 
   useEffect(() => {
-    const root = globalThis.document.documentElement
+    const root = document.documentElement
     let value = '100%'
     if (size === 'small') value = '87.5%'
     else if (size === 'large') value = '112.5%'

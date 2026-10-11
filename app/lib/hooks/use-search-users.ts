@@ -10,16 +10,23 @@ export const useSearchUsers = (email: string) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>()
 
-  useEffect(() => {
+  // A new email starts with no results and no error, set while rendering so
+  // the previous search's results never show for it.
+  const [searchedEmail, setSearchedEmail] = useState(email)
+  if (email !== searchedEmail) {
+    setSearchedEmail(email)
+    setData([])
     setError(undefined)
-    if (!auth?.currentUser || !email) {
-      setData([])
-      setIsLoading(false)
-      return
-    }
+  }
+
+  useEffect(() => {
+    if (!email) return
     let isCurrent = true
     const load = async () => {
-      setData([])
+      if (!auth?.currentUser) {
+        setIsLoading(false)
+        return
+      }
       setIsLoading(true)
       try {
         const result = await fetchUsersByEmail(email)
@@ -39,5 +46,8 @@ export const useSearchUsers = (email: string) => {
     }
   }, [email])
 
-  return { data, isLoading, error }
+  // No email: nothing to search for.
+  return email
+    ? { data, isLoading, error }
+    : { data: [], isLoading: false, error: undefined }
 }

@@ -128,10 +128,8 @@ export const Action = (properties: TActionProperties) => {
       {handleToggleCheckAll && (
         <Button
           variant="outline"
-          aria-label={
-            checkedAll ? t('actions.uncheckAll') : t('actions.checkAll')
-          }
-          title={checkedAll ? t('actions.uncheckAll') : t('actions.checkAll')}
+          aria-label={t(checkedAll ? 'actions.uncheckAll' : 'actions.checkAll')}
+          title={t(checkedAll ? 'actions.uncheckAll' : 'actions.checkAll')}
           onClick={(event) => {
             event.stopPropagation()
             handleToggleCheckAll()
@@ -183,8 +181,8 @@ export const Action = (properties: TActionProperties) => {
       {handlePin && (
         <Button
           variant="outline"
-          aria-label={isPinned ? t('actions.unpin') : t('actions.pin')}
-          title={isPinned ? t('actions.unpin') : t('actions.pin')}
+          aria-label={t(isPinned ? 'actions.unpin' : 'actions.pin')}
+          title={t(isPinned ? 'actions.unpin' : 'actions.pin')}
           aria-pressed={!!isPinned}
           onClick={(event) => {
             event.stopPropagation()

@@ -131,7 +131,6 @@ export const Navigation = () => {
           hint={t('settings.navigation.startPageHint')}
           value={choice.startPage}
           onChange={(value) => void save({ startPage: value })}
-          className="grid-cols-3"
           options={choice.navOrder.map((page) => {
             const nav = items.find((item) => item.href === `/${page}`)
             const Icon = nav?.icon

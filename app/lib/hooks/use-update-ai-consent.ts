@@ -8,9 +8,9 @@ import { toast } from './use-toast'
 export const useUpdateAiConsent = () => {
   const { revalidate } = useRevalidator()
 
-  const mutate = async (aiConsent: boolean) => {
+  const mutate = async (hasConsented: boolean) => {
     try {
-      await updateAiConsent(aiConsent)
+      await updateAiConsent(hasConsented)
       revalidate()
       return true
     } catch (error: unknown) {

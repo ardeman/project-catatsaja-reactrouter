@@ -16,10 +16,52 @@ export const releases: TRelease[] = [
   {
     date: '2026-10-12',
     title: {
-      en: 'Receipt discounts and dates',
-      id: 'Diskon dan tanggal di struk',
+      en: 'Gemini helpers, health reminders and growth to 19',
+      id: 'Bantuan Gemini, pengingat kesehatan, dan tumbuh kembang sampai 19 tahun',
     },
     changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Quick add in finance books: type what you paid or received, like “lunch 45rb, parking 5rb yesterday, salary 8jt”, check the entries Gemini reads from it, and add the ones you want.',
+          id: 'Tambah cepat di buku keuangan: ketik apa yang kamu bayar atau terima, misalnya “makan siang 45rb, parkir 5rb kemarin, gaji 8jt”, periksa entri yang dibaca Gemini, lalu tambahkan yang kamu mau.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Gemini helpers for notes: summarise, tidy up, translate between English and Indonesian, or turn a note into a task list. You see the result first, and changes can be undone.',
+          id: 'Bantuan Gemini untuk catatan: ringkas, rapikan, terjemahkan antara bahasa Inggris dan Indonesia, atau jadikan catatan daftar tugas. Hasilnya ditampilkan dulu, dan perubahannya bisa dibatalkan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Health reminders: be reminded to weigh, check blood sugar and more every few days, or before an expected period. Due reminders show on the log, its card and the Health menu, and each can be added to your phone’s calendar to alert on time.',
+          id: 'Pengingat kesehatan: diingatkan untuk menimbang, cek gula darah, dan lainnya setiap beberapa hari, atau sebelum perkiraan haid. Pengingat yang jatuh tempo muncul di catatan, kartunya, dan menu Kesehatan, dan masing-masing bisa ditambahkan ke kalender HP agar ada notifikasi tepat waktu.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'You can take back your agreement to use Gemini in Settings → Account; you’ll be asked again before an AI feature next sends anything.',
+          id: 'Persetujuan memakai Gemini bisa dibatalkan di Pengaturan → Akun; kamu akan ditanya lagi sebelum fitur AI mengirim sesuatu.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'The “Opens on” choices in Settings fill whole rows.',
+          id: 'Pilihan “Dibuka di” di Pengaturan kini mengisi baris dengan rapi.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Child growth now goes up to 19 years: from 5, height and BMI are compared with the WHO Growth Reference for school-age children and adolescents, with percentiles and the Kemenkes status for BMI. Weight for age goes up to 10 years, as far as WHO publishes it.',
+          id: 'Tumbuh kembang anak kini sampai usia 19 tahun: mulai 5 tahun, tinggi badan dan IMT dibandingkan dengan Referensi Pertumbuhan WHO untuk anak usia sekolah dan remaja, lengkap dengan persentil dan status Kemenkes untuk IMT. Berat badan menurut umur tersedia sampai usia 10 tahun, sejauh yang diterbitkan WHO.',
+        },
+      },
       {
         kind: 'improved',
         text: {

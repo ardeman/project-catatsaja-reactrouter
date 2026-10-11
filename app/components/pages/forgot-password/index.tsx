@@ -26,34 +26,24 @@ export const ForgotPasswordPage: FC = () => {
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateForgotPassword(data)
+    void mutateForgotPassword(data).then((isDone) => {
+      setDisabled(false)
+      if (isDone) setTimerForgotPassword(30)
+    })
   })
 
-  const {
-    mutate: mutateForgotPassword,
-    isPending: isForgotPasswordPending,
-    isSuccess: isForgotPasswordSuccess,
-    isError: isForgotPasswordError,
-  } = useForgotPassword()
+  const { mutate: mutateForgotPassword, isPending: isForgotPasswordPending } =
+    useForgotPassword()
 
+  // Counts down to the next allowed request.
   useEffect(() => {
-    if (isForgotPasswordError || isForgotPasswordSuccess) {
-      setDisabled(false)
-    }
-    if (isForgotPasswordSuccess) {
-      setTimerForgotPassword(30)
-    }
-  }, [isForgotPasswordSuccess, isForgotPasswordError])
-
-  useEffect(() => {
-    if (timerForgotPassword === 0) {
-      setTimerForgotPassword(undefined)
-    } else if (timerForgotPassword) {
-      const timer = setTimeout(() => {
-        setTimerForgotPassword((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
+    if (!timerForgotPassword) return
+    const timer = setTimeout(() => {
+      setTimerForgotPassword((previous) =>
+        previous && previous > 1 ? previous - 1 : undefined,
+      )
+    }, 1000)
+    return () => clearTimeout(timer)
   }, [timerForgotPassword])
 
   return (

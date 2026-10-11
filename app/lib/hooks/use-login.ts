@@ -18,6 +18,7 @@ export const useLogin = () => {
     try {
       await login(data)
       revalidate()
+      return true
     } catch (error: unknown) {
       setIsError(true)
       const message = getErrorMessage(error)
@@ -25,6 +26,7 @@ export const useLogin = () => {
         variant: 'destructive',
         description: message,
       })
+      return false
     } finally {
       setIsPending(false)
     }

@@ -24,7 +24,14 @@ export const contentFields = {
   notes: ['title', 'content'],
   tasks: ['title', 'content'],
   finances: ['title', 'content', 'currency', 'accounts'],
-  healthLogs: ['name', 'birthDate', 'sex', 'calorieTarget', 'content'],
+  healthLogs: [
+    'name',
+    'birthDate',
+    'sex',
+    'calorieTarget',
+    'content',
+    'reminders',
+  ],
 } as const
 
 export type TCollection = keyof typeof contentFields
@@ -92,7 +99,7 @@ export const decodeDocument = async (
 export const encodeNew = async (collection: TCollection, data: TData) => {
   const uid = data.owner as string
   const ownPublicKey = getPublicKey()
-  if (!canEncrypt() || !ownPublicKey) return data
+  if (!ownPublicKey || !canEncrypt()) return data
   const contentKey = await generateContentKey()
   const encrypted = await encryptJson(pick(collection, data), contentKey)
   const sealed = await wrapContentKey(

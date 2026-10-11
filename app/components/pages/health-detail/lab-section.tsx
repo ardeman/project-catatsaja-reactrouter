@@ -103,10 +103,11 @@ export const LabSection = (
                 value={context}
                 options={contexts.map((value) => ({
                   value,
-                  label:
+                  label: t(
                     value === 'all'
-                      ? t('health.all')
-                      : t(`health.glucoseContext.${value}`),
+                      ? 'health.all'
+                      : `health.glucoseContext.${value}`,
+                  ),
                 }))}
                 onChange={setContext}
               />

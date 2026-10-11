@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
 
@@ -9,19 +9,21 @@ import { appleIcon, appName } from '~/lib/constants/metadata'
 import { readStartPage } from '~/lib/constants/navigation'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 
+const noSubscribe = () => () => {}
+const hasHistory = () => history.length > 1
+
 export const NotFoundPage = () => {
   const { t } = useTranslation()
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { data: user } = useAuthUser()
-  // Read in effects: browser-only, and the same on the server and the
-  // first client render.
-  const [startPage, setStartPage] = useState('notes')
-  const [canGoBack, setCanGoBack] = useState(false)
-  useEffect(() => {
-    setStartPage(readStartPage())
-    setCanGoBack(globalThis.history.length > 1)
-  }, [])
+  // Browser-only: the server and the first client render use the defaults.
+  const startPage = useSyncExternalStore(
+    noSubscribe,
+    readStartPage,
+    () => 'notes',
+  )
+  const canGoBack = useSyncExternalStore(noSubscribe, hasHistory, () => false)
 
   return (
     <main className="app-background relative flex min-h-dvh w-full flex-col items-center">

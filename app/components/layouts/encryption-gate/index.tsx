@@ -38,7 +38,7 @@ export const EncryptionGate = ({ children }: { children: ReactNode }) => {
 
   if (!userData) return children
 
-  if ((userData.encryptionRequired && !hasKeys) || isFinishingSetup)
+  if (isFinishingSetup || (!hasKeys && userData.encryptionRequired))
     return (
       <div className="flex flex-1 items-start justify-center p-4 md:items-center md:p-8">
         <section className="glass-surface w-full max-w-md rounded-2xl border p-6">

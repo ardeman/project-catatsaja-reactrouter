@@ -1,4 +1,4 @@
-import { Lock } from 'lucide-react'
+import { BellRing, Lock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
@@ -19,15 +19,16 @@ import {
   toDisplayUnit,
 } from '~/lib/constants/health'
 import { useUserData } from '~/lib/hooks/use-get-user'
-import { useGrowthStandards } from '~/lib/hooks/use-growth-standards'
+import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
 import { today } from '~/lib/utils/finance'
 import {
   ageInYears,
   assessBody,
+  daysBetween,
   entriesOf,
-  isUnderFive,
   periodStats,
 } from '~/lib/utils/health'
+import { dueReminders } from '~/lib/utils/health-reminders'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -52,6 +53,15 @@ export const Card = (properties: TCardProperties) => {
   const isEditable = isOwner || canWrite
   const now = today()
   const entries = healthLog.content || []
+  // Reminders due now, for those who can add the measurement.
+  const dueCount = isEditable
+    ? dueReminders({
+        reminders: healthLog.reminders ?? [],
+        entries,
+        today: now,
+        nextPeriodStart: periodStats(entries, now)?.nextStart,
+      }).length
+    : 0
   const dateLabel = getDateLabel({
     updatedAt: healthLog.updatedAt?.seconds,
     createdAt: healthLog.createdAt.seconds,
@@ -68,8 +78,10 @@ export const Card = (properties: TCardProperties) => {
   const latestBody = entriesOf(entries, 'body').find(
     (entry) => entry.weight !== undefined,
   )
-  const standards = useGrowthStandards(
-    !!latestBody && isUnderFive(healthLog.birthDate, latestBody.date),
+  const tables = useGrowthTables(
+    latestBody && healthLog.birthDate
+      ? [daysBetween(healthLog.birthDate, latestBody.date)]
+      : [],
   )
   const body =
     latestBody &&
@@ -79,7 +91,7 @@ export const Card = (properties: TCardProperties) => {
       birthDate: healthLog.birthDate,
       sex: healthLog.sex,
       bmiStandard: userData?.bmiStandard ?? 'kemenkes',
-      standards,
+      tables,
     })
   const glucose = entriesOf(entries, 'glucose')[0]
   const period =
@@ -150,6 +162,15 @@ export const Card = (properties: TCardProperties) => {
             {t('health.age', { count: age })}
           </p>
         )}
+        {dueCount > 0 && (
+          <p className="flex items-center gap-1 text-xs font-medium text-foreground">
+            <BellRing
+              aria-hidden="true"
+              className="size-3.5"
+            />
+            {t('health.reminders.dueCount', { count: dueCount })}
+          </p>
+        )}
       </CardHeader>
       <CardContent className="grid gap-3 text-sm sm:pb-8">
         {latestBody?.weight !== undefined && body && (
@@ -163,14 +184,20 @@ export const Card = (properties: TCardProperties) => {
               {body.bmi !== undefined && ` · BMI ${number.format(body.bmi)}`}
             </p>
             {body.bmiStatus && <HealthStatus status={body.bmiStatus} />}
-            {body.growth?.weightForAge && (
+            {body.growthLead && (
               <span className="flex flex-wrap items-center gap-x-2">
                 <span className="text-xs text-muted-foreground">
-                  {t('health.growth.percentile', {
-                    value: Math.round(body.growth.weightForAge.percentile),
+                  {t('health.growth.percentileOf', {
+                    indicator: t(
+                      `health.growth.short.${body.growthLead.indicator}`,
+                    ),
+                    value: Math.round(body.growthLead.percentile),
                   })}
                 </span>
-                <HealthStatus status={body.growth.weightForAge.status} />
+                {/* From 18 the adult BMI category above takes its place. */}
+                {!body.bmiStatus && (
+                  <HealthStatus status={body.growthLead.status} />
+                )}
               </span>
             )}
           </div>

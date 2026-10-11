@@ -26,10 +26,11 @@ export const CategoryBreakdown = ({ totals, book }: TProperties) => {
   return (
     <ul className="grid gap-3">
       {totals.map(({ category, total, share }) => {
-        const label =
+        const label = t(
           category === 'rest'
-            ? t('finances.analysis.categories.rest')
-            : t(`finances.form.category.${category}.label`)
+            ? 'finances.analysis.categories.rest'
+            : `finances.form.category.${category}.label`,
+        )
         return (
           <li
             key={category}
