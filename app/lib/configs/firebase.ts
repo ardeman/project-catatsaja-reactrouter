@@ -1,4 +1,8 @@
 import { FirebaseApp, initializeApp } from 'firebase/app'
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+} from 'firebase/app-check'
 import { getAuth, Auth } from 'firebase/auth'
 import { getFirestore, Firestore } from 'firebase/firestore'
 
@@ -23,6 +27,20 @@ let firestore: Firestore | null = null
 if (typeof window !== 'undefined') {
   try {
     firebase = initializeApp(firebaseConfig)
+
+    // App Check: only this app (on its own domain) may call Firestore once
+    // enforcement is on in the console. Before any request is made. In
+    // development a debug token is printed to the console, to register
+    // there.
+    const appCheckSiteKey = environment.VITE_APP_CHECK_SITE_KEY
+    if (appCheckSiteKey) {
+      if (import.meta.env.DEV)
+        Object.assign(globalThis, { FIREBASE_APPCHECK_DEBUG_TOKEN: true })
+      initializeAppCheck(firebase, {
+        provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
+        isTokenAutoRefreshEnabled: true,
+      })
+    }
     auth = getAuth(firebase)
     firestore = getFirestore(firebase)
 

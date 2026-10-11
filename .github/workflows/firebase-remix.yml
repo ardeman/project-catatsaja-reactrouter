@@ -61,6 +61,15 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Lint, typecheck and check the unused code
         run: ${{ steps.detect-package-manager.outputs.runner }} validate
+      # The Firestore emulator runs on Java. A rules change that breaks
+      # sharing fails here, before anything is deployed.
+      - name: Setup Java (for the Firestore emulator)
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Test the Firestore rules
+        run: ${{ steps.detect-package-manager.outputs.runner }} test:rules
       - name: Generate web manifest
         run: node ./scripts/generate-manifest.mjs
       - name: Build with Vite
@@ -75,6 +84,7 @@ jobs:
           VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}
           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
           VITE_GRAVATAR_API_KEY: ${{ secrets.VITE_GRAVATAR_API_KEY }}
+          VITE_APP_CHECK_SITE_KEY: ${{ secrets.VITE_APP_CHECK_SITE_KEY }}
         run: ${{ steps.detect-package-manager.outputs.runner }} react-router build
       - name: Verify build output
         run: ls -laR build/client

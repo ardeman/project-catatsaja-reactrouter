@@ -7,17 +7,7 @@ import {
   updateProfile as updateProfileAuth,
   type User,
 } from 'firebase/auth'
-import {
-  collection,
-  doc,
-  documentId,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from 'firebase/firestore'
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
 import {
@@ -50,6 +40,30 @@ const ensureUserProfile = async (user: User) => {
   return await getDoc(reference)
 }
 
+// Keeps `userLookup/{email}` pointing at this account, so others can find it
+// to share with: created for accounts made before it existed, and moved when
+// the email changes. Usually nothing to write. A failure only means not being
+// findable for now, so it never blocks loading the app.
+const syncEmailLookup = async (user: User, lookupEmail?: string) => {
+  if (!firestore) return
+  const email = user.email?.toLowerCase()
+  if (!email || email === lookupEmail) return
+  if (lookupEmail) {
+    try {
+      await deleteDoc(doc(firestore, 'userLookup', lookupEmail))
+    } catch {
+      // Already gone, or filed by an older version: the new entry still
+      // takes over below.
+    }
+  }
+  try {
+    await setDoc(doc(firestore, 'userLookup', email), { uid: user.uid })
+    await updateDoc(doc(firestore, 'users', user.uid), { lookupEmail: email })
+  } catch {
+    // Tried again on the next load.
+  }
+}
+
 export const fetchUserData = async () => {
   if (!auth) {
     throw new Error('Firebase Auth is not initialized.')
@@ -64,12 +78,16 @@ export const fetchUserData = async () => {
 
   const snap = await ensureUserProfile(user)
   const data = snap.data()
+  await syncEmailLookup(user, data?.lookupEmail as string | undefined)
   return {
     ...data,
     uid: snap.id,
   } as TUserResponse
 }
 
+// Finding someone by email goes through `userLookup/{email}`, which only
+// holds their id and can only be read one entry at a time: profiles can't
+// be listed, so nobody can download everyone's email and name.
 export const fetchUsersByEmail = async (email: string) => {
   if (!auth) {
     throw new Error('Firebase Auth is not initialized.')
@@ -77,46 +95,30 @@ export const fetchUsersByEmail = async (email: string) => {
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-
-  const usersReference = collection(firestore, 'users')
-  const usersQuery = query(
-    usersReference,
-    where('email', '==', email),
-    where('email', '!=', auth.currentUser?.email),
-  )
-  const snap = await getDocs(usersQuery)
-
-  return snap.docs.map((document) => {
-    const data = document.data()
-    return {
-      ...data,
-      uid: document.id,
-    } as TUserResponse
-  })
+  const normalized = email.trim().toLowerCase()
+  if (!normalized || normalized === auth.currentUser?.email?.toLowerCase())
+    return []
+  const lookup = await getDoc(doc(firestore, 'userLookup', normalized))
+  const uid = lookup.data()?.uid as string | undefined
+  if (!uid) return []
+  const profile = await getDoc(doc(firestore, 'users', uid))
+  return profile.exists()
+    ? [{ ...profile.data(), uid: profile.id } as TUserResponse]
+    : []
 }
 
-// Profiles of the given users only, in batches of 30 (Firestore's `in` limit).
+// Profiles of the given users, read one by one (profiles can't be listed).
 export const fetchUsersByIds = async (uids: string[]) => {
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
   const database = firestore
-  const batches: string[][] = []
-  for (let index = 0; index < uids.length; index += 30) {
-    batches.push(uids.slice(index, index + 30))
-  }
   const snaps = await Promise.all(
-    batches.map((batch) =>
-      getDocs(
-        query(collection(database, 'users'), where(documentId(), 'in', batch)),
-      ),
-    ),
+    uids.map((uid) => getDoc(doc(database, 'users', uid))),
   )
-  return snaps.flatMap((snap) =>
-    snap.docs.map(
-      (document) => ({ ...document.data(), uid: document.id }) as TUserResponse,
-    ),
-  )
+  return snaps
+    .filter((snap) => snap.exists())
+    .map((snap) => ({ ...snap.data(), uid: snap.id }) as TUserResponse)
 }
 
 export const updateProfile = async (userData: TUpdateProfileRequest) => {

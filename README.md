@@ -50,7 +50,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 **Technical**
 
-- [ ] Automated tests (there are none yet).
+- [ ] Automated tests for the app (the Firestore rules have tests; the app has none yet).
 - [ ] Turn back on the ESLint rules that the 2026-10-09 upgrade switched off, and fix what they find (`eslint.config.mjs`).
 - [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
 - [ ] TypeScript 7, once typescript-eslint supports it.
@@ -91,11 +91,12 @@ pnpm refuses package versions published less than a day ago (its `minimumRelease
 
 `.env` is git-ignored. In CI the same names come from repository secrets.
 
-| Variable                | Used for                                                       |
-| ----------------------- | -------------------------------------------------------------- |
-| `VITE_FIREBASE_*`       | Firebase web app config (Project settings → Your apps)         |
-| `VITE_GRAVATAR_API_KEY` | Profile avatars from Gravatar                                  |
-| `VITE_GEMINI_API_KEY`   | Gemini API (passed to the build; not read by the app code yet) |
+| Variable                  | Used for                                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------- |
+| `VITE_FIREBASE_*`         | Firebase web app config (Project settings → Your apps)                                      |
+| `VITE_GRAVATAR_API_KEY`   | Profile avatars from Gravatar                                                               |
+| `VITE_APP_CHECK_SITE_KEY` | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it |
+| `VITE_GEMINI_API_KEY`     | Gemini API (passed to the build; not read by the app code yet)                              |
 
 Variables are read in one place, `app/lib/utils/environment.ts`.
 
@@ -121,7 +122,7 @@ Variables are read in one place, `app/lib/utils/environment.ts`.
 pnpm validate   # lint + typecheck + knip
 ```
 
-There is no automated test suite yet.
+**Rules tests** — `pnpm test:rules` runs `tests/firestore-rules.test.mjs` against the Firestore emulator (it needs Java 21). The deploy workflow runs them before every deploy, so they don't have to pass locally.
 
 ### Git hooks and commit messages
 
@@ -134,7 +135,7 @@ Commit subjects use `type(scope)!: description`, with optional scope and `!` for
 
 ## Deployment
 
-Every push to `main` runs `.github/workflows/firebase-remix.yml`: install, `pnpm validate`, build with the secrets above, and deploy `build/client` to the live channel of Firebase Hosting. It can also be started by hand from the Actions tab. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
+Every push to `main` runs `.github/workflows/firebase-remix.yml`: install, `pnpm validate`, the Firestore rules tests (`pnpm test:rules`, with Java), build with the secrets above, and deploy `build/client` to the live channel of Firebase Hosting. It can also be started by hand from the Actions tab. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
 
 Hosting (`firebase.json`) serves the prerendered pages as files and every other path `__spa-fallback.html`, without trailing slashes. Pages are sent with `Cache-Control: no-cache` and the hashed files in `/assets/` are cached for a year, so a deploy never leaves browsers with pages that point at deleted files.
 

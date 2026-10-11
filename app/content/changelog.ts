@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'Health', id: 'Kesehatan' },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'More privacy: other people can only find you by your exact email when sharing, and can no longer see a list of everyone.',
+          id: 'Privasi lebih baik: orang lain hanya bisa menemukanmu dengan email yang persis saat berbagi, dan tidak bisa lagi melihat daftar semua pengguna.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'In the entry form, the currency lines up with the amount and the quantity with the date.',

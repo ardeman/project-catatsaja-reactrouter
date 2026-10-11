@@ -22,7 +22,7 @@ service cloud.firestore {
       return writers.hasAny([request.auth.uid])
     }
 
-    // Shared documents (notes, tasks, finances) carry an `owner` and
+    // Shared documents (notes, tasks, finances, health logs) carry an `owner` and
     // `permissions.read` / `permissions.write` lists of user ids. Writers are
     // also readers.
 
@@ -76,8 +76,10 @@ service cloud.firestore {
         || isLeaveUpdate();
     }
 
+    // Profiles are read one at a time, by id (the people an item is shared
+    // with); they can't be listed, so nobody can download everyone's email.
     match /users/{userId} {
-      allow read: if isAuthenticated();
+      allow get: if isAuthenticated();
       allow write: if isOwner(userId);
 
       match /currencies/{currencyId} {
@@ -85,10 +87,17 @@ service cloud.firestore {
       }
     }
 
-    match /groups/{groupId} {
-      allow delete: if isOwner(resource.data.owner);
-      allow create, read: if isRegistered();
-      allow write: if canWrite(resource.data.permissions.write);
+    // Finding someone by email to share with: `userLookup/{email}` holds
+    // their id. Read one entry at a time, never listed. Each person files
+    // only the email they are signed in with, pointing at themselves.
+    match /userLookup/{email} {
+      allow get: if isAuthenticated();
+      allow create, update: if isAuthenticated()
+        && email == request.auth.token.email.lower()
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if isAuthenticated()
+        && resource.data.uid == request.auth.uid;
     }
 
     match /notes/{noteId} {

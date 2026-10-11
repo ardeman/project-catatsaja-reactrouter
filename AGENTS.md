@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repo. Read `README.md` for the
 
 ## Definition of done
 
-A change is done only when the **Checks** command in `README.md` passes. If you can't run it, say so; don't claim it passed. There are no automated tests yet, so for UI changes also look at the result in `pnpm dev`, in both light and dark mode and both languages.
+A change is done only when the **Checks** command in `README.md` passes. If you can't run it, say so; don't claim it passed. The Firestore rules have tests (`pnpm test:rules`, run before every deploy); the app has none yet, so for UI changes also look at the result in `pnpm dev`, in both light and dark mode and both languages.
 
 ## Conventions
 
@@ -17,7 +17,7 @@ A change is done only when the **Checks** command in `README.md` passes. If you 
 - Firestore calls live only in `app/apis/firestore/<collection>.ts`. Components reach data through one hook per action in `app/lib/hooks/` (`use-get-*`, `use-create-*`, `use-update-*`, `use-delete-*`); never call Firestore from a component.
 - Types go in `app/lib/types/<domain>.ts` with a `T` prefix (`TNoteResponse`, `TCreateNoteRequest`); Zod schemas go in `app/lib/validations/<domain>.ts`.
 - Zod 4 style: pass messages as `{ error: t(...) }` (not `message`), and use top-level formats such as `z.email()`. A schema that coerces (`z.coerce`) has a different input type, so its form uses `useForm<z.input<...>, unknown, z.output<...>>`.
-- Notes, tasks and finances are shared through `permissions.read` and `permissions.write` lists of user ids; `owner` is the creator. Keep queries, writes and `firestore.rules` consistent with each other: an update must match one of the cases in `canUpdateShared` (owner, a writer changing the content fields, anyone pinning for themselves, a reader leaving). A new content field goes in that collection's list in the rules.
+- Notes, tasks, finances and health logs are shared through `permissions.read` and `permissions.write` lists of user ids; `owner` is the creator. Keep queries, writes and `firestore.rules` consistent with each other: an update must match one of the cases in `canUpdateShared` (owner, a writer changing the content fields, anyone pinning for themselves, a reader leaving). A new content field goes in that collection's list in the rules.
 - Only content edits set `updatedAt`. Pinning, sharing and leaving must not, or they change the "edited" date and the list order.
 - A list page renders `Collection` (`app/components/base/collection`): loading and empty states, pinned and other sections, newest first, and filtering by `?q=` (set by "See all" in the navbar's global search, `layouts/navbar/search.tsx`). Cards open through a link that covers the card (see `notes/card.tsx`), and masonry cards are `w-full sm:w-80`.
 - A detail form saves with `useAutosave` and a `save()` that writes only what differs from the stored document, so it can run any time (idle, leaving, the Save button). New items are created when leaving with content, never discarded behind a prompt. Show `SaveStatus` next to the date, and lock every input for read-only users.
@@ -39,7 +39,7 @@ A change is done only when the **Checks** command in `README.md` passes. If you 
 ## Guardrails
 
 - **Dependencies:** add packages with `pnpm add` (not by editing versions by hand) and commit `pnpm-lock.yaml`. knip fails on unused dependencies, so remove what you stop using. Never relax pnpm's `minimumReleaseAge` or approve a package in `allowBuilds` (`pnpm-workspace.yaml`) without the user's approval; when a package asks to run an install script, say what the script does.
-- **Firestore rules:** any new collection, field used for access or query needs matching rules in `firestore.rules` (and an index in `firestore.indexes.json` if the query needs one). Never loosen a rule to make a feature work.
+- **Firestore rules:** any new collection, field used for access or query needs matching rules in `firestore.rules` (and an index in `firestore.indexes.json` if the query needs one). Never loosen a rule to make a feature work. Change `tests/firestore-rules.test.mjs` with the rules: a new collection gets its own cases, and what must be refused is tested as well as what is allowed.
 - **Deployment:** pushing to `main` deploys to production. Commit and push only when asked. Deploying Firestore (`firebase deploy`) or setting repository secrets needs the user's explicit approval.
 - **Secrets:** never commit `.env`, API keys or service account files. A new variable goes in `.env.example`, `environment.ts`, the workflow's build `env` and the README's environment table.
 - **Generated files:** don't edit `public/site.webmanifest` (change `app/lib/constants/metadata.ts`), `.react-router/` or `build/`.
@@ -75,3 +75,4 @@ Record architectural choices here as one line each: date, decision, reason.
 - 2026-10-11: Finance categories share seven validated colours by group (`--cat-1` … `--cat-7`, plus neutral for "other"), not a colour each: past about eight, colours can't be told apart, especially with colour blindness. A category's colour always appears with its icon and name.
 - 2026-10-11: Health logs (`healthLogs`) are one per person, shared like books, with measurements in a `content` array (lab values stored in mg/dL, converted for display). Reference ranges and their sources live in `app/lib/constants/health.ts`; results are shown as ranges, never as a diagnosis.
 - 2026-10-11: Child growth uses the WHO Child Growth Standards from WHO's own expanded tables (`app/lib/constants/who-growth-standards.ts`, generated: don't edit by hand), kept daily to 13 weeks and around day 731 and weekly otherwise (within 0.0022 z of the daily tables), loaded only when a child's growth is shown.
+- 2026-10-11: Profiles (`users`) can be read one at a time but not listed: a list query let any signed-in user download every email and name. Finding someone by email goes through `userLookup/{email}` (their id only; each person files only their own sign-in email, synced on load by `fetchUserData`).

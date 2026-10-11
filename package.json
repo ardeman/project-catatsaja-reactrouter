@@ -10,6 +10,7 @@
     "generate:manifest": "node ./scripts/generate-manifest.mjs",
     "preview": "vite preview",
     "typecheck": "react-router typegen && tsc",
+    "test:rules": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only firestore --project demo-catatsaja 'node --test tests/'",
     "format": "prettier --write .",
     "prepare": "husky",
     "validate": "pnpm lint && pnpm typecheck && pnpm knip"
@@ -63,6 +64,7 @@
     "@commitlint/config-conventional": "^21.2.3",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
+    "@firebase/rules-unit-testing": "6.0.0",
     "@react-router/dev": "^8.4.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",

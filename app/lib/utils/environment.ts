@@ -12,4 +12,9 @@ export const environment = {
     .VITE_FIREBASE_MEASUREMENT_ID as string,
 
   VITE_GRAVATAR_API_KEY: import.meta.env.VITE_GRAVATAR_API_KEY as string,
+
+  // reCAPTCHA Enterprise site key for Firebase App Check; App Check is off
+  // without it.
+  VITE_APP_CHECK_SITE_KEY: import.meta.env.VITE_APP_CHECK_SITE_KEY as
+    string | undefined,
 }

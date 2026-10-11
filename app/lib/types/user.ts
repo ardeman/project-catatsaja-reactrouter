@@ -29,6 +29,8 @@ export type TUserResponse = {
   navOrder?: TNavPage[]
   startPage?: TNavPage
   // How health values are judged and shown.
+  // The email its `userLookup` entry is filed under.
+  lookupEmail?: string
   bmiStandard?: TBmiStandard
   labUnits?: TLabUnits
 }
