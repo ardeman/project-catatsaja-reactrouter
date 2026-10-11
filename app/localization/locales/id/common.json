@@ -676,10 +676,11 @@
         "required": "Isi nama tampilan."
       }
     },
-    "subtitle": "Profil, tampilan, akun, dan mata uangmu.",
+    "subtitle": "Profil, tampilan, akun, keamanan, kesehatan, dan mata uangmu.",
     "sections": {
-      "general": "Profil, tema, ukuran teks, bahasa",
-      "account": "Email dan cara masuk",
+      "general": "Profil, tema, ukuran teks, bahasa, dan menu",
+      "account": "Email, cara masuk, dan enkripsi",
+      "health": "Kategori IMT dan satuan lab",
       "currency": "Format angka dan kurs"
     },
     "navigation": {
@@ -824,6 +825,11 @@
         "title": "Liburan ke Bali",
         "date": "Diedit 2 hari lalu",
         "entries": ["Tiket pesawat", "Makan di Jimbaran", "Oleh-oleh"]
+      },
+      "health": {
+        "name": "Ibu",
+        "date": "Diedit hari ini",
+        "bodyDate": "Hari ini"
       }
     }
   },

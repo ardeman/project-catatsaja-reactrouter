@@ -20,6 +20,20 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Settings are regrouped: encryption sits with your email and sign-in under Account, and BMI and lab units have their own Health page.',
+          id: 'Pengaturan dikelompokkan ulang: enkripsi kini bersama email dan cara masuk di Akun, dan IMT serta satuan lab punya halaman Kesehatan sendiri.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The example cards on the home page match the app as it is today, including a health log.',
+          id: 'Contoh kartu di halaman utama kini sesuai dengan aplikasi saat ini, termasuk catatan kesehatan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Smarter category suggestions: they recognise common shops, apps and words (like Grab, Indomaret or PLN) from your first entry, and learn from your own entries, all on your device.',
           id: 'Saran kategori lebih pintar: langsung mengenali toko, aplikasi, dan kata umum (seperti Grab, Indomaret, atau PLN) sejak entri pertama, dan belajar dari entri-entrimu sendiri, semuanya di perangkatmu.',
         },

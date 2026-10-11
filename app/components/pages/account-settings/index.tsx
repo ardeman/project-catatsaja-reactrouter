@@ -1,6 +1,7 @@
 import { AccountSettingsProvider } from './context'
 import { Email } from './email'
 import { Google } from './google'
+import { Security } from './security'
 
 export const AccountSettingsPage = () => {
   return (
@@ -8,6 +9,7 @@ export const AccountSettingsPage = () => {
       <div className="grid gap-6">
         <Email />
         <Google />
+        <Security />
       </div>
     </AccountSettingsProvider>
   )

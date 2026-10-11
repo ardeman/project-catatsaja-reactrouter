@@ -51,6 +51,8 @@ before(async () => {
     '/finances/create',
     '/health/create',
     '/settings',
+    '/settings/account',
+    '/settings/health',
   ]) {
     await page.goto(`${APP}${path}`)
     await page.waitForTimeout(2000)
@@ -186,7 +188,7 @@ describe('end-to-end encryption', () => {
     assert.ok(!stored.encrypted && !stored.keys, 'stored plain after agreeing')
     assert.ok(await sees(cici.page, 'Edited by Budi'), 'Cici reads it')
 
-    await cici.page.goto(`${APP}/settings`)
+    await cici.page.goto(`${APP}/settings/account`)
     await cici.page
       .getByRole('button', { name: 'Turn on encryption' })
       .first()
@@ -225,7 +227,7 @@ describe('end-to-end encryption', () => {
     assert.match(await page.getByRole('alert').textContent(), /isn't right/)
     await unlock(page, 'ana passphrase 1')
 
-    await page.goto(`${APP}/settings`)
+    await page.goto(`${APP}/settings/account`)
     await page.getByRole('button', { name: 'New recovery code' }).click()
     const dialog = page.getByRole('dialog')
     const code = await dialog
@@ -280,7 +282,7 @@ describe('end-to-end encryption', () => {
         automaticPresenceSimulation: true,
       },
     })
-    await page.goto(`${APP}/settings`)
+    await page.goto(`${APP}/settings/account`)
     await page.getByRole('button', { name: 'Add a passkey' }).click()
     const passkey = page.getByRole('dialog')
     await passkey.locator('input[name=passphrase]').fill('ana passphrase 2')
@@ -398,7 +400,7 @@ describe('end-to-end encryption', () => {
     assert.equal(keysOf(await dbGet(`notes/${budiNote}`)).length, 2)
     assert.equal(keysOf(await dbGet(`notes/${anaNote}`)).length, 2)
 
-    await budi.page.goto(`${APP}/settings`)
+    await budi.page.goto(`${APP}/settings/account`)
     await budi.page.getByRole('button', { name: 'Turn off encryption' }).click()
     const off = budi.page.getByRole('dialog')
     await off
@@ -423,7 +425,7 @@ describe('end-to-end encryption', () => {
     assert.ok(!(await sees(budi.page, 'Ana note for Budi')), 'hidden from him')
     assert.ok(await sees(ana.page, 'Budi note'), 'Ana reads his plain note')
 
-    await ana.page.goto(`${APP}/settings`)
+    await ana.page.goto(`${APP}/settings/account`)
     await ana.page
       .getByText(/turned off encryption, so they can't read/)
       .waitFor({ timeout: 30_000 })
@@ -454,7 +456,7 @@ describe('end-to-end encryption', () => {
     await ana.page.keyboard.press('Escape')
     assert.ok(await sees(budi.page, 'Ana second secret'))
 
-    await budi.page.goto(`${APP}/settings`)
+    await budi.page.goto(`${APP}/settings/account`)
     await budi.page
       .getByRole('button', { name: 'Turn on encryption' })
       .first()

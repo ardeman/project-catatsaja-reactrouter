@@ -676,10 +676,11 @@
         "required": "Enter a display name."
       }
     },
-    "subtitle": "Your profile, look, account and currencies.",
+    "subtitle": "Your profile, look, account, security, health and currencies.",
     "sections": {
-      "general": "Profile, theme, text size, language",
-      "account": "Email and sign-in",
+      "general": "Profile, theme, text size, language and menu",
+      "account": "Email, sign-in and encryption",
+      "health": "BMI categories and lab units",
       "currency": "Number format and rates"
     },
     "navigation": {
@@ -824,6 +825,11 @@
         "title": "Bali trip",
         "date": "Edited 2 days ago",
         "entries": ["Flights", "Dinner at Jimbaran", "Souvenirs"]
+      },
+      "health": {
+        "name": "Mum",
+        "date": "Edited today",
+        "bodyDate": "Today"
       }
     }
   },

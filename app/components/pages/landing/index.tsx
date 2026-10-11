@@ -17,7 +17,12 @@ import { AboutFooter } from '~/components/layouts/about-footer'
 import { Button } from '~/components/ui/button'
 import { appleIcon, appName } from '~/lib/constants/metadata'
 
-import { FinancePreview, NotePreview, TaskPreview } from './preview'
+import {
+  FinancePreview,
+  HealthPreview,
+  NotePreview,
+  TaskPreview,
+} from './preview'
 
 type TFeature = {
   key: string
@@ -121,12 +126,14 @@ export const LandingPage = () => {
               </InstallApp>
             </div>
           </div>
-          {/* Phones: the cards overlap down the page. Wider: note and checklist
-              on the left, the finance book on top of both on the right. */}
-          <div className="relative mx-auto h-[43rem] w-full max-w-md sm:h-[28rem]">
-            <NotePreview className="absolute top-0 left-0 z-10 -rotate-3" />
-            <FinancePreview className="absolute top-[11rem] right-0 z-20 rotate-2 sm:top-1/2 sm:z-30 sm:-translate-y-1/2" />
-            <TaskPreview className="absolute top-[28rem] left-2 z-30 -rotate-1 sm:top-auto sm:bottom-0 sm:left-0 sm:z-20" />
+          {/* Phones: the cards overlap down the page. Wider: two staggered
+              columns, note and checklist on the left, health and the finance
+              book on the right. */}
+          <div className="relative mx-auto h-[61rem] w-full max-w-md sm:h-[36rem] sm:max-w-[35rem]">
+            <NotePreview className="absolute top-0 left-0 z-10 -rotate-3 sm:top-12" />
+            <HealthPreview className="absolute top-[12.5rem] right-0 z-20 rotate-2 sm:top-0" />
+            <FinancePreview className="absolute top-[29rem] left-1 z-30 -rotate-1 sm:top-[16.5rem] sm:right-0 sm:left-auto sm:rotate-1" />
+            <TaskPreview className="absolute top-[47rem] right-2 z-40 rotate-1 sm:top-[19rem] sm:right-auto sm:left-0 sm:z-20 sm:-rotate-2" />
           </div>
         </section>
 

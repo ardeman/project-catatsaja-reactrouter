@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next'
-import { Coins, SlidersHorizontal, UserRound } from 'lucide-react'
+import { Coins, HeartPulse, SlidersHorizontal, UserRound } from 'lucide-react'
 
 export const settings = (t: TFunction) => [
   {
@@ -13,6 +13,12 @@ export const settings = (t: TFunction) => [
     description: t('settings.sections.account'),
     href: '/settings/account',
     icon: UserRound,
+  },
+  {
+    name: t('navigation.health'),
+    description: t('settings.sections.health'),
+    href: '/settings/health',
+    icon: HeartPulse,
   },
   {
     name: t('navigation.currency'),
