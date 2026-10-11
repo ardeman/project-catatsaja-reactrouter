@@ -29,6 +29,7 @@ import {
   UtensilsCrossed,
   Wallet,
   WashingMachine,
+  Wrench,
 } from 'lucide-react'
 
 import { TFinanceEntry } from '~/lib/types/finance'
@@ -51,6 +52,7 @@ export const financeCategories: TCategory[] = [
   { key: 'fnb', type: 'expense', icon: UtensilsCrossed, color: 2 },
   { key: 'groceries', type: 'expense', icon: ShoppingBasket, color: 2 },
   { key: 'shopping', type: 'expense', icon: ShoppingBag, color: 4 },
+  { key: 'tools', type: 'expense', icon: Wrench, color: 4 },
   { key: 'emoney', type: 'expense', icon: Wallet, color: 4 },
   { key: 'transport', type: 'expense', icon: Car, color: 1 },
   { key: 'entertainment', type: 'expense', icon: Clapperboard, color: 5 },

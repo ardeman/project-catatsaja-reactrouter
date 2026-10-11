@@ -226,6 +226,10 @@
           "label": "Shopping",
           "description": "Clothing, cosmetics, gadgets & electronics"
         },
+        "tools": {
+          "label": "Tools",
+          "description": "Tools, hardware, repairs and spare parts"
+        },
         "emoney": {
           "label": "E-wallet top-up",
           "description": "GoPay, OVO, DANA, ShopeePay and other e-wallets"

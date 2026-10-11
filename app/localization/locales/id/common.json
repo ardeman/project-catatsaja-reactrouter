@@ -226,6 +226,10 @@
           "label": "Belanja",
           "description": "Pakaian, kosmetik, gadget & elektronik"
         },
+        "tools": {
+          "label": "Perkakas",
+          "description": "Perkakas, alat bangunan, perbaikan, dan suku cadang"
+        },
         "emoney": {
           "label": "Isi ulang e-wallet",
           "description": "GoPay, OVO, DANA, ShopeePay, dan e-wallet lain"

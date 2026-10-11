@@ -18,6 +18,13 @@ export const releases: TRelease[] = [
     title: { en: 'End-to-end encryption', id: 'Enkripsi end-to-end' },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'A Tools category for expenses.',
+          id: 'Kategori Perkakas untuk pengeluaran.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Choose the month and year directly in the date picker, handy for birth dates.',
