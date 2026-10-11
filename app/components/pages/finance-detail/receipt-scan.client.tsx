@@ -107,6 +107,13 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
     mode === 'items'
       ? entries.filter((_, index) => !skipped.has(index))
       : entries
+  // What the ticked items come to, rounded like the currency.
+  const chosenTotal =
+    Math.round(
+      chosen.reduce((sum, entry) => sum + entry.quantity * entry.amount, 0) *
+        10 ** fractionDigits,
+    ) /
+    10 ** fractionDigits
 
   const toggleLine = (index: number) =>
     setSkipped((current) => {
@@ -245,6 +252,18 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
                   </li>
                 )
               })}
+              {mode === 'items' && (
+                <li className="flex items-center justify-between gap-3 bg-muted/40 px-3 py-2 text-sm font-semibold">
+                  <span>
+                    {t('finances.receipt.chosenTotal', {
+                      count: chosen.length,
+                    })}
+                  </span>
+                  <span className="text-expense tabular-nums">
+                    {money(chosenTotal, currency)}
+                  </span>
+                </li>
+              )}
             </ul>
           )}
           {isMismatch && (

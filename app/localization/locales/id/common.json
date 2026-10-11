@@ -475,6 +475,8 @@
         "items": "Per barang"
       },
       "noLines": "Tidak ada jumlah yang terbaca dari struk ini.",
+      "chosenTotal_one": "Total {{count}} barang",
+      "chosenTotal_other": "Total {{count}} barang",
       "mismatch": "Jumlah barang {{lines}}, tetapi struk menulis {{total}}. Periksa apakah ada baris yang salah terbaca.",
       "currencyUnknown": "Struk ini dalam {{code}}, yang tidak ada di mata uangmu, jadi jumlahnya dicatat dalam {{book}}. Tambahkan {{code}} di Pengaturan untuk mencatatnya dalam mata uang itu.",
       "check": "Gemini bisa salah membaca struk. Periksa jumlah dan kategorinya; setiap entri bisa diubah setelah ditambahkan.",

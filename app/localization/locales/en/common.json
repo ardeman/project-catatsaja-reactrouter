@@ -475,6 +475,8 @@
         "items": "Each item"
       },
       "noLines": "No amounts could be read from this receipt.",
+      "chosenTotal_one": "Total of {{count}} item",
+      "chosenTotal_other": "Total of {{count}} items",
       "mismatch": "The items add up to {{lines}}, but the receipt says {{total}}. Check for a misread line.",
       "currencyUnknown": "The receipt is in {{code}}, which isn’t in your currencies, so the amounts are in {{book}}. Add {{code}} in Settings to record it as such.",
       "check": "Gemini can misread receipts. Check the amounts and categories; you can change each entry after adding it.",
