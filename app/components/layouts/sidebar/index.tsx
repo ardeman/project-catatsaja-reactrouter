@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router'
 import { cn } from '~/lib/utils/shadcn'
 
 import { settings } from './constant'
+export { settings } from './constant'
 
 // Tabs on phones (icon above a short label, so four fit); a list with a
 // line about each section from md up.

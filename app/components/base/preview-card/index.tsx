@@ -22,11 +22,11 @@ import {
 import { formatCurrency, getDefaultCurrencyFormat } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
-// Static look-alikes of the app's cards, filled with sample content. They
-// use the same card parts as the app (encrypted lock, shared label, task
-// order, category bar, health statuses), so they follow its theme, size
-// setting and language. Keep them in step with the cards in
-// `pages/{notes,tasks,finances,health}/card.tsx`.
+// Static look-alikes of the app's cards, filled with sample content, for the
+// landing page and the guide (/help). They use the same card parts as the
+// app (encrypted lock, shared label, task order, category bar, health
+// statuses), so they follow its theme, size setting and language. Keep them
+// in step with the cards in `pages/{notes,tasks,finances,health}/card.tsx`.
 
 type TPreviewProperties = { className?: string }
 

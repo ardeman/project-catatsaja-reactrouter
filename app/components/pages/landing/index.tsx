@@ -13,16 +13,16 @@ import { Link } from 'react-router'
 import { InstallApp } from '~/components/base/install-app'
 import { LanguageSelector } from '~/components/base/language-selector'
 import { ModeToggle } from '~/components/base/mode-toggle'
-import { AboutFooter } from '~/components/layouts/about-footer'
-import { Button } from '~/components/ui/button'
-import { appleIcon, appName } from '~/lib/constants/metadata'
-
 import {
   FinancePreview,
   HealthPreview,
   NotePreview,
   TaskPreview,
-} from './preview'
+} from '~/components/base/preview-card'
+import { AboutFooter } from '~/components/layouts/about-footer'
+import { Button } from '~/components/ui/button'
+import { appleIcon, appName } from '~/lib/constants/metadata'
+
 import { LandingVideo } from './video'
 
 type TFeature = {

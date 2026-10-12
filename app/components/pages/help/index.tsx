@@ -1,17 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
-const sections = [
-  'start',
-  'notes',
-  'tasks',
-  'finances',
-  'health',
-  'search',
-  'sharing',
-  'encryption',
-  'gemini',
-  'settings',
-] as const
+import { figures } from './figure'
+import { helpSections as sections } from './type'
 
 export const HelpPage = () => {
   const { t } = useTranslation()
@@ -44,30 +34,34 @@ export const HelpPage = () => {
           ))}
         </ul>
       </nav>
-      {sections.map((key) => (
-        <section
-          key={key}
-          aria-labelledby={`help-${key}`}
-          className="grid gap-2"
-        >
-          <h2
-            id={`help-${key}`}
-            className="scroll-mt-6 text-xl font-semibold"
+      {sections.map((key) => {
+        const Figure = figures[key]
+        return (
+          <section
+            key={key}
+            aria-labelledby={`help-${key}`}
+            className="grid gap-3"
           >
-            {t(`help.${key}.title`)}
-          </h2>
-          <p className="text-muted-foreground">
-            {t(`help.${key}.description`)}
-          </p>
-          <ul className="grid list-disc gap-1.5 pl-5 text-muted-foreground marker:text-primary">
-            {(t(`help.${key}.steps`, { returnObjects: true }) as string[]).map(
-              (step) => (
+            <h2
+              id={`help-${key}`}
+              className="scroll-mt-6 text-xl font-semibold"
+            >
+              {t(`help.${key}.title`)}
+            </h2>
+            <p className="text-muted-foreground">
+              {t(`help.${key}.description`)}
+            </p>
+            <Figure />
+            <ul className="grid list-disc gap-1.5 pl-5 text-muted-foreground marker:text-primary">
+              {(
+                t(`help.${key}.steps`, { returnObjects: true }) as string[]
+              ).map((step) => (
                 <li key={step}>{step}</li>
-              ),
-            )}
-          </ul>
-        </section>
-      ))}
+              ))}
+            </ul>
+          </section>
+        )
+      })}
     </div>
   )
 }

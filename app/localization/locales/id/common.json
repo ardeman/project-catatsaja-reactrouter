@@ -658,6 +658,9 @@
         "Mata uang: mata uang kamu dan kursnya, serta cara penulisan jumlah.",
         "Kesehatan: cara hasil kesehatan dinilai dan ditampilkan."
       ]
+    },
+    "sample": {
+      "email": "rina@example.com"
     }
   },
   "privacyPolicy": {

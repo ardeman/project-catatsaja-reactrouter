@@ -658,6 +658,9 @@
         "Currency: your currencies and their rates, and how amounts are written.",
         "Health: how health results are judged and shown."
       ]
+    },
+    "sample": {
+      "email": "rina@example.com"
     }
   },
   "privacyPolicy": {

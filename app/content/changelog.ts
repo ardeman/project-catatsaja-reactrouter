@@ -27,6 +27,13 @@ export const releases: TRelease[] = [
           id: 'Cara pakai: halaman yang menjelaskan setiap fitur dan tempat menemukannya, dari catatan dan tugas sampai keuangan, kesehatan, berbagi, enkripsi, dan Gemini. Buka dari menu akun atau tautan di bagian bawah halaman.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The guide shows each part of the app it talks about, such as the buttons, the icon bar and the menus, so they are easy to find.',
+          id: 'Panduan menampilkan setiap bagian aplikasi yang dibahasnya, seperti tombol, bilah ikon, dan menu, agar mudah ditemukan.',
+        },
+      },
     ],
   },
   {
