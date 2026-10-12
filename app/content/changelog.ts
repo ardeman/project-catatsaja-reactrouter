@@ -14,6 +14,36 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-13',
+    title: {
+      en: 'Account emails in your language',
+      id: 'Email akun dalam bahasamu',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'Emails to verify your address, reset your password or confirm a new email now come in the language you use the app in.',
+          id: 'Email untuk memverifikasi alamat, mengatur ulang kata sandi, atau mengonfirmasi email baru kini dikirim dalam bahasa yang kamu pakai di aplikasi.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Signing in with Google when your email already has an account with a password now tells you what to do: sign in with your password, then link Google in Settings → Account.',
+          id: 'Masuk dengan Google saat email-mu sudah punya akun dengan kata sandi kini memberi tahu langkahnya: masuk dengan kata sandi, lalu hubungkan Google di Pengaturan → Akun.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: '“Forgot password” no longer says an email was sent when no account uses that address; it now says a link was sent if one does.',
+          id: '“Lupa kata sandi” tidak lagi menyatakan email terkirim padahal tidak ada akun dengan alamat itu; kini tertulis tautan dikirim jika akunnya ada.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-12',
     title: {
       en: 'A guide to the app',

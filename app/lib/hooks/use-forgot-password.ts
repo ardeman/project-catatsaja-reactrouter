@@ -24,7 +24,7 @@ export const useForgotPassword = () => {
       }
       await sendPasswordResetEmail(auth, data.email)
       toast({
-        description: t('auth.toast.resetPassword'),
+        description: t('auth.toast.forgotPassword'),
       })
       setIsSuccess(true)
       revalidate()

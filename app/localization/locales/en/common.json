@@ -117,6 +117,7 @@
     "toast": {
       "verificationSent": "Verification email sent.",
       "resetPassword": "Password reset email sent.",
+      "forgotPassword": "If an account uses this email, we've sent it a link to reset the password.",
       "linkGoogle": "Your Google account is now linked.",
       "emailVerify": "Check your email to verify your account.",
       "updateEmail": "Check your new email address to confirm the change.",
@@ -936,6 +937,7 @@
     "recentLogin": "Please sign in again to do this.",
     "popupClosed": "The sign-in window was closed before finishing.",
     "credentialInUse": "This account is already linked to another user.",
+    "accountExists": "This email already has an account. Sign in with your email and password, then link Google in Settings → Account.",
     "unknown": "Something went wrong. Please try again.",
     "wrongPassphrase": "That passphrase isn't right",
     "wrongRecoveryCode": "That recovery code isn't right",

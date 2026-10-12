@@ -9,6 +9,7 @@ import {
   getFirestore,
   Firestore,
 } from 'firebase/firestore'
+import i18next from 'i18next'
 
 import { environment } from '~/lib/utils/environment'
 
@@ -53,6 +54,13 @@ if (typeof window !== 'undefined') {
       })
     }
     auth = getAuth(firebase)
+    // Firebase's emails (verification, password reset, email change) go out
+    // in the app's language, not the console's template language.
+    const syncAuthLanguage = (language?: string) => {
+      if (auth && language) auth.languageCode = language
+    }
+    syncAuthLanguage(i18next.language)
+    i18next.on('languageChanged', syncAuthLanguage)
     firestore = getFirestore(firebase)
     if (useEmulators) {
       connectAuthEmulator(auth, 'http://127.0.0.1:9099', {

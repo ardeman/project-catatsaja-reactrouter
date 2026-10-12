@@ -117,6 +117,7 @@
     "toast": {
       "verificationSent": "Email verifikasi sudah dikirim.",
       "resetPassword": "Email untuk mengatur ulang kata sandi sudah dikirim.",
+      "forgotPassword": "Jika ada akun dengan email ini, kami sudah mengirim tautan untuk mengatur ulang kata sandinya.",
       "linkGoogle": "Akun Google-mu sudah terhubung.",
       "emailVerify": "Cek email-mu untuk memverifikasi akun.",
       "updateEmail": "Cek email barumu untuk mengonfirmasi perubahan.",
@@ -936,6 +937,7 @@
     "recentLogin": "Silakan masuk lagi untuk melakukan ini.",
     "popupClosed": "Jendela masuk ditutup sebelum selesai.",
     "credentialInUse": "Akun ini sudah terhubung dengan pengguna lain.",
+    "accountExists": "Email ini sudah punya akun. Masuk dengan email dan kata sandi, lalu hubungkan Google di Pengaturan → Akun.",
     "unknown": "Terjadi kesalahan. Silakan coba lagi.",
     "wrongPassphrase": "Frasa sandi itu salah",
     "wrongRecoveryCode": "Kode pemulihan itu salah",

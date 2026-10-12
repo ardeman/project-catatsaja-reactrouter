@@ -20,6 +20,7 @@ const errorKeys: Record<string, string> = {
   'auth/popup-closed-by-user': 'errors.popupClosed',
   'auth/cancelled-popup-request': 'errors.popupClosed',
   'auth/credential-already-in-use': 'errors.credentialInUse',
+  'auth/account-exists-with-different-credential': 'errors.accountExists',
   // End-to-end encryption (thrown by the app itself).
   'encryption/wrong-passphrase': 'errors.wrongPassphrase',
   'encryption/wrong-recovery-code': 'errors.wrongRecoveryCode',
