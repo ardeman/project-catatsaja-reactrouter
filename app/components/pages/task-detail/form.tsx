@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronDown, ChevronUp, Trash } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -17,6 +17,7 @@ import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateTask } from '~/lib/hooks/use-create-task'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { toast } from '~/lib/hooks/use-toast'
+import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateTask } from '~/lib/hooks/use-update-task'
 import { TTaskForm } from '~/lib/types/task'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -97,6 +98,7 @@ export const Form = (properties: TFormProperties) => {
     move,
     insert,
     append,
+    replace,
   } = useFieldArray({
     control: control,
     name: 'content',
@@ -161,6 +163,39 @@ export const Form = (properties: TFormProperties) => {
     watch: [watchTitle, JSON.stringify(watchContent)],
     saveWhenIdle: !!selectedTask,
   })
+
+  // Undo and redo over the title and items together, in steps (a pause in
+  // changes).
+  const current = useMemo(
+    () => ({ title: watchTitle, content: toStoredContent(watchContent) }),
+    [watchTitle, watchContent],
+  )
+  const stored = useMemo(
+    () => ({
+      title: selectedTask?.title || '',
+      content: toStoredContent(selectedTask?.content || []),
+    }),
+    [selectedTask?.title, selectedTask?.content],
+  )
+  const history = useUndoHistory({
+    key: selectedTask?.id ?? 'create',
+    value: current,
+    stored,
+  })
+  const restore = (next?: typeof current) => {
+    if (!next) return
+    setSelectedEdit(undefined)
+    setValue('title', next.title, { shouldDirty: true })
+    replace(next.content)
+  }
+  const historyActions = isReadOnly
+    ? {}
+    : {
+        handleUndo: () => restore(history.undo()),
+        handleRedo: () => restore(history.redo()),
+        canUndo: history.canUndo,
+        canRedo: history.canRedo,
+      }
 
   const handleToggleCheckAll = () => {
     const shouldCheck = !checkedAll
@@ -440,6 +475,7 @@ export const Form = (properties: TFormProperties) => {
                 isReadOnly ? undefined : handleToggleCheckAll
               }
               checkedAll={checkedAll}
+              {...historyActions}
             />
           ) : (
             <Action
@@ -451,6 +487,7 @@ export const Form = (properties: TFormProperties) => {
               disabled={!isDirty}
               handleToggleCheckAll={handleToggleCheckAll}
               checkedAll={checkedAll}
+              {...historyActions}
             />
           )}
         </div>

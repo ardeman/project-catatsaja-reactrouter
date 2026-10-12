@@ -15,6 +15,7 @@ import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateHealthLog } from '~/lib/hooks/use-create-health-log'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateHealthLog } from '~/lib/hooks/use-update-health-log'
 import { THealthEntry, THealthKind, THealthLogForm } from '~/lib/types/health'
 import { today } from '~/lib/utils/finance'
@@ -159,6 +160,53 @@ export const Form = (properties: TFormProperties) => {
     saveWhenIdle: !!selectedHealthLog,
   })
 
+  // Undo and redo over the whole log (details, entries, reminders), in
+  // steps (a pause in changes, or each entry saved).
+  const current = {
+    name: values.name,
+    birthDate: values.birthDate,
+    sex: values.sex,
+    calorieTarget: values.calorieTarget,
+    content: values.content,
+    reminders: values.reminders ?? [],
+  }
+  const stored = {
+    name: selectedHealthLog?.name ?? '',
+    birthDate: selectedHealthLog?.birthDate ?? '',
+    sex: selectedHealthLog?.sex ?? 'female',
+    calorieTarget: selectedHealthLog?.calorieTarget ?? null,
+    content: selectedHealthLog?.content ?? [],
+    reminders: selectedHealthLog?.reminders ?? [],
+  }
+  const undoHistory = useUndoHistory({
+    key: selectedHealthLog?.id ?? 'create',
+    // As text, so the value only changes when the log does (`watch()` gives
+    // a new object every render).
+    value: JSON.stringify(current),
+    stored: JSON.stringify(stored),
+  })
+  const restore = (next?: string) => {
+    if (!next) return
+    const log = JSON.parse(next) as typeof current
+    for (const field of [
+      'name',
+      'birthDate',
+      'sex',
+      'calorieTarget',
+      'content',
+      'reminders',
+    ] as const)
+      setValue(field, log[field], { shouldDirty: true })
+  }
+  const historyActions = isReadOnly
+    ? {}
+    : {
+        handleUndo: () => restore(undoHistory.undo()),
+        handleRedo: () => restore(undoHistory.redo()),
+        canUndo: undoHistory.canUndo,
+        canRedo: undoHistory.canRedo,
+      }
+
   const handleSaveEntry = (entry: THealthEntry) => {
     const current = getValues('content')
     setValue(
@@ -237,6 +285,7 @@ export const Form = (properties: TFormProperties) => {
               handleUnlink={() => handleUnlinkHealthLog({ healthLog })}
               sharedCount={sharedCount}
               handleBack={handleBackHealthLog}
+              {...historyActions}
             />
           ) : (
             <Action
@@ -247,6 +296,7 @@ export const Form = (properties: TFormProperties) => {
               formId={formId}
               handleBack={handleBackHealthLog}
               disabled={!isDirty}
+              {...historyActions}
             />
           )}
         </div>

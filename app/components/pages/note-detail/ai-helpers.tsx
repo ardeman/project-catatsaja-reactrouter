@@ -40,7 +40,8 @@ const helpers: { key: TNoteHelper; icon: typeof Sparkles }[] = [
 // applied. Changing the note needs write access; a checklist is a new task
 // list, so readers can make one too.
 export const AiHelpers = (properties: TAiHelpersProperties) => {
-  const { getNote, isEditable, onApply } = properties
+  const { getNote, isEditable, hasContent, onApply, triggerClassName } =
+    properties
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { run, notice } = useAiConsent()
@@ -97,14 +98,13 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
           <UIButton
             type="button"
             variant="outline"
-            size="sm"
-            className="gap-2"
-            disabled={!!pending}
-            aria-label={t('notes.ai.menu')}
-            title={t('notes.ai.menu')}
+            className={triggerClassName}
+            disabled={!!pending || !hasContent}
+            aria-label={t(pending ? 'notes.ai.working' : 'notes.ai.menu')}
+            title={t(hasContent ? 'notes.ai.menu' : 'notes.ai.empty')}
+            aria-busy={!!pending}
           >
-            <Sparkles className={pending ? 'size-4 animate-pulse' : 'size-4'} />
-            {t(pending ? 'notes.ai.working' : 'notes.ai.menu')}
+            <Sparkles className={pending ? 'animate-pulse' : undefined} />
           </UIButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

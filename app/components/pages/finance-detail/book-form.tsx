@@ -32,6 +32,7 @@ import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
+import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateFinance } from '~/lib/hooks/use-update-finance'
 import {
   TFinanceCurrency,
@@ -240,6 +241,40 @@ export const Form = (properties: TFormProperties) => {
     saveWhenIdle: !!selectedFinance,
   })
 
+  // Undo and redo over the whole book (title, currency, entries, accounts),
+  // in steps (a pause in changes, or each entry saved).
+  const current = useMemo(
+    () => ({ title: watchTitle, currency: book, content: entries, accounts }),
+    [watchTitle, book, entries, accounts],
+  )
+  // Compared while rendering only, so a new object each time is fine.
+  const stored = {
+    title: selectedFinance?.title || '',
+    currency: selectedFinance?.currency ?? initialCurrency,
+    content: selectedFinance?.content || [],
+    accounts: selectedFinance?.accounts || [],
+  }
+  const undoHistory = useUndoHistory({
+    key: selectedFinance?.id ?? 'create',
+    value: current,
+    stored,
+  })
+  const restore = (next?: TFinanceForm) => {
+    if (!next) return
+    setEditing(undefined)
+    setIsEntryOpen(false)
+    for (const field of ['title', 'currency', 'content', 'accounts'] as const)
+      setValue(field, next[field], { shouldDirty: true })
+  }
+  const historyActions = isReadOnly
+    ? {}
+    : {
+        handleUndo: () => restore(undoHistory.undo()),
+        handleRedo: () => restore(undoHistory.redo()),
+        canUndo: undoHistory.canUndo,
+        canRedo: undoHistory.canRedo,
+      }
+
   const openEntry = (entry?: TFinanceEntry) => {
     setEditing(entry)
     setIsEntryOpen(!entry)
@@ -322,6 +357,7 @@ export const Form = (properties: TFormProperties) => {
               isLoading={isDuplicatePending}
               sharedCount={sharedCount}
               handleBack={handleBackFinance}
+              {...historyActions}
             />
           ) : (
             <Action
@@ -332,6 +368,7 @@ export const Form = (properties: TFormProperties) => {
               formId={bookFormId}
               handleBack={handleBackFinance}
               disabled={!isDirty}
+              {...historyActions}
             />
           )}
         </div>

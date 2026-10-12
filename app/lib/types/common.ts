@@ -1,5 +1,5 @@
 import { LucideIcon } from 'lucide-react'
-import { HTMLAttributes } from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 import { z } from 'zod'
 
 import { TUserResponse } from '~/lib/types/user'
@@ -62,6 +62,13 @@ export type TActionProperties = {
   checkedAll?: boolean
   buttonClassName?: HTMLAttributes<HTMLButtonElement>['className']
   formId?: string
+  // Undo and redo over the item's history (notes).
+  handleUndo?: () => void
+  handleRedo?: () => void
+  canUndo?: boolean
+  canRedo?: boolean
+  // More buttons (such as a menu), drawn with the bar's button style.
+  extra?: (buttonClassName: string) => ReactNode
 }
 
 export type TMenu = {

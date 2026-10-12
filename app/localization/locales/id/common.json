@@ -153,23 +153,23 @@
     "ai": {
       "menu": "Gemini",
       "working": "Memproses…",
-      "applied": "Catatan diubah",
+      "applied": "Catatan diubah. Urungkan dari bilah di atas jika perlu.",
       "summarise": {
         "action": "Ringkas",
         "title": "Ringkasan",
-        "hint": "Ditambahkan di awal catatan. Bisa dibatalkan setelahnya.",
+        "hint": "Ditambahkan di awal catatan. Bisa diurungkan dari bilah di atas.",
         "apply": "Tambahkan ke catatan"
       },
       "tidy": {
         "action": "Rapikan",
         "title": "Catatan yang dirapikan",
-        "hint": "Mengganti catatan dengan versi ini. Bisa dibatalkan setelahnya.",
+        "hint": "Mengganti catatan dengan versi ini. Bisa diurungkan dari bilah di atas.",
         "apply": "Ganti catatan"
       },
       "translate": {
         "action": "Terjemahkan (Inggris ↔ Indonesia)",
         "title": "Catatan terjemahan",
-        "hint": "Mengganti catatan dengan terjemahannya. Bisa dibatalkan setelahnya.",
+        "hint": "Mengganti catatan dengan terjemahannya. Bisa diurungkan dari bilah di atas.",
         "apply": "Ganti catatan"
       },
       "checklist": {
@@ -177,7 +177,8 @@
         "title": "Daftar tugas baru",
         "hint": "Membuat daftar tugas baru; catatan tetap seperti semula.",
         "apply": "Buat daftar tugas"
-      }
+      },
+      "empty": "Tulis sesuatu dulu untuk diproses Gemini"
     }
   },
   "tasks": {
@@ -856,7 +857,9 @@
     "moveDown": "Pindah ke bawah",
     "sharedWith_one": "Dibagikan dengan {{count}} orang",
     "close": "Tutup",
-    "duplicate": "Duplikat"
+    "duplicate": "Duplikat",
+    "undo": "Urungkan",
+    "redo": "Ulangi"
   },
   "collection": {
     "pinned": "Disematkan",

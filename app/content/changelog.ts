@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'Undo and redo in the icon bar of notes, task lists, finance books and health logs, for everything in them (including Gemini’s changes). In notes, the Gemini menu has moved to the icon bar too.',
+          id: 'Urungkan dan ulangi di bilah ikon catatan, daftar tugas, buku keuangan, dan catatan kesehatan, untuk semua isinya (termasuk perubahan dari Gemini). Di catatan, menu Gemini kini juga ada di bilah ikon.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Child growth follows Kemenkes PMK No. 2/2020 more closely: BMI results use its terms (gizi baik, berisiko gizi lebih), and weight for ages 5 to 10 shows its percentile without a status, as neither Kemenkes nor WHO classifies weight alone at that age.',

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -9,12 +9,12 @@ import { MilkdownEditor } from '~/components/base/milkdown-editor'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Textarea } from '~/components/base/textarea'
 import { useNote } from '~/components/pages/notes'
-import { ToastAction } from '~/components/ui/toast'
 import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateNote } from '~/lib/hooks/use-create-note'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { toast } from '~/lib/hooks/use-toast'
+import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateNote } from '~/lib/hooks/use-update-note'
 import { TNoteForm } from '~/lib/types/note'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -22,6 +22,11 @@ import { noteSchema } from '~/lib/validations/note'
 
 import { AiHelpers } from './ai-helpers'
 import { TFormProperties } from './type'
+
+const isSameNote = (
+  a: { title: string; content: string },
+  b: { title: string; content: string },
+) => a.title === b.title && a.content === b.content
 
 export const Form = (properties: TFormProperties) => {
   const { note } = properties
@@ -134,22 +139,60 @@ export const Form = (properties: TFormProperties) => {
     setEditorVersion((version) => version + 1)
   }
 
-  // An AI helper's result, after the person accepted the preview; undoable.
-  const handleApply = (next: { title: string; content: string }) => {
-    const previous = getNote()
-    replaceNote(next)
-    toast({
-      description: t('notes.ai.applied'),
-      action: (
-        <ToastAction
-          altText={t('form.undo')}
-          onClick={() => replaceNote(previous)}
-        >
-          {t('form.undo')}
-        </ToastAction>
-      ),
-    })
+  // Undo and redo over the title and text together, in steps (a pause in
+  // typing, or an AI helper's change); the editor's own Ctrl/⌘ Z still
+  // works letter by letter inside it.
+  const current = useMemo(
+    () => ({ title: watchTitle, content: watchContent }),
+    [watchTitle, watchContent],
+  )
+  const stored = useMemo(
+    () => ({
+      title: selectedNote?.title || '',
+      content: selectedNote?.content || '',
+    }),
+    [selectedNote?.title, selectedNote?.content],
+  )
+  const history = useUndoHistory({
+    key: selectedNote?.id ?? 'create',
+    value: current,
+    stored,
+    isEqual: isSameNote,
+  })
+  const handleUndo = () => {
+    const previous = history.undo(getNote())
+    if (previous) replaceNote(previous)
   }
+  const handleRedo = () => {
+    const next = history.redo(getNote())
+    if (next) replaceNote(next)
+  }
+
+  // An AI helper's result, after the person accepted the preview: a step of
+  // its own, undone from the bar.
+  const handleApply = (next: { title: string; content: string }) => {
+    history.checkpoint(getNote())
+    replaceNote(next)
+    toast({ description: t('notes.ai.applied') })
+  }
+
+  const historyActions = isReadOnly
+    ? {}
+    : {
+        handleUndo,
+        handleRedo,
+        canUndo: history.canUndo,
+        canRedo: history.canRedo,
+      }
+  const aiMenu = (buttonClassName: string) => (
+    <AiHelpers
+      getNote={getNote}
+      isEditable={!isReadOnly}
+      hasContent={!!watchContent.trim()}
+      onApply={handleApply}
+      triggerClassName={buttonClassName}
+    />
+  )
 
   useAutosave({
     save,
@@ -177,6 +220,8 @@ export const Form = (properties: TFormProperties) => {
               handleUnlink={() => handleUnlinkNote({ note })}
               sharedCount={sharedCount}
               handleBack={handleBackNote}
+              {...historyActions}
+              extra={aiMenu}
             />
           ) : (
             <Action
@@ -186,6 +231,8 @@ export const Form = (properties: TFormProperties) => {
               isCreate={true}
               handleBack={handleBackNote}
               disabled={!isDirty}
+              {...historyActions}
+              extra={aiMenu}
             />
           )}
         </div>
@@ -205,15 +252,6 @@ export const Form = (properties: TFormProperties) => {
           }}
           readOnly={isReadOnly}
         />
-        {watchContent.trim() && (
-          <div className="flex justify-end">
-            <AiHelpers
-              getNote={getNote}
-              isEditable={!isReadOnly}
-              onApply={handleApply}
-            />
-          </div>
-        )}
         <MilkdownEditor
           key={`${selectedNote?.id ?? 'create'}-${editorVersion}`}
           name="content"

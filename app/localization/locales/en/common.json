@@ -153,23 +153,23 @@
     "ai": {
       "menu": "Gemini",
       "working": "Working…",
-      "applied": "Note changed",
+      "applied": "Note changed. Undo it from the bar above if you need to.",
       "summarise": {
         "action": "Summarise",
         "title": "Summary",
-        "hint": "Added to the top of the note. You can undo it afterwards.",
+        "hint": "Added to the top of the note. You can undo it from the bar.",
         "apply": "Add to note"
       },
       "tidy": {
         "action": "Tidy up",
         "title": "Tidied note",
-        "hint": "Replaces the note with this version. You can undo it afterwards.",
+        "hint": "Replaces the note with this version. You can undo it from the bar.",
         "apply": "Replace note"
       },
       "translate": {
         "action": "Translate (English ↔ Indonesian)",
         "title": "Translated note",
-        "hint": "Replaces the note with the translation. You can undo it afterwards.",
+        "hint": "Replaces the note with the translation. You can undo it from the bar.",
         "apply": "Replace note"
       },
       "checklist": {
@@ -177,7 +177,8 @@
         "title": "New task list",
         "hint": "Creates a new task list; the note stays as it is.",
         "apply": "Create task list"
-      }
+      },
+      "empty": "Write something for Gemini to work on"
     }
   },
   "tasks": {
@@ -856,7 +857,9 @@
     "moveUp": "Move up",
     "moveDown": "Move down",
     "close": "Close",
-    "duplicate": "Duplicate"
+    "duplicate": "Duplicate",
+    "undo": "Undo",
+    "redo": "Redo"
   },
   "collection": {
     "pinned": "Pinned",

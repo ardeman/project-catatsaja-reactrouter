@@ -128,6 +128,7 @@ let device
 let calls
 let receiptPhoto
 let bookUrl
+let healthUrl
 
 before(async () => {
   server = await startApp()
@@ -234,6 +235,11 @@ describe('AI features and reminders', () => {
     await page.waitForTimeout(2000)
     await page.locator('.ProseMirror[contenteditable=true]').first().click()
     await page.keyboard.type('buy milk and bread')
+    // Still a step once autosave has stored it.
+    await page.waitForTimeout(3000)
+    assert.ok(
+      await page.getByRole('button', { name: 'Undo', exact: true }).isEnabled(),
+    )
     await page.getByRole('button', { name: 'Gemini' }).click()
     await page.getByRole('menuitem', { name: 'Tidy up' }).click()
     await shows(page, 'Tidied note')
@@ -243,11 +249,25 @@ describe('AI features and reminders', () => {
       await page.locator('textarea[name=title]').inputValue(),
       'Shopping',
     )
-    await page.getByRole('button', { name: 'Undo' }).click()
+    // Undo and redo in the icon bar step over the whole change.
+    const title = () => page.locator('textarea[name=title]').inputValue()
+    await page.getByRole('button', { name: 'Undo', exact: true }).click()
     await shows(page, 'buy milk and bread')
-    assert.equal(
-      await page.locator('textarea[name=title]').inputValue(),
-      'shoping',
+    assert.equal(await title(), 'shoping')
+    await page.getByRole('button', { name: 'Redo', exact: true }).click()
+    await shows(page, 'Buy milk and bread.')
+    assert.equal(await title(), 'Shopping')
+    await page.getByRole('button', { name: 'Undo', exact: true }).click()
+    await shows(page, 'buy milk and bread')
+
+    // Typing becomes a step once it pauses.
+    await page.locator('textarea[name=title]').fill('shoping list')
+    await page.waitForTimeout(1500)
+    await page.getByRole('button', { name: 'Undo', exact: true }).click()
+    await page.waitForTimeout(500)
+    assert.equal(await title(), 'shoping')
+    assert.ok(
+      await page.getByRole('button', { name: 'Redo', exact: true }).isEnabled(),
     )
 
     await page.getByRole('button', { name: 'Gemini' }).click()
@@ -285,6 +305,7 @@ describe('AI features and reminders', () => {
     await page.getByRole('button', { name: 'Save' }).click()
     await page.waitForURL(/\/health\/(?!create)/, { timeout: 30_000 })
     const logId = page.url().split('/').pop().split('?')[0]
+    healthUrl = `${APP}/health/${logId}`
 
     await page.getByRole('button', { name: 'Add reminder' }).click()
     await page.getByRole('button', { name: 'Add', exact: true }).click()
@@ -307,5 +328,57 @@ describe('AI features and reminders', () => {
       .getByText('Time to weigh and measure.')
       .waitFor({ state: 'hidden' })
     await shows(page, /next /)
+  })
+
+  test('undo and redo in task lists, finance books and health logs', async () => {
+    const { page } = device
+    const undo = () =>
+      page.getByRole('button', { name: 'Undo', exact: true }).click()
+    const redo = () =>
+      page.getByRole('button', { name: 'Redo', exact: true }).click()
+    const pause = () => page.waitForTimeout(1500)
+
+    // A task list: adding an item is a step.
+    await page.goto(`${APP}/tasks/create`)
+    await page.locator('textarea[name=title]').fill('Groceries')
+    await page.getByRole('button', { name: 'Save' }).click()
+    await page.waitForURL(/\/tasks\/(?!create)/, { timeout: 30_000 })
+    await page.waitForTimeout(2000)
+    await page.locator('textarea[name=item]').fill('Eggs')
+    await page.locator('textarea[name=item]').press('Enter')
+    await shows(page, 'Eggs')
+    await pause()
+    await undo()
+    await page.getByText('Eggs').waitFor({ state: 'hidden' })
+    await redo()
+    await shows(page, 'Eggs')
+
+    // A finance book: its title, opened fresh (nothing to undo yet).
+    await page.goto(bookUrl)
+    await page.waitForTimeout(3000)
+    assert.equal(
+      await page.getByRole('button', { name: 'Undo', exact: true }).isEnabled(),
+      false,
+    )
+    const bookTitle = page.locator('textarea[name=title]')
+    await bookTitle.fill('Belanja Oktober')
+    await pause()
+    await undo()
+    assert.equal(await bookTitle.inputValue(), 'Belanja')
+    await redo()
+    assert.equal(await bookTitle.inputValue(), 'Belanja Oktober')
+
+    // A health log: its name, and a removed reminder brought back.
+    await page.goto(healthUrl)
+    await page.waitForTimeout(3000)
+    const name = page.locator('textarea[name=name]')
+    await name.fill('Rara Ayu')
+    await pause()
+    await undo()
+    assert.equal(await name.inputValue(), 'Rara')
+    await page.getByRole('button', { name: 'Remove reminder' }).click()
+    await pause()
+    await undo()
+    await shows(page, 'Every 7 days')
   })
 })

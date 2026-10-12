@@ -4,8 +4,10 @@ import {
   EyeOff,
   Forward,
   Pin,
+  Redo2,
   Save,
   Trash,
+  Undo2,
   Users,
   ListChecks,
 } from 'lucide-react'
@@ -35,6 +37,11 @@ export const Action = (properties: TActionProperties) => {
     checkedAll,
     buttonClassName: buttonClassNameProperty,
     formId,
+    handleUndo,
+    handleRedo,
+    canUndo = false,
+    canRedo = false,
+    extra,
   } = properties
   const { t } = useTranslation()
   const buttonClassName = cn(
@@ -160,6 +167,41 @@ export const Action = (properties: TActionProperties) => {
         >
           <Save />
         </Button>
+      )}
+      {handleUndo && (
+        <Button
+          variant="outline"
+          aria-label={t('actions.undo')}
+          title={t('actions.undo')}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleUndo()
+          }}
+          containerClassName="flex-1 flex items-center"
+          className={buttonClassName}
+          disabled={!canUndo}
+        >
+          <Undo2 />
+        </Button>
+      )}
+      {handleRedo && (
+        <Button
+          variant="outline"
+          aria-label={t('actions.redo')}
+          title={t('actions.redo')}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleRedo()
+          }}
+          containerClassName="flex-1 flex items-center"
+          className={buttonClassName}
+          disabled={!canRedo}
+        >
+          <Redo2 />
+        </Button>
+      )}
+      {extra && (
+        <div className="flex flex-1 items-center">{extra(buttonClassName)}</div>
       )}
       {handleDuplicate && (
         <Button
