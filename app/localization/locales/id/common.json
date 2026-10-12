@@ -14,6 +14,7 @@
     "reportIssues": "Laporkan masalah",
     "changelog": "Catatan perubahan",
     "about": "Tentang aplikasi",
+    "help": "Cara pakai",
     "privacyPolicy": "Kebijakan privasi",
     "termsOfService": "Syarat layanan",
     "signOut": "Keluar",
@@ -550,6 +551,113 @@
     "made": {
       "title": "Siapa pembuatnya",
       "description": "Dibuat oleh <portfolio>{{author}}</portfolio>. Gratis, dan <github>kode sumbernya</github> terbuka di GitHub. Lihat yang baru di <changelog>catatan perubahan</changelog>."
+    }
+  },
+  "help": {
+    "description": "Panduan singkat semua yang bisa dilakukan Catat Saja, dan tempat menemukannya.",
+    "contents": "Di halaman ini",
+    "start": {
+      "title": "Memulai",
+      "description": "Buat akun, lalu gunakan menu untuk berpindah antara Catatan, Tugas, Keuangan, dan Kesehatan.",
+      "steps": [
+        "Daftar dengan email dan kata sandi (lalu buka tautan di email verifikasi), atau masuk dengan Google.",
+        "Akun baru langsung menyiapkan enkripsi end-to-end: pilih frasa sandi dan simpan kode pemulihan di tempat yang aman.",
+        "Pilih Pasang aplikasi di halaman utama atau di menu akun untuk menambahkan Catat Saja ke ponsel atau komputer. Aplikasi tetap terbuka saat sedang offline.",
+        "Semuanya tersimpan sendiri saat kamu mengetik. Status \"Menyimpan…\" dan \"Tersimpan\" di sebelah tanggal menunjukkan kapan selesai."
+      ]
+    },
+    "notes": {
+      "title": "Catatan",
+      "description": "Tulis apa saja: ide, rencana, resep, notulen.",
+      "steps": [
+        "Di halaman Catatan, pilih Catatan baru dan mulai mengetik. Markdown seperti # untuk judul atau - untuk daftar langsung diformat saat kamu mengetik.",
+        "Catatan tetap tersimpan saat kamu meninggalkannya, meskipun tidak menekan Simpan.",
+        "Gunakan bilah ikon di atas untuk menyematkan catatan di atas daftar, membagikannya, mengurungkan atau mengulangi perubahan, atau menghapusnya.",
+        "Menu Gemini (ikon kilau) bisa meringkas catatan, merapikannya, menerjemahkannya antara bahasa Inggris dan Indonesia, atau mengubahnya menjadi daftar tugas baru."
+      ]
+    },
+    "tasks": {
+      "title": "Tugas",
+      "description": "Daftar periksa untuk belanja, berkemas, pekerjaan rumah, atau apa pun yang punya langkah.",
+      "steps": [
+        "Di halaman Tugas, pilih Tugas baru, beri judul, lalu ketik setiap item di Tambah item.",
+        "Tempel beberapa baris sekaligus untuk menambahkan satu item per baris.",
+        "Ketuk item untuk mengubahnya, pindahkan ke atas atau ke bawah untuk mengatur urutan, dan gunakan Centang semua atau Hapus semua centang untuk seluruh daftar.",
+        "Item yang dicentang pindah ke Selesai di bagian bawah. Jika tidak sengaja menghapus item, urungkan dari pesan yang muncul."
+      ]
+    },
+    "finances": {
+      "title": "Keuangan",
+      "description": "Buat buku untuk sebulan, perjalanan, atau proyek, berisi pemasukan, pengeluaran, dan saldonya.",
+      "steps": [
+        "Di halaman Keuangan, pilih Buku baru dan tentukan mata uang buku.",
+        "Pilih Tambah entri untuk setiap pemasukan atau pengeluaran: deskripsi, jumlah, kuantitas, kategori, dan tanggal. Kolom jumlah menerima hitungan seperti 25000+12000.",
+        "Kategori disarankan dari entri kamu sebelumnya, dihitung di perangkatmu. Kamu selalu bisa mengubahnya.",
+        "Entri bisa memakai mata uang lain: kursnya ikut tersimpan, jadi total buku tidak berubah. Atur mata uang dan kurs di Pengaturan → Mata uang.",
+        "Tambahkan Akunmu (dompet, rekening bank) untuk mencocokkannya dengan saldo buku.",
+        "Buku menampilkan arus kas, saldo dari waktu ke waktu, dan pengeluaran per kategori, dalam bentuk grafik atau tabel.",
+        "Pindai struk membaca foto struk menjadi entri, dan Tambah cepat mengubah teks seperti \"makan siang 45rb, gaji 8jt kemarin\" menjadi entri. Keduanya memakai Gemini, dan kamu memeriksa entrinya sebelum ditambahkan."
+      ]
+    },
+    "health": {
+      "title": "Kesehatan",
+      "description": "Simpan catatan kesehatan untuk dirimu sendiri, anak, atau orang tua.",
+      "steps": [
+        "Di halaman Kesehatan, buat catatan dengan nama, jenis kelamin, dan tanggal lahir.",
+        "Pilih Tambah pengukuran untuk mencatat berat dan tinggi badan (dengan IMT), gula darah, asam urat, kolesterol, kalori, atau haid.",
+        "Untuk anak, tumbuh kembang dibandingkan dengan standar WHO dari lahir sampai 19 tahun, dengan persentil dan status Kemenkes.",
+        "Hasil ditampilkan terhadap rentang rujukan, bukan sebagai diagnosis. Tanyakan ke dokter jika ada yang membuatmu khawatir.",
+        "Tambah pengingat untuk diingatkan mengukur setiap beberapa hari atau sebelum haid yang diperkirakan. Pengingat yang jatuh tempo tampil di aplikasi, dan Tambah ke kalender memasukkannya ke kalender ponselmu.",
+        "Pengaturan → Kesehatan menentukan kategori IMT dewasa dan satuan yang dipakai untuk hasil."
+      ]
+    },
+    "search": {
+      "title": "Pencarian",
+      "description": "Temukan apa pun yang kamu tulis, di catatan, tugas, keuangan, dan catatan kesehatan.",
+      "steps": [
+        "Gunakan kotak pencarian di atas, atau tekan Ctrl K (⌘ K di Mac) atau / dari halaman mana pun.",
+        "Pencarian melihat judul dan isi. Pilih Lihat semua untuk menyaring daftar dengan kata yang kamu ketik."
+      ]
+    },
+    "sharing": {
+      "title": "Berbagi",
+      "description": "Bagikan catatan, daftar tugas, buku keuangan, atau catatan kesehatan dengan orang lain yang memakai Catat Saja.",
+      "steps": [
+        "Pilih Bagikan di bilah ikon, cari seseorang dengan emailnya, lalu beri akses hanya baca atau bisa mengubah.",
+        "Perubahan langsung terlihat oleh semua orang. Orang dengan akses hanya baca tidak bisa mengubah apa pun.",
+        "Kamu bisa menyalin tautan ke item, dan mengurungkan saat menghapus seseorang.",
+        "Item yang dibagikan kepadamu bisa dihapus dari daftarmu sendiri dengan Hapus dari daftar saya; item tetap ada untuk yang lain."
+      ]
+    },
+    "encryption": {
+      "title": "Enkripsi end-to-end",
+      "description": "Item kamu dienkripsi di perangkatmu, jadi hanya kamu dan orang yang kamu ajak berbagi yang bisa membacanya; kami pun tidak bisa.",
+      "steps": [
+        "Enkripsi aktif untuk akun baru. Jika akunmu lebih lama, aktifkan di Pengaturan → Akun → Keamanan.",
+        "Buka data kamu di setiap perangkat dengan frasa sandi, kode pemulihan, atau passkey (sidik jari, wajah, atau PIN perangkat).",
+        "Simpan kode pemulihan baik-baik: jika lupa frasa sandi, hanya kode ini jalan kembali ke item terenkripsi kamu.",
+        "Pilih Kunci perangkat ini di menu akun setelah selesai memakai komputer bersama."
+      ]
+    },
+    "gemini": {
+      "title": "Bantuan Gemini",
+      "description": "Bantuan opsional yang memakai Gemini dari Google: pindai struk, tambah cepat, dan bantuan catatan.",
+      "steps": [
+        "Saat pertama kali memakainya, pemberitahuan menjelaskan apa yang dikirim. Tidak ada yang dikirim sampai kamu memilih foto atau menekan tombol.",
+        "Kamu selalu melihat hasilnya dulu, dan tidak ada yang ditambahkan atau diubah sampai kamu menyetujuinya. Perubahan dari Gemini bisa diurungkan.",
+        "Paket gratis Gemini mengizinkan Google memakai yang dikirim untuk meningkatkan layanannya, termasuk dari item terenkripsi, jadi jangan kirim yang ingin kamu rahasiakan.",
+        "Kamu bisa berhenti memakai Gemini kapan saja di Pengaturan → Akun → Fitur AI."
+      ]
+    },
+    "settings": {
+      "title": "Pengaturan",
+      "description": "Buka Pengaturan dari menu akun (fotomu di bagian atas).",
+      "steps": [
+        "Umum: nama dan foto; tema terang, gelap, atau sistem; ukuran teks dan bahasa; urutan menu dan halaman pembuka aplikasi.",
+        "Akun: email, menautkan Google, enkripsi dan passkey, serta fitur AI.",
+        "Mata uang: mata uang kamu dan kursnya, serta cara penulisan jumlah.",
+        "Kesehatan: cara hasil kesehatan dinilai dan ditampilkan."
+      ]
     }
   },
   "privacyPolicy": {

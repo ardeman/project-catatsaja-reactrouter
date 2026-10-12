@@ -23,6 +23,10 @@ export const aboutMenus = (t: TFunction): TMenu[] => [
     href: '/about',
   },
   {
+    name: t('navigation.help'),
+    href: '/help',
+  },
+  {
     name: t('navigation.changelog'),
     href: '/changelog',
   },

@@ -5,7 +5,7 @@
 // - Everything else (Firebase, Firestore, fonts, other sites) is not
 //   touched and goes to the network as usual.
 
-const PAGES = 'pages-v1'
+const PAGES = 'pages-v2'
 const ASSETS = 'assets-v1'
 // The app shell served for every client-rendered route.
 const FALLBACK = '/__spa-fallback.html'
@@ -13,6 +13,7 @@ const FALLBACK = '/__spa-fallback.html'
 const PUBLIC_PAGES = new Set([
   '/',
   '/about',
+  '/help',
   '/privacy',
   '/terms',
   '/changelog',

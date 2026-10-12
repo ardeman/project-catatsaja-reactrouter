@@ -13,6 +13,7 @@ export const authPages = new Set(['/', '/auth'])
 export const publicPages = new Set([
   '/',
   '/about',
+  '/help',
   '/privacy',
   '/terms',
   '/changelog',

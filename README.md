@@ -43,7 +43,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - **Health:** a log per person (yourself, a child, a parent), shared like notes: weight, height and BMI (Kemenkes, WHO or WHO Asia-Pacific categories), child growth from birth to 19 years against the WHO Child Growth Standards (to 5 years) and the WHO Growth Reference for school-age children and adolescents (5 to 19 years; weight for age to 10), with percentiles and Kemenkes PMK 2/2020 status, blood sugar, uric acid and cholesterol with adult reference ranges (mg/dL or SI units), calories against a daily target, and period cycle estimates; reminders to measure every few days or before an expected period, shown when due (on the log, its card and the Health menu) and exportable to the phone's calendar (.ics).
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
 - **Landing page:** what the app does, with previews of a note and a checklist, in both languages and themes; signed-in visitors go straight to their notes.
-- **App:** installable as a standalone app ("Install app" on the landing page and in the account menu: the browser's install prompt, or the right steps for Safari, Firefox on Android and Chrome before it offers the prompt), opens offline, a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
+- **App:** installable as a standalone app ("Install app" on the landing page and in the account menu: the browser's install prompt, or the right steps for Safari, Firefox on Android and Chrome before it offers the prompt), opens offline, a how-to-use guide, a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
 
 ## Roadmap
 
@@ -71,7 +71,7 @@ An optional Catat Saja Plus subscription pays for what costs money to run; the c
 
 ## Tech stack
 
-The app is a single-page app (`ssr: false`) on Firebase Auth and Cloud Firestore, hosted on Firebase Hosting. The public pages (landing, about, privacy, terms, changelog) are also rendered to HTML at build time (`prerender` in `react-router.config.ts`) so search engines and link previews can read them.
+The app is a single-page app (`ssr: false`) on Firebase Auth and Cloud Firestore, hosted on Firebase Hosting. The public pages (landing, about, help, privacy, terms, changelog) are also rendered to HTML at build time (`prerender` in `react-router.config.ts`) so search engines and link previews can read them.
 
 | Item             | Value                                                                 |
 | ---------------- | --------------------------------------------------------------------- |
@@ -163,7 +163,7 @@ app/
   root.tsx            App shell: Firebase and theme providers, root layout, hydrate fallback
   routes.ts           Flat file routes plus a catch-all (catch-all.tsx)
   routes/             Route modules (thin: each renders one page component)
-                        _layout._home.*   public pages (about, privacy, terms)
+                        _layout._home.*   public pages (about, help, privacy, terms, changelog)
                         _layout.auth.*    sign in, sign up, forgot password
                         _layout._main.*   signed-in app (notes, tasks, finances, health, settings)
   apis/firestore/     Firestore reads and writes per collection (note, task, finance, health-log, user, currency)

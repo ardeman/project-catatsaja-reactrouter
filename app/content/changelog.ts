@@ -16,6 +16,22 @@ export const releases: TRelease[] = [
   {
     date: '2026-10-12',
     title: {
+      en: 'A guide to the app',
+      id: 'Panduan aplikasi',
+    },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'How to use: a page that explains each feature and where to find it, from notes and tasks to finances, health, sharing, encryption and Gemini. Open it from the account menu or the links at the bottom of the page.',
+          id: 'Cara pakai: halaman yang menjelaskan setiap fitur dan tempat menemukannya, dari catatan dan tugas sampai keuangan, kesehatan, berbagi, enkripsi, dan Gemini. Buka dari menu akun atau tautan di bagian bawah halaman.',
+        },
+      },
+    ],
+  },
+  {
+    date: '2026-10-12',
+    title: {
       en: 'Gemini helpers, health reminders and growth to 19',
       id: 'Bantuan Gemini, pengingat kesehatan, dan tumbuh kembang sampai 19 tahun',
     },
