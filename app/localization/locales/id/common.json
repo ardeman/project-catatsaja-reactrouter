@@ -673,7 +673,7 @@
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu bagikan bisa melihat isinya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
-    "video": "Halaman utama memuat video yang di-hosting di YouTube. Video baru dimuat saat kamu menekan putar, melalui mode privasi YouTube (youtube-nocookie.com); setelah itu kebijakan privasi YouTube berlaku untuknya.",
+    "video": "Halaman utama memuat video yang di-hosting di YouTube. Video baru dimuat saat kamu menekan putar atau memilih sebuah cerita, melalui mode privasi YouTube (youtube-nocookie.com); setelah itu kebijakan privasi YouTube berlaku untuknya.",
     "contact": "Untuk meminta salinan datamu, atau menghapus akun beserta semua isinya, kirim email ke <a>{{email}}</a>."
   },
   "termsOfService": {
@@ -1021,6 +1021,38 @@
       "everywhere": {
         "title": "Di mana pun kamu berada",
         "description": "Bisa dibuka di browser apa saja dan dipasang seperti aplikasi yang terbuka di halaman pilihanmu. Tema terang atau gelap, dalam Bahasa Indonesia atau Inggris."
+      }
+    },
+    "stories": {
+      "title": "Kamu yang mana?",
+      "description": "Empat orang, empat hari biasa, satu aplikasi. Ketuk salah satu untuk menonton ceritanya.",
+      "play": "Tonton cerita {{name}}",
+      "note": "Cerita diputar dari YouTube, yang baru dimuat saat kamu memilih salah satunya. Orang-orangnya rekaan; tampilan layarnya aplikasi asli.",
+      "people": {
+        "rina": {
+          "name": "Rina",
+          "role": "29 · ibu baru",
+          "quote": "Arka udah dua setengah tahun, aku pengin tahu tumbuh kembangnya baik.",
+          "feature": "Tumbuh kembang anak vs standar WHO"
+        },
+        "couple": {
+          "name": "Sari & Dimas",
+          "role": "Pasutri · satu rumah, satu dompet",
+          "quote": "Udah ada di daftar kita. Buka aja!",
+          "feature": "Daftar dan buku keuangan bersama"
+        },
+        "adit": {
+          "name": "Adit",
+          "role": "26 · desainer lepas",
+          "quote": "Belanja pakai yen, bukunya otomatis hitung dalam rupiah.",
+          "feature": "Belanja dalam mata uang lain"
+        },
+        "maya": {
+          "name": "Maya",
+          "role": "41 · merawat bapaknya",
+          "quote": "Bapak kena diabetes, aku yang pantau cek kesehatannya.",
+          "feature": "Gula darah, dibagi ke keluarga"
+        }
       }
     },
     "video": {

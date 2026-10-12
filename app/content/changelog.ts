@@ -28,6 +28,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'new',
+        text: {
+          en: 'The home page tells four short stories of people using Catat Saja, from a new mum to a freelancer abroad. Choose one to watch it; nothing loads from YouTube until you do.',
+          id: 'Halaman utama kini punya empat cerita singkat orang yang memakai Catat Saja, dari ibu baru sampai pekerja lepas di luar negeri. Pilih salah satu untuk menontonnya; tidak ada yang dimuat dari YouTube sebelum kamu memilih.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'The guide shows each part of the app it talks about, such as the buttons, the icon bar and the menus, so they are easy to find.',

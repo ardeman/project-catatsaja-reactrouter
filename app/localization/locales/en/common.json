@@ -673,7 +673,7 @@
     "sharing": "When you share a note, task, book or health log, the people you share it with see its content. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
     "security": "To keep out abuse, the app uses Firebase App Check with Google reCAPTCHA, which checks that requests come from this app using signals from your browser.",
-    "video": "The home page has a video hosted on YouTube. It loads only when you press play, from YouTube's privacy-enhanced mode (youtube-nocookie.com); YouTube's own privacy policy then applies to it.",
+    "video": "The home page has videos hosted on YouTube. They load only when you press play or choose a story, from YouTube's privacy-enhanced mode (youtube-nocookie.com); YouTube's own privacy policy then applies to them.",
     "contact": "To get a copy of your data, or to delete your account and everything in it, email <a>{{email}}</a>."
   },
   "termsOfService": {
@@ -1021,6 +1021,38 @@
       "everywhere": {
         "title": "Wherever you are",
         "description": "Works in any browser and installs like an app that opens on the page you choose. Light or dark, in English or Bahasa Indonesia."
+      }
+    },
+    "stories": {
+      "title": "Which one are you?",
+      "description": "Four people, four ordinary days, one app. Tap someone to watch their story.",
+      "play": "Watch {{name}}’s story",
+      "note": "The stories play from YouTube, which loads only when you choose one. The people are made up; the screens are the real app.",
+      "people": {
+        "rina": {
+          "name": "Rina",
+          "role": "29 · first-time mum",
+          "quote": "Arka’s two and a half, and I want to know he’s growing well.",
+          "feature": "Growth against WHO standards"
+        },
+        "couple": {
+          "name": "Sari & Dimas",
+          "role": "Married · one home, one budget",
+          "quote": "It’s all on our list. Just open it!",
+          "feature": "A shared list and money book"
+        },
+        "adit": {
+          "name": "Adit",
+          "role": "26 · freelance designer",
+          "quote": "I pay in yen, and my book adds it all up in rupiah.",
+          "feature": "Spending in other currencies"
+        },
+        "maya": {
+          "name": "Maya",
+          "role": "41 · looking after her dad",
+          "quote": "Dad has diabetes, and I’m the one who keeps track of his check-ups.",
+          "feature": "Blood sugar, shared with family"
+        }
       }
     },
     "video": {
