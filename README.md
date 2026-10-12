@@ -52,6 +52,16 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - [ ] Finances: budgets.
 - [ ] Push notifications for health reminders (needs Cloud Functions and the Blaze plan; today reminders show in the app and go to the phone's calendar).
 
+**Revenue**
+
+An optional Catat Saja Plus subscription pays for what costs money to run; the core stays free (AGENTS.md → Decisions). In order:
+
+- [ ] Measure: a tracked link per promo video (`utm_campaign` per story: `rina`, `couple`, `adit`, `maya`) and sign-ups by source in Analytics.
+- [ ] Find who pays: post the per-person stories videos, then a small paid test per person for a week; the cheapest active sign-ups pick which Plus features come first.
+- [ ] A donation link (Trakteer or Saweria) and a Plus waitlist with an early-bird price, to check that people will pay.
+- [ ] Plus: Gemini on the paid tier with higher limits (photos not used to improve Google's services; a few uses a month stay free), health reports as PDF for the doctor or posyandu, budgets, exports and yearly finance reports, and a family plan.
+- [ ] Payments through an Indonesian gateway (QRIS and e-wallets; Xendit or Midtrans), and Paddle or Lemon Squeezy for other countries. Needs the Blaze plan: a Cloud Function receives the payment notice and writes the person's plan, which the rules don't let users change. Update the terms, the privacy policy and the changelog at launch.
+
 **Technical**
 
 - [ ] More end-to-end tests (today they cover encryption, sharing, the AI features and health reminders; the rules have their own tests).
