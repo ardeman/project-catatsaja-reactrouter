@@ -119,7 +119,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
       {isOpen ? (
         <section
           aria-labelledby="quick-add-title"
-          className="motion-enter glass-surface col-span-full grid gap-3 rounded-xl border p-3 sm:p-4"
+          className="motion-enter glass-surface order-last grid basis-full gap-3 rounded-xl border p-3 sm:p-4"
         >
           <h2
             id="quick-add-title"

@@ -171,7 +171,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
       {receipt ? (
         <section
           aria-labelledby="receipt-review-title"
-          className="motion-enter glass-surface col-span-full grid gap-3 rounded-xl border p-3 sm:p-4"
+          className="motion-enter glass-surface order-last grid basis-full gap-3 rounded-xl border p-3 sm:p-4"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2
@@ -355,7 +355,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
       {isPending && (
         <p
           role="status"
-          className="col-span-full text-center text-xs text-muted-foreground"
+          className="order-last basis-full text-center text-xs text-muted-foreground"
         >
           {t('finances.receipt.reading')}
         </p>
