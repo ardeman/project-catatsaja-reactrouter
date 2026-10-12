@@ -32,6 +32,7 @@ import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
+import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateFinance } from '~/lib/hooks/use-update-finance'
 import {
@@ -47,6 +48,7 @@ import {
   normalizeAccounts,
   summarize,
 } from '~/lib/utils/finance'
+import { isSameJson, mergeById } from '~/lib/utils/merge-stored'
 import {
   formatExchangeRate,
   getDateLabel,
@@ -61,9 +63,6 @@ import { EntryForm } from './entry-form.client'
 import { QuickAdd } from './quick-add.client'
 import { ReceiptScan } from './receipt-scan.client'
 import { TFormProperties } from './type'
-
-const isSameJson = (a: unknown, b: unknown) =>
-  JSON.stringify(a) === JSON.stringify(b)
 
 export const Form = (properties: TFormProperties) => {
   const { finance } = properties
@@ -134,15 +133,19 @@ export const Form = (properties: TFormProperties) => {
       }
     : fallbackCurrency
 
-  const formMethods = useForm<TFinanceForm>({
-    values: {
-      title: selectedFinance?.title || '',
-      currency: selectedFinance?.currency ?? initialCurrency,
-      content: selectedFinance?.content || [],
-      accounts: selectedFinance?.accounts || [],
-    },
-    // Changes saved elsewhere must not overwrite what is being typed.
-    resetOptions: { keepDirtyValues: true },
+  const stored: TFinanceForm = {
+    title: selectedFinance?.title || '',
+    currency: selectedFinance?.currency ?? initialCurrency,
+    content: selectedFinance?.content || [],
+    accounts: selectedFinance?.accounts || [],
+  }
+  const formMethods = useForm<TFinanceForm>({ defaultValues: stored })
+  // Entries and accounts merge one by one, so entries added or deleted on
+  // two devices at once are all kept.
+  useStoredValues({
+    form: formMethods,
+    stored,
+    merge: { content: mergeById, accounts: mergeById },
   })
   const {
     watch,
@@ -247,13 +250,6 @@ export const Form = (properties: TFormProperties) => {
     () => ({ title: watchTitle, currency: book, content: entries, accounts }),
     [watchTitle, book, entries, accounts],
   )
-  // Compared while rendering only, so a new object each time is fine.
-  const stored = {
-    title: selectedFinance?.title || '',
-    currency: selectedFinance?.currency ?? initialCurrency,
-    content: selectedFinance?.content || [],
-    accounts: selectedFinance?.accounts || [],
-  }
   const undoHistory = useUndoHistory({
     key: selectedFinance?.id ?? 'create',
     value: current,
@@ -539,10 +535,10 @@ export const Form = (properties: TFormProperties) => {
                   onDelete={handleDeleteEntry}
                 />
               ) : (
-                <div className="motion-fade grid grid-cols-[minmax(0,1fr)_auto_auto] gap-2">
+                <div className="motion-fade flex flex-wrap gap-2">
                   <Button
                     type="button"
-                    className="w-full gap-2"
+                    className="min-w-0 flex-1 gap-2"
                     onClick={() => openEntry()}
                   >
                     <Plus className="size-4" />

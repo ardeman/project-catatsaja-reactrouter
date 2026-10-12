@@ -15,11 +15,13 @@ import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateHealthLog } from '~/lib/hooks/use-create-health-log'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateHealthLog } from '~/lib/hooks/use-update-health-log'
 import { THealthEntry, THealthKind, THealthLogForm } from '~/lib/types/health'
 import { today } from '~/lib/utils/finance'
 import { ageInYears } from '~/lib/utils/health'
+import { isSameJson, mergeById } from '~/lib/utils/merge-stored'
 import { getDateLabel } from '~/lib/utils/parser'
 
 import { BodySection } from './body-section'
@@ -31,9 +33,6 @@ import { Reminders } from './reminders'
 import { TFormProperties } from './type'
 
 type TTab = 'overview' | THealthKind
-
-const isSameJson = (a: unknown, b: unknown) =>
-  JSON.stringify(a) === JSON.stringify(b)
 
 // The target as stored: a whole number, or null when cleared.
 const toTarget = (value: unknown) => {
@@ -79,17 +78,23 @@ export const Form = (properties: TFormProperties) => {
       })
     : ''
 
+  const storedValues: THealthLogForm = {
+    name: selectedHealthLog?.name ?? '',
+    birthDate: selectedHealthLog?.birthDate ?? '',
+    sex: selectedHealthLog?.sex ?? 'female',
+    calorieTarget: selectedHealthLog?.calorieTarget ?? null,
+    content: selectedHealthLog?.content ?? [],
+    reminders: selectedHealthLog?.reminders ?? [],
+  }
   const formMethods = useForm<THealthLogForm>({
-    values: {
-      name: selectedHealthLog?.name ?? '',
-      birthDate: selectedHealthLog?.birthDate ?? '',
-      sex: selectedHealthLog?.sex ?? 'female',
-      calorieTarget: selectedHealthLog?.calorieTarget ?? null,
-      content: selectedHealthLog?.content ?? [],
-      reminders: selectedHealthLog?.reminders ?? [],
-    },
-    // Changes saved elsewhere must not overwrite what is being typed.
-    resetOptions: { keepDirtyValues: true },
+    defaultValues: storedValues,
+  })
+  // Measurements and reminders merge one by one, so ones added or deleted
+  // on two devices at once are all kept.
+  useStoredValues({
+    form: formMethods,
+    stored: storedValues,
+    merge: { content: mergeById, reminders: mergeById },
   })
   const {
     watch,

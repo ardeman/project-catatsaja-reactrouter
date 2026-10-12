@@ -13,6 +13,7 @@ import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateNote } from '~/lib/hooks/use-create-note'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateNote } from '~/lib/hooks/use-update-note'
@@ -63,15 +64,15 @@ export const Form = (properties: TFormProperties) => {
     useCreateNote()
   const navigate = useNavigate()
   const { mutate: mutateUpdateNote } = useUpdateNote()
+  const storedValues: TNoteForm = {
+    title: selectedNote?.title || '',
+    content: selectedNote?.content || '',
+  }
   const formMethods = useForm<TNoteForm>({
     resolver: zodResolver(noteSchema),
-    values: {
-      title: selectedNote?.title || '',
-      content: selectedNote?.content || '',
-    },
-    // Changes saved elsewhere must not overwrite what is being typed.
-    resetOptions: { keepDirtyValues: true },
+    defaultValues: storedValues,
   })
+  useStoredValues({ form: formMethods, stored: storedValues })
   const {
     watch,
     getValues,

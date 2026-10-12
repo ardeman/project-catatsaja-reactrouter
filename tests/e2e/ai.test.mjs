@@ -22,6 +22,7 @@ import {
   newDevice,
   resetEmulators,
   setUpEncryption,
+  signInAndUnlock,
   signUp,
   startApp,
   stopApp,
@@ -226,6 +227,30 @@ describe('AI features and reminders', () => {
       'Read this shopping receipt',
       'Turn this note of money',
     ])
+  })
+
+  test('an entry deleted on another device stays deleted', async () => {
+    // This device added "Makan siang" above and still has the book open.
+    const { page } = device
+    await page.waitForTimeout(2000)
+    const other = await signInAndUnlock(browser, RINA, 'rina passphrase 1')
+    await other.page.goto(bookUrl)
+    await other.page.getByText('Makan siang').click({ timeout: 30_000 })
+    await other.page.getByRole('button', { name: 'Delete entry' }).click()
+    await other.page.getByText('Makan siang').waitFor({ state: 'hidden' })
+    await other.page.waitForTimeout(3000)
+
+    // Gone here too, and leaving (which saves) doesn't bring it back.
+    await page.getByText('Makan siang').waitFor({
+      state: 'hidden',
+      timeout: 30_000,
+    })
+    await page.goto(`${APP}/finances`)
+    await page.waitForTimeout(3000)
+    await other.page.reload()
+    await shows(other.page, 'INDOMIE GORENG')
+    assert.equal(await other.page.getByText('Makan siang').count(), 0)
+    await other.context.close()
   })
 
   test('note helpers preview, apply, undo, and make a task list', async () => {

@@ -16,6 +16,7 @@ import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateTask } from '~/lib/hooks/use-create-task'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateTask } from '~/lib/hooks/use-update-task'
@@ -73,16 +74,16 @@ export const Form = (properties: TFormProperties) => {
     useCreateTask()
   const navigate = useNavigate()
   const { mutate: mutateUpdateTask } = useUpdateTask()
+  const storedValues: TTaskForm = {
+    title: selectedTask?.title || '',
+    item: '',
+    content: selectedTask?.content || [],
+  }
   const formMethods = useForm<TTaskForm>({
     resolver: zodResolver(taskSchema(t)),
-    values: {
-      title: selectedTask?.title || '',
-      item: '',
-      content: selectedTask?.content || [],
-    },
-    // Changes saved elsewhere must not overwrite what is being typed.
-    resetOptions: { keepDirtyValues: true },
+    defaultValues: storedValues,
   })
+  useStoredValues({ form: formMethods, stored: storedValues })
   const {
     watch,
     getValues,

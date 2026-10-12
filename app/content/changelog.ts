@@ -41,6 +41,20 @@ export const releases: TRelease[] = [
           id: '“Lupa kata sandi” tidak lagi menyatakan email terkirim padahal tidak ada akun dengan alamat itu; kini tertulis tautan dikirim jika akunnya ada.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'With a note, task list, book or health log open on two devices, something deleted on one no longer comes back from the other. Entries, measurements and reminders added on both at once are all kept.',
+          id: 'Saat catatan, daftar tugas, buku, atau log kesehatan terbuka di dua perangkat, yang dihapus di satu perangkat tidak lagi muncul kembali dari perangkat lain. Entri, pengukuran, dan pengingat yang ditambahkan di keduanya bersamaan kini tersimpan semua.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'In a book, Quick add stays next to Add entry while a receipt is being read or checked.',
+          id: 'Di buku, Tambah cepat tetap di samping Tambah entri saat struk sedang dibaca atau diperiksa.',
+        },
+      },
     ],
   },
   {
