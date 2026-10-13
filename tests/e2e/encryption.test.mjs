@@ -730,6 +730,11 @@ describe('end-to-end encryption', () => {
     await dialog
       .getByText(/jaya@example\.com can.t be invited right now/)
       .waitFor({ timeout: 15_000 })
+    // A new search clears it.
+    await dialog.locator('input[name=user]').fill('nobody@example.com')
+    await dialog.locator('input[name=user]').press('Enter')
+    await dialog.getByText(/No one uses Catat Saja with nobody/).waitFor()
+    assert.equal(await dialog.getByText(/can.t be invited/).count(), 0)
     await kiki.page.keyboard.press('Escape')
     assert.ok(
       !JSON.stringify((await dbGet(`notes/${second}`)).invites ?? {}).includes(

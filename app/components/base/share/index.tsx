@@ -57,8 +57,11 @@ export const Share = (properties: TPermissions) => {
   const [refused, setRefused] = useState<string>()
   const currentLink = `${location.origin}${path}`
 
+  // A new search clears what the last share said.
   const onSubmit = handleSubmit(async (data) => {
     setEmail(data.user)
+    setRefused(undefined)
+    setNeedsPlain(undefined)
   })
 
   // Everyone with access or an invitation: not offered again.
@@ -107,6 +110,8 @@ export const Share = (properties: TPermissions) => {
   const handleChooseContact = (contactEmail: string) => {
     setValue('user', contactEmail)
     setEmail(contactEmail)
+    setRefused(undefined)
+    setNeedsPlain(undefined)
   }
 
   const getPermission = (uid: string) => {
