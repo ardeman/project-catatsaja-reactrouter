@@ -88,6 +88,7 @@ export const createShared = async (
   const {
     isEncrypted: _isEncrypted,
     isPinned: _isPinned,
+    isArchived: _isArchived,
     invites: _invites,
     ...stored
   } = data
@@ -198,6 +199,19 @@ export const setSharedPermission = async (
     ...access,
     encrypted: deleteField(),
     keys: deleteField(),
+  })
+}
+
+// Archiving or bringing back an item for the person only: it leaves their
+// main list, not anyone else's. Doesn't touch `updatedAt`: it isn't an edit.
+export const setArchived = async (
+  name: TCollection,
+  id: string,
+  isArchived: boolean,
+) => {
+  const { database, uid } = requireUser()
+  return updateDoc(doc(database, name, id), {
+    archivedBy: isArchived ? arrayUnion(uid) : arrayRemove(uid),
   })
 }
 
@@ -323,6 +337,9 @@ export const subscribeShared = <T>(
                   isPinned: (data.pinnedBy as string[] | undefined)?.includes(
                     uid,
                   ),
+                  isArchived: (
+                    data.archivedBy as string[] | undefined
+                  )?.includes(uid),
                 } as T)
               : undefined
           }),
@@ -360,6 +377,9 @@ export const subscribeSharedOne = <T>(
                 ...data,
                 id: snap.id,
                 isPinned: (data.pinnedBy as string[] | undefined)?.includes(
+                  uid,
+                ),
+                isArchived: (data.archivedBy as string[] | undefined)?.includes(
                   uid,
                 ),
               } as T)

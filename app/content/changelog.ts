@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Archive: tidy your lists without deleting anything. An archived note, list, book or health log moves to Archived at the bottom of its list, only for you, and comes back with one tap.',
+          id: 'Arsip: rapikan daftarmu tanpa menghapus apa pun. Catatan, daftar, buku, atau log kesehatan yang diarsipkan pindah ke Arsip di bawah daftarnya, hanya untukmu, dan bisa dikembalikan dengan sekali ketuk.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Sharing is now an invitation: the other person sees it at the top of the app and accepts or declines, and nothing joins their lists until they accept. Everything already shared stays shared.',
           id: 'Berbagi kini berupa undangan: orang yang diajak melihatnya di bagian atas aplikasi lalu menerima atau menolak, dan tidak ada yang masuk ke daftarnya sebelum diterima. Semua yang sudah dibagikan tetap dibagikan.',
         },

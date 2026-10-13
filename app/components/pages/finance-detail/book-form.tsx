@@ -43,6 +43,7 @@ import { useIsStuck } from '~/lib/hooks/use-is-stuck'
 import { useMoney } from '~/lib/hooks/use-money'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { useUpdateFinance } from '~/lib/hooks/use-update-finance'
 import {
   TFinanceCurrency,
@@ -78,6 +79,7 @@ export const Form = (properties: TFormProperties) => {
   const { finance } = properties
   const bookFormId = useId()
   const { t, i18n } = useTranslation()
+  const { mutate: archive } = useUpdateArchive()
   const {
     selectedFinance,
     handleDeleteFinance,
@@ -378,6 +380,10 @@ export const Form = (properties: TFormProperties) => {
               handleDelete={() => handleDeleteFinance({ finance })}
               handlePin={() =>
                 handlePinFinance({ finance, isPinned: !isPinned })
+              }
+              isArchived={finance.isArchived}
+              handleArchive={() =>
+                archive('finances', finance.id, !finance.isArchived)
               }
               handleShare={() => handleShareFinance({ finance })}
               handleUnlink={() => handleUnlinkFinance({ finance })}

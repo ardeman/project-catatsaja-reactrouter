@@ -20,6 +20,7 @@ import { useUserData } from '~/lib/hooks/use-get-user'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { useUpdateTask } from '~/lib/hooks/use-update-task'
 import { TTaskForm } from '~/lib/types/task'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -42,6 +43,7 @@ const toStoredContent = (content: TItem[]) =>
 export const Form = (properties: TFormProperties) => {
   const { task } = properties
   const { t, i18n } = useTranslation()
+  const { mutate: archive } = useUpdateArchive()
   const {
     selectedTask,
     handleDeleteTask,
@@ -470,6 +472,8 @@ export const Form = (properties: TFormProperties) => {
               isPinned={isPinned}
               handleDelete={() => handleDeleteTask({ task })}
               handlePin={() => handlePinTask({ task, isPinned: !isPinned })}
+              isArchived={task.isArchived}
+              handleArchive={() => archive('tasks', task.id, !task.isArchived)}
               handleShare={() => handleShareTask({ task })}
               handleUnlink={() => handleUnlinkTask({ task })}
               sharedCount={sharedCount}

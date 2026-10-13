@@ -18,6 +18,7 @@ import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { useUpdateHealthLog } from '~/lib/hooks/use-update-health-log'
 import { THealthEntry, THealthKind, THealthLogForm } from '~/lib/types/health'
 import { today } from '~/lib/utils/finance'
@@ -45,6 +46,7 @@ export const Form = (properties: TFormProperties) => {
   const { healthLog } = properties
   const formId = useId()
   const { t, i18n } = useTranslation()
+  const { mutate: archive } = useUpdateArchive()
   const {
     selectedHealthLog,
     handleDeleteHealthLog,
@@ -287,6 +289,10 @@ export const Form = (properties: TFormProperties) => {
               handleDelete={() => handleDeleteHealthLog({ healthLog })}
               handlePin={() =>
                 handlePinHealthLog({ healthLog, isPinned: !isPinned })
+              }
+              isArchived={healthLog.isArchived}
+              handleArchive={() =>
+                archive('healthLogs', healthLog.id, !healthLog.isArchived)
               }
               handleShare={() => handleShareHealthLog({ healthLog })}
               handleUnlink={() => handleUnlinkHealthLog({ healthLog })}

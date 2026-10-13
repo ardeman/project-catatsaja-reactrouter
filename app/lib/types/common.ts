@@ -57,6 +57,9 @@ export type TActionProperties = {
   isOwner?: boolean
   isEditable?: boolean
   isPinned?: boolean
+  // Archived by the person; with `handleArchive`, shows Archive / Restore.
+  isArchived?: boolean
+  handleArchive?: () => void
   className?: HTMLAttributes<HTMLDivElement>['className']
   handleDelete?: () => void
   handlePin?: () => void

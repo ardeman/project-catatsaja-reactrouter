@@ -20,6 +20,7 @@ import {
 } from '~/lib/constants/health'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { today } from '~/lib/utils/finance'
 import {
   ageInYears,
@@ -40,6 +41,7 @@ import { TCardProperties } from './type'
 export const Card = (properties: TCardProperties) => {
   const { healthLog, className } = properties
   const { t, i18n } = useTranslation()
+  const { mutate: archive } = useUpdateArchive()
   const {
     handleDeleteHealthLog,
     handlePinHealthLog,
@@ -122,6 +124,10 @@ export const Card = (properties: TCardProperties) => {
         isPinned={isPinned}
         handleDelete={() => handleDeleteHealthLog({ healthLog })}
         handlePin={() => handlePinHealthLog({ healthLog, isPinned: !isPinned })}
+        isArchived={healthLog.isArchived}
+        handleArchive={() =>
+          archive('healthLogs', healthLog.id, !healthLog.isArchived)
+        }
         handleShare={() => handleShareHealthLog({ healthLog })}
         handleUnlink={() => handleUnlinkHealthLog({ healthLog })}
         sharedCount={sharedCount}

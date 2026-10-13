@@ -588,7 +588,7 @@
       "steps": [
         "On the Notes page, choose New note and start typing. Markdown such as # for a heading or - for a list formats itself as you type.",
         "Leaving a note keeps it, even if you never pressed Save.",
-        "Use the icon bar at the top to pin a note to the top of the list, share it, undo or redo changes, or delete it.",
+        "Use the icon bar at the top to pin a note to the top of the list, archive it to tidy your list (it moves to Archived at the bottom, only for you), share it, undo or redo changes, or delete it.",
         "The Gemini menu (the sparkles icon) can summarise a note, tidy it up, translate it between English and Indonesian, or turn it into a new task list."
       ]
     },
@@ -988,11 +988,15 @@
     "close": "Close",
     "duplicate": "Duplicate",
     "undo": "Undo",
-    "redo": "Redo"
+    "redo": "Redo",
+    "archive": "Archive",
+    "unarchive": "Move back from archive"
   },
   "collection": {
     "pinned": "Pinned",
-    "others": "Others"
+    "others": "Others",
+    "archived": "Archived ({{count}})",
+    "allArchived": "Everything here is archived. Open the archive below to find it."
   },
   "search": {
     "results_one": "{{count}} result for “{{query}}”",
@@ -1517,6 +1521,17 @@
         "titled": "the health log “{{title}}”",
         "untitled": "a health log"
       }
+    }
+  },
+  "maintenance": {
+    "title": "We're updating Catat Saja",
+    "description": "The app is closed for a short while so nothing gets lost while it changes. Your data is safe. This page opens again by itself when we're done.",
+    "until": "Expected back by {{time}}"
+  },
+  "archive": {
+    "toast": {
+      "archived": "Archived. Find it under Archived at the bottom of the list.",
+      "restored": "Moved back to your list"
     }
   }
 }

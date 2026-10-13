@@ -616,4 +616,67 @@ describe('end-to-end encryption', () => {
     await gani.context.close()
     await fina.context.close()
   })
+
+  test('archiving tidies only your own list', async () => {
+    const skipSetup = async (page) => {
+      await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+      await page
+        .getByRole('button', { name: 'Continue without encryption' })
+        .click()
+      await page.waitForURL(/\/notes/, { timeout: 30_000 })
+    }
+    const indra = await newDevice(browser)
+    await signUp(indra.page, 'Indra', 'indra@example.com')
+    await skipSetup(indra.page)
+    const hana = await newDevice(browser)
+    await signUp(hana.page, 'Hana', 'hana@example.com')
+    await skipSetup(hana.page)
+    const hanaUid = await uidOf('hana@example.com')
+
+    const id = await createNote(hana.page, 'Hana old idea')
+    await shareWith(hana.page, 'indra@example.com', 'Read only')
+    await hana.page.keyboard.press('Escape')
+    await acceptInvitation(indra.page, 'Hana old idea')
+    const before = await dbGet(`notes/${id}`)
+
+    await hana.page.goto(`${APP}/notes`)
+    await hana.page
+      .getByText('Hana old idea')
+      .first()
+      .waitFor({ timeout: 30_000 })
+    await hana.page
+      .locator('div')
+      .filter({ has: hana.page.getByText('Hana old idea') })
+      .getByRole('button', { name: 'Archive' })
+      .last()
+      .click()
+    await hana.page.getByText('Archived (1)').waitFor({ timeout: 15_000 })
+    assert.equal(
+      await hana.page.getByText('Hana old idea').count(),
+      0,
+      'out of the main list',
+    )
+    const stored = await dbGet(`notes/${id}`)
+    assert.deepEqual(
+      stored.archivedBy.arrayValue.values.map((value) => value.stringValue),
+      [hanaUid],
+    )
+    assert.deepEqual(
+      stored.updatedAt,
+      before.updatedAt,
+      "archiving isn't an edit",
+    )
+    assert.ok(await sees(indra.page, 'Hana old idea'), 'still in his list')
+
+    // Folded away, and back with Undo.
+    await hana.page.getByText('Archived (1)').click()
+    await hana.page.getByText('Hana old idea').first().waitFor()
+    await hana.page
+      .getByRole('region', { name: /Notifications/ })
+      .getByRole('button', { name: 'Undo' })
+      .click()
+    await hana.page.getByText('Archived (1)').waitFor({ state: 'hidden' })
+    await indra.context.close()
+    await hana.context.close()
+  })
 })

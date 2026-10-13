@@ -13,6 +13,7 @@ import {
 import { Markdown } from '~/components/base/markdown'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -22,6 +23,7 @@ import { TCardProperties } from './type'
 export const Card = (properties: TCardProperties) => {
   const { note, className } = properties
   const { t, i18n } = useTranslation()
+  const { mutate: archive } = useUpdateArchive()
   const { handleDeleteNote, handlePinNote, handleShareNote, handleUnlinkNote } =
     useNote()
   const { data: userData } = useUserData()
@@ -56,6 +58,8 @@ export const Card = (properties: TCardProperties) => {
         isPinned={isPinned}
         handleDelete={() => handleDeleteNote({ note })}
         handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
+        isArchived={note.isArchived}
+        handleArchive={() => archive('notes', note.id, !note.isArchived)}
         handleShare={() => handleShareNote({ note })}
         handleUnlink={() => handleUnlinkNote({ note })}
         sharedCount={sharedCount}

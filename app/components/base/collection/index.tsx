@@ -1,4 +1,5 @@
-import { SearchX, X } from 'lucide-react'
+import { ChevronDown, SearchX, X } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 
@@ -52,8 +53,13 @@ export const Collection = <T extends TCollectionItem>(
         getSearchText(item).toLowerCase().includes(query.toLowerCase()),
     )
     .toSorted(byNewest)
-  const pinned = matches.filter((item) => item.isPinned)
-  const others = matches.filter((item) => !item.isPinned)
+  // Archived items leave the main sections for their own, folded away;
+  // searching still finds them.
+  const active = matches.filter((item) => !item.isArchived)
+  const archived = matches.filter((item) => item.isArchived)
+  const pinned = active.filter((item) => item.isPinned)
+  const others = active.filter((item) => !item.isPinned)
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false)
   const Layout = layout === 'masonry' ? MasonryGrid : Grid
 
   const clearSearch = () => {
@@ -122,8 +128,33 @@ export const Collection = <T extends TCollectionItem>(
 
     return (
       <>
+        {active.length === 0 && (
+          <p className="py-6 text-center text-sm text-muted-foreground">
+            {t('collection.allArchived')}
+          </p>
+        )}
         {renderSection(pinned, t('collection.pinned'))}
         {renderSection(others, pinned.length > 0 ? t('collection.others') : '')}
+        {archived.length > 0 && (
+          <div className="mx-auto grid w-full max-w-(--breakpoint-2xl) gap-3">
+            <button
+              type="button"
+              aria-expanded={isArchiveOpen}
+              onClick={() => setIsArchiveOpen((current) => !current)}
+              className="flex items-center gap-1 justify-self-center rounded-md text-xs font-medium tracking-wide text-muted-foreground uppercase hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
+            >
+              <ChevronDown
+                aria-hidden="true"
+                className={cn(
+                  'size-4 transition-transform motion-reduce:transition-none',
+                  !isArchiveOpen && '-rotate-90',
+                )}
+              />
+              {t('collection.archived', { count: archived.length })}
+            </button>
+            {isArchiveOpen && renderSection(archived)}
+          </div>
+        )}
       </>
     )
   }

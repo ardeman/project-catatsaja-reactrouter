@@ -6,6 +6,7 @@ import { TTime } from '~/lib/types/common'
 export type TCollectionItem = {
   id: string
   isPinned?: boolean
+  isArchived?: boolean
   createdAt: TTime
   updatedAt?: TTime
 }

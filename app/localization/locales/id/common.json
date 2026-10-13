@@ -588,7 +588,7 @@
       "steps": [
         "Di halaman Catatan, pilih Catatan baru dan mulai mengetik. Markdown seperti # untuk judul atau - untuk daftar langsung diformat saat kamu mengetik.",
         "Catatan tetap tersimpan saat kamu meninggalkannya, meskipun tidak menekan Simpan.",
-        "Gunakan bilah ikon di atas untuk menyematkan catatan di atas daftar, membagikannya, mengurungkan atau mengulangi perubahan, atau menghapusnya.",
+        "Gunakan bilah ikon di atas untuk menyematkan catatan di atas daftar, mengarsipkannya agar daftarmu rapi (pindah ke Arsip di bawah, hanya untukmu), membagikannya, mengurungkan atau mengulangi perubahan, atau menghapusnya.",
         "Menu Gemini (ikon kilau) bisa meringkas catatan, merapikannya, menerjemahkannya antara bahasa Inggris dan Indonesia, atau mengubahnya menjadi daftar tugas baru."
       ]
     },
@@ -988,11 +988,15 @@
     "close": "Tutup",
     "duplicate": "Duplikat",
     "undo": "Urungkan",
-    "redo": "Ulangi"
+    "redo": "Ulangi",
+    "archive": "Arsipkan",
+    "unarchive": "Keluarkan dari arsip"
   },
   "collection": {
     "pinned": "Disematkan",
-    "others": "Lainnya"
+    "others": "Lainnya",
+    "archived": "Arsip ({{count}})",
+    "allArchived": "Semua di sini sudah diarsipkan. Buka arsip di bawah untuk melihatnya."
   },
   "search": {
     "results_other": "{{count}} hasil untuk “{{query}}”",
@@ -1517,6 +1521,17 @@
         "titled": "log kesehatan “{{title}}”",
         "untitled": "sebuah log kesehatan"
       }
+    }
+  },
+  "maintenance": {
+    "title": "Catat Saja sedang diperbarui",
+    "description": "Aplikasi ditutup sebentar supaya tidak ada yang hilang selama perubahan. Datamu aman. Halaman ini akan terbuka lagi dengan sendirinya setelah selesai.",
+    "until": "Diperkirakan kembali pukul {{time}}"
+  },
+  "archive": {
+    "toast": {
+      "archived": "Diarsipkan. Lihat di bagian Arsip di bawah daftar.",
+      "restored": "Dikembalikan ke daftarmu"
     }
   }
 }

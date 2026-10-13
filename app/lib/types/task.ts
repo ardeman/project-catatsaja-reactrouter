@@ -25,6 +25,9 @@ export type TTaskResponse = {
   // Stored end-to-end encrypted (set when read, never saved).
   isEncrypted?: boolean
   pinnedBy?: string[]
+  // Archived by the person (their own list only).
+  isArchived?: boolean
+  archivedBy?: string[]
   createdAt: TTime
   updatedAt: TTime
   owner: string

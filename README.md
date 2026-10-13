@@ -30,6 +30,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - **Tasks:** checklists with add-by-paste (one item per line), tap an item to edit it, reordering, check all, undo after removing an item, and completed items grouped at the bottom.
 - **Saving:** notes and tasks save as you type and when you leave the page, with a "Saving… / Saved" status; a new note or task is kept when you leave it. Undo and redo in the icon bar of every note, task list, finance book and health log step over the whole item (a step at each pause in changes; Gemini's changes are a step of their own).
 - **Search:** one search box finds notes, tasks, finances and health logs together by title and content (Ctrl/⌘ K or `/` from anywhere); "See all" filters a list.
+- **Archive:** move a note, task list, book or health log out of your main list without deleting it; it waits under Archived at the bottom, for you only, and comes back with one tap.
 - **Sharing:** find users by email and invite them with read or write access to a note or task; it joins their lists only once they accept (or decline); read-only is enforced by the database rules; copy a link; undo removing someone; shared items update in real time; a reader can remove a shared item from their own list.
 - **End-to-end encryption:** notes, tasks, books and health logs encrypted on the device (Web Crypto) so nobody else, including the database, can read them; a passphrase, a recovery code and optional passkey unlock; shared items sealed for each person; on for new accounts, opt-in in Settings → Account for existing ones, and can be turned off again; works alongside unencrypted accounts, sharing both ways.
 - **Accounts:** email and password sign-up with email verification, Google sign-in and linking, forgot password, change email, display name, and the Google profile photo when signing in with Google.
@@ -158,6 +159,18 @@ Commit subjects use `type(scope)!: description`, with optional scope and `!` for
 Hosting (`firebase.json`) serves the prerendered pages as files and every other path `__spa-fallback.html`, without trailing slashes. Pages are sent with `Cache-Control: no-cache` and the hashed files in `/assets/` are cached for a year, so a deploy never leaves browsers with pages that point at deleted files.
 
 The service worker (`public/sw.js`, registered in production builds only) caches the app shell, the public pages and the files they load, so the installed app starts offline. Pages are fetched from the network first, so an online visit always gets the latest deploy; Firebase and Firestore requests are not touched. To try the production build with these rules locally: `pnpm build && npx firebase-tools emulators:start --only hosting` (port 5000 is often taken on macOS; it moves to the next free one).
+
+### Maintenance mode
+
+For a deploy that could break the app while it runs (a data change, or rules that refuse what the running app writes), close the app first. In the [Firebase console](https://console.firebase.google.com/project/catat-saja/firestore), open the `config` collection and the `app` document (create them the first time) and set:
+
+| Field         | Type      | What it does                                                                         |
+| ------------- | --------- | ------------------------------------------------------------------------------------ |
+| `maintenance` | boolean   | `true` shows the maintenance screen instead of the signed-in app and sign-in pages.  |
+| `message`     | string    | Optional: shown on that screen, under the standard text (in the language you write). |
+| `until`       | timestamp | Optional: when it is expected to end, shown in each person's time.                   |
+
+Open apps switch at once, without a reload; the public pages (landing, About, How to use and the rest) stay up. Deploy, check the app, then set `maintenance` to `false`. Nobody can change `config` from the app (`firestore.rules`).
 
 ## Project layout
 

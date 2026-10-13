@@ -1,4 +1,6 @@
 import {
+  Archive,
+  ArchiveRestore,
   ArrowLeft,
   Copy,
   EyeOff,
@@ -22,6 +24,8 @@ export const Action = (properties: TActionProperties) => {
     isOwner,
     isEditable,
     isPinned,
+    isArchived,
+    handleArchive,
     className,
     handleDelete,
     handleUnlink,
@@ -218,6 +222,22 @@ export const Action = (properties: TActionProperties) => {
           disabled={isLoading}
         >
           <Copy />
+        </Button>
+      )}
+      {handleArchive && (
+        <Button
+          variant="outline"
+          aria-label={t(isArchived ? 'actions.unarchive' : 'actions.archive')}
+          title={t(isArchived ? 'actions.unarchive' : 'actions.archive')}
+          aria-pressed={!!isArchived}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleArchive()
+          }}
+          containerClassName="flex-1 flex items-center"
+          className={cn(buttonClassName, isArchived && 'text-primary')}
+        >
+          {isArchived ? <ArchiveRestore /> : <Archive />}
         </Button>
       )}
       {handlePin && (

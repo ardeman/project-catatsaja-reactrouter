@@ -12,6 +12,7 @@ import {
 } from '~/components/base/card'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -21,6 +22,7 @@ import { TCardProperties } from './type'
 export const Card = (properties: TCardProperties) => {
   const { task, className } = properties
   const { t, i18n } = useTranslation()
+  const { mutate: archive } = useUpdateArchive()
   const { handleDeleteTask, handlePinTask, handleShareTask, handleUnlinkTask } =
     useTask()
   const { data: userData } = useUserData()
@@ -59,6 +61,8 @@ export const Card = (properties: TCardProperties) => {
         isPinned={isPinned}
         handleDelete={() => handleDeleteTask({ task })}
         handlePin={() => handlePinTask({ task, isPinned: !isPinned })}
+        isArchived={task.isArchived}
+        handleArchive={() => archive('tasks', task.id, !task.isArchived)}
         handleShare={() => handleShareTask({ task })}
         handleUnlink={() => handleUnlinkTask({ task })}
         sharedCount={sharedCount}

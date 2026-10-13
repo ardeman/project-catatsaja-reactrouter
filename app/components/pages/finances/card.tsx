@@ -15,6 +15,7 @@ import { CategoryIcon } from '~/components/base/category-icon'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { entryBookTotal, newestFirst, summarize } from '~/lib/utils/finance'
 import { totalsByCategory } from '~/lib/utils/finance-analysis'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -26,6 +27,7 @@ import { TCardProperties } from './type'
 export const Card = (properties: TCardProperties) => {
   const { finance, className } = properties
   const { t, i18n } = useTranslation()
+  const { mutate: archive } = useUpdateArchive()
   const {
     handleDeleteFinance,
     handlePinFinance,
@@ -71,6 +73,10 @@ export const Card = (properties: TCardProperties) => {
         isPinned={isPinned}
         handleDelete={() => handleDeleteFinance({ finance })}
         handlePin={() => handlePinFinance({ finance, isPinned: !isPinned })}
+        isArchived={finance.isArchived}
+        handleArchive={() =>
+          archive('finances', finance.id, !finance.isArchived)
+        }
         handleShare={() => handleShareFinance({ finance })}
         handleUnlink={() => handleUnlinkFinance({ finance })}
         handleDuplicate={() => handleDuplicateFinance({ finance })}

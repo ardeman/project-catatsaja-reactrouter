@@ -17,6 +17,7 @@ import { useUserData } from '~/lib/hooks/use-get-user'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { useUpdateNote } from '~/lib/hooks/use-update-note'
 import { TNoteForm } from '~/lib/types/note'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -33,6 +34,7 @@ const isSameNote = (
 export const Form = (properties: TFormProperties) => {
   const { note } = properties
   const { t, i18n } = useTranslation()
+  const { mutate: archive } = useUpdateArchive()
   const {
     selectedNote,
     handleDeleteNote,
@@ -219,6 +221,8 @@ export const Form = (properties: TFormProperties) => {
               isPinned={isPinned}
               handleDelete={() => handleDeleteNote({ note })}
               handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
+              isArchived={note.isArchived}
+              handleArchive={() => archive('notes', note.id, !note.isArchived)}
               handleShare={() => handleShareNote({ note })}
               handleUnlink={() => handleUnlinkNote({ note })}
               sharedCount={sharedCount}
