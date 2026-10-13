@@ -11,9 +11,9 @@ type TProperties = {
   expense: number
   balance: number
   accounts: TFinanceAccount[]
-  // Scrolled past: the totals on one or two lines, with the difference from
-  // the accounts (which have scrolled away), so the balance can be checked
-  // while reading or adding entries.
+  // Scrolled past: only the balance and its difference from the accounts
+  // (which have scrolled away), on one line, so the book can be checked
+  // against them while reading or adding entries.
   isCompact: boolean
 }
 
@@ -68,16 +68,6 @@ export const Summary = (properties: TProperties) => {
       value: money(balance, book, balance < 0),
       className: cn('font-semibold', balance < 0 && 'text-destructive-text'),
     },
-    {
-      label: t('finances.summary.income'),
-      value: money(income, book),
-      className: 'text-income',
-    },
-    {
-      label: t('finances.summary.expense'),
-      value: money(expense, book),
-      className: 'text-expense',
-    },
     ...(difference === undefined
       ? []
       : [
@@ -95,8 +85,8 @@ export const Summary = (properties: TProperties) => {
   return (
     <dl
       className={cn(
-        'grid grid-cols-2 gap-x-4 gap-y-0.5',
-        items.length === 4 ? 'sm:grid-cols-4' : 'sm:grid-cols-3',
+        'grid gap-x-4 gap-y-0.5',
+        items.length === 2 ? 'grid-cols-2' : 'grid-cols-1',
       )}
     >
       {items.map(({ label, value, className }) => (
