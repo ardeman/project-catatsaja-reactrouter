@@ -165,11 +165,14 @@ The service worker (`public/sw.js`, registered in production builds only) caches
 
 For a deploy that could break the app while it runs (a data change, or rules that refuse what the running app writes), close the app first. In the [Firebase console](https://console.firebase.google.com/project/catat-saja/firestore), open the `config` collection and the `app` document (create them the first time) and set:
 
-| Field         | Type      | What it does                                                                         |
-| ------------- | --------- | ------------------------------------------------------------------------------------ |
-| `maintenance` | boolean   | `true` shows the maintenance screen instead of the signed-in app and sign-in pages.  |
-| `message`     | string    | Optional: shown on that screen, under the standard text (in the language you write). |
-| `until`       | timestamp | Optional: when it is expected to end, shown in each person's time.                   |
+| Field           | Type      | What it does                                                                                                                                    |
+| --------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `maintenance`   | boolean   | `true` shows the maintenance screen instead of the signed-in app and sign-in pages.                                                             |
+| `message`       | string    | Optional: shown on that screen, under the standard text (in the language you write).                                                            |
+| `until`         | timestamp | Optional: when it is expected to end, shown in each person's time.                                                                              |
+| `minAppVersion` | number    | Optional: apps older than this (`appVersion` in `app/lib/constants/app-version.ts`) show "A new version is ready" with a Reload button instead. |
+
+For a change to how data is stored, raise `appVersion` in the release and set `minAppVersion` to it when you turn maintenance off: maintenance alone lets a tab left open on the old app resume and write the old format.
 
 Open apps switch at once, without a reload; the public pages (landing, About, How to use and the rest) stay up. Deploy, check the app, then set `maintenance` to `false`. Nobody can change `config` from the app (`firestore.rules`).
 

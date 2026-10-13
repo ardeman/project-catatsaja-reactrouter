@@ -1536,6 +1536,11 @@
     "description": "Aplikasi ditutup sebentar supaya tidak ada yang hilang selama perubahan. Datamu aman. Halaman ini akan terbuka lagi dengan sendirinya setelah selesai.",
     "until": "Diperkirakan kembali pukul {{time}}"
   },
+  "update": {
+    "title": "Versi baru sudah siap",
+    "description": "Catat Saja mengubah cara menyimpan datamu. Muat ulang untuk lanjut dengan versi baru; yang sudah kamu simpan aman.",
+    "reload": "Muat ulang"
+  },
   "archive": {
     "toast": {
       "archived": "Diarsipkan. Lihat di bagian Arsip di bawah daftar.",

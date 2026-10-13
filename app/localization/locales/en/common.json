@@ -1536,6 +1536,11 @@
     "description": "The app is closed for a short while so nothing gets lost while it changes. Your data is safe. This page opens again by itself when we're done.",
     "until": "Expected back by {{time}}"
   },
+  "update": {
+    "title": "A new version is ready",
+    "description": "Catat Saja has changed how it stores your data. Reload to keep going with the new version; what you saved is safe.",
+    "reload": "Reload"
+  },
   "archive": {
     "toast": {
       "archived": "Archived. Find it under Archived at the bottom of the list.",

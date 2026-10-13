@@ -8,4 +8,6 @@ export type TAppConfig = {
   message?: string
   // When it is expected to end.
   until?: TTime
+  // Apps whose `appVersion` is lower are asked to reload.
+  minAppVersion?: number
 }
