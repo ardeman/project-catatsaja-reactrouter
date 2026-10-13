@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { categoryColor } from '~/lib/constants/finance'
 import { useMoney } from '~/lib/hooks/use-money'
-import { TFinanceCurrency } from '~/lib/types/finance'
-import { TCategoryTotal } from '~/lib/utils/finance-analysis'
+import { TFinanceCurrency, TCategoryTotal } from '~/lib/types/finance'
 
 type TProperties = {
   totals: TCategoryTotal[]

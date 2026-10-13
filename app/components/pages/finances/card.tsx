@@ -16,8 +16,8 @@ import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
-import { entryBookTotal, newestFirst, summarize } from '~/lib/utils/finance'
-import { totalsByCategory } from '~/lib/utils/finance-analysis'
+import { entryBookTotal } from '~/lib/utils/finance'
+import { summaryOf } from '~/lib/utils/finance-analysis'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -53,11 +53,10 @@ export const Card = (properties: TCardProperties) => {
       ...(finance.permissions?.write || []),
     ].filter((uid) => uid !== auth?.currentUser?.uid),
   ).size
-  const entries = finance.content || []
-  const { income, expense, balance } = summarize(entries)
-  const spending = totalsByCategory(entries, 'expense')
+  const { count, income, expense, spending, recent } = summaryOf(finance)
+  const balance = income - expense
   // The latest by date (as in the book), not the last ones typed in.
-  const latest = newestFirst(entries).slice(0, 3)
+  const latest = recent.slice(0, 3)
 
   return (
     <UICard
@@ -168,9 +167,9 @@ export const Card = (properties: TCardProperties) => {
                 </li>
               )
             })}
-            {entries.length > latest.length && (
+            {count > latest.length && (
               <li className="ml-6 text-xs text-muted-foreground">
-                {t('tasks.more', { number: entries.length - latest.length })}
+                {t('tasks.more', { number: count - latest.length })}
               </li>
             )}
           </ul>

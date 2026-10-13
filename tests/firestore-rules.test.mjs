@@ -177,7 +177,13 @@ describe('collections that are not part of the app', () => {
 const collections = {
   notes: { title: 'A note', content: 'Text' },
   tasks: { title: 'A list', content: [] },
-  finances: { title: 'A book', content: [], currency: {}, accounts: [] },
+  finances: {
+    title: 'A book',
+    content: [],
+    currency: {},
+    accounts: [],
+    summary: {},
+  },
   healthLogs: {
     name: 'Me',
     birthDate: '1990-01-01',

@@ -10,6 +10,7 @@ import {
   THandleDeletePermission,
   THandleSetPermission,
 } from '~/lib/types/common'
+import { knownEntries, summaryOf } from '~/lib/utils/finance-analysis'
 
 import { Card } from './card'
 import { useFinance } from './context'
@@ -56,7 +57,7 @@ export const List = () => {
         getSearchText={(finance) =>
           [
             finance.title,
-            ...(finance.content || []).flatMap((entry) => [
+            ...knownEntries(finance).flatMap((entry) => [
               entry.description,
               t(`finances.form.category.${entry.category}.label`),
             ]),
@@ -88,7 +89,9 @@ export const List = () => {
         )}
         <p className="text-muted-foreground">
           {t('finances.entries', {
-            count: selectedConfirmation?.detail.content?.length ?? 0,
+            count: selectedConfirmation
+              ? summaryOf(selectedConfirmation.detail).count
+              : 0,
           })}
         </p>
       </Modal>

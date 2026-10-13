@@ -508,6 +508,36 @@ describe('end-to-end encryption', () => {
     await page.goto(`${APP}/notes`)
     await page.waitForTimeout(3000)
     assert.equal(await page.getByText('Protect your data').count(), 0)
+
+    // A book's summary (what its card shows) is saved with its entries.
+    await page.goto(`${APP}/finances/create`)
+    await page.locator('textarea[name=title]').fill('Gita book')
+    await page.getByRole('button', { name: 'Save' }).click()
+    await page.waitForURL(/\/finances\/(?!create)/, { timeout: 30_000 })
+    const bookId = new URL(page.url()).pathname.split('/').pop()
+    await page.getByRole('button', { name: 'Add entry' }).click()
+    await page.locator('input[name=description]').fill('Gita lunch')
+    await page.locator('#finance-entry-amount').fill('50000')
+    await page.getByRole('combobox', { name: 'Category' }).click()
+    await page.getByRole('option', { name: 'Food & drinks' }).click()
+    await page
+      .locator('form')
+      .getByRole('button', { name: 'Save' })
+      .last()
+      .click()
+    const book = await dbGetWhen(
+      `finances/${bookId}`,
+      (fields) => fields?.summary?.mapValue?.fields?.count?.integerValue === '1',
+    )
+    const summary = book.summary.mapValue.fields
+    assert.equal(Number(summary.expense.integerValue), 50_000)
+    assert.equal(
+      summary.recent.arrayValue.values[0].mapValue.fields.description
+        .stringValue,
+      'Gita lunch',
+    )
+    await page.goto(`${APP}/finances`)
+    await page.getByText('Gita lunch').waitFor({ timeout: 15_000 })
     await page.context().close()
   })
 

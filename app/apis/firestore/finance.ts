@@ -10,6 +10,7 @@ import {
   TFinancePermissionRequest,
   TUpdateFinanceRequest,
 } from '~/lib/types/finance'
+import { bookSummary } from '~/lib/utils/finance-analysis'
 
 import {
   createShared,
@@ -20,12 +21,16 @@ import {
   updateShared,
 } from './shared-document'
 
+// Whenever entries are written, the book's summary is written with them.
+const withSummary = <T extends Partial<TCreateFinanceRequest>>(data: T) =>
+  data.content ? { ...data, summary: bookSummary(data.content) } : data
+
 export const createFinance = (data: TCreateFinanceRequest) =>
-  createShared('finances', data)
+  createShared('finances', withSummary(data))
 
 export const updateFinance = (data: TUpdateFinanceRequest) => {
   const { id, ...rest } = data
-  return updateShared('finances', id, rest)
+  return updateShared('finances', id, withSummary(rest))
 }
 
 export const pinFinance = async (data: TPinFinanceRequest) => {

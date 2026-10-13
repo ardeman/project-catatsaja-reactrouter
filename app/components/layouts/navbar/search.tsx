@@ -19,6 +19,7 @@ import { useGetHealthLogs } from '~/lib/hooks/use-get-health-logs'
 import { useGetNotes } from '~/lib/hooks/use-get-notes'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
 import { TMenu } from '~/lib/types/common'
+import { knownEntries } from '~/lib/utils/finance-analysis'
 import { toPlainText } from '~/lib/utils/parser'
 import { excerpt, normalize } from '~/lib/utils/search'
 import { cn } from '~/lib/utils/shadcn'
@@ -235,7 +236,7 @@ const Results = (properties: TResultsProperties) => {
         (task.content || []).map((item) => item.item).join(' · '),
       ),
       toGroup(financeNav, finances, t('finances.untitled'), (finance) =>
-        (finance.content || [])
+        knownEntries(finance)
           .flatMap((entry) => [
             entry.description,
             t(`finances.form.category.${entry.category}.label`),

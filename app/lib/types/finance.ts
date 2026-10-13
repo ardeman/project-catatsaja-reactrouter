@@ -40,6 +40,25 @@ export type TCreateFinanceRequest = TFinanceForm
 
 export type TUpdateFinanceRequest = { id: string } & Partial<TFinanceForm>
 
+export type TCategoryTotal = {
+  category: string
+  total: number
+  share: number
+}
+
+// What lists, cards, search and suggestions show of a book, stored with it
+// (encrypted with its content) whenever its entries are written, so they
+// don't need every entry of every book.
+export type TFinanceSummary = {
+  count: number
+  income: number
+  expense: number
+  // Expenses by category, as the card's category bar.
+  spending: TCategoryTotal[]
+  // The newest entries by date.
+  recent: TFinanceEntry[]
+}
+
 export type TPinFinanceRequest = {
   finance: TFinanceResponse
   isPinned: boolean
@@ -60,6 +79,8 @@ export type TFinanceResponse = {
   permissions?: TPermissions
   // People invited who haven't accepted yet.
   invites?: TAccessLists
+  // Missing on books not saved since summaries were added.
+  summary?: TFinanceSummary
 } & TFinanceForm
 
 export type TFinancePermissionRequest = THandleSetPermission & {

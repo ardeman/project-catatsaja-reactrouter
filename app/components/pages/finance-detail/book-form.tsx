@@ -67,6 +67,7 @@ import {
   normalizeAccounts,
   summarize,
 } from '~/lib/utils/finance'
+import { knownEntries } from '~/lib/utils/finance-analysis'
 import { isSameJson, mergeById } from '~/lib/utils/merge-stored'
 import {
   formatExchangeRate,
@@ -210,7 +211,7 @@ export const Form = (properties: TFormProperties) => {
       newestFirst([
         ...books
           .filter((item) => item.id !== selectedFinance?.id)
-          .flatMap((item) => item.content || []),
+          .flatMap((item) => knownEntries(item)),
         ...entries,
       ]),
     [books, entries, selectedFinance?.id],

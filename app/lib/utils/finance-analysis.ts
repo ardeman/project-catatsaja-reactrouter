@@ -1,6 +1,11 @@
-import { TFinanceEntry } from '~/lib/types/finance'
+import {
+  TCategoryTotal,
+  TFinanceEntry,
+  TFinanceResponse,
+  TFinanceSummary,
+} from '~/lib/types/finance'
 
-import { entryBookTotal } from './finance'
+import { entryBookTotal, newestFirst, summarize } from './finance'
 
 // Analysis of one book, in the book's currency. Computed in the browser from
 // the entries; nothing is stored.
@@ -14,12 +19,6 @@ export type TPeriod = {
   expense: number
   // The book's balance at the end of the period.
   balance: number
-}
-
-export type TCategoryTotal = {
-  category: string
-  total: number
-  share: number
 }
 
 const DAY = 86_400_000
@@ -190,3 +189,33 @@ export const formatPeriod = ({
     ...(granularity !== 'month' && { day: 'numeric' }),
     ...(withYear && { year: 'numeric' }),
   }).format(new Date(toTime(start)))
+
+// How many of the newest entries a book's summary keeps, for cards, search
+// and category suggestions in other books.
+const recentInSummary = 50
+
+export const bookSummary = (entries: TFinanceEntry[]): TFinanceSummary => {
+  const { income, expense } = summarize(entries)
+  return {
+    count: entries.length,
+    income,
+    expense,
+    spending: totalsByCategory(entries, 'expense'),
+    recent: newestFirst(entries).slice(0, recentInSummary),
+  }
+}
+
+const emptySummary = bookSummary([])
+
+// A book's summary: worked out from its entries while they are in the book
+// document, so it is never out of date, or the stored one.
+export const summaryOf = (
+  book: Pick<TFinanceResponse, 'content' | 'summary'>,
+) => (book.content ? bookSummary(book.content) : (book.summary ?? emptySummary))
+
+// The entries known without opening a book: all of them while they are in
+// the book document, otherwise the summary's newest ones. For search and
+// category suggestions.
+export const knownEntries = (
+  book: Pick<TFinanceResponse, 'content' | 'summary'>,
+) => book.content ?? book.summary?.recent ?? []

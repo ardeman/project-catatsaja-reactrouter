@@ -24,7 +24,7 @@ import {
 export const contentFields = {
   notes: ['title', 'content'],
   tasks: ['title', 'content'],
-  finances: ['title', 'content', 'currency', 'accounts'],
+  finances: ['title', 'content', 'currency', 'accounts', 'summary'],
   healthLogs: [
     'name',
     'birthDate',

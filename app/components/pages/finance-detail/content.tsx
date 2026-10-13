@@ -16,6 +16,7 @@ import {
   THandleSetPermission,
 } from '~/lib/types/common'
 import { TFinancePermissionRequest } from '~/lib/types/finance'
+import { summaryOf } from '~/lib/utils/finance-analysis'
 
 import { Form } from './book-form'
 
@@ -134,7 +135,9 @@ export const Content = () => {
         )}
         <p className="text-muted-foreground">
           {t('finances.entries', {
-            count: selectedConfirmation?.detail.content?.length ?? 0,
+            count: selectedConfirmation
+              ? summaryOf(selectedConfirmation.detail).count
+              : 0,
           })}
         </p>
       </Modal>

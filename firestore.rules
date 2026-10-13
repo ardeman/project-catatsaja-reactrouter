@@ -222,7 +222,7 @@ service cloud.firestore {
     match /finances/{financeId} {
       allow read: if canReadShared();
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['title', 'content', 'currency', 'accounts', 'encrypted']);
+      allow update: if canUpdateShared(['title', 'content', 'currency', 'accounts', 'summary', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
 
