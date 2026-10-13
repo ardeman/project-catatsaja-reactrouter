@@ -18,6 +18,7 @@ import {
   createNote,
   dbGet,
   dbList,
+  dbPatch,
   launch,
   newDevice,
   resetEmulators,
@@ -405,5 +406,22 @@ describe('AI features and reminders', () => {
     await pause()
     await undo()
     await shows(page, 'Every 7 days')
+  })
+
+  test('maintenance mode closes the app until it is turned off', async () => {
+    const { page } = device
+    await page.goto(`${APP}/notes`)
+    await page.waitForTimeout(2000)
+    await dbPatch('config/app', {
+      maintenance: { booleanValue: true },
+      message: { stringValue: 'Moving to a new server.' },
+    })
+    await shows(page, "We're updating Catat Saja")
+    await shows(page, 'Moving to a new server.')
+    assert.equal(await page.getByRole('link', { name: 'New note' }).count(), 0)
+    await dbPatch('config/app', { maintenance: { booleanValue: false } })
+    await page
+      .getByText("We're updating Catat Saja")
+      .waitFor({ state: 'hidden', timeout: 30_000 })
   })
 })

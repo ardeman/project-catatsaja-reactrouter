@@ -128,6 +128,21 @@ describe('userLookup', () => {
   })
 })
 
+describe('config', () => {
+  test('everyone reads it, signed in or not', async () => {
+    await seed('config/app', { maintenance: false })
+    await assertSucceeds(as(STRANGER).doc('config/app').get())
+    await assertSucceeds(as().doc('config/app').get())
+  })
+
+  test('nobody writes it from the app', async () => {
+    await seed('config/app', { maintenance: false })
+    await assertFails(as(OWNER).doc('config/app').update({ maintenance: true }))
+    await assertFails(as().doc('config/app').set({ maintenance: true }))
+    await assertFails(as(OWNER).doc('config/other').set({ maintenance: true }))
+  })
+})
+
 describe('collections that are not part of the app', () => {
   test('groups are refused', async () => {
     await seed('groups/g1', {
@@ -326,6 +341,47 @@ for (const [collection, content] of Object.entries(collections)) {
         as(READER)
           .doc(path)
           .update({ pinnedBy: [READER], [firstField]: 'Changed' }),
+      )
+    })
+
+    test('anyone with access archives for themselves only', async () => {
+      await seed(path, shared)
+      await assertSucceeds(
+        as(READER)
+          .doc(path)
+          .update({ archivedBy: [READER] }),
+      )
+      await assertSucceeds(
+        as(OWNER)
+          .doc(path)
+          .update({ archivedBy: [READER, OWNER] }),
+      )
+      // Only their own id: the others' archive stays as it is.
+      await assertFails(
+        as(WRITER)
+          .doc(path)
+          .update({ archivedBy: [WRITER] }),
+      )
+      await assertFails(
+        as(READER)
+          .doc(path)
+          .update({ archivedBy: [READER, OWNER, WRITER] }),
+      )
+      // Taking it back out of their own archive.
+      await assertSucceeds(
+        as(READER)
+          .doc(path)
+          .update({ archivedBy: [OWNER] }),
+      )
+      await assertFails(
+        as(READER)
+          .doc(path)
+          .update({ archivedBy: [READER, OWNER], pinnedBy: [READER] }),
+      )
+      await assertFails(
+        as(STRANGER)
+          .doc(path)
+          .update({ archivedBy: [READER, OWNER, STRANGER] }),
       )
     })
 

@@ -112,12 +112,13 @@ service cloud.firestore {
         );
     }
 
-    // Anyone with access may pin or unpin it for themselves only.
-    function isPinUpdate() {
-      let before = resource.data.get('pinnedBy', []).toSet();
-      let after = request.resource.data.get('pinnedBy', []).toSet();
+    // Anyone with access may pin or archive it (`pinnedBy`, `archivedBy`)
+    // for themselves only: one list per update, changing only their own id.
+    function isOwnListUpdate(field) {
+      let before = resource.data.get(field, []).toSet();
+      let after = request.resource.data.get(field, []).toSet();
       return canRead(resource.data.permissions.read)
-        && changedKeys().hasOnly(['pinnedBy'])
+        && changedKeys().hasOnly([field])
         && before.difference(after).union(after.difference(before)).hasOnly([request.auth.uid]);
     }
 
@@ -139,7 +140,8 @@ service cloud.firestore {
     function canUpdateShared(contentKeys) {
       return isOwnerUpdate()
         || isContentUpdate(contentKeys)
-        || isPinUpdate()
+        || isOwnListUpdate('pinnedBy')
+        || isOwnListUpdate('archivedBy')
         || isLeaveUpdate()
         || isAcceptUpdate()
         || isDeclineUpdate();
@@ -172,6 +174,14 @@ service cloud.firestore {
         && request.resource.data.uid == request.auth.uid;
       allow delete: if isAuthenticated()
         && resource.data.uid == request.auth.uid;
+    }
+
+    // App-wide settings set from the Firebase console, such as maintenance
+    // mode (`config/app`): everyone reads them, even signed out, so the
+    // sign-in pages can show it too; the app never writes them.
+    match /config/{document} {
+      allow read: if true;
+      allow write: if false;
     }
 
     match /notes/{noteId} {
