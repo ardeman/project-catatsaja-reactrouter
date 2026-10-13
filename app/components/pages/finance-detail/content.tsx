@@ -153,6 +153,7 @@ export const Content = () => {
           path={`/finances/${selectedFinance?.id}`}
           write={financeData?.permissions?.write || []}
           read={financeData?.permissions?.read || []}
+          invited={financeData?.invites}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

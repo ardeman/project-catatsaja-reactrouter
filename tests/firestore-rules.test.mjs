@@ -207,6 +207,26 @@ for (const [collection, content] of Object.entries(collections)) {
             permissions: { read: [], write: [] },
           }),
       )
+      // Others join by accepting an invitation, never from the start.
+      await assertFails(
+        as(OWNER)
+          .collection(collection)
+          .add({
+            ...content,
+            owner: OWNER,
+            permissions: { read: [OWNER, READER], write: [OWNER] },
+          }),
+      )
+      await assertFails(
+        as(OWNER)
+          .collection(collection)
+          .add({
+            ...content,
+            owner: OWNER,
+            permissions: { read: [OWNER], write: [OWNER] },
+            invites: { read: [READER], write: [] },
+          }),
+      )
     })
 
     test('people it is shared with read it; nobody else does', async () => {
@@ -372,6 +392,151 @@ for (const [collection, content] of Object.entries(collections)) {
             .update({
               permissions: { read: [OWNER, WRITER], write: [OWNER, WRITER] },
               keys: { [OWNER]: 'k1' },
+            }),
+        )
+      })
+    })
+
+    describe('invitations', () => {
+      const invitedAs = (access) => ({
+        ...shared,
+        invites: {
+          read: [STRANGER],
+          write: access === 'write' ? [STRANGER] : [],
+        },
+      })
+      const members = [OWNER, WRITER, READER]
+
+      test('the owner invites, and cannot give access directly', async () => {
+        await seed(path, shared)
+        await assertSucceeds(
+          as(OWNER)
+            .doc(path)
+            .update({ invites: { read: [STRANGER], write: [] } }),
+        )
+        await assertFails(
+          as(OWNER)
+            .doc(path)
+            .update({ 'permissions.read': [...members, STRANGER] }),
+        )
+        await assertFails(
+          as(OWNER)
+            .doc(path)
+            .update({ 'permissions.write': [OWNER, WRITER, STRANGER] }),
+        )
+        // Making a reader a writer is still the owner's to do.
+        await assertSucceeds(
+          as(OWNER)
+            .doc(path)
+            .update({ 'permissions.write': [OWNER, WRITER, READER] }),
+        )
+      })
+
+      test('someone invited reads it and finds it, but cannot change it', async () => {
+        await seed(path, invitedAs('write'))
+        await assertSucceeds(as(STRANGER).doc(path).get())
+        await assertSucceeds(
+          as(STRANGER)
+            .collection(collection)
+            .where('invites.read', 'array-contains', STRANGER)
+            .get(),
+        )
+        await assertFails(
+          as(STRANGER)
+            .doc(path)
+            .update({ [firstField]: 'Changed', updatedAt: new Date() }),
+        )
+        await assertFails(
+          as(STRANGER)
+            .doc(path)
+            .update({ pinnedBy: [STRANGER] }),
+        )
+      })
+
+      test('accepting gives exactly the access offered', async () => {
+        await seed(path, invitedAs('read'))
+        await assertFails(
+          as(STRANGER)
+            .doc(path)
+            .update({
+              'permissions.read': [...members, STRANGER],
+              'permissions.write': [OWNER, WRITER, STRANGER],
+              invites: { read: [], write: [] },
+            }),
+        )
+        await assertFails(
+          as(STRANGER)
+            .doc(path)
+            .update({
+              'permissions.read': [...members, STRANGER],
+              invites: { read: [], write: [] },
+              [firstField]: 'Changed',
+            }),
+        )
+        await assertSucceeds(
+          as(STRANGER)
+            .doc(path)
+            .update({
+              'permissions.read': [...members, STRANGER],
+              invites: { read: [], write: [] },
+            }),
+        )
+
+        await seed(path, invitedAs('write'))
+        await assertSucceeds(
+          as(STRANGER)
+            .doc(path)
+            .update({
+              'permissions.read': [...members, STRANGER],
+              'permissions.write': [OWNER, WRITER, STRANGER],
+              invites: { read: [], write: [] },
+            }),
+        )
+      })
+
+      test('nobody accepts for someone else, or without an invitation', async () => {
+        await seed(path, invitedAs('write'))
+        await assertFails(
+          as(UNREGISTERED)
+            .doc(path)
+            .update({ 'permissions.read': [...members, UNREGISTERED] }),
+        )
+        await assertFails(
+          as(READER)
+            .doc(path)
+            .update({
+              'permissions.read': [...members, STRANGER],
+              invites: { read: [], write: [] },
+            }),
+        )
+      })
+
+      test('declining removes the invitation and its key, nothing else', async () => {
+        const encryptedInvite = {
+          ...invitedAs('read'),
+          encrypted: { v: 1, iv: 'iv', ct: 'ct' },
+          keys: {
+            [OWNER]: 'k1',
+            [WRITER]: 'k2',
+            [READER]: 'k3',
+            [STRANGER]: 'k4',
+          },
+        }
+        await seed(path, encryptedInvite)
+        await assertFails(
+          as(STRANGER)
+            .doc(path)
+            .update({
+              invites: { read: [], write: [] },
+              keys: { [OWNER]: 'k1' },
+            }),
+        )
+        await assertSucceeds(
+          as(STRANGER)
+            .doc(path)
+            .update({
+              invites: { read: [], write: [] },
+              keys: { [OWNER]: 'k1', [WRITER]: 'k2', [READER]: 'k3' },
             }),
         )
       })

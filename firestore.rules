@@ -25,23 +25,79 @@ service cloud.firestore {
     // Shared documents (notes, tasks, finances, health logs) carry an `owner` and
     // `permissions.read` / `permissions.write` lists of user ids. Writers are
     // also readers.
+    // People invited and not accepted yet are in `invites.read` /
+    // `invites.write` (missing on items shared before invitations): they can
+    // read the item, to see the invitation, and get access only by accepting.
+
+    function invitedReaders(data) {
+      return data.get('invites', {}).get('read', []);
+    }
+
+    function invitedWriters(data) {
+      return data.get('invites', {}).get('write', []);
+    }
+
+    function canReadShared() {
+      return canRead(resource.data.permissions.read)
+        || canRead(invitedReaders(resource.data));
+    }
 
     function changedKeys() {
       return request.resource.data.diff(resource.data).affectedKeys();
     }
 
-    // A new document belongs to its creator, who can read and write it.
+    // A new document belongs to its creator, who alone can read and write
+    // it: anyone else is invited afterwards.
     function isValidNewShared() {
+      let me = [request.auth.uid].toSet();
       return isRegistered()
         && request.resource.data.owner == request.auth.uid
-        && request.resource.data.permissions.read.hasAll([request.auth.uid])
-        && request.resource.data.permissions.write.hasAll([request.auth.uid]);
+        && request.resource.data.permissions.read.toSet() == me
+        && request.resource.data.permissions.write.toSet() == me
+        && !('invites' in request.resource.data);
     }
 
-    // The owner may change anything, including sharing, but not the owner.
+    // The owner may change anything, including inviting and roles, but not
+    // the owner, and may not give anyone access directly: people get it by
+    // accepting an invitation. A writer must already be a reader.
     function isOwnerUpdate() {
+      let readersBefore = resource.data.permissions.read.toSet();
       return isOwner(resource.data.owner)
-        && request.resource.data.owner == resource.data.owner;
+        && request.resource.data.owner == resource.data.owner
+        && request.resource.data.permissions.read.toSet().difference(readersBefore).size() == 0
+        && request.resource.data.permissions.write.toSet().difference(readersBefore).size() == 0;
+    }
+
+    // Someone invited accepting: they join with exactly the access they were
+    // offered, and their invitation goes; nothing else changes.
+    function isAcceptUpdate() {
+      let me = [request.auth.uid].toSet();
+      let before = resource.data;
+      let after = request.resource.data;
+      let writersAfter = invitedWriters(before).hasAny([request.auth.uid])
+        ? before.permissions.write.toSet().union(me)
+        : before.permissions.write.toSet();
+      return canRead(invitedReaders(before))
+        && !canRead(before.permissions.read)
+        && changedKeys().hasOnly(['permissions', 'invites'])
+        && after.permissions.read.toSet() == before.permissions.read.toSet().union(me)
+        && after.permissions.write.toSet() == writersAfter
+        && invitedReaders(after).toSet() == invitedReaders(before).toSet().difference(me)
+        && invitedWriters(after).toSet() == invitedWriters(before).toSet().difference(me);
+    }
+
+    // Someone invited declining: their invitation (and the key sealed for it
+    // on an encrypted item) goes, and nothing else.
+    function isDeclineUpdate() {
+      let me = [request.auth.uid].toSet();
+      return canRead(invitedReaders(resource.data))
+        && changedKeys().hasOnly(['invites', 'keys'])
+        && (
+          !('keys' in resource.data)
+            || resource.data.keys.diff(request.resource.data.get('keys', {})).affectedKeys().hasOnly([request.auth.uid])
+        )
+        && invitedReaders(request.resource.data).toSet() == invitedReaders(resource.data).toSet().difference(me)
+        && invitedWriters(request.resource.data).toSet() == invitedWriters(resource.data).toSet().difference(me);
     }
 
     // Writers may change the content fields only. An encrypted item's content
@@ -84,7 +140,9 @@ service cloud.firestore {
       return isOwnerUpdate()
         || isContentUpdate(contentKeys)
         || isPinUpdate()
-        || isLeaveUpdate();
+        || isLeaveUpdate()
+        || isAcceptUpdate()
+        || isDeclineUpdate();
     }
 
     // Profiles are read one at a time, by id (the people an item is shared
@@ -117,21 +175,21 @@ service cloud.firestore {
     }
 
     match /notes/{noteId} {
-      allow read: if canRead(resource.data.permissions.read);
+      allow read: if canReadShared();
       allow create: if isValidNewShared();
       allow update: if canUpdateShared(['title', 'content', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
 
     match /tasks/{taskId} {
-      allow read: if canRead(resource.data.permissions.read);
+      allow read: if canReadShared();
       allow create: if isValidNewShared();
       allow update: if canUpdateShared(['title', 'content', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
 
     match /finances/{financeId} {
-      allow read: if canRead(resource.data.permissions.read);
+      allow read: if canReadShared();
       allow create: if isValidNewShared();
       allow update: if canUpdateShared(['title', 'content', 'currency', 'accounts', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
@@ -139,7 +197,7 @@ service cloud.firestore {
 
     // Health logs: one person's measurements, shared like the others.
     match /healthLogs/{healthLogId} {
-      allow read: if canRead(resource.data.permissions.read);
+      allow read: if canReadShared();
       allow create: if isValidNewShared();
       allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content', 'reminders', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);

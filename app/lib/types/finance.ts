@@ -7,7 +7,12 @@ import {
   typedEntriesSchema,
 } from '~/lib/validations/finance'
 
-import { THandleSetPermission, TPermissions, TTime } from './common'
+import {
+  TAccessLists,
+  THandleSetPermission,
+  TPermissions,
+  TTime,
+} from './common'
 
 export type TFinanceEntry = z.output<ReturnType<typeof entrySchema>>
 
@@ -50,6 +55,8 @@ export type TFinanceResponse = {
   updatedAt?: TTime
   owner: string
   permissions?: TPermissions
+  // People invited who haven't accepted yet.
+  invites?: TAccessLists
 } & TFinanceForm
 
 export type TFinancePermissionRequest = THandleSetPermission & {

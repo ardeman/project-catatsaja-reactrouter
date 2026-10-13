@@ -1,4 +1,9 @@
-import { THandleSetPermission, TPermissions, TTime } from './common'
+import {
+  TAccessLists,
+  THandleSetPermission,
+  TPermissions,
+  TTime,
+} from './common'
 
 export type THealthSex = 'male' | 'female'
 
@@ -98,6 +103,8 @@ export type THealthLogResponse = {
   updatedAt?: TTime
   owner: string
   permissions?: TPermissions
+  // People invited who haven't accepted yet.
+  invites?: TAccessLists
 } & THealthLogForm
 
 export type THealthLogPermissionRequest = THandleSetPermission & {

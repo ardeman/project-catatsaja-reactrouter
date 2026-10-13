@@ -41,7 +41,9 @@
       "write": "Read and write",
       "shared": "Shared",
       "remove": "Remove {{email}}",
-      "removed": "{{email}} no longer has access"
+      "removed": "{{email}} no longer has access",
+      "invited": "Invited",
+      "invitedHint": "Invited: gets access after accepting"
     },
     "user": {
       "placeholder": "Enter an email address",
@@ -637,7 +639,8 @@
       "title": "Sharing",
       "description": "Share any note, task list, finance book or health log with other people who use Catat Saja.",
       "steps": [
-        "Choose Share in the icon bar, find someone by their email, and give them read-only or edit access.",
+        "Choose Share in the icon bar, find someone by their email, and give them read-only or edit access. They get an invitation, and the item is added to their list once they accept.",
+        "Something shared with you shows as an invitation at the top of the app: Accept to add it to your list, or Decline.",
         "Changes show up for everyone straight away. People with read-only access can't change anything.",
         "You can copy a link to the item, and undo removing someone.",
         "Something shared with you can be taken off your own list with Remove from my list; it stays for everyone else."
@@ -684,7 +687,7 @@
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices.",
     "encryption": "With end-to-end encryption (offered when you sign up, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
     "ai": "Receipt scanning, quick add and note helpers are optional. Only when you use one is what you chose sent to Google’s Gemini (through Firebase AI Logic): a receipt photo, the text you typed, or the note’s title and text, even for end-to-end encrypted items. Google may keep it and use it to improve its services. We don’t store what is sent; what you add or change is stored like anything else. You agree to this once, before the first use, and can take it back in Settings → Account.",
-    "sharing": "When you share a note, task, book or health log, the people you share it with see its content. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
+    "sharing": "When you share a note, task, book or health log, the people you invite can see its content (their invitation shows its title), and it is added to their lists only if they accept. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
     "security": "To keep out abuse, the app uses Firebase App Check with Google reCAPTCHA, which checks that requests come from this app using signals from your browser.",
     "video": "The home page has videos hosted on YouTube. They load only when you press play or choose a story, from YouTube's privacy-enhanced mode (youtube-nocookie.com); YouTube's own privacy policy then applies to them.",
@@ -1489,6 +1492,31 @@
       "encryption": "This happens even for end-to-end encrypted items: that content leaves your device, while what you save is encrypted as usual. Catat Saja doesn’t keep what is sent.",
       "check": "Nothing is sent until you use one of these features, and you check the result before anything is added or changed. You can take this back in Settings → Account.",
       "confirm": "Continue"
+    }
+  },
+  "invitations": {
+    "title": "Invitations",
+    "message": "{{name}} shared {{item}} with you.",
+    "someone": "Someone",
+    "accept": "Accept",
+    "decline": "Decline",
+    "kind": {
+      "notes": {
+        "titled": "the note “{{title}}”",
+        "untitled": "a note"
+      },
+      "tasks": {
+        "titled": "the list “{{title}}”",
+        "untitled": "a task list"
+      },
+      "finances": {
+        "titled": "the book “{{title}}”",
+        "untitled": "a finance book"
+      },
+      "health": {
+        "titled": "the health log “{{title}}”",
+        "untitled": "a health log"
+      }
     }
   }
 }

@@ -109,6 +109,7 @@ export const List = () => {
           path={`/health/${selectedHealthLog?.id}`}
           write={sharedHealthLog?.permissions?.write || []}
           read={sharedHealthLog?.permissions?.read || []}
+          invited={sharedHealthLog?.invites}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

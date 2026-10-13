@@ -143,6 +143,7 @@ export const Content = () => {
           path={`/tasks/${selectedTask?.id}`}
           write={taskData?.permissions?.write || []}
           read={taskData?.permissions?.read || []}
+          invited={taskData?.invites}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

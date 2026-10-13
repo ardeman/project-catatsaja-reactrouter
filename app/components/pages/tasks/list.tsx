@@ -97,6 +97,7 @@ export const List = () => {
           path={`/tasks/${selectedTask?.id}`}
           write={sharedTask?.permissions?.write || []}
           read={sharedTask?.permissions?.read || []}
+          invited={sharedTask?.invites}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

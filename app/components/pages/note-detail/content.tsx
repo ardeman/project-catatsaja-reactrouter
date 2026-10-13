@@ -149,6 +149,7 @@ export const Content = () => {
           path={`/notes/${selectedNote?.id}`}
           write={noteData?.permissions?.write || []}
           read={noteData?.permissions?.read || []}
+          invited={noteData?.invites}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

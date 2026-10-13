@@ -41,7 +41,7 @@ export const rememberStartPage = (page: TNavPage) => {
   }
 }
 
-const navIcons = {
+export const navIcons = {
   notes: StickyNote,
   tasks: ListTodo,
   finances: Wallet,

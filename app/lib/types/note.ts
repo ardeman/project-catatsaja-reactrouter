@@ -2,7 +2,12 @@ import { z } from 'zod'
 
 import { noteHelperSchema, noteSchema } from '~/lib/validations/note'
 
-import { THandleSetPermission, TPermissions, TTime } from './common'
+import {
+  TAccessLists,
+  THandleSetPermission,
+  TPermissions,
+  TTime,
+} from './common'
 
 export type TNoteForm = z.infer<typeof noteSchema>
 
@@ -22,6 +27,8 @@ export type TNoteResponse = {
   updatedAt: TTime
   owner: string
   permissions?: TPermissions
+  // People invited who haven't accepted yet.
+  invites?: TAccessLists
 } & TNoteForm
 
 export type TNotePermissionRequest = THandleSetPermission & {

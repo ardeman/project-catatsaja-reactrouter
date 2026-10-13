@@ -7,6 +7,7 @@ import assert from 'node:assert/strict'
 import { after, before, describe, test } from 'node:test'
 
 import {
+  acceptInvitation,
   APP,
   createNote,
   dbGet,
@@ -106,6 +107,7 @@ describe('end-to-end encryption', () => {
     await ana.page.locator('textarea[name=title]').waitFor()
     await shareWith(ana.page, BUDI, 'Read and write')
     await ana.page.keyboard.press('Escape')
+    await acceptInvitation(budi.page, 'Ana secret note')
     let stored = await dbGet(`notes/${id}`)
     assert.deepEqual(keysOf(stored).toSorted(), [anaUid, budiUid].toSorted())
     assert.ok(await sees(budi.page, 'Ana secret note'), 'Budi reads it')
@@ -168,6 +170,7 @@ describe('end-to-end encryption', () => {
     assert.equal(stored.title?.stringValue, 'Cici plain note', 'stored plain')
     await shareWith(cici.page, ANA, 'Read only')
     await cici.page.keyboard.press('Escape')
+    await acceptInvitation(ana.page, 'Cici plain note')
     assert.ok(await sees(ana.page, 'Cici plain note'), 'Ana reads it')
 
     const anaNote = (await dbList('notes')).find(
@@ -186,6 +189,7 @@ describe('end-to-end encryption', () => {
     await ana.page.keyboard.press('Escape')
     stored = await dbGet(`notes/${anaNote}`)
     assert.ok(!stored.encrypted && !stored.keys, 'stored plain after agreeing')
+    await acceptInvitation(cici.page, 'Edited by Budi')
     assert.ok(await sees(cici.page, 'Edited by Budi'), 'Cici reads it')
 
     await cici.page.goto(`${APP}/settings/account`)
@@ -399,9 +403,11 @@ describe('end-to-end encryption', () => {
     const budiNote = await createNote(budi.page, 'Budi note')
     await shareWith(budi.page, ANA, 'Read and write')
     await budi.page.keyboard.press('Escape')
+    await acceptInvitation(ana.page, 'Budi note')
     const anaNote = await createNote(ana.page, 'Ana note for Budi')
     await shareWith(ana.page, BUDI, 'Read only')
     await ana.page.keyboard.press('Escape')
+    await acceptInvitation(budi.page, 'Ana note for Budi')
     assert.equal(keysOf(await dbGet(`notes/${budiNote}`)).length, 2)
     assert.equal(keysOf(await dbGet(`notes/${anaNote}`)).length, 2)
 
@@ -452,6 +458,7 @@ describe('end-to-end encryption', () => {
     )
     await shareWith(budi.page, ANA, 'Read only')
     await budi.page.keyboard.press('Escape')
+    await acceptInvitation(ana.page, 'Budi plain after opt-out')
     assert.ok(await sees(ana.page, 'Budi plain after opt-out'))
     await createNote(ana.page, 'Ana second secret')
     const ask = await shareWith(ana.page, BUDI, 'Read only')
@@ -459,6 +466,7 @@ describe('end-to-end encryption', () => {
     await ask.getByRole('button', { name: 'Share without encryption' }).click()
     await ana.page.waitForTimeout(2500)
     await ana.page.keyboard.press('Escape')
+    await acceptInvitation(budi.page, 'Ana second secret')
     assert.ok(await sees(budi.page, 'Ana second secret'))
 
     await budi.page.goto(`${APP}/settings/account`)
@@ -541,5 +549,71 @@ describe('end-to-end encryption', () => {
     await dialog.getByRole('combobox').last().waitFor()
     await eko.context.close()
     await dewi.context.close()
+  })
+
+  test('sharing is an invitation: nothing is shared until it is accepted', async () => {
+    const skipSetup = async (page) => {
+      await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+      await page
+        .getByRole('button', { name: 'Continue without encryption' })
+        .click()
+      await page.waitForURL(/\/notes/, { timeout: 30_000 })
+    }
+    const gani = await newDevice(browser)
+    await signUp(gani.page, 'Gani', 'gani@example.com')
+    await skipSetup(gani.page)
+    const fina = await newDevice(browser)
+    await signUp(fina.page, 'Fina', 'fina@example.com')
+    await skipSetup(fina.page)
+    const ganiUid = await uidOf('gani@example.com')
+
+    const plan = await createNote(fina.page, 'Fina plan')
+    await shareWith(fina.page, 'gani@example.com', 'Read only')
+    await fina.page
+      .getByText(/Invited/)
+      .first()
+      .waitFor()
+    await fina.page.keyboard.press('Escape')
+    const diary = await createNote(fina.page, 'Fina diary')
+    await shareWith(fina.page, 'gani@example.com', 'Read only')
+    await fina.page.keyboard.press('Escape')
+    for (const id of [plan, diary]) {
+      const stored = await dbGet(`notes/${id}`)
+      assert.ok(!readersOf(stored).includes(ganiUid), 'no access yet')
+    }
+
+    // Both wait for Gani; declining one removes it for good.
+    const invitation = (title) =>
+      gani.page.getByRole('listitem').filter({ hasText: title })
+    await gani.page.goto(`${APP}/notes`)
+    await invitation('Fina diary').waitFor({ timeout: 30_000 })
+    await invitation('Fina diary')
+      .getByRole('button', { name: 'Decline' })
+      .click()
+    await invitation('Fina diary').waitFor({ state: 'hidden' })
+    const declined = await dbGet(`notes/${diary}`)
+    assert.ok(!readersOf(declined).includes(ganiUid))
+    assert.ok(
+      !JSON.stringify(declined.invites ?? {}).includes(ganiUid),
+      'the invitation is gone',
+    )
+
+    // Accepting opens it, with exactly the access offered.
+    await invitation('Fina plan')
+      .getByRole('button', { name: 'Accept' })
+      .click()
+    await gani.page.waitForURL(new RegExp(`/notes/${plan}`), {
+      timeout: 30_000,
+    })
+    const accepted = await dbGet(`notes/${plan}`)
+    assert.ok(readersOf(accepted).includes(ganiUid))
+    const writers = (
+      accepted.permissions.mapValue.fields.write.arrayValue.values ?? []
+    ).map((value) => value.stringValue)
+    assert.ok(!writers.includes(ganiUid), 'read only, as offered')
+    assert.ok(await sees(gani.page, 'Fina plan'))
+    assert.ok(!(await sees(gani.page, 'Fina diary')))
+    await gani.context.close()
+    await fina.context.close()
   })
 })

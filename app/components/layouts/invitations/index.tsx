@@ -1,0 +1,109 @@
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
+
+import { Button } from '~/components/ui/button'
+import { navIcons } from '~/lib/constants/navigation'
+import { useGetInvitations } from '~/lib/hooks/use-get-invitations'
+import { useGetUsers } from '~/lib/hooks/use-get-users'
+import { useUpdateInvitation } from '~/lib/hooks/use-update-invitation'
+import { TInvitation } from '~/lib/types/common'
+
+// Where each kind of item lives in the app.
+const pages = {
+  notes: 'notes',
+  tasks: 'tasks',
+  finances: 'finances',
+  healthLogs: 'health',
+} as const satisfies Record<TInvitation['name'], keyof typeof navIcons>
+
+// Items shared with the person that wait for them to accept, above every
+// page: nothing shared appears in their lists until they do. Accepting opens
+// the item; declining removes the invitation for good.
+export const Invitations = () => {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { data } = useGetInvitations()
+  const invitations = data ?? []
+  const { data: owners } = useGetUsers([
+    ...new Set(invitations.map((invitation) => invitation.owner)),
+  ])
+  const { accept, decline, pendingId } = useUpdateInvitation()
+
+  if (invitations.length === 0) return null
+
+  return (
+    <section
+      aria-labelledby="invitations-title"
+      className="mx-auto grid w-full max-w-6xl gap-2 px-4 pt-4 md:px-10 md:pt-6"
+    >
+      <h2
+        id="invitations-title"
+        className="sr-only"
+      >
+        {t('invitations.title')}
+      </h2>
+      <ul className="grid gap-2">
+        {invitations.map((invitation) => {
+          const page = pages[invitation.name]
+          const Icon = navIcons[page]
+          const owner = owners?.find((user) => user.uid === invitation.owner)
+          const isPending = pendingId === invitation.id
+          const item = invitation.title
+            ? t(`invitations.kind.${page}.titled`, { title: invitation.title })
+            : t(`invitations.kind.${page}.untitled`)
+          return (
+            <li
+              key={`${invitation.name}/${invitation.id}`}
+              className="glass-surface motion-enter flex flex-wrap items-center gap-3 rounded-xl border p-3"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                <Icon
+                  aria-hidden="true"
+                  className="size-4"
+                />
+              </span>
+              <div className="grid min-w-0 flex-1 basis-48 gap-0.5">
+                <p className="text-sm">
+                  {t('invitations.message', {
+                    name:
+                      owner?.displayName ||
+                      owner?.email ||
+                      t('invitations.someone'),
+                    item,
+                  })}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {t(
+                    invitation.access === 'write'
+                      ? 'form.permissions.write'
+                      : 'form.permissions.readOnly',
+                  )}
+                </p>
+              </div>
+              <div className="ml-auto flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isPending}
+                  onClick={() => void decline(invitation)}
+                >
+                  {t('invitations.decline')}
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={isPending}
+                  onClick={async () => {
+                    if (await accept(invitation))
+                      void navigate(`/${page}/${invitation.id}`)
+                  }}
+                >
+                  {t('invitations.accept')}
+                </Button>
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}

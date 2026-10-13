@@ -30,7 +30,7 @@ import {
 import { shareSchema } from '~/lib/validations/common'
 
 export const Share = (properties: TPermissions) => {
-  const { write, read, handleShare, handleUnshare, path } = properties
+  const { write, read, invited, handleShare, handleUnshare, path } = properties
   const [disabled, setDisabled] = useState(false)
   const [email, setEmail] = useState('')
   const { t } = useTranslation(['common', 'zod'])
@@ -61,10 +61,18 @@ export const Share = (properties: TPermissions) => {
     setDisabled(true)
   })
 
+  // Everyone with access or an invitation: not offered again.
   const permissions = useMemo(
-    () => new Set([...(read || []), ...(write || [])]),
-    [read, write],
+    () =>
+      new Set([
+        ...(read || []),
+        ...(write || []),
+        ...(invited?.read || []),
+        ...(invited?.write || []),
+      ]),
+    [read, write, invited],
   )
+  const invitedIds = new Set(invited?.read || [])
   const sharedWith = [...permissions].filter(
     (uid) => uid !== auth?.currentUser?.uid,
   )
@@ -95,8 +103,10 @@ export const Share = (properties: TPermissions) => {
     setDisabled(true)
   }
 
-  const getPermission = (uid: string) =>
-    write.includes(uid) ? 'write' : read.includes(uid) ? 'read' : undefined
+  const getPermission = (uid: string) => {
+    if (write.includes(uid) || invited?.write.includes(uid)) return 'write'
+    if (read.includes(uid) || invited?.read.includes(uid)) return 'read'
+  }
 
   useEffect(() => {
     if (!searchResults?.some((user) => !permissions.has(user.uid))) {
@@ -271,6 +281,7 @@ export const Share = (properties: TPermissions) => {
               key={uid}
               uid={uid}
               permission={getPermission(uid)}
+              isInvited={invitedIds.has(uid)}
               photoURL={user.photoURL || ''}
               displayName={user.displayName || ''}
               email={user.email || ''}
@@ -331,6 +342,7 @@ export const Share = (properties: TPermissions) => {
 const Permission = (parameters: TParametersPermission) => {
   const {
     permission = '',
+    isInvited,
     photoURL,
     displayName,
     uid,
@@ -353,6 +365,15 @@ const Permission = (parameters: TParametersPermission) => {
       <div className="flex min-w-16 flex-1 flex-col justify-center">
         <p className="truncate">{displayName}</p>
         <p className="truncate text-xs text-muted-foreground">{email}</p>
+        {/* Gets access once they accept. */}
+        {isInvited && (
+          <p
+            title={t('form.permissions.invitedHint')}
+            className="truncate text-xs text-amber-700 dark:text-amber-400"
+          >
+            {t('form.permissions.invited')}
+          </p>
+        )}
       </div>
       <div className="flex min-w-0 items-center gap-x-2">
         <Select

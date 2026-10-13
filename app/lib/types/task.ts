@@ -2,7 +2,12 @@ import { z } from 'zod'
 
 import { taskSchema } from '~/lib/validations/task'
 
-import { THandleSetPermission, TPermissions, TTime } from './common'
+import {
+  TAccessLists,
+  THandleSetPermission,
+  TPermissions,
+  TTime,
+} from './common'
 
 export type TTaskForm = z.infer<ReturnType<typeof taskSchema>>
 
@@ -24,6 +29,8 @@ export type TTaskResponse = {
   updatedAt: TTime
   owner: string
   permissions?: TPermissions
+  // People invited who haven't accepted yet.
+  invites?: TAccessLists
 } & TTaskForm
 
 export type TTaskPermissionRequest = THandleSetPermission & {

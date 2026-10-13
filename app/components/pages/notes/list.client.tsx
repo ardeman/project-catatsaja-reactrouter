@@ -99,6 +99,7 @@ export const List = () => {
           path={`/notes/${selectedNote?.id}`}
           write={sharedNote?.permissions?.write || []}
           read={sharedNote?.permissions?.read || []}
+          invited={sharedNote?.invites}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

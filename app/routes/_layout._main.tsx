@@ -4,6 +4,7 @@ import { Outlet } from 'react-router'
 
 import { fetchUserData } from '~/apis/firestore/user'
 import { EncryptionGate } from '~/components/layouts/encryption-gate'
+import { Invitations } from '~/components/layouts/invitations'
 import { Navbar } from '~/components/layouts/navbar'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { rememberStartPage } from '~/lib/constants/navigation'
@@ -53,6 +54,7 @@ const Main = () => {
       <main className="app-background flex min-h-dvh w-screen flex-col pb-[calc(5rem+var(--nav-bottom))] md:pb-0">
         <Navbar />
         <EncryptionGate>
+          <Invitations />
           <Outlet />
         </EncryptionGate>
       </main>

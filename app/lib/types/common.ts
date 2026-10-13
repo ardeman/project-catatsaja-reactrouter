@@ -21,9 +21,17 @@ export type THandleSetPermission = {
 
 export type THandleDeletePermission = Pick<TUserResponse, 'uid' | 'email'>
 
+// Who may read and write an item, or has been invited to.
+export type TAccessLists = {
+  read: string[]
+  write: string[]
+}
+
 export type TPermissions = {
   read: string[]
   write: string[]
+  // Invited and not accepted yet (shown as invited in the share dialog).
+  invited?: TAccessLists
   // 'needsPlain': encrypted, and the person hasn't turned encryption on.
   handleShare: (
     parameters: THandleSetPermission,
@@ -38,6 +46,8 @@ export type TParametersPermission = Pick<
 > & {
   // Unset for someone found by email who has no access yet.
   permission?: THandleSetPermission['permission']
+  // Invited, and hasn't accepted yet.
+  isInvited?: boolean
 } & {
   handleDeletePermission: (parameters: THandleDeletePermission) => void
   handleSetPermission: (parameters: THandleSetPermission) => void
@@ -75,6 +85,17 @@ export type TMenu = {
   name: string
   href: string
   icon?: LucideIcon
+}
+
+// An item someone shared with the person, waiting for them to accept.
+export type TInvitation = {
+  name: 'notes' | 'tasks' | 'finances' | 'healthLogs'
+  id: string
+  owner: string
+  // The item's title (a health log's name); empty when it has none.
+  title: string
+  access: 'read' | 'write'
+  isEncrypted: boolean
 }
 
 export type TLiveSubscription<T> = (

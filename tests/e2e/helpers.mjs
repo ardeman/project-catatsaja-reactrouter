@@ -196,3 +196,15 @@ export const shareWith = async (page, email, access) => {
   await page.waitForTimeout(1500)
   return dialog
 }
+
+// Accepting an invitation to the item with this title (it only appears in
+// the person's lists once they do).
+export const acceptInvitation = async (page, title) => {
+  await page.goto(`${APP}/notes`)
+  await page
+    .getByRole('listitem')
+    .filter({ hasText: title })
+    .getByRole('button', { name: 'Accept' })
+    .click({ timeout: 30_000 })
+  await page.waitForTimeout(2000)
+}

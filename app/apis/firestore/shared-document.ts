@@ -1,5 +1,7 @@
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
   deleteField,
   doc,
@@ -16,6 +18,7 @@ import {
 } from 'firebase/firestore'
 
 import { auth, firestore } from '~/lib/configs/firebase'
+import { TInvitation } from '~/lib/types/common'
 import {
   canEncrypt,
   contentFields,
@@ -41,7 +44,18 @@ type TShared = {
   owner?: string
   isEncrypted?: boolean
   permissions?: { read: string[]; write: string[] }
+  // Invited and not accepted yet.
+  invites?: { read: string[]; write: string[] }
 }
+
+// Everyone who holds (or is to hold) an item's key: the people with access
+// and the people invited to it.
+const audienceOf = (data: DocumentData | TShared): string[] => [
+  ...new Set<string>([
+    ...(data.permissions?.read ?? []),
+    ...(data.invites?.read ?? []),
+  ]),
+]
 
 const requireUser = () => {
   if (!firestore) throw new Error('Firebase Firestore is not initialized.')
@@ -57,13 +71,26 @@ const readableBy = (database: Firestore, name: TCollection, uid: string) =>
     where(new FieldPath('permissions', 'read'), 'array-contains', uid),
   )
 
+// A collection's items a person is invited to and hasn't accepted yet.
+const invitedTo = (database: Firestore, name: TCollection, uid: string) =>
+  query(
+    collection(database, name),
+    where(new FieldPath('invites', 'read'), 'array-contains', uid),
+  )
+
 export const createShared = async (
   name: TCollection,
   data: Record<string, unknown>,
 ) => {
   const { database, uid } = requireUser()
-  // Restoring a deleted item passes it back as read: drop what isn't stored.
-  const { isEncrypted: _isEncrypted, isPinned: _isPinned, ...stored } = data
+  // Restoring a deleted item passes it back as read: drop what isn't stored,
+  // and its invitations (a new item starts unshared).
+  const {
+    isEncrypted: _isEncrypted,
+    isPinned: _isPinned,
+    invites: _invites,
+    ...stored
+  } = data
   const document = await encodeNew(name, {
     ...stored,
     owner: uid,
@@ -104,10 +131,13 @@ export class RecipientWithoutEncryption extends Error {
   }
 }
 
-// Sharing, changing access or removing someone. On an encrypted item, a new
-// person gets the content key sealed for them (they must have turned
-// encryption on, unless `allowPlain` stores the item plain again), and
-// removing someone gives the item a new key for the others.
+// Sharing, changing access or removing someone. Someone new is invited
+// (`invites`) and gets access only once they accept; people who already
+// have access, or an invitation, just change role. On an encrypted item an
+// invited person gets the content key sealed for them, so the invitation
+// can show the title (they must have turned encryption on, unless
+// `allowPlain` stores the item plain again), and removing someone or
+// cancelling an invitation gives the item a new key for the others.
 export const setSharedPermission = async (
   name: TCollection,
   item: TShared,
@@ -118,36 +148,44 @@ export const setSharedPermission = async (
   const { database } = requireUser()
   const read = new Set(item.permissions?.read)
   const write = new Set(item.permissions?.write)
-  const isNew = !read.has(uid)
+  const invitedRead = new Set(item.invites?.read)
+  const invitedWrite = new Set(item.invites?.write)
+  const isNew = !read.has(uid) && !invitedRead.has(uid)
   if (permission === 'delete') {
-    read.delete(uid)
-    write.delete(uid)
-  } else {
-    read.add(uid)
+    for (const list of [read, write, invitedRead, invitedWrite])
+      list.delete(uid)
+  } else if (read.has(uid)) {
     if (permission === 'write') write.add(uid)
     else write.delete(uid)
+  } else {
+    invitedRead.add(uid)
+    if (permission === 'write') invitedWrite.add(uid)
+    else invitedWrite.delete(uid)
   }
-  const permissions = { read: [...read], write: [...write] }
+  const access = {
+    permissions: { read: [...read], write: [...write] },
+    invites: { read: [...invitedRead], write: [...invitedWrite] },
+  }
   const reference = doc(database, name, item.id)
 
-  if (!item.isEncrypted) return updateDoc(reference, { permissions })
+  if (!item.isEncrypted) return updateDoc(reference, access)
 
   if (permission === 'delete') {
-    const publicKeys = await fetchPublicKeys(permissions.read)
+    const publicKeys = await fetchPublicKeys(audienceOf(access))
     for (const [reader, key] of publicKeys) if (!key) publicKeys.delete(reader)
     return updateDoc(reference, {
-      permissions,
+      ...access,
       ...(await rotate(name, item.id, publicKeys as Map<string, string>)),
     })
   }
 
-  if (!isNew) return updateDoc(reference, { permissions })
+  if (!isNew) return updateDoc(reference, access)
 
   const recipientKeys = await fetchPublicKeys([uid])
   const publicKey = recipientKeys.get(uid)
   if (publicKey)
     return updateDoc(reference, {
-      permissions,
+      ...access,
       [`keys.${uid}`]: await sealFor(name, item.id, publicKey),
     })
 
@@ -157,10 +195,102 @@ export const setSharedPermission = async (
   forget(name, item.id)
   return updateDoc(reference, {
     ...plain,
-    permissions,
+    ...access,
     encrypted: deleteField(),
     keys: deleteField(),
   })
+}
+
+// Accepting an invitation: the access offered (and nothing more), and the
+// invitation gone. Doesn't touch `updatedAt`: it isn't an edit.
+export const acceptInvite = async (
+  name: TCollection,
+  id: string,
+  access: 'read' | 'write',
+) => {
+  const { database, uid } = requireUser()
+  return updateDoc(doc(database, name, id), {
+    'permissions.read': arrayUnion(uid),
+    ...(access === 'write' && { 'permissions.write': arrayUnion(uid) }),
+    'invites.read': arrayRemove(uid),
+    'invites.write': arrayRemove(uid),
+  })
+}
+
+// Declining: the invitation and the key sealed for it are gone.
+export const declineInvite = async (
+  name: TCollection,
+  id: string,
+  isEncrypted: boolean,
+) => {
+  const { database, uid } = requireUser()
+  return updateDoc(doc(database, name, id), {
+    'invites.read': arrayRemove(uid),
+    'invites.write': arrayRemove(uid),
+    ...(isEncrypted && { [`keys.${uid}`]: deleteField() }),
+  })
+}
+
+const toInvitation = async (
+  name: TCollection,
+  document: QueryDocumentSnapshot,
+  uid: string,
+) => {
+  const raw = document.data()
+  const data = await decodeDocument(name, document.id, raw, uid)
+  const title = data?.title ?? data?.name
+  return {
+    name,
+    id: document.id,
+    owner: String(raw.owner ?? ''),
+    title: typeof title === 'string' ? title : '',
+    access: (raw.invites?.write ?? []).includes(uid) ? 'write' : 'read',
+    isEncrypted: isEncrypted(raw),
+    createdAt: raw.createdAt?.seconds ?? 0,
+  } as TInvitation & { createdAt: number }
+}
+
+// Invitations waiting for the person, of every kind, newest first: live, so
+// a new one shows up at once.
+export const subscribeToInvitations = (
+  uid: string,
+  onData: (invitations: TInvitation[]) => void,
+  onError: (error: unknown) => void,
+) => {
+  const { database } = requireUser()
+  const names = Object.keys(contentFields) as TCollection[]
+  const byName = new Map<TCollection, TInvitation[]>()
+  const latest = new Map<TCollection, number>()
+  const send = () => {
+    if (byName.size < names.length) return
+    onData(names.flatMap((name) => byName.get(name) ?? []))
+  }
+  const listen = (name: TCollection) =>
+    onSnapshot(
+      invitedTo(database, name, uid),
+      (snap) => {
+        const run = (latest.get(name) ?? 0) + 1
+        latest.set(name, run)
+        void (async () => {
+          const invitations = await Promise.all(
+            snap.docs.map((document) => toInvitation(name, document, uid)),
+          )
+          if (latest.get(name) !== run) return
+          byName.set(
+            name,
+            invitations
+              .toSorted((a, b) => b.createdAt - a.createdAt)
+              .map(({ createdAt: _createdAt, ...invitation }) => invitation),
+          )
+          send()
+        })()
+      },
+      onError,
+    )
+  const unsubscribes = names.map((name) => listen(name))
+  return () => {
+    for (const unsubscribe of unsubscribes) unsubscribe()
+  }
 }
 
 // Live items for a person, decrypted. Decrypting takes a moment, so only
@@ -255,7 +385,8 @@ export const encryptOwnItems = async () => {
     for (const document of snap.docs) {
       const data = document.data() as DocumentData
       if (data.owner !== uid || isEncrypted(data)) continue
-      const readers: string[] = data.permissions?.read ?? [uid]
+      const readers = audienceOf(data)
+      if (readers.length === 0) readers.push(uid)
       const publicKeys = await fetchPublicKeys(readers)
       if (readers.some((reader) => !publicKeys.get(reader))) {
         waiting++
@@ -292,8 +423,9 @@ const storedItems = async () => {
   return { uid, items }
 }
 
-// The people on the person's items (owners and everyone they are shared
-// with), from the most recently changed item: suggestions when sharing.
+// The people on the person's items (owners, everyone they are shared with
+// or invited to them), from the most recently changed item: suggestions
+// when sharing.
 export const fetchContactIds = async () => {
   const { uid, items } = await storedItems()
   const changedAt = (data: DocumentData) =>
@@ -301,11 +433,7 @@ export const fetchContactIds = async () => {
   const ids = items
     .map(({ document }) => document.data())
     .toSorted((a, b) => changedAt(b) - changedAt(a))
-    .flatMap((data) => [
-      data.owner,
-      ...(data.permissions?.write ?? []),
-      ...(data.permissions?.read ?? []),
-    ])
+    .flatMap((data) => [data.owner, ...audienceOf(data)])
     .filter((id): id is string => typeof id === 'string' && id !== uid)
   return [...new Set(ids)]
 }
@@ -355,7 +483,7 @@ export const findUnreadableForOthers = async () => {
   for (const { name, document } of items) {
     const data = document.data()
     if (data.owner !== uid || !isEncrypted(data)) continue
-    const readers: string[] = data.permissions?.read ?? []
+    const readers = audienceOf(data)
     const sealed = Object.keys((data.keys as Record<string, string>) ?? {})
     if (readers.some((reader) => !sealed.includes(reader)))
       found.push({ name, id: document.id, readers })

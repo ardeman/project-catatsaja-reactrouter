@@ -108,6 +108,7 @@ export const List = () => {
           path={`/finances/${selectedFinance?.id}`}
           write={sharedFinance?.permissions?.write || []}
           read={sharedFinance?.permissions?.read || []}
+          invited={sharedFinance?.invites}
           handleShare={handleShare}
           handleUnshare={handleUnshare}
         />

@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Sharing is now an invitation: the other person sees it at the top of the app and accepts or declines, and nothing joins their lists until they accept. Everything already shared stays shared.',
+          id: 'Berbagi kini berupa undangan: orang yang diajak melihatnya di bagian atas aplikasi lalu menerima atau menolak, dan tidak ada yang masuk ke daftarnya sebelum diterima. Semua yang sudah dibagikan tetap dibagikan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Analysis by item: things you bought more than once, grouped by name even when written differently (telur, Telur 1kg, TELUR), with how often, the average price and whether the latest price went up or down.',
           id: 'Analisis per item: yang kamu beli lebih dari sekali, dikelompokkan menurut nama walau ditulis berbeda (telur, Telur 1kg, TELUR), lengkap dengan berapa kali, harga rata-rata, dan apakah harga terakhir naik atau turun.',
         },
