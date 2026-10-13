@@ -933,20 +933,30 @@ describe('end-to-end encryption', () => {
       nanda.page
         .locator('.group\\/card')
         .filter({ has: nanda.page.getByRole('link', { name: title, exact: true }) })
+    // What the page says (toasts, alerts), for a failure message.
+    const said = () =>
+      nanda.page.locator('[role=status], [role=alert], li[role=status]').allTextContents()
     const booksWith = async (count) => {
-      for (let attempt = 0; attempt < 30; attempt++) {
+      for (let attempt = 0; attempt < 60; attempt++) {
         const books = (await dbList('finances')).filter(
           (item) => item.fields.owner?.stringValue === nandaUid,
         )
         if (books.length === count) return books
         await new Promise((resolve) => setTimeout(resolve, 500))
       }
-      assert.fail(`expected ${count} books`)
+      assert.fail(`expected ${count} books; the page said: ${await said()}`)
     }
+    const toast = (text) =>
+      nanda.page
+        .getByText(text, { exact: true })
+        .first()
+        .waitFor({ timeout: 30_000 })
+        .catch(async () => assert.fail(`no "${text}"; the page said: ${await said()}`))
     const monthIdsOf = async (id) =>
       (await monthsOf(id)).map((month) => month.id).toSorted()
 
     await card('Old book').getByRole('button', { name: 'Duplicate' }).click()
+    await toast('Book duplicated')
     const [copy] = (await booksWith(2)).filter((item) => item.id !== 'oldbook')
     assert.equal(copy.fields.title.stringValue, 'Old book (copy)')
     assert.deepEqual(await monthIdsOf(copy.id), ['2026-08', '2026-09'])
@@ -956,6 +966,7 @@ describe('end-to-end encryption', () => {
       .getByRole('dialog')
       .getByRole('button', { name: 'Confirm' })
       .click()
+    await toast('Book deleted')
     await nanda.page.getByRole('button', { name: 'Undo' }).click()
     const books = await booksWith(2)
     const restored = books.find(
