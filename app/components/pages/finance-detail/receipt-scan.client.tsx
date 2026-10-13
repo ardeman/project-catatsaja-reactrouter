@@ -171,7 +171,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
       {receipt ? (
         <section
           aria-labelledby="receipt-review-title"
-          className="motion-enter glass-surface order-last grid basis-full gap-3 rounded-xl border p-3 sm:p-4"
+          className="motion-enter glass-surface glass-float order-last grid max-h-[calc(100dvh-18rem-var(--summary-height,0px))] basis-full gap-3 overflow-y-auto rounded-xl border p-3 shadow-lg sm:p-4 md:max-h-[calc(100dvh-14rem-var(--summary-height,0px))] [&_[role=combobox]]:bg-background [&_input]:bg-background [&_textarea]:bg-background"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2
@@ -357,7 +357,10 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
           role="status"
           className="order-last basis-full text-center text-xs text-muted-foreground"
         >
-          {t('finances.receipt.reading')}
+          {/* On a pill: the row floats over the entries. */}
+          <span className="rounded-full bg-background/90 px-3 py-1">
+            {t('finances.receipt.reading')}
+          </span>
         </p>
       )}
       <AiNotice {...notice} />

@@ -35,6 +35,7 @@ import { auth } from '~/lib/configs/firebase'
 import { fallbackCurrency } from '~/lib/constants/finance'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateFinance } from '~/lib/hooks/use-create-finance'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useUserData } from '~/lib/hooks/use-get-user'
@@ -163,6 +164,7 @@ export const Form = (properties: TFormProperties) => {
     formState: { isDirty },
   } = formMethods
   const watchTitle = watch('title')
+  useDocumentTitle(watchTitle || t('navigation.finances'))
   const book = watch('currency')
   const entries = watch('content')
   const accounts = watch('accounts')
@@ -571,7 +573,11 @@ export const Form = (properties: TFormProperties) => {
                   onDelete={handleDeleteEntry}
                 />
               ) : (
-                <div className="motion-fade flex flex-wrap gap-2">
+                <div
+                  // Floats under the book's totals, like the entry form, so
+                  // adding is always one tap away while scrolling.
+                  className="motion-fade sticky top-[calc(7.5rem+var(--summary-height,0px)+0.5rem)] z-20 flex flex-wrap gap-2 md:top-[calc(8.5rem+var(--summary-height,0px)+0.5rem)]"
+                >
                   <Button
                     type="button"
                     className="min-w-0 flex-1 gap-2"
