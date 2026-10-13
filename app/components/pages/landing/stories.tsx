@@ -10,49 +10,50 @@ import maya from './people/maya.svg'
 import rina from './people/rina.svg'
 import sari from './people/sari.svg'
 
-// The stories videos on YouTube, one clip per person and nothing twice: in
-// Indonesian each person's own Short; in English (no Shorts) only that
-// person's chapter of the full stories video. The full video and the teaser
-// Short repeat these clips, so they aren't embedded.
-const fullStoriesEn = 'KAJqhUYZLLQ'
+// The full stories video on YouTube, one per language; each person plays
+// their own chapter of it (times from the render's chapters, `meta.json`),
+// so both languages look the same. The Shorts repeat these clips, so they
+// aren't embedded.
+const fullStories = { en: 'KAJqhUYZLLQ', id: 'Cxjiuu2HNwU' }
 
 const stories = [
   {
     key: 'rina',
     faces: [rina],
-    id: '6WnquAC3i4A',
     en: { start: 0, end: 22 },
+    id: { start: 0, end: 23 },
   },
   {
     key: 'couple',
     faces: [sari, dimas],
-    id: 'Ybi5ddqUoVs',
     en: { start: 22, end: 39 },
+    id: { start: 23, end: 41 },
   },
   {
     key: 'adit',
     faces: [adit],
-    id: 'RFj6QfawltU',
     en: { start: 39, end: 54 },
+    id: { start: 41, end: 56 },
   },
   {
     key: 'maya',
     faces: [maya],
-    id: 'U7bUHHomRXg',
     en: { start: 54, end: 82 },
+    id: { start: 56, end: 86 },
   },
 ] as const
 
 type TStory = (typeof stories)[number]
 
 const embedUrl = (story: TStory, lang: 'en' | 'id') => {
-  const parameters = new URLSearchParams({ autoplay: '1', rel: '0', hl: lang })
-  if (lang === 'id') {
-    return `https://www.youtube-nocookie.com/embed/${story.id}?${parameters}`
-  }
-  parameters.set('start', String(story.en.start))
-  parameters.set('end', String(story.en.end))
-  return `https://www.youtube-nocookie.com/embed/${fullStoriesEn}?${parameters}`
+  const parameters = new URLSearchParams({
+    autoplay: '1',
+    rel: '0',
+    hl: lang,
+    start: String(story[lang].start),
+    end: String(story[lang].end),
+  })
+  return `https://www.youtube-nocookie.com/embed/${fullStories[lang]}?${parameters}`
 }
 
 // Nothing loads from YouTube until a story is chosen, as with the tour video.
@@ -141,10 +142,7 @@ export const LandingStories = () => {
       {playing && (
         <div
           ref={playerReference}
-          className={cn(
-            'glass-surface mx-auto mt-6 scroll-mt-24 overflow-hidden rounded-2xl border shadow-lg',
-            lang === 'id' ? 'aspect-[9/16] max-w-xs' : 'aspect-video max-w-4xl',
-          )}
+          className="glass-surface mx-auto mt-6 aspect-video max-w-4xl scroll-mt-24 overflow-hidden rounded-2xl border shadow-lg"
         >
           <iframe
             key={`${playing.key}-${lang}`}
