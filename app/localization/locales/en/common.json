@@ -542,6 +542,11 @@
       "add_one": "Add {{count}} entry",
       "add_other": "Add {{count}} entries"
     },
+    "capacity": {
+      "nearlyFull": "This book is {{percent}}% full. A book has room for a few thousand entries; start a new one, for example one per year, to keep adding.",
+      "full": "This book is full: it can't hold more entries. Start a new book to keep adding; you can still change or delete entries here.",
+      "noRoom": "There's no room in this book for these entries. Start a new book for them."
+    },
     "quickAdd": {
       "title": "Quick add",
       "label": "What did you pay or receive?",

@@ -30,6 +30,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'A finance book tells you when it is nearly full (it holds a few thousand entries) and stops taking new ones before it can’t be saved, so nothing you add is lost; start a new book, for example one per year, to keep going.',
+          id: 'Buku keuangan memberi tahu saat hampir penuh (muat beberapa ribu entri) dan berhenti menerima entri baru sebelum tidak bisa disimpan, jadi tidak ada yang hilang; buat buku baru, misalnya satu per tahun, untuk melanjutkan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'With end-to-end encryption, long lists keep up: when one item changes, only that item is unlocked again, not the whole list.',
           id: 'Dengan enkripsi end-to-end, daftar yang panjang tetap cepat: saat satu item berubah, hanya item itu yang dibuka lagi, bukan seluruh daftar.',
         },

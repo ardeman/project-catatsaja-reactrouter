@@ -17,7 +17,8 @@ export type TEntryFormProperties = {
   currencies: TCurrency[]
   // Past entries from every book, newest first, for category suggestions.
   history: TFinanceEntry[]
-  onSave: (entry: TFinanceEntry) => void
+  // False when the book has no room for it: the form stays open.
+  onSave: (entry: TFinanceEntry) => boolean
   onDelete: (id: string) => void
   // Where the unsaved new entry is kept (lib/utils/drafts); none, no draft.
   draftKey?: string
@@ -30,7 +31,8 @@ export type TReceiptScanProperties = {
   currencies: TCurrency[]
   // Past entries from every book, newest first, for category suggestions.
   history: TFinanceEntry[]
-  onAdd: (entries: TFinanceEntry[]) => void
+  // False when the book has no room for them: they stay to try again.
+  onAdd: (entries: TFinanceEntry[]) => boolean
   // Quick add's unsaved text (lib/utils/drafts); none, no draft.
   draftKey?: string
   isPrivate?: boolean

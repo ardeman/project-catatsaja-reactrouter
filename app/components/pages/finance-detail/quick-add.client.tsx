@@ -131,7 +131,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
     })
 
   const handleAdd = () => {
-    onAdd(chosen)
+    if (!onAdd(chosen)) return
     close()
   }
 

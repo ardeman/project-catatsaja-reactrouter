@@ -1,6 +1,7 @@
 import { Plus } from 'lucide-react'
 import {
   type CSSProperties,
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -32,7 +33,11 @@ import {
   TooltipTrigger,
 } from '~/components/ui/tooltip'
 import { auth } from '~/lib/configs/firebase'
-import { fallbackCurrency } from '~/lib/constants/finance'
+import {
+  bookFull,
+  bookNearlyFull,
+  fallbackCurrency,
+} from '~/lib/constants/finance'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateFinance } from '~/lib/hooks/use-create-finance'
 import { useDocumentTitle } from '~/lib/hooks/use-document-title'
@@ -42,6 +47,7 @@ import { useUserData } from '~/lib/hooks/use-get-user'
 import { useIsStuck } from '~/lib/hooks/use-is-stuck'
 import { useMoney } from '~/lib/hooks/use-money'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
+import { toast } from '~/lib/hooks/use-toast'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { useUpdateFinance } from '~/lib/hooks/use-update-finance'
@@ -50,7 +56,9 @@ import {
   TFinanceEntry,
   TFinanceForm,
 } from '~/lib/types/finance'
+import { maxDocumentBytes, storedSize } from '~/lib/utils/document-size'
 import { readDraft } from '~/lib/utils/drafts'
+import { canEncrypt, contentFields } from '~/lib/utils/encrypted-document'
 import {
   entryBookTotal,
   entryTotal,
@@ -294,6 +302,47 @@ export const Form = (properties: TFormProperties) => {
     value: current,
     stored,
   })
+  // How full the book is as stored, 0 to 1 (Firestore's 1 MiB per document):
+  // all its entries are in one document.
+  const fullnessOf = useCallback(
+    (values: TFinanceForm) =>
+      storedSize({
+        path: `finances/${finance?.id ?? 'x'.repeat(20)}`,
+        fields: {
+          owner: finance?.owner ?? '',
+          permissions: finance?.permissions,
+          invites: finance?.invites,
+          pinnedBy: finance?.pinnedBy,
+          archivedBy: finance?.archivedBy,
+          createdAt: finance?.createdAt,
+          updatedAt: finance?.updatedAt,
+          ...values,
+        },
+        contentFields: contentFields.finances,
+        isEncrypted: finance ? !!finance.isEncrypted : canEncrypt(),
+        readers: [
+          ...new Set([
+            ...(finance?.permissions?.read ?? [userData?.uid ?? '']),
+            ...(finance?.invites?.read ?? []),
+          ]),
+        ],
+      }) / maxDocumentBytes,
+    [finance, userData?.uid],
+  )
+  const fullness = useMemo(() => fullnessOf(current), [fullnessOf, current])
+  const isFull = fullness >= bookFull
+  // Entries are added only while the book stays under the limit; a change
+  // that doesn't make it bigger is always fine.
+  const hasRoomFor = (content: TFinanceEntry[]) => {
+    const next = fullnessOf({ ...getValues(), content })
+    if (next < bookFull || next <= fullness) return true
+    toast({
+      variant: 'destructive',
+      description: t('finances.capacity.noRoom'),
+    })
+    return false
+  }
+
   const restore = (next?: TFinanceForm) => {
     if (!next) return
     setEditing(undefined)
@@ -323,20 +372,20 @@ export const Form = (properties: TFormProperties) => {
   const handleSaveEntry = (entry: TFinanceEntry) => {
     const current = getValues('content')
     const exists = current.some((item) => item.id === entry.id)
-    setValue(
-      'content',
-      exists
-        ? current.map((item) => (item.id === entry.id ? entry : item))
-        : [...current, entry],
-      { shouldDirty: true },
-    )
+    const next = exists
+      ? current.map((item) => (item.id === entry.id ? entry : item))
+      : [...current, entry]
+    if (!hasRoomFor(next)) return false
+    setValue('content', next, { shouldDirty: true })
+    return true
   }
 
   // Entries read from a receipt, after the person checked them.
   const handleAddEntries = (added: TFinanceEntry[]) => {
-    setValue('content', [...getValues('content'), ...added], {
-      shouldDirty: true,
-    })
+    const next = [...getValues('content'), ...added]
+    if (!hasRoomFor(next)) return false
+    setValue('content', next, { shouldDirty: true })
+    return true
   }
 
   const handleDeleteEntry = (id: string) => {
@@ -576,7 +625,20 @@ export const Form = (properties: TFormProperties) => {
           />
         ) : (
           <>
+            {!isReadOnly && fullness >= bookNearlyFull && (
+              <p
+                role="status"
+                className="rounded-xl border border-dashed px-4 py-3 text-sm text-muted-foreground"
+              >
+                {isFull
+                  ? t('finances.capacity.full')
+                  : t('finances.capacity.nearlyFull', {
+                      percent: Math.floor(fullness * 100),
+                    })}
+              </p>
+            )}
             {!isReadOnly &&
+              !isFull &&
               (isEntryOpen ? (
                 <EntryForm
                   onClose={closeEntry}

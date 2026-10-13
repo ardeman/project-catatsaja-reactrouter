@@ -542,6 +542,11 @@
       "add_one": "Tambah {{count}} entri",
       "add_other": "Tambah {{count}} entri"
     },
+    "capacity": {
+      "nearlyFull": "Buku ini sudah {{percent}}% penuh. Satu buku muat beberapa ribu entri; buat buku baru, misalnya satu per tahun, untuk terus menambah.",
+      "full": "Buku ini sudah penuh: tidak bisa menampung entri lagi. Buat buku baru untuk terus menambah; entri di sini masih bisa diubah atau dihapus.",
+      "noRoom": "Buku ini tidak punya ruang lagi untuk entri ini. Buat buku baru untuknya."
+    },
     "quickAdd": {
       "title": "Tambah cepat",
       "label": "Apa yang kamu bayar atau terima?",
