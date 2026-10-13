@@ -11,20 +11,57 @@ type TProperties = {
   expense: number
   balance: number
   accounts: TFinanceAccount[]
+  // Scrolled past: the totals on one or two lines, with the difference from
+  // the accounts (which have scrolled away), so the balance can be checked
+  // while reading or adding entries.
+  isCompact: boolean
 }
 
-// The book's totals on one or two lines, at the top of the floating "Add
-// entry" card, so the balance can be checked against the accounts while
-// entering. The accounts themselves stay in the summary card.
-export const FloatingSummary = (properties: TProperties) => {
-  const { book, income, expense, balance, accounts } = properties
+// The book's totals, at the top of the summary card.
+export const Summary = (properties: TProperties) => {
+  const { book, income, expense, balance, accounts, isCompact } = properties
   const { t } = useTranslation()
   const money = useMoney()
+
+  if (!isCompact)
+    return (
+      <dl className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-3">
+        <div className="col-span-2 sm:col-span-1">
+          <dt className="text-xs text-muted-foreground">
+            {t('finances.summary.balance')}
+          </dt>
+          <dd
+            className={cn(
+              'text-lg font-semibold tabular-nums',
+              balance < 0 && 'text-destructive-text',
+            )}
+          >
+            {money(balance, book, balance < 0)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs text-muted-foreground">
+            {t('finances.summary.income')}
+          </dt>
+          <dd className="font-medium text-income tabular-nums">
+            {money(income, book)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs text-muted-foreground">
+            {t('finances.summary.expense')}
+          </dt>
+          <dd className="font-medium text-expense tabular-nums">
+            {money(expense, book)}
+          </dd>
+        </div>
+      </dl>
+    )
+
   const difference =
     accounts.length > 0
       ? accountsDifference(accounts, balance, book.maximumFractionDigits)
       : undefined
-
   const items = [
     {
       label: t('finances.summary.balance'),
@@ -58,7 +95,7 @@ export const FloatingSummary = (properties: TProperties) => {
   return (
     <dl
       className={cn(
-        'mb-2 grid grid-cols-2 gap-x-4 gap-y-0.5 border-b pb-2',
+        'grid grid-cols-2 gap-x-4 gap-y-0.5',
         items.length === 4 ? 'sm:grid-cols-4' : 'sm:grid-cols-3',
       )}
     >

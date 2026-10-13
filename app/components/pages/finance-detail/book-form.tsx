@@ -1,5 +1,12 @@
 import { Plus } from 'lucide-react'
-import { useId, useMemo, useRef, useState } from 'react'
+import {
+  type CSSProperties,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
@@ -31,6 +38,7 @@ import { useCreateFinance } from '~/lib/hooks/use-create-finance'
 import { useGetCurrencies } from '~/lib/hooks/use-get-currencies'
 import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useIsStuck } from '~/lib/hooks/use-is-stuck'
 import { useMoney } from '~/lib/hooks/use-money'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
@@ -60,9 +68,9 @@ import { Accounts } from './accounts'
 import { AddCurrency } from './add-currency'
 import { Analysis } from './analysis'
 import { EntryForm } from './entry-form.client'
-import { FloatingSummary } from './floating-summary'
 import { QuickAdd } from './quick-add.client'
 import { ReceiptScan } from './receipt-scan.client'
+import { Summary } from './summary'
 import { TFormProperties } from './type'
 
 export const Form = (properties: TFormProperties) => {
@@ -159,6 +167,24 @@ export const Form = (properties: TFormProperties) => {
   const entries = watch('content')
   const accounts = watch('accounts')
   const isCurrencyLocked = !isReadOnly && entries.length > 0
+  // Read-only people see accounts only when there are some.
+  const hasAccounts = !isReadOnly || (accounts ?? []).length > 0
+  const {
+    reference: summaryReference,
+    sentinel: summarySentinel,
+    isStuck: isSummaryStuck,
+  } = useIsStuck<HTMLDivElement>()
+  // The floating totals' height, so the "Add entry" card floats below them.
+  const [summaryHeight, setSummaryHeight] = useState(0)
+  useEffect(() => {
+    const element = summaryReference.current
+    if (!element) return
+    const observer = new ResizeObserver(() =>
+      setSummaryHeight(element.offsetHeight),
+    )
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [summaryReference])
   const { income, expense, balance } = useMemo(
     () => summarize(entries),
     [entries],
@@ -335,7 +361,10 @@ export const Form = (properties: TFormProperties) => {
 
   return (
     <FormProvider {...formMethods}>
-      <div className="group/form is-shown mx-auto w-full max-w-3xl space-y-6">
+      <div
+        className="group/form is-shown mx-auto w-full max-w-3xl space-y-6"
+        style={{ '--summary-height': `${summaryHeight}px` } as CSSProperties}
+      >
         <div className="sticky top-20 z-40 flex justify-center md:top-24">
           {finance ? (
             <Action
@@ -386,72 +415,76 @@ export const Form = (properties: TFormProperties) => {
             />
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <span>{t('finances.form.bookCurrency.label')}</span>
-              <TooltipProvider>
-                <Tooltip
-                  open={isCurrencyLocked && isLockHintOpen}
-                  onOpenChange={setIsLockHintOpen}
-                >
-                  <TooltipTrigger asChild>
-                    {/* A disabled control gets no pointer events, so the
-                        wrapper shows why it is locked, on hover or tap. */}
-                    <span
-                      className="inline-flex rounded-md"
-                      onClick={(event) => {
-                        if (!isCurrencyLocked) return
-                        event.preventDefault()
-                        setIsLockHintOpen(true)
-                      }}
-                    >
-                      <Select
-                        value={book.code}
-                        disabled={isReadOnly || isCurrencyLocked}
-                        onValueChange={(code) => {
-                          if (code === '__add-currency') {
-                            setIsAddingCurrency(true)
-                            return
-                          }
-                          const next = bookCurrencies.find(
-                            (option) => option.code === code,
-                          )
-                          if (next)
-                            setValue('currency', next, { shouldDirty: true })
+              {isReadOnly ? (
+                // Can't be changed: shown as text, not a greyed-out list.
+                <span className="font-medium text-foreground">
+                  {book.code} ({book.symbol})
+                </span>
+              ) : isCurrencyLocked ? (
+                <TooltipProvider>
+                  <Tooltip
+                    open={isLockHintOpen}
+                    onOpenChange={setIsLockHintOpen}
+                  >
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        className="cursor-help font-medium text-foreground underline decoration-dotted underline-offset-4"
+                        // Opens on tap as well as on hover and focus.
+                        onClick={(event) => {
+                          event.preventDefault()
+                          setIsLockHintOpen(true)
                         }}
                       >
-                        <SelectTrigger
-                          aria-label={t('finances.form.bookCurrency.label')}
-                          className="h-8 w-fit gap-2 disabled:pointer-events-none"
-                        >
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {bookCurrencies.map((option) => (
-                            <SelectItem
-                              key={option.code}
-                              value={option.code}
-                            >
-                              {option.code} ({option.symbol})
-                            </SelectItem>
-                          ))}
-                          <SelectItem value="__add-currency">
-                            <span className="flex items-center gap-2">
-                              <Plus className="size-4" />
-                              {t('finances.addCurrency.option')}
-                            </span>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {isCurrencyLocked && (
+                        {book.code} ({book.symbol})
                         <span className="sr-only">
                           {t('finances.form.bookCurrency.locked')}
                         </span>
-                      )}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {t('finances.form.bookCurrency.locked')}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {t('finances.form.bookCurrency.locked')}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <Select
+                  value={book.code}
+                  onValueChange={(code) => {
+                    if (code === '__add-currency') {
+                      setIsAddingCurrency(true)
+                      return
+                    }
+                    const next = bookCurrencies.find(
+                      (option) => option.code === code,
+                    )
+                    if (next) setValue('currency', next, { shouldDirty: true })
+                  }}
+                >
+                  <SelectTrigger
+                    aria-label={t('finances.form.bookCurrency.label')}
+                    className="h-8 w-fit gap-2"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {bookCurrencies.map((option) => (
+                      <SelectItem
+                        key={option.code}
+                        value={option.code}
+                      >
+                        {option.code} ({option.symbol})
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="__add-currency">
+                      <span className="flex items-center gap-2">
+                        <Plus className="size-4" />
+                        {t('finances.addCurrency.option')}
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
               {currencies.length === 0 && !isReadOnly && (
                 <Link
                   to="/settings/currency"
@@ -462,47 +495,49 @@ export const Form = (properties: TFormProperties) => {
               )}
             </div>
           </div>
+        </form>
 
-          <div className="glass-surface grid gap-3 rounded-xl border p-4">
-            <dl className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-3">
-              <div className="col-span-2 sm:col-span-1">
-                <dt className="text-xs text-muted-foreground">
-                  {t('finances.summary.balance')}
-                </dt>
-                <dd
-                  className={cn(
-                    'text-lg font-semibold tabular-nums',
-                    balance < 0 && 'text-destructive-text',
-                  )}
-                >
-                  {money(balance, book, balance < 0)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs text-muted-foreground">
-                  {t('finances.summary.income')}
-                </dt>
-                <dd className="font-medium text-income tabular-nums">
-                  {money(income, book)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs text-muted-foreground">
-                  {t('finances.summary.expense')}
-                </dt>
-                <dd className="font-medium text-expense tabular-nums">
-                  {money(expense, book)}
-                </dd>
-              </div>
-            </dl>
-
+        {/* The totals stay under the toolbar while scrolling, compact; the
+            accounts below them scroll away. At rest the two look like one
+            card. `!mb-0` undoes the stack's spacing between the parts. */}
+        <div
+          ref={summarySentinel}
+          aria-hidden="true"
+          className="!mb-0 h-0"
+        />
+        <div
+          ref={summaryReference}
+          className={cn(
+            'glass-surface sticky top-[7.5rem] z-30 transition-[padding,border-radius] duration-200 motion-reduce:transition-none md:top-[8.5rem]',
+            isSummaryStuck
+              ? 'glass-float rounded-xl border px-3 py-2 shadow-lg sm:px-4'
+              : hasAccounts
+                ? '!mb-0 rounded-t-xl border border-b-0 bg-none px-4 pt-4 pb-3 [clip-path:inset(-2rem_-2rem_0_-2rem)]'
+                : 'rounded-xl border p-4',
+          )}
+        >
+          <Summary
+            book={book}
+            income={income}
+            expense={expense}
+            balance={balance}
+            accounts={accounts ?? []}
+            isCompact={isSummaryStuck}
+          />
+        </div>
+        {hasAccounts && (
+          <div
+            // The shadow is cut at the top, so the join with the totals
+            // doesn't show.
+            className="glass-surface rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)]"
+          >
             <Accounts
               book={book}
               balance={balance}
               isReadOnly={isReadOnly}
             />
           </div>
-        </form>
+        )}
 
         {finance && (
           <div className="flex justify-center">
@@ -534,15 +569,6 @@ export const Form = (properties: TFormProperties) => {
                   history={history}
                   onSave={handleSaveEntry}
                   onDelete={handleDeleteEntry}
-                  summary={
-                    <FloatingSummary
-                      book={book}
-                      income={income}
-                      expense={expense}
-                      balance={balance}
-                      accounts={accounts ?? []}
-                    />
-                  }
                 />
               ) : (
                 <div className="motion-fade flex flex-wrap gap-2">

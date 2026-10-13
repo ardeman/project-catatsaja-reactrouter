@@ -19,8 +19,6 @@ export type TEntryFormProperties = {
   history: TFinanceEntry[]
   onSave: (entry: TFinanceEntry) => void
   onDelete: (id: string) => void
-  // Shown at the top of the card while adding (the book's totals).
-  summary?: React.ReactNode
 }
 
 export type TReceiptScanProperties = {

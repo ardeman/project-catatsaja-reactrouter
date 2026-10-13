@@ -58,16 +58,8 @@ const toFinanceCurrency = (
 })
 
 export const EntryForm = (properties: TEntryFormProperties) => {
-  const {
-    onClose,
-    entry,
-    book,
-    currencies,
-    history,
-    onSave,
-    onDelete,
-    summary,
-  } = properties
+  const { onClose, entry, book, currencies, history, onSave, onDelete } =
+    properties
   const { t, i18n } = useTranslation(['common', 'zod'])
   const { data: userData } = useUserData()
   const isEditing = !!entry
@@ -281,12 +273,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
         'motion-enter [&_[role=combobox]]:h-8 [&_button[aria-haspopup=dialog]]:h-8 [&_input]:h-8 [&_label]:block [&_label]:text-xs [&_label]:leading-tight',
         isEditing
           ? 'scroll-mt-36 p-3 sm:p-4'
-          : // Adding floats under the book's toolbar, compact and see-through,
+          : // Adding floats under the book's totals, compact and see-through,
             // so the entries scrolling under it can be checked while typing.
-            'glass-surface glass-float sticky top-[7.5rem] z-30 max-h-[calc(100dvh-14rem)] scroll-mt-[7.5rem] overflow-y-auto rounded-xl border p-2.5 shadow-lg sm:p-3 md:top-[8.5rem] md:max-h-[calc(100dvh-10rem)] md:scroll-mt-[8.5rem] [&_[role=combobox]]:bg-background [&_input]:bg-background',
+            'glass-surface glass-float sticky top-[calc(7.5rem+var(--summary-height,0px)+0.5rem)] z-20 max-h-[calc(100dvh-14.5rem-var(--summary-height,0px))] scroll-mt-[calc(7.5rem+var(--summary-height,0px)+0.5rem)] overflow-y-auto rounded-xl border p-2.5 shadow-lg sm:p-3 md:top-[calc(8.5rem+var(--summary-height,0px)+0.5rem)] md:max-h-[calc(100dvh-10.5rem-var(--summary-height,0px))] md:scroll-mt-[calc(8.5rem+var(--summary-height,0px)+0.5rem)] [&_[role=combobox]]:bg-background [&_input]:bg-background',
       )}
     >
-      {!isEditing && summary}
       <div
         className={cn(
           'flex items-center justify-between gap-2',

@@ -23,8 +23,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'Adding entries to a book: the form stays at the top as you scroll, more compact and slightly see-through, with the balance, income, expenses and the difference from your accounts above it, so you can check the entries and whether the book matches while you type.',
-          id: 'Menambah entri di buku: formulirnya tetap di atas saat kamu menggulir, lebih ringkas dan sedikit tembus pandang, dengan saldo, pemasukan, pengeluaran, dan selisih dengan akunmu di atasnya, jadi kamu bisa memeriksa entri dan apakah bukunya sudah cocok sambil mengetik.',
+          en: 'In a book, the balance, income, expenses and the difference from your accounts stay at the top in a compact bar as you scroll. The form for adding entries floats below it, more compact and slightly see-through, so you can check the entries and whether the book matches while you type.',
+          id: 'Di buku, saldo, pemasukan, pengeluaran, dan selisih dengan akunmu tetap di atas dalam bilah ringkas saat kamu menggulir. Formulir tambah entri melayang di bawahnya, lebih ringkas dan sedikit tembus pandang, jadi kamu bisa memeriksa entri dan apakah bukunya sudah cocok sambil mengetik.',
         },
       },
       {
@@ -60,6 +60,13 @@ export const releases: TRelease[] = [
         text: {
           en: 'In a book, Quick add stays next to Add entry while a receipt is being read or checked.',
           id: 'Di buku, Tambah cepat tetap di samping Tambah entri saat struk sedang dibaca atau diperiksa.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'A book’s currency is easy to read again when it can’t be changed: it shows as text, and tapping it says why.',
+          id: 'Mata uang buku kembali mudah dibaca saat tidak bisa diubah: ditampilkan sebagai teks, dan saat diketuk muncul alasannya.',
         },
       },
     ],
