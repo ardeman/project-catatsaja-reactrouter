@@ -15,6 +15,19 @@ const listeners = new Set<() => void>()
 // Item keys and their decrypted content, by `collection/id`.
 export const contentKeys = new Map<string, CryptoKey>()
 export const plainContent = new Map<string, Record<string, unknown>>()
+// The last stored version of each item that was decrypted, by `collection/id`:
+// its blob's IV (new on every write) and this person's sealed key. A list
+// update re-reads every item, so unchanged ones are taken from here instead
+// of being decrypted again.
+export const decrypted = new Map<
+  string,
+  {
+    iv: string
+    wrapped: string
+    contentKey: CryptoKey
+    plain: Record<string, unknown>
+  }
+>()
 
 const setState = (next: TState) => {
   session.state = next
@@ -112,6 +125,7 @@ export const lockSession = async () => {
   session.publicKey = undefined
   contentKeys.clear()
   plainContent.clear()
+  decrypted.clear()
   if (uid) {
     try {
       await withStore('readwrite', (store) => store.delete(uid))

@@ -9,6 +9,7 @@ import {
 } from './crypto'
 import {
   contentKeys,
+  decrypted,
   getPrivateKey,
   getPublicKey,
   plainContent,
@@ -80,12 +81,18 @@ export const decodeDocument = async (
   const wrapped = (data.keys as Record<string, string> | undefined)?.[uid]
   if (!privateKey || !wrapped) return
   const key = cacheKey(collection, id)
+  const encrypted = data.encrypted as TEncrypted
   try {
-    const contentKey = await unwrapContentKey(wrapped, privateKey)
-    const plain = await decryptJson<TData>(
-      data.encrypted as TEncrypted,
-      contentKey,
-    )
+    const cached = decrypted.get(key)
+    const isUnchanged =
+      cached?.iv === encrypted.iv && cached.wrapped === wrapped
+    const contentKey = isUnchanged
+      ? cached.contentKey
+      : await unwrapContentKey(wrapped, privateKey)
+    const plain = isUnchanged
+      ? cached.plain
+      : await decryptJson<TData>(encrypted, contentKey)
+    decrypted.set(key, { iv: encrypted.iv, wrapped, contentKey, plain })
     contentKeys.set(key, contentKey)
     plainContent.set(key, plain)
     const { encrypted: _encrypted, keys: _keys, ...rest } = data
@@ -200,4 +207,5 @@ export const plainOf = (collection: TCollection, id: string) => {
 export const forget = (collection: TCollection, id: string) => {
   contentKeys.delete(cacheKey(collection, id))
   plainContent.delete(cacheKey(collection, id))
+  decrypted.delete(cacheKey(collection, id))
 }
