@@ -220,3 +220,14 @@ export const acceptInvitation = async (page, title) => {
     .click({ timeout: 30_000 })
   await page.waitForTimeout(2000)
 }
+
+// A new account going without encryption: the setup screen covers /notes
+// (where sign-up lands), so wait until it is gone, not for the address.
+export const skipEncryptionSetup = async (page) => {
+  const setup = page.getByText('Protect your data')
+  await setup.waitFor({ timeout: 30_000 })
+  await page
+    .getByRole('button', { name: 'Continue without encryption' })
+    .click()
+  await setup.waitFor({ state: 'hidden', timeout: 30_000 })
+}

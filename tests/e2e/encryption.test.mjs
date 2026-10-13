@@ -24,6 +24,7 @@ import {
   shareWith,
   signIn,
   signInAndUnlock,
+  skipEncryptionSetup,
   signUp,
   startApp,
   stopApp,
@@ -492,11 +493,7 @@ describe('end-to-end encryption', () => {
   test('a new account can go without encryption', async () => {
     const { page } = await newDevice(browser)
     await signUp(page, 'Gita', 'gita@example.com')
-    await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
-    await page
-      .getByRole('button', { name: 'Continue without encryption' })
-      .click()
-    await page.getByText('Protect your data').waitFor({ state: 'hidden' })
+    await skipEncryptionSetup(page)
     const gitaUid = await uidOf('gita@example.com')
     const profile = await dbGet(`users/${gitaUid}`)
     assert.equal(profile.encryptionRequired?.booleanValue, false)
@@ -515,19 +512,12 @@ describe('end-to-end encryption', () => {
   })
 
   test('the share dialog suggests people already shared with', async () => {
-    const skipSetup = async (page) => {
-      await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
-      await page
-        .getByRole('button', { name: 'Continue without encryption' })
-        .click()
-      await page.waitForURL(/\/notes/, { timeout: 30_000 })
-    }
     const eko = await newDevice(browser)
     await signUp(eko.page, 'Eko', 'eko@example.com')
-    await skipSetup(eko.page)
+    await skipEncryptionSetup(eko.page)
     const dewi = await newDevice(browser)
     await signUp(dewi.page, 'Dewi', 'dewi@example.com')
-    await skipSetup(dewi.page)
+    await skipEncryptionSetup(dewi.page)
 
     await createNote(dewi.page, 'Dewi first note')
     await shareWith(dewi.page, 'eko@example.com', 'Read only')
@@ -553,19 +543,12 @@ describe('end-to-end encryption', () => {
   })
 
   test('sharing is an invitation: nothing is shared until it is accepted', async () => {
-    const skipSetup = async (page) => {
-      await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
-      await page
-        .getByRole('button', { name: 'Continue without encryption' })
-        .click()
-      await page.waitForURL(/\/notes/, { timeout: 30_000 })
-    }
     const gani = await newDevice(browser)
     await signUp(gani.page, 'Gani', 'gani@example.com')
-    await skipSetup(gani.page)
+    await skipEncryptionSetup(gani.page)
     const fina = await newDevice(browser)
     await signUp(fina.page, 'Fina', 'fina@example.com')
-    await skipSetup(fina.page)
+    await skipEncryptionSetup(fina.page)
     const ganiUid = await uidOf('gani@example.com')
 
     const plan = await createNote(fina.page, 'Fina plan')
@@ -624,19 +607,12 @@ describe('end-to-end encryption', () => {
   })
 
   test('archiving tidies only your own list', async () => {
-    const skipSetup = async (page) => {
-      await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
-      await page
-        .getByRole('button', { name: 'Continue without encryption' })
-        .click()
-      await page.waitForURL(/\/notes/, { timeout: 30_000 })
-    }
     const indra = await newDevice(browser)
     await signUp(indra.page, 'Indra', 'indra@example.com')
-    await skipSetup(indra.page)
+    await skipEncryptionSetup(indra.page)
     const hana = await newDevice(browser)
     await signUp(hana.page, 'Hana', 'hana@example.com')
-    await skipSetup(hana.page)
+    await skipEncryptionSetup(hana.page)
     const hanaUid = await uidOf('hana@example.com')
 
     const id = await createNote(hana.page, 'Hana old idea')
@@ -690,19 +666,12 @@ describe('end-to-end encryption', () => {
   })
 
   test('blocking stops invitations until unblocked', async () => {
-    const skipSetup = async (page) => {
-      await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
-      await page
-        .getByRole('button', { name: 'Continue without encryption' })
-        .click()
-      await page.waitForURL(/\/notes/, { timeout: 30_000 })
-    }
     const jaya = await newDevice(browser)
     await signUp(jaya.page, 'Jaya', 'jaya@example.com')
-    await skipSetup(jaya.page)
+    await skipEncryptionSetup(jaya.page)
     const kiki = await newDevice(browser)
     await signUp(kiki.page, 'Kiki', 'kiki@example.com')
-    await skipSetup(kiki.page)
+    await skipEncryptionSetup(kiki.page)
     const jayaUid = await uidOf('jaya@example.com')
     const kikiUid = await uidOf('kiki@example.com')
 
