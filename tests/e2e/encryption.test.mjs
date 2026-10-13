@@ -376,7 +376,12 @@ describe('end-to-end encryption', () => {
       .getByRole('button', { name: /Delete|Yes|Confirm/ })
       .last()
       .click()
-    await page.getByRole('button', { name: 'Undo' }).click({ timeout: 15_000 })
+    // The toast's Undo: the note's own Undo can still be on screen until
+    // the page leaves the deleted note.
+    await page
+      .getByRole('region', { name: /Notifications/ })
+      .getByRole('button', { name: 'Undo' })
+      .click({ timeout: 15_000 })
     await page.waitForTimeout(3000)
     const mine = (await dbList('notes')).filter(
       (note) => note.fields.owner?.stringValue === anaUid,
