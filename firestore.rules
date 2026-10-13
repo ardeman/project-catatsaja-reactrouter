@@ -219,11 +219,83 @@ service cloud.firestore {
       allow delete: if isOwner(resource.data.owner);
     }
 
+    // A book's entries are kept in it (`content`, books from before) or, once
+    // moved (`entryStore` 2), in one document per month under it. A moved
+    // book never takes `content` back: entries written there would be lost
+    // from the months.
+    function isEntryStoreKept() {
+      let after = request.resource.data;
+      return (!('entryStore' in resource.data) || 'entryStore' in after)
+        && (
+          !('entryStore' in after)
+            || (after.entryStore == 2 && !('content' in after))
+        );
+    }
+
+    function isValidNewBook() {
+      return !('entryStore' in request.resource.data)
+        || (
+          request.resource.data.entryStore == 2
+            && !('content' in request.resource.data)
+        );
+    }
+
+    // A writer moving a book's entries into months: in the same write the
+    // months are created, `content` goes (into `encrypted` on an encrypted
+    // book) and the book is marked moved. Once only.
+    function isMoveUpdate() {
+      return canWrite(resource.data.permissions.write)
+        && !('entryStore' in resource.data)
+        && request.resource.data.get('entryStore', 0) == 2
+        && changedKeys().hasOnly(['entryStore', 'content', 'summary', 'encrypted']);
+    }
+
     match /finances/{financeId} {
       allow read: if canReadShared();
-      allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['title', 'content', 'currency', 'accounts', 'summary', 'encrypted']);
+      allow create: if isValidNewShared() && isValidNewBook();
+      allow update: if isEntryStoreKept()
+        && (
+          canUpdateShared(['title', 'content', 'currency', 'accounts', 'summary', 'encrypted'])
+            || isMoveUpdate()
+        );
       allow delete: if isOwner(resource.data.owner);
+
+      // A month of a moved book's entries. Read by its readers (not by people
+      // only invited) and written by its writers, in the book's mode: plain
+      // (`month` "YYYY-MM", the id, and its `content`) or encrypted (one
+      // `encrypted` blob; the id is derived from the book's key, so the month
+      // isn't readable). The book is checked as it is after the write, so a
+      // book and its months can change together (moving, encrypting,
+      // re-keying).
+      match /months/{monthId} {
+        function book() {
+          return get(/databases/$(database)/documents/finances/$(financeId)).data;
+        }
+
+        function bookAfter() {
+          return getAfter(/databases/$(database)/documents/finances/$(financeId)).data;
+        }
+
+        function isValidMonth(book) {
+          let data = request.resource.data;
+          return book.get('entryStore', 0) == 2
+            && (
+              'encrypted' in book
+                ? data.keys().hasOnly(['encrypted'])
+                  && data.encrypted.keys().hasOnly(['v', 'iv', 'ct'])
+                  && data.encrypted.ct is string
+                : data.keys().hasOnly(['month', 'content'])
+                  && data.month == monthId
+                  && monthId.matches('^[0-9]{4}-(0[1-9]|1[0-2])$')
+                  && data.content is list
+            );
+        }
+
+        allow read: if canRead(book().permissions.read);
+        allow create, update: if canWrite(bookAfter().permissions.write)
+          && isValidMonth(bookAfter());
+        allow delete: if canWrite(book().permissions.write);
+      }
     }
 
     // Health logs: one person's measurements, shared like the others.

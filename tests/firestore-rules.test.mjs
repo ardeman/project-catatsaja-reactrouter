@@ -655,3 +655,178 @@ for (const [collection, content] of Object.entries(collections)) {
     })
   })
 }
+
+// A book's entries moved into month documents (`finances/{id}/months`).
+describe('finance months', () => {
+  const book = 'finances/book'
+  const people = {
+    owner: OWNER,
+    permissions: { read: [OWNER, WRITER, READER], write: [OWNER, WRITER] },
+    invites: { read: [STRANGER], write: [] },
+    pinnedBy: [],
+  }
+  const plainBook = {
+    ...people,
+    title: 'A book',
+    currency: {},
+    accounts: [],
+    summary: {},
+  }
+  const movedPlain = { ...plainBook, entryStore: 2 }
+  const encryptedBook = {
+    ...people,
+    encrypted: { v: 1, iv: 'iv', ct: 'ct' },
+    keys: { [OWNER]: 'k1', [WRITER]: 'k2', [READER]: 'k3' },
+  }
+  const movedEncrypted = { ...encryptedBook, entryStore: 2 }
+  const month = { month: '2026-10', content: [{ id: 'e1' }] }
+  const sealedMonth = { encrypted: { v: 1, iv: 'iv', ct: 'ct' } }
+
+  test('readers read the months; strangers and people only invited do not', async () => {
+    await seed(book, movedPlain)
+    await seed(`${book}/months/2026-10`, month)
+    await assertSucceeds(as(READER).doc(`${book}/months/2026-10`).get())
+    await assertSucceeds(as(READER).collection(`${book}/months`).get())
+    await assertFails(as(STRANGER).doc(`${book}/months/2026-10`).get())
+    await assertFails(as(STRANGER).collection(`${book}/months`).get())
+  })
+
+  test('writers write and delete months of a moved book; readers cannot', async () => {
+    await seed(book, movedPlain)
+    const path = `${book}/months/2026-10`
+    await assertSucceeds(as(WRITER).doc(path).set(month))
+    await assertSucceeds(
+      as(OWNER)
+        .doc(path)
+        .set({ ...month, content: [] }),
+    )
+    await assertFails(as(READER).doc(path).set(month))
+    await assertFails(as(READER).doc(path).delete())
+    await assertSucceeds(as(WRITER).doc(path).delete())
+  })
+
+  test('a month matches its book: plain month ids, encrypted blobs only', async () => {
+    await seed(book, movedPlain)
+    await assertFails(as(WRITER).doc(`${book}/months/2026-11`).set(month))
+    await assertFails(
+      as(WRITER)
+        .doc(`${book}/months/2026-13`)
+        .set({ ...month, month: '2026-13' }),
+    )
+    await assertFails(
+      as(WRITER)
+        .doc(`${book}/months/2026-10`)
+        .set({ ...month, extra: true }),
+    )
+    await assertFails(as(WRITER).doc(`${book}/months/x1`).set(sealedMonth))
+
+    await seed(book, movedEncrypted)
+    await assertSucceeds(as(WRITER).doc(`${book}/months/x1`).set(sealedMonth))
+    await assertFails(as(WRITER).doc(`${book}/months/2026-10`).set(month))
+    await assertFails(
+      as(WRITER)
+        .doc(`${book}/months/x1`)
+        .set({ ...sealedMonth, month: '2026-10' }),
+    )
+  })
+
+  test('no months for a book whose entries have not moved', async () => {
+    await seed(book, { ...plainBook, content: [] })
+    await assertFails(as(OWNER).doc(`${book}/months/2026-10`).set(month))
+  })
+
+  test('a writer moves a book into months in one write, once', async () => {
+    await seed(book, { ...plainBook, content: [{ id: 'e1' }] })
+    const database = as(WRITER)
+    const batch = database.batch()
+    batch.set(database.doc(book), movedPlain)
+    batch.set(database.doc(`${book}/months/2026-10`), month)
+    await assertSucceeds(batch.commit())
+
+    // Moved: `content` never comes back, and the mark stays.
+    await assertFails(
+      as(WRITER)
+        .doc(book)
+        .update({ content: [] }),
+    )
+    await assertFails(
+      as(OWNER)
+        .doc(book)
+        .update({ content: [] }),
+    )
+    await assertFails(as(OWNER).doc(book).set(plainBook))
+  })
+
+  test('moving keeps nothing behind and changes nothing else', async () => {
+    await seed(book, { ...plainBook, content: [{ id: 'e1' }] })
+    await assertFails(
+      as(WRITER)
+        .doc(book)
+        .update({ entryStore: 2 }),
+    )
+    await assertFails(
+      as(WRITER)
+        .doc(book)
+        .set({ ...movedPlain, title: 'Renamed', updatedAt: new Date() }),
+    )
+    await assertFails(
+      as(READER)
+        .doc(book)
+        .set(movedPlain),
+    )
+  })
+
+  test('an encrypted book moves with its blob rewritten', async () => {
+    await seed(book, encryptedBook)
+    const database = as(WRITER)
+    const batch = database.batch()
+    batch.set(database.doc(book), {
+      ...movedEncrypted,
+      encrypted: { v: 1, iv: 'iv2', ct: 'ct2' },
+    })
+    batch.set(database.doc(`${book}/months/x1`), sealedMonth)
+    await assertSucceeds(batch.commit())
+  })
+
+  test('a new book may start moved, with its months, but not with content', async () => {
+    const created = {
+      ...movedPlain,
+      permissions: { read: [OWNER], write: [OWNER] },
+      invites: undefined,
+    }
+    delete created.invites
+    const database = as(OWNER)
+    const batch = database.batch()
+    batch.set(database.doc('finances/new'), created)
+    batch.set(database.doc('finances/new/months/2026-10'), month)
+    await assertSucceeds(batch.commit())
+    await assertFails(
+      as(OWNER)
+        .doc('finances/other')
+        .set({ ...created, content: [] }),
+    )
+  })
+
+  test('encrypting a moved book rewrites its months in the same write', async () => {
+    await seed(book, movedPlain)
+    await seed(`${book}/months/2026-10`, month)
+    const database = as(OWNER)
+    const batch = database.batch()
+    batch.set(database.doc(book), movedEncrypted)
+    batch.delete(database.doc(`${book}/months/2026-10`))
+    batch.set(database.doc(`${book}/months/x1`), sealedMonth)
+    await assertSucceeds(batch.commit())
+    // A plain month can't stay behind in an encrypted book.
+    await assertFails(as(OWNER).doc(`${book}/months/2026-10`).set(month))
+  })
+
+  test('months of a deleted book are deleted before it, by its writers', async () => {
+    await seed(book, movedPlain)
+    await seed(`${book}/months/2026-10`, month)
+    const database = as(OWNER)
+    const batch = database.batch()
+    batch.delete(database.doc(`${book}/months/2026-10`))
+    batch.delete(database.doc(book))
+    await assertSucceeds(batch.commit())
+  })
+})
