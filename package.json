@@ -8,6 +8,7 @@
     "dev": "react-router dev",
     "emulators": "pnpm dlx firebase-tools@15.33.0 emulators:start --only auth,firestore --project demo-catatsaja",
     "lint": "eslint .",
+    "maintenance": "node ./scripts/maintenance.mjs",
     "generate:icons": "node ./scripts/generate-icons.mjs",
     "generate:manifest": "node ./scripts/generate-manifest.mjs",
     "preview": "vite preview",

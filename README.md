@@ -94,8 +94,8 @@ git clone https://github.com/ardeman/project-catatsaja-reactrouter.git
 cd project-catatsaja-reactrouter
 pnpm install           # also installs the Husky Git hooks
 cp .env.example .env   # then fill in the values below
-firebase login
-firebase deploy --only firestore   # rules and indexes
+pnpm dlx firebase-tools@15.33.0 login
+pnpm dlx firebase-tools@15.33.0 deploy --only firestore   # rules and indexes
 pnpm dev               # http://localhost:5173
 ```
 
@@ -118,21 +118,22 @@ Variables are read in one place, `app/lib/utils/environment.ts`.
 
 ## Commands
 
-| Task                                                                                                                          | Command                            |
-| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| Install dependencies                                                                                                          | `pnpm install`                     |
-| Dev server                                                                                                                    | `pnpm dev`                         |
-| Lint                                                                                                                          | `pnpm lint`                        |
-| Typecheck (generates route types first)                                                                                       | `pnpm typecheck`                   |
-| Unused files, exports and dependencies                                                                                        | `pnpm knip`                        |
-| Format                                                                                                                        | `pnpm format`                      |
-| Regenerate `public/site.webmanifest` from `scripts/generate-manifest.mjs` and `app/lib/constants/metadata.ts`                 | `pnpm generate:manifest`           |
-| Redraw every icon in `public/` (PNGs, `favicon.ico`, `logo.svg`) from `scripts/icon/logo.svg`, with Chrome through Playwright | `pnpm generate:icons`              |
-| Production build (includes the manifest)                                                                                      | `pnpm build`                       |
-| Preview the production build                                                                                                  | `pnpm preview`                     |
-| Run the Auth and Firestore emulators (with `VITE_USE_EMULATORS=true`; Java 21)                                                | `pnpm emulators`                   |
-| Deploy Firestore rules and indexes                                                                                            | `firebase deploy --only firestore` |
-| Reinstall Git hooks                                                                                                           | `pnpm prepare`                     |
+| Task                                                                                                                          | Command                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Install dependencies                                                                                                          | `pnpm install`                                            |
+| Dev server                                                                                                                    | `pnpm dev`                                                |
+| Lint                                                                                                                          | `pnpm lint`                                               |
+| Typecheck (generates route types first)                                                                                       | `pnpm typecheck`                                          |
+| Unused files, exports and dependencies                                                                                        | `pnpm knip`                                               |
+| Format                                                                                                                        | `pnpm format`                                             |
+| Regenerate `public/site.webmanifest` from `scripts/generate-manifest.mjs` and `app/lib/constants/metadata.ts`                 | `pnpm generate:manifest`                                  |
+| Redraw every icon in `public/` (PNGs, `favicon.ico`, `logo.svg`) from `scripts/icon/logo.svg`, with Chrome through Playwright | `pnpm generate:icons`                                     |
+| Production build (includes the manifest)                                                                                      | `pnpm build`                                              |
+| Preview the production build                                                                                                  | `pnpm preview`                                            |
+| Run the Auth and Firestore emulators (with `VITE_USE_EMULATORS=true`; Java 21)                                                | `pnpm emulators`                                          |
+| Deploy Firestore rules and indexes (when pnpm asks which packages may build, choose none: firebase-tools doesn't need them)   | `pnpm dlx firebase-tools@15.33.0 deploy --only firestore` |
+| Maintenance mode and the oldest app allowed, with your gcloud sign-in (README → Maintenance mode)                             | `pnpm maintenance status\|on\|off`                        |
+| Reinstall Git hooks                                                                                                           | `pnpm prepare`                                            |
 
 **Checks** — run before every commit and pull request. It must pass with no errors:
 
@@ -163,7 +164,7 @@ The service worker (`public/sw.js`, registered in production builds only) caches
 
 ### Maintenance mode
 
-For a deploy that could break the app while it runs (a data change, or rules that refuse what the running app writes), close the app first. In the [Firebase console](https://console.firebase.google.com/project/catat-saja/firestore), open the `config` collection and the `app` document (create them the first time) and set:
+For a deploy that could break the app while it runs (a data change, or rules that refuse what the running app writes), close the app first. In the [Firebase console](https://console.firebase.google.com/project/catat-saja/firestore), open the `config` collection and the `app` document (create them the first time) and set the fields below, or use `pnpm maintenance` (`scripts/maintenance.mjs`), which writes only the fields you name through Firestore's REST API with your `gcloud auth login`:
 
 | Field           | Type      | What it does                                                                                                                                    |
 | --------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -171,6 +172,12 @@ For a deploy that could break the app while it runs (a data change, or rules tha
 | `message`       | string    | Optional: shown on that screen, under the standard text (in the language you write).                                                            |
 | `until`         | timestamp | Optional: when it is expected to end, shown in each person's time.                                                                              |
 | `minAppVersion` | number    | Optional: apps older than this (`appVersion` in `app/lib/constants/app-version.ts`) show "A new version is ready" with a Reload button instead. |
+
+```sh
+pnpm maintenance status
+pnpm maintenance on --min-app-version 2 --message "Back in a few minutes" --until 2026-10-14T21:00+07:00
+pnpm maintenance off
+```
 
 For a change to how data is stored, raise `appVersion` in the release and set `minAppVersion` to it when you turn maintenance off: maintenance alone lets a tab left open on the old app resume and write the old format.
 
