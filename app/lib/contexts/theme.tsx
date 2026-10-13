@@ -7,7 +7,11 @@ import {
   ReactNode,
 } from 'react'
 
-import { statusBarStyles, themeColors } from '~/lib/constants/metadata'
+import {
+  favicons,
+  statusBarStyles,
+  themeColors,
+} from '~/lib/constants/metadata'
 
 // A new tag instead of a changed one: some browsers (Safari) only repaint
 // their bars for a new tag.
@@ -19,6 +23,20 @@ const replaceMeta = (name: string, content: string) => {
   meta.content = content
   if (current) current.replaceWith(meta)
   else document.head.append(meta)
+}
+
+// The tab's icon (created by ThemeHead), replaced rather than changed so
+// every browser picks up the new one.
+const replaceIcon = (href: string) => {
+  const current = document.querySelector('link#theme-icon')
+  if (current?.getAttribute('href') === href) return
+  const icon = document.createElement('link')
+  icon.id = 'theme-icon'
+  icon.rel = 'icon'
+  icon.type = 'image/png'
+  icon.href = href
+  if (current) current.replaceWith(icon)
+  else document.head.append(icon)
 }
 
 export type Theme = 'system' | 'light' | 'dark'
@@ -79,6 +97,7 @@ export const ThemeProvider = ({
       root.classList.add(resolved)
       // The browser and installed-app bars follow the app's theme.
       replaceMeta('theme-color', themeColors[resolved])
+      replaceIcon(favicons[resolved])
       // iOS may apply a changed status bar only when the app next starts.
       replaceMeta(
         'apple-mobile-web-app-status-bar-style',

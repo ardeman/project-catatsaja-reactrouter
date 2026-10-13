@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- CatatSaja: a frosted-glass notepad and a glossy pencil, on a full-bleed
+       tile. The master for every icon: `pnpm generate:icons`
+       (scripts/generate-icons.mjs) rounds it, shrinks #art for maskable
+       icons, and adds class="light" for the light version. -->
+  <style>
+    .tile-top { stop-color: #292524 }
+    .tile-bottom { stop-color: #0c0a09 }
+    .glow { stop-color: #facc15; stop-opacity: 0.55 }
+    .glass-1 { stop-color: #ffffff; stop-opacity: 0.62 }
+    .glass-2 { stop-color: #ffffff; stop-opacity: 0.3 }
+    .glass-3 { stop-color: #ffffff; stop-opacity: 0.18 }
+    .rim-light { stop-color: #ffffff; stop-opacity: 0.95 }
+    .rim-mid { stop-color: #ffffff; stop-opacity: 0.12 }
+    .rim-edge { stop-color: #ffffff; stop-opacity: 0.6 }
+    .ring-1 { stop-color: #ffffff; stop-opacity: 0.95 }
+    .ring-2 { stop-color: #d6d3d1; stop-opacity: 0.8 }
+    .writing { stroke: #ffffff; opacity: 0.92 }
+    .holes { fill: #0c0a09; opacity: 0.55 }
+    .drop { flood-opacity: 0.45 }
+    .tile-edge { stroke: #ffffff; stroke-opacity: 0.12 }
+
+    .light .tile-top { stop-color: #ffffff }
+    .light .tile-bottom { stop-color: #f0eee9 }
+    .light .glow { stop-opacity: 0.5 }
+    .light .glass-1 { stop-opacity: 0.9 }
+    .light .glass-2 { stop-opacity: 0.55 }
+    .light .glass-3 { stop-opacity: 0.4 }
+    .light .rim-mid { stop-color: #a8a29e; stop-opacity: 0.25 }
+    .light .rim-edge { stop-color: #78716c; stop-opacity: 0.35 }
+    .light .ring-1 { stop-color: #e7e5e4; stop-opacity: 1 }
+    .light .ring-2 { stop-color: #a8a29e; stop-opacity: 1 }
+    .light .writing { stroke: #44403c; opacity: 0.85 }
+    .light .holes { fill: #78716c; opacity: 0.5 }
+    .light .drop { flood-opacity: 0.18 }
+    .light .tile-edge { stroke: #000000; stroke-opacity: 0.1 }
+  </style>
+  <defs>
+    <linearGradient id="tile-shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" class="tile-top"/>
+      <stop offset="1" class="tile-bottom"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.78" cy="0.82" r="0.6">
+      <stop offset="0" class="glow"/>
+      <stop offset="1" stop-color="#facc15" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-cool" cx="0.12" cy="0.1" r="0.55">
+      <stop offset="0" stop-color="#fef3c7" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#fef3c7" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Frosted glass: brighter where the light comes from (top left). -->
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" class="glass-1"/>
+      <stop offset="0.55" class="glass-2"/>
+      <stop offset="1" class="glass-3"/>
+    </linearGradient>
+    <!-- The rim catches the light on the top left and bottom right edges. -->
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" class="rim-light"/>
+      <stop offset="0.45" class="rim-mid"/>
+      <stop offset="0.8" class="rim-mid"/>
+      <stop offset="1" class="rim-edge"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" class="ring-1"/>
+      <stop offset="1" class="ring-2"/>
+    </linearGradient>
+    <!-- The pencil is drawn along x, across y from -30 to 30. -->
+    <linearGradient id="pencil-body" gradientUnits="userSpaceOnUse" x1="0" y1="-30" x2="0" y2="30">
+      <stop offset="0" stop-color="#fef08a"/>
+      <stop offset="0.35" stop-color="#facc15"/>
+      <stop offset="1" stop-color="#ca8a04"/>
+    </linearGradient>
+    <linearGradient id="pencil-wood" gradientUnits="userSpaceOnUse" x1="0" y1="-30" x2="0" y2="30">
+      <stop offset="0" stop-color="#fef3c7"/>
+      <stop offset="1" stop-color="#e7c27d"/>
+    </linearGradient>
+    <linearGradient id="pencil-band" gradientUnits="userSpaceOnUse" x1="0" y1="-30" x2="0" y2="30">
+      <stop offset="0" stop-color="#f5f5f4"/>
+      <stop offset="1" stop-color="#78716c"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow class="drop" dx="0" dy="14" stdDeviation="14" flood-color="#000000"/>
+    </filter>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+    <clipPath id="sheet">
+      <rect x="112" y="124" width="248" height="284" rx="40"/>
+    </clipPath>
+  </defs>
+
+  <g id="tile">
+    <rect width="512" height="512" fill="url(#tile-shade)"/>
+    <rect width="512" height="512" fill="url(#glow)"/>
+    <rect width="512" height="512" fill="url(#glow-cool)"/>
+  </g>
+
+  <g id="art" transform="translate(-18 6)">
+    <!-- Colour behind the glass, so the sheet looks frosted over it. -->
+    <circle cx="330" cy="330" r="92" fill="#facc15" opacity="0.55" filter="url(#soft)"/>
+    <circle cx="200" cy="300" r="70" fill="#fb923c" opacity="0.4" filter="url(#soft)"/>
+
+    <!-- The sheet of glass, with a sheen across its top -->
+    <g filter="url(#shadow)">
+      <rect x="112" y="124" width="248" height="284" rx="40" fill="url(#glass)"/>
+    </g>
+    <ellipse cx="200" cy="120" rx="190" ry="90" fill="#ffffff" opacity="0.22" clip-path="url(#sheet)"/>
+    <rect x="113.5" y="125.5" width="245" height="281" rx="38.5" fill="none" stroke="url(#rim)" stroke-width="3"/>
+
+    <!-- Lines of writing -->
+    <g class="writing" stroke-width="18" stroke-linecap="round">
+      <path d="M160 238 H284"/>
+      <path d="M160 290 H248"/>
+      <path d="M160 342 H212"/>
+    </g>
+
+    <!-- Rings through the top of the sheet -->
+    <g class="holes">
+      <circle cx="172" cy="160" r="10"/>
+      <circle cx="236" cy="160" r="10"/>
+      <circle cx="300" cy="160" r="10"/>
+    </g>
+    <g fill="none" stroke="url(#ring)" stroke-width="14" stroke-linecap="round">
+      <path d="M172 160 V112 a16 16 0 0 0 -32 0 V136"/>
+      <path d="M236 160 V112 a16 16 0 0 0 -32 0 V136"/>
+      <path d="M300 160 V112 a16 16 0 0 0 -32 0 V136"/>
+    </g>
+
+    <!-- The pencil, writing towards the bottom left -->
+    <g transform="translate(222 378) rotate(-45)">
+      <g filter="url(#shadow)">
+        <path d="M0 0 L62 -30 H272 a26 26 0 0 1 26 26 V4 a26 26 0 0 1 -26 26 H62 Z" fill="url(#pencil-body)"/>
+      </g>
+      <path d="M0 0 L62 -30 V30 Z" fill="url(#pencil-wood)"/>
+      <path d="M0 0 L22 -10.6 V10.6 Z" fill="#1c1917"/>
+      <rect x="232" y="-30" width="16" height="60" fill="url(#pencil-band)"/>
+      <!-- The gloss along its top -->
+      <path d="M70 -19 H286" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity="0.7"/>
+    </g>
+  </g>
+</svg>

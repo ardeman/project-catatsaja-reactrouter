@@ -23,8 +23,15 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'In a book, the balance, income, expenses and the difference from your accounts stay at the top in a compact bar as you scroll. The form for adding entries floats below it, more compact and slightly see-through, so you can check the entries and whether the book matches while you type.',
-          id: 'Di buku, saldo, pemasukan, pengeluaran, dan selisih dengan akunmu tetap di atas dalam bilah ringkas saat kamu menggulir. Formulir tambah entri melayang di bawahnya, lebih ringkas dan sedikit tembus pandang, jadi kamu bisa memeriksa entri dan apakah bukunya sudah cocok sambil mengetik.',
+          en: 'A redrawn app icon: a glass notepad and a glossy pencil, sharp at every size and filling the whole icon on your home screen. In the app and the browser tab it follows your theme: dark on the light theme, light on the dark theme.',
+          id: 'Ikon aplikasi digambar ulang: buku catatan kaca dan pensil mengilap, tajam di semua ukuran dan memenuhi seluruh ikon di layar utama. Di aplikasi dan tab browser, ikonnya mengikuti temamu: gelap di tema terang, terang di tema gelap.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'In a book, the balance and its difference from your accounts stay at the top in a compact bar as you scroll. The form for adding entries floats below it, more compact and slightly see-through, so you can check the entries and whether the book matches while you type.',
+          id: 'Di buku, saldo dan selisihnya dengan akunmu tetap di atas dalam bilah ringkas saat kamu menggulir. Formulir tambah entri melayang di bawahnya, lebih ringkas dan sedikit tembus pandang, jadi kamu bisa memeriksa entri dan apakah bukunya sudah cocok sambil mengetik.',
         },
       },
       {
@@ -60,6 +67,13 @@ export const releases: TRelease[] = [
         text: {
           en: 'In a book, Quick add stays next to Add entry while a receipt is being read or checked.',
           id: 'Di buku, Tambah cepat tetap di samping Tambah entri saat struk sedang dibaca atau diperiksa.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The stories on the home page now play the same way in both languages: each person’s part of the full video, in a wide player.',
+          id: 'Cerita di halaman utama kini diputar dengan cara yang sama di kedua bahasa: bagian tiap orang dari video lengkap, di pemutar lebar.',
         },
       },
       {

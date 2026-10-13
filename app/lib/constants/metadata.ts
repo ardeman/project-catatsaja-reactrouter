@@ -3,9 +3,18 @@ import { LinksFunction, MetaDescriptor, MetaFunction } from 'react-router'
 export const appName = 'Catat Saja'
 // Where people write about their data (privacy policy).
 export const contactEmail = 'mail@ardeman.com'
-export const appleIcon = '/apple-touch-icon.png'
-const shortcutIcon = '/android-chrome-512x512.png'
-const favicon = '/favicon.ico'
+// Icons come from scripts/icon/logo.svg (`pnpm generate:icons`). The app
+// and the browser tab follow the app's theme with the logo that stands out
+// on it: the dark tile on light pages, the light tile on dark ones (the tab's
+// icon is set by ThemeHead and ThemeProvider, like theme-color;
+// /favicon.ico is the fallback). Installed icons stay dark; iOS rounds its
+// full-bleed one itself.
+export const logos = { light: '/logo-dark.svg', dark: '/logo-light.svg' }
+export const favicons = {
+  light: '/favicon-32x32.png',
+  dark: '/favicon-32x32-light.png',
+}
+const appleIcon = '/apple-touch-icon.png'
 export const author = 'Ardeman'
 // The author's portfolio, linked from the About page.
 export const authorUrl = 'https://ardeman.com'
@@ -45,8 +54,6 @@ export const meta: MetaFunction = () =>
   ])
 
 export const links: LinksFunction = () => [
-  { rel: 'icon', href: favicon },
-  { rel: 'shortcut icon', href: shortcutIcon },
   { rel: 'apple-touch-icon', href: appleIcon },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {

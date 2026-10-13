@@ -114,20 +114,21 @@ Variables are read in one place, `app/lib/utils/environment.ts`.
 
 ## Commands
 
-| Task                                                                                                          | Command                            |
-| ------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| Install dependencies                                                                                          | `pnpm install`                     |
-| Dev server                                                                                                    | `pnpm dev`                         |
-| Lint                                                                                                          | `pnpm lint`                        |
-| Typecheck (generates route types first)                                                                       | `pnpm typecheck`                   |
-| Unused files, exports and dependencies                                                                        | `pnpm knip`                        |
-| Format                                                                                                        | `pnpm format`                      |
-| Regenerate `public/site.webmanifest` from `scripts/generate-manifest.mjs` and `app/lib/constants/metadata.ts` | `pnpm generate:manifest`           |
-| Production build (includes the manifest)                                                                      | `pnpm build`                       |
-| Preview the production build                                                                                  | `pnpm preview`                     |
-| Run the Auth and Firestore emulators (with `VITE_USE_EMULATORS=true`; Java 21)                                | `pnpm emulators`                   |
-| Deploy Firestore rules and indexes                                                                            | `firebase deploy --only firestore` |
-| Reinstall Git hooks                                                                                           | `pnpm prepare`                     |
+| Task                                                                                                                          | Command                            |
+| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Install dependencies                                                                                                          | `pnpm install`                     |
+| Dev server                                                                                                                    | `pnpm dev`                         |
+| Lint                                                                                                                          | `pnpm lint`                        |
+| Typecheck (generates route types first)                                                                                       | `pnpm typecheck`                   |
+| Unused files, exports and dependencies                                                                                        | `pnpm knip`                        |
+| Format                                                                                                                        | `pnpm format`                      |
+| Regenerate `public/site.webmanifest` from `scripts/generate-manifest.mjs` and `app/lib/constants/metadata.ts`                 | `pnpm generate:manifest`           |
+| Redraw every icon in `public/` (PNGs, `favicon.ico`, `logo.svg`) from `scripts/icon/logo.svg`, with Chrome through Playwright | `pnpm generate:icons`              |
+| Production build (includes the manifest)                                                                                      | `pnpm build`                       |
+| Preview the production build                                                                                                  | `pnpm preview`                     |
+| Run the Auth and Firestore emulators (with `VITE_USE_EMULATORS=true`; Java 21)                                                | `pnpm emulators`                   |
+| Deploy Firestore rules and indexes                                                                                            | `firebase deploy --only firestore` |
+| Reinstall Git hooks                                                                                                           | `pnpm prepare`                     |
 
 **Checks** — run before every commit and pull request. It must pass with no errors:
 
@@ -184,8 +185,8 @@ app/
   content/            changelog.ts: release notes for /changelog, in both languages
   localization/       i18next setup; locales/<en|id>/common.json and zod.json
   styles/             tailwind.css (Tailwind 4 config: theme, plugins, colours), Milkdown editor theme
-public/               Icons (maskable ones for Android), site.webmanifest (generated), sw.js (service worker)
-scripts/              generate-manifest.mjs
+public/               Icons (generated from scripts/icon/logo.svg; maskable ones for Android), site.webmanifest (generated), sw.js (service worker)
+scripts/              generate-manifest.mjs, generate-icons.mjs and the logo's vector master (icon/logo.svg)
 firestore.rules       Security rules (owner and read/write permission lists)
 firestore.indexes.json
 ```

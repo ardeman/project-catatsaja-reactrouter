@@ -1,6 +1,10 @@
 import { useSyncExternalStore } from 'react'
 
-import { statusBarStyles, themeColors } from '~/lib/constants/metadata'
+import {
+  favicons,
+  statusBarStyles,
+  themeColors,
+} from '~/lib/constants/metadata'
 import { navPages, startPageStorageKey } from '~/lib/constants/navigation'
 
 // Runs before the first paint: the installed app skips the landing page, and
@@ -34,6 +38,13 @@ const themeScript = `(() => {
       document.head.append(color)
     }
     color.content = dark ? '${themeColors.dark}' : '${themeColors.light}'
+    // The browser tab's icon follows the theme too.
+    const icon = document.createElement('link')
+    icon.id = 'theme-icon'
+    icon.rel = 'icon'
+    icon.type = 'image/png'
+    icon.href = dark ? '${favicons.dark}' : '${favicons.light}'
+    document.head.append(icon)
     // iOS reads the installed app's status bar style when the app starts.
     const bar = document.createElement('meta')
     bar.name = 'apple-mobile-web-app-status-bar-style'
@@ -47,7 +58,7 @@ const themeScript = `(() => {
 
 // The browser and installed-app bars follow the app's theme (not only the
 // device's) through one theme-color tag, and one status bar style tag for
-// iOS. The script creates it before the
+// iOS; so does the tab's icon. The script creates it before the
 // first paint and ThemeProvider updates it; React does not render it, because
 // React would add its own copy once the script had changed it.
 const noSubscribe = () => () => {}

@@ -3,9 +3,10 @@ import { useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
 
+import { Logo } from '~/components/base/logo'
 import { AboutFooter } from '~/components/layouts/about-footer'
 import { Button } from '~/components/ui/button'
-import { appleIcon, appName } from '~/lib/constants/metadata'
+import { appName } from '~/lib/constants/metadata'
 import { readStartPage } from '~/lib/constants/navigation'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 
@@ -35,11 +36,7 @@ export const NotFoundPage = () => {
             className="flex items-center gap-2 text-7xl font-extrabold tracking-tight text-primary md:text-8xl"
           >
             <span aria-hidden="true">4</span>
-            <img
-              src={appleIcon}
-              alt=""
-              className="size-16 -rotate-12 rounded-2xl shadow-lg md:size-20"
-            />
+            <Logo className="size-16 -rotate-12 rounded-2xl shadow-lg md:size-20" />
             <span aria-hidden="true">4</span>
           </p>
           <div className="grid gap-2">

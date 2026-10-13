@@ -12,6 +12,7 @@ import { Link } from 'react-router'
 
 import { InstallApp } from '~/components/base/install-app'
 import { LanguageSelector } from '~/components/base/language-selector'
+import { Logo } from '~/components/base/logo'
 import { ModeToggle } from '~/components/base/mode-toggle'
 import {
   FinancePreview,
@@ -21,7 +22,7 @@ import {
 } from '~/components/base/preview-card'
 import { AboutFooter } from '~/components/layouts/about-footer'
 import { Button } from '~/components/ui/button'
-import { appleIcon, appName } from '~/lib/constants/metadata'
+import { appName } from '~/lib/constants/metadata'
 
 import { LandingStories } from './stories'
 import { LandingVideo } from './video'
@@ -55,11 +56,7 @@ export const LandingPage = () => {
             to="/"
             className="mr-auto flex items-center gap-2 font-semibold whitespace-nowrap"
           >
-            <img
-              src={appleIcon}
-              alt=""
-              className="size-8"
-            />
+            <Logo className="size-8" />
             {appName}
           </Link>
           <LanguageSelector />

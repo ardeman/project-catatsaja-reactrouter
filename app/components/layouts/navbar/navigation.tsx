@@ -9,7 +9,8 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
 
-import { appleIcon, appName } from '~/lib/constants/metadata'
+import { Logo } from '~/components/base/logo'
+import { appName } from '~/lib/constants/metadata'
 import { navs, readStartPage } from '~/lib/constants/navigation'
 import { useGetDueReminders } from '~/lib/hooks/use-get-due-reminders'
 import { useUserData } from '~/lib/hooks/use-get-user'
@@ -182,11 +183,7 @@ export const Navigation = (properties: TProperties) => {
           to={`/${userData?.startPage ?? readStartPage()}`}
           className="flex shrink-0 items-center gap-2 text-lg font-semibold whitespace-nowrap md:text-base"
         >
-          <img
-            src={appleIcon}
-            alt=""
-            className="size-6 object-contain"
-          />
+          <Logo className="size-6 object-contain" />
           <span className="sr-only">{appName}</span>
         </Link>
       )}
