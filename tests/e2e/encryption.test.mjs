@@ -11,6 +11,7 @@ import {
   APP,
   createNote,
   dbGet,
+  dbGetWhen,
   dbList,
   dbPatch,
   keysOf,
@@ -591,7 +592,10 @@ describe('end-to-end encryption', () => {
       .getByRole('button', { name: 'Decline' })
       .click()
     await invitation('Fina diary').waitFor({ state: 'hidden' })
-    const declined = await dbGet(`notes/${diary}`)
+    const declined = await dbGetWhen(
+      `notes/${diary}`,
+      (fields) => !JSON.stringify(fields?.invites ?? {}).includes(ganiUid),
+    )
     assert.ok(!readersOf(declined).includes(ganiUid))
     assert.ok(
       !JSON.stringify(declined.invites ?? {}).includes(ganiUid),
@@ -605,7 +609,9 @@ describe('end-to-end encryption', () => {
     await gani.page.waitForURL(new RegExp(`/notes/${plan}`), {
       timeout: 30_000,
     })
-    const accepted = await dbGet(`notes/${plan}`)
+    const accepted = await dbGetWhen(`notes/${plan}`, (fields) =>
+      readersOf(fields).includes(ganiUid),
+    )
     assert.ok(readersOf(accepted).includes(ganiUid))
     const writers = (
       accepted.permissions.mapValue.fields.write.arrayValue.values ?? []
@@ -656,7 +662,10 @@ describe('end-to-end encryption', () => {
       0,
       'out of the main list',
     )
-    const stored = await dbGet(`notes/${id}`)
+    const stored = await dbGetWhen(
+      `notes/${id}`,
+      (fields) => !!fields?.archivedBy?.arrayValue?.values,
+    )
     assert.deepEqual(
       stored.archivedBy.arrayValue.values.map((value) => value.stringValue),
       [hanaUid],

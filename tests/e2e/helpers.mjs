@@ -41,6 +41,18 @@ export const dbGet = async (path) => {
   return json.fields
 }
 
+// The stored document once `isReady` holds: the screen shows a change as
+// soon as it is made locally, a moment before the server has it.
+export const dbGetWhen = async (path, isReady, timeout = 15_000) => {
+  const end = Date.now() + timeout
+  let fields = await dbGet(path)
+  while (!isReady(fields) && Date.now() < end) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    fields = await dbGet(path)
+  }
+  return fields
+}
+
 export const dbPatch = async (path, fields) => {
   const mask = Object.keys(fields)
     .map((field) => `updateMask.fieldPaths=${field}`)
