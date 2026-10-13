@@ -1,23 +1,12 @@
 import { FirebaseApp, initializeApp } from 'firebase/app'
-import {
-  initializeAppCheck,
-  ReCaptchaEnterpriseProvider,
-} from 'firebase/app-check'
 import { connectAuthEmulator, getAuth, Auth } from 'firebase/auth'
-import {
-  connectFirestoreEmulator,
-  Firestore,
-  initializeFirestore,
-  persistentLocalCache,
-  persistentMultipleTabManager,
-} from 'firebase/firestore'
 import i18next from 'i18next'
 
 import { environment } from '~/lib/utils/environment'
 
 // Development against the local emulators: a `demo-` project id, which can
 // never reach a real Firebase project.
-const useEmulators =
+export const useEmulators =
   import.meta.env.DEV && environment.VITE_USE_EMULATORS === 'true'
 
 const firebaseConfig = {
@@ -35,26 +24,12 @@ const firebaseConfig = {
 // Initialize Firebase app and services
 let firebase: FirebaseApp | null = null
 let auth: Auth | null = null
-let firestore: Firestore | null = null
 
 // Ensure that Firebase is only initialized on the client side
 if (typeof window !== 'undefined') {
   try {
     firebase = initializeApp(firebaseConfig)
-
-    // App Check: only this app (on its own domain) may call Firestore once
-    // enforcement is on in the console. Before any request is made. In
-    // development a debug token is printed to the console, to register
-    // there.
-    const appCheckSiteKey = environment.VITE_APP_CHECK_SITE_KEY
-    if (appCheckSiteKey && !useEmulators) {
-      if (import.meta.env.DEV)
-        Object.assign(globalThis, { FIREBASE_APPCHECK_DEBUG_TOKEN: true })
-      initializeAppCheck(firebase, {
-        provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
-        isTokenAutoRefreshEnabled: true,
-      })
-    }
+    // App Check starts in `app-check.ts`, with Firestore and AI Logic.
     auth = getAuth(firebase)
     // Firebase's emails (verification, password reset, email change) go out
     // in the app's language, not the console's template language.
@@ -63,21 +38,10 @@ if (typeof window !== 'undefined') {
     }
     syncAuthLanguage(i18next.language)
     i18next.on('languageChanged', syncAuthLanguage)
-    // Items are kept in the browser (IndexedDB) for offline use: saves made
-    // offline survive a reload and upload once back online, shared by every
-    // open tab. Encrypted items stay encrypted there; signing out deletes it
-    // (`clearOfflineData`). Without IndexedDB it works from memory.
-    firestore = initializeFirestore(firebase, {
-      localCache: persistentLocalCache({
-        tabManager: persistentMultipleTabManager(),
-      }),
-    })
-    if (useEmulators) {
+    if (useEmulators)
       connectAuthEmulator(auth, 'http://127.0.0.1:9099', {
         disableWarnings: true,
       })
-      connectFirestoreEmulator(firestore, '127.0.0.1', 8080)
-    }
 
     // Async function to initialize Analytics if supported
     const initializeAnalytics = async () => {
@@ -100,4 +64,4 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export { auth, firebase, firestore }
+export { auth, firebase }

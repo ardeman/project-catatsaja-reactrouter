@@ -10,7 +10,8 @@ import {
 } from 'firebase/auth'
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 
-import { auth, firestore } from '~/lib/configs/firebase'
+import { auth } from '~/lib/configs/firebase'
+import { firestore } from '~/lib/configs/firestore'
 import {
   TCurrencyFormatRequest,
   TUpdateAppearanceRequest,

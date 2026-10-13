@@ -1,6 +1,6 @@
 import { doc, onSnapshot } from 'firebase/firestore'
 
-import { firestore } from '~/lib/configs/firebase'
+import { firestore } from '~/lib/configs/firestore'
 import { TAppConfig } from '~/lib/types/config'
 
 // The app-wide settings, live, readable signed in or not. Missing or

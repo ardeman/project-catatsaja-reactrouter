@@ -1,6 +1,7 @@
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
 
-import { auth, firestore } from '~/lib/configs/firebase'
+import { auth } from '~/lib/configs/firebase'
+import { firestore } from '~/lib/configs/firestore'
 import { TLiveSubscription } from '~/lib/types/common'
 import {
   TCreateHealthLogRequest,

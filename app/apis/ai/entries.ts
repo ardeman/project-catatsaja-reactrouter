@@ -1,4 +1,4 @@
-import { firebase } from '~/lib/configs/firebase'
+import { firebase } from '~/lib/configs/app-check'
 import { geminiModel } from '~/lib/constants/ai'
 import { TTypedEntries } from '~/lib/types/finance'
 import { typedEntriesSchema } from '~/lib/validations/finance'

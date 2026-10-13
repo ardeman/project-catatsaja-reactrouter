@@ -1094,7 +1094,7 @@
       "note": {
         "title": "Weekly plan",
         "date": "Edited today",
-        "content": "- Call the bank\n- **Review** the budget\n- Book the dentist"
+        "content": "<list><item>Call the bank</item><item><bold>Review</bold> the budget</item><item>Book the dentist</item></list>"
       },
       "task": {
         "title": "Groceries",

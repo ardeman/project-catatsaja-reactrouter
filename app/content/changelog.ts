@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'The home page and the guide open faster: they no longer download the parts of the app that only work after signing in.',
+          id: 'Halaman depan dan panduan terbuka lebih cepat: keduanya tidak lagi mengunduh bagian aplikasi yang hanya dipakai setelah masuk.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Nothing typed is lost so easily: a new entry or Quick add text you haven’t saved comes back when you open the book again (for an encrypted book, while the tab stays open), and what you save offline now uploads when you’re back online, even after closing or reloading the tab.',
           id: 'Yang sudah diketik tidak gampang hilang: entri baru atau teks Tambah cepat yang belum disimpan muncul lagi saat kamu membuka bukunya (untuk buku terenkripsi, selama tab masih terbuka), dan yang kamu simpan saat offline kini terkirim begitu online lagi, bahkan setelah tab ditutup atau dimuat ulang.',
         },

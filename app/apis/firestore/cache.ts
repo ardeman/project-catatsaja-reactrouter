@@ -4,7 +4,7 @@ import {
   waitForPendingWrites,
 } from 'firebase/firestore'
 
-import { firestore } from '~/lib/configs/firebase'
+import { firestore } from '~/lib/configs/firestore'
 
 // How long signing out waits for saves made offline to reach the server.
 const PENDING_WRITES_WAIT = 3000

@@ -12,7 +12,6 @@ import {
 import { CategoryBar } from '~/components/base/category-bar'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { HealthStatus } from '~/components/base/health-status'
-import { Markdown } from '~/components/base/markdown'
 import { SexIcon } from '~/components/base/sex-icon'
 import {
   classifyBmi,
@@ -76,9 +75,14 @@ export const NotePreview = ({ className }: TPreviewProperties) => {
       }
     >
       <CardContent>
-        <Markdown className="text-sm">
-          {t('landing.preview.note.content')}
-        </Markdown>
+        {/* The app's notes are Markdown; this sample is written out as JSX, so
+            the landing page doesn't load a Markdown parser for three lines. */}
+        <div className="prose text-sm prose-zinc">
+          <Trans
+            i18nKey="landing.preview.note.content"
+            components={{ list: <ul />, item: <li />, bold: <strong /> }}
+          />
+        </div>
       </CardContent>
     </PreviewCard>
   )

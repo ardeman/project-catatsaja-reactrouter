@@ -6,7 +6,8 @@ import {
   setDoc,
 } from 'firebase/firestore'
 
-import { auth, firestore } from '~/lib/configs/firebase'
+import { auth } from '~/lib/configs/firebase'
+import { firestore } from '~/lib/configs/firestore'
 import { TLiveSubscription } from '~/lib/types/common'
 
 // The people the person blocked, in their own private list

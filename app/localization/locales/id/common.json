@@ -1094,7 +1094,7 @@
       "note": {
         "title": "Rencana minggu ini",
         "date": "Diedit hari ini",
-        "content": "- Telepon bank\n- **Cek** anggaran\n- Janji ke dokter gigi"
+        "content": "<list><item>Telepon bank</item><item><bold>Cek</bold> anggaran</item><item>Janji ke dokter gigi</item></list>"
       },
       "task": {
         "title": "Belanja",
