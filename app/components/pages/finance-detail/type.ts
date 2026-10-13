@@ -19,6 +19,10 @@ export type TEntryFormProperties = {
   history: TFinanceEntry[]
   onSave: (entry: TFinanceEntry) => void
   onDelete: (id: string) => void
+  // Where the unsaved new entry is kept (lib/utils/drafts); none, no draft.
+  draftKey?: string
+  // An encrypted book: the draft is kept for this tab only.
+  isPrivate?: boolean
 }
 
 export type TReceiptScanProperties = {
@@ -27,4 +31,7 @@ export type TReceiptScanProperties = {
   // Past entries from every book, newest first, for category suggestions.
   history: TFinanceEntry[]
   onAdd: (entries: TFinanceEntry[]) => void
+  // Quick add's unsaved text (lib/utils/drafts); none, no draft.
+  draftKey?: string
+  isPrivate?: boolean
 }

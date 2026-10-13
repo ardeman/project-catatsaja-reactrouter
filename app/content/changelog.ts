@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Nothing typed is lost so easily: a new entry or Quick add text you haven’t saved comes back when you open the book again (for an encrypted book, while the tab stays open), and what you save offline now uploads when you’re back online, even after closing or reloading the tab.',
+          id: 'Yang sudah diketik tidak gampang hilang: entri baru atau teks Tambah cepat yang belum disimpan muncul lagi saat kamu membuka bukunya (untuk buku terenkripsi, selama tab masih terbuka), dan yang kamu simpan saat offline kini terkirim begitu online lagi, bahkan setelah tab ditutup atau dimuat ulang.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'Archive: tidy your lists without deleting anything. An archived note, list, book or health log moves to Archived at the bottom of its list, only for you, and comes back with one tap.',

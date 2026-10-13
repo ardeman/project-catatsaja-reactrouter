@@ -6,8 +6,10 @@ import {
 import { connectAuthEmulator, getAuth, Auth } from 'firebase/auth'
 import {
   connectFirestoreEmulator,
-  getFirestore,
   Firestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
 } from 'firebase/firestore'
 import i18next from 'i18next'
 
@@ -61,7 +63,15 @@ if (typeof window !== 'undefined') {
     }
     syncAuthLanguage(i18next.language)
     i18next.on('languageChanged', syncAuthLanguage)
-    firestore = getFirestore(firebase)
+    // Items are kept in the browser (IndexedDB) for offline use: saves made
+    // offline survive a reload and upload once back online, shared by every
+    // open tab. Encrypted items stay encrypted there; signing out deletes it
+    // (`clearOfflineData`). Without IndexedDB it works from memory.
+    firestore = initializeFirestore(firebase, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+      }),
+    })
     if (useEmulators) {
       connectAuthEmulator(auth, 'http://127.0.0.1:9099', {
         disableWarnings: true,

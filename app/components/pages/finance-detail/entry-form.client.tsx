@@ -28,6 +28,7 @@ import {
 } from '~/lib/types/finance'
 import { TCurrency } from '~/lib/types/settings'
 import { suggestCategory } from '~/lib/utils/category-classifier'
+import { clearDraft, readDraft, writeDraft } from '~/lib/utils/drafts'
 import {
   lastCategory,
   newEntryId,
@@ -58,8 +59,17 @@ const toFinanceCurrency = (
 })
 
 export const EntryForm = (properties: TEntryFormProperties) => {
-  const { onClose, entry, book, currencies, history, onSave, onDelete } =
-    properties
+  const {
+    onClose,
+    entry,
+    book,
+    currencies,
+    history,
+    onSave,
+    onDelete,
+    draftKey,
+    isPrivate = false,
+  } = properties
   const { t, i18n } = useTranslation(['common', 'zod'])
   const { data: userData } = useUserData()
   const isEditing = !!entry
@@ -112,16 +122,42 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     isCategoryChosen.current = false
     isTypeChosen.current = false
     setIsSuggested(false)
-    // A new entry starts with the category last used for expenses.
+    // A new entry starts with the category last used for expenses, or with
+    // what was typed and not saved last time.
+    const draft =
+      !entry && draftKey
+        ? readDraft<Partial<TFinanceEntryForm>>(draftKey)
+        : undefined
     reset(
       entry ?? {
         ...empty,
-        id: newEntryId(),
         category: lastCategory('expense', pastEntries) ?? '',
+        ...draft,
+        id: newEntryId(),
       },
     )
+    if (draft?.category) isCategoryChosen.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry])
+
+  // A new entry being typed is kept as a draft once it has a description
+  // or an amount; saving or cancelling clears it, closing the page doesn't.
+  useEffect(() => {
+    if (isEditing || !draftKey) return
+    const subscription = watch((values) => {
+      const hasContent =
+        String(values.description ?? '').trim() !== '' ||
+        String(values.amount ?? '').trim() !== ''
+      if (hasContent) writeDraft(draftKey, values, isPrivate)
+      else clearDraft(draftKey)
+    })
+    return () => subscription.unsubscribe()
+  }, [watch, isEditing, draftKey, isPrivate])
+
+  const handleCancel = () => {
+    if (!isEditing && draftKey) clearDraft(draftKey)
+    onClose()
+  }
 
   const type = watch('type')
   const currency = watch('currency')
@@ -243,6 +279,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const onSubmit = handleSubmit(
     (data) => {
       onSave(data)
+      if (draftKey && !isEditing) clearDraft(draftKey)
       if (isEditing) {
         onClose()
         return
@@ -564,7 +601,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
             <div className="ml-auto flex gap-2">
               <Button
                 variant="outline"
-                onClick={onClose}
+                onClick={handleCancel}
               >
                 {t('form.cancel')}
               </Button>

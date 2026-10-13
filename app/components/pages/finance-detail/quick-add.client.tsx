@@ -1,5 +1,5 @@
 import { Keyboard } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -15,6 +15,7 @@ import { useMoney } from '~/lib/hooks/use-money'
 import { useReadTypedEntries } from '~/lib/hooks/use-read-typed-entries'
 import { TTypedEntries } from '~/lib/types/finance'
 import { suggestCategory } from '~/lib/utils/category-classifier'
+import { clearDraft, readDraft, writeDraft } from '~/lib/utils/drafts'
 import {
   lastCategory,
   matchCurrency,
@@ -32,17 +33,36 @@ import { TReceiptScanProperties } from './type'
 // by Gemini and checked before they are added. The text goes to Google only
 // when the person presses Read, after agreeing once to `AiNotice`.
 export const QuickAdd = (properties: TReceiptScanProperties) => {
-  const { book, currencies, history, onAdd } = properties
+  const {
+    book,
+    currencies,
+    history,
+    onAdd,
+    draftKey,
+    isPrivate = false,
+  } = properties
   const { t, i18n } = useTranslation()
   const money = useMoney()
   const { run, notice } = useAiConsent()
   const { mutate: read, isPending } = useReadTypedEntries()
-  const [isOpen, setIsOpen] = useState(false)
+  // Text typed and not read yet comes back, with the form open.
+  const [draft] = useState(() =>
+    draftKey ? readDraft<string>(draftKey) : undefined,
+  )
+  const [isOpen, setIsOpen] = useState(!!draft)
   const [typed, setTyped] = useState<TTypedEntries>()
   // Entries left out, by their place in the list.
   const [skipped, setSkipped] = useState<Set<number>>(new Set())
-  const textForm = useForm<{ text: string }>({ defaultValues: { text: '' } })
+  const textForm = useForm<{ text: string }>({
+    defaultValues: { text: draft ?? '' },
+  })
   const text = textForm.watch('text')
+
+  useEffect(() => {
+    if (!draftKey) return
+    if (text.trim()) writeDraft(draftKey, text, isPrivate)
+    else clearDraft(draftKey)
+  }, [text, draftKey, isPrivate])
 
   const { currency, isCurrencyUnknown } = useMemo(
     () => matchCurrency(typed?.currency, book, currencies),
@@ -83,6 +103,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
     }).format(new Date(`${day}T00:00:00Z`))
 
   const close = () => {
+    if (draftKey) clearDraft(draftKey)
     setIsOpen(false)
     setTyped(undefined)
     textForm.reset({ text: '' })

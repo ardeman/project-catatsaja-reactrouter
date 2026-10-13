@@ -408,6 +408,28 @@ describe('AI features and reminders', () => {
     await shows(page, 'Every 7 days')
   })
 
+  test('an unsaved entry comes back after a reload, until it is cancelled', async () => {
+    const { page } = device
+    await page.goto(bookUrl)
+    await page.getByRole('button', { name: 'Add entry' }).click()
+    await page.locator('input[name=description]').fill('Draft parking')
+    await page.locator('input[name=amount]').fill('5000')
+    await page.waitForTimeout(500)
+    await page.reload()
+    // Open again, filled in, and nothing saved.
+    await page.locator('input[name=description]').waitFor({ timeout: 30_000 })
+    assert.equal(
+      await page.locator('input[name=description]').inputValue(),
+      'Draft parking',
+    )
+    assert.equal(await page.locator('input[name=amount]').inputValue(), '5,000')
+    assert.equal(await page.getByText('Draft parking').count(), 0)
+    await page.getByRole('button', { name: 'Cancel' }).click()
+    await page.reload()
+    await page.getByRole('button', { name: 'Add entry' }).waitFor()
+    assert.equal(await page.locator('input[name=description]').count(), 0)
+  })
+
   test('maintenance mode closes the app until it is turned off', async () => {
     const { page } = device
     await page.goto(`${APP}/notes`)
@@ -423,5 +445,35 @@ describe('AI features and reminders', () => {
     await page
       .getByText("We're updating Catat Saja")
       .waitFor({ state: 'hidden', timeout: 30_000 })
+  })
+
+  test('signing out clears drafts and the offline copy on this device', async () => {
+    const { page } = device
+    await page.goto(bookUrl)
+    await page.getByRole('button', { name: 'Quick add' }).click()
+    await page.locator('textarea[name=text]').fill('kopi 20rb')
+    await page.waitForTimeout(500)
+    const before = await page.evaluate(async () => ({
+      drafts: Object.keys({ ...localStorage, ...sessionStorage }).filter(
+        (key) => key.startsWith('catatsaja-draft:'),
+      ).length,
+      databases: (await indexedDB.databases()).filter((database) =>
+        database.name?.startsWith('firestore/'),
+      ).length,
+    }))
+    assert.ok(before.drafts > 0 && before.databases > 0)
+
+    await page.getByRole('button', { name: 'Account menu' }).click()
+    await page.getByRole('menuitem', { name: 'Sign out' }).click()
+    await page.waitForURL(/\/auth\/sign-in/, { timeout: 30_000 })
+    const after = await page.evaluate(async () => ({
+      drafts: Object.keys({ ...localStorage, ...sessionStorage }).filter(
+        (key) => key.startsWith('catatsaja-draft:'),
+      ).length,
+      main: (await indexedDB.databases()).filter((database) =>
+        database.name?.endsWith('/main'),
+      ).length,
+    }))
+    assert.deepEqual(after, { drafts: 0, main: 0 })
   })
 })

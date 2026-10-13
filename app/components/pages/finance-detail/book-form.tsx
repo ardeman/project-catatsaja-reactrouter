@@ -50,6 +50,7 @@ import {
   TFinanceEntry,
   TFinanceForm,
 } from '~/lib/types/finance'
+import { readDraft } from '~/lib/utils/drafts'
 import {
   entryBookTotal,
   entryTotal,
@@ -209,7 +210,14 @@ export const Form = (properties: TFormProperties) => {
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
   const [editing, setEditing] = useState<TFinanceEntry>()
-  const [isEntryOpen, setIsEntryOpen] = useState(false)
+  // Unsaved new entries and Quick add text, per book (lib/utils/drafts);
+  // a waiting entry draft opens the form again.
+  const entryDraftKey = finance ? `entry:${finance.id}` : undefined
+  const quickAddDraftKey = finance ? `quick-add:${finance.id}` : undefined
+  const isPrivate = !!finance?.isEncrypted
+  const [isEntryOpen, setIsEntryOpen] = useState(
+    () => !!entryDraftKey && !!readDraft(entryDraftKey),
+  )
   const [isAddingCurrency, setIsAddingCurrency] = useState(false)
   const [isLockHintOpen, setIsLockHintOpen] = useState(false)
 
@@ -577,6 +585,8 @@ export const Form = (properties: TFormProperties) => {
                   history={history}
                   onSave={handleSaveEntry}
                   onDelete={handleDeleteEntry}
+                  draftKey={entryDraftKey}
+                  isPrivate={isPrivate}
                 />
               ) : (
                 <div
@@ -603,6 +613,8 @@ export const Form = (properties: TFormProperties) => {
                     currencies={currencies}
                     history={history}
                     onAdd={handleAddEntries}
+                    draftKey={quickAddDraftKey}
+                    isPrivate={isPrivate}
                   />
                 </div>
               ))}
