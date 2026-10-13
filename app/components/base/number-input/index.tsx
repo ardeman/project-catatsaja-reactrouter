@@ -1,5 +1,11 @@
 import { Calculator } from 'lucide-react'
-import { ChangeEvent, useLayoutEffect, useRef, useState } from 'react'
+import {
+  ChangeEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -52,6 +58,59 @@ const display = (raw: string, thousand: string, decimal: string) => {
   return fraction === undefined ? grouped : `${grouped}${decimal}${fraction}`
 }
 
+const escape = (text: string) =>
+  text.replaceAll(/[\\^$.*+?()[\]{}|-]/g, String.raw`\$&`)
+
+// Characters the caret is placed by: in a number its digits and decimal
+// mark; in a calculation everything but the thousands separators (which
+// come and go as it is regrouped), so it stays after an operator too.
+const isCaretMark = (
+  char: string,
+  isExpression: boolean,
+  thousand: string,
+  decimal: string,
+) => (isExpression ? char !== thousand : /\d/.test(char) || char === decimal)
+
+// Whether a mouse button or finger is down anywhere, tracked from the first
+// number field on: see `onBlur` below.
+const pointer = { isDown: false, isTracked: false }
+const trackPointer = () => {
+  if (pointer.isTracked) return
+  pointer.isTracked = true
+  const release = () => {
+    pointer.isDown = false
+  }
+  addEventListener(
+    'pointerdown',
+    () => {
+      pointer.isDown = true
+    },
+    true,
+  )
+  addEventListener('pointerup', release, true)
+  addEventListener('pointercancel', release, true)
+}
+
+// A typed calculation with each number grouped like a plain number
+// ("10 000+11900" → "10 000+11 900"), the operators left as typed. Either
+// "." or "," counts as the decimal mark when it isn't the thousands
+// separator, as in `parse`.
+const groupNumbers = (text: string, thousand: string, decimal: string) => {
+  const marks = [decimal, '.', ','].filter(
+    (mark, index, all) => mark !== thousand && all.indexOf(mark) === index,
+  )
+  const integer = thousand
+    ? String.raw`\d(?:${escape(thousand)}?\d)*`
+    : String.raw`\d+`
+  const number = new RegExp(
+    String.raw`${integer}(?:[${marks.map((mark) => escape(mark)).join('')}]\d*)?`,
+    'g',
+  )
+  return text.replaceAll(number, (match) =>
+    display(parse(match, thousand, decimal), thousand, decimal),
+  )
+}
+
 // What was typed → digits with an optional "." decimal mark.
 const parse = (text: string, thousand: string, decimal: string) => {
   let cleaned = text.replaceAll(thousand, '')
@@ -96,9 +155,11 @@ export const NumberInput = (properties: TProperties) => {
   const thousand = format.thousandSeparator
   const decimal = format.decimalSeparator
   const inputReference = useRef<HTMLInputElement>(null)
-  // Digits (and decimal mark) before the caret, to put it back after React
-  // shows the reformatted value.
-  const pendingCaret = useRef<number>(undefined)
+  // What was before the caret, to put it back there after React shows the
+  // reformatted value.
+  const pendingCaret = useRef<{ count: number; isExpression: boolean }>(
+    undefined,
+  )
   const value = useWatch({ control, name })
   // The calculation as typed, and the value it gave the form.
   const [draft, setDraft] = useState<{ text: string; value: string }>()
@@ -108,20 +169,25 @@ export const NumberInput = (properties: TProperties) => {
   const activeDraft =
     draft && String(value ?? '') === draft.value ? draft : undefined
 
+  useEffect(() => {
+    if (allowMath) trackPointer()
+  }, [allowMath])
+
   useLayoutEffect(() => {
     const element = inputReference.current
-    const digitsBefore = pendingCaret.current
-    if (!element || digitsBefore === undefined) return
+    const pending = pendingCaret.current
+    if (!element || pending === undefined) return
     pendingCaret.current = undefined
     const shown = element.value
     let seen = 0
     let position = 0
-    while (position < shown.length && seen < digitsBefore) {
-      if (/\d/.test(shown[position]) || shown[position] === decimal) seen++
+    while (position < shown.length && seen < pending.count) {
+      if (isCaretMark(shown[position], pending.isExpression, thousand, decimal))
+        seen++
       position++
     }
     element.setSelectionRange(position, position)
-  }, [value, decimal])
+  }, [value, thousand, decimal, draft?.text])
 
   return (
     <FormField
@@ -132,6 +198,16 @@ export const NumberInput = (properties: TProperties) => {
           field.value === undefined || field.value === null
             ? ''
             : String(field.value)
+
+        // What is before the caret, so it stays there once separators are
+        // added or removed.
+        const caretOf = (input: HTMLInputElement, isExpression: boolean) => {
+          const caret = input.selectionStart ?? input.value.length
+          let count = 0
+          for (const char of input.value.slice(0, caret))
+            if (isCaretMark(char, isExpression, thousand, decimal)) count++
+          return { count, isExpression }
+        }
 
         const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
           const input = event.target
@@ -149,25 +225,19 @@ export const NumberInput = (properties: TProperties) => {
                   : Number(evaluated.toFixed(fractionDigits))
               // An unfinished calculation leaves text the schema rejects.
               const next = result === undefined ? input.value : String(result)
-              setDraft({ text: input.value, value: next })
+              // Every number grouped the same way, the caret kept after the
+              // same digits.
+              pendingCaret.current = caretOf(input, true)
+              setDraft({
+                text: groupNumbers(input.value, thousand, decimal),
+                value: next,
+              })
               field.onChange(next)
               return
             }
           }
           setDraft(undefined)
-          const caret = input.selectionStart ?? input.value.length
-          // Keep the caret after the same number of digits once separators
-          // are added or removed.
-          const digitsBefore = input.value
-            .slice(0, caret)
-            .replaceAll(
-              new RegExp(
-                String.raw`[^\d${decimal === '.' ? String.raw`\.` : decimal}]`,
-                'g',
-              ),
-              '',
-            ).length
-          pendingCaret.current = digitsBefore
+          pendingCaret.current = caretOf(input, false)
           field.onChange(parse(input.value, thousand, decimal))
         }
 
@@ -204,8 +274,17 @@ export const NumberInput = (properties: TProperties) => {
                   value={activeDraft?.text ?? display(raw, thousand, decimal)}
                   onChange={handleChange}
                   onBlur={() => {
-                    setDraft(undefined)
                     field.onBlur()
+                    // Ending the calculation removes the result line under
+                    // the field. If a press moved the focus (Save, Cancel),
+                    // wait until it is released and its click has landed,
+                    // or the button moves away from under the pointer.
+                    const end = () => setDraft(undefined)
+                    if (pointer.isDown)
+                      addEventListener('pointerup', () => setTimeout(end, 0), {
+                        once: true,
+                      })
+                    else end()
                   }}
                   disabled={disabled}
                   className={cn(calculatorKeyboard && 'pr-10')}
