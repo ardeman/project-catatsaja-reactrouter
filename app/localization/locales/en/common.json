@@ -475,6 +475,16 @@
       "periodTable": {
         "title": "By period"
       },
+      "items": {
+        "title": "By item",
+        "subtitle": "Things that came up more than once, grouped by name (sizes like 1kg or x2 don’t count).",
+        "each_one": "{{count}} time · {{price}} each",
+        "each_other": "{{count}} times · {{price}} each",
+        "latestUp": "latest {{price}}, {{percent}} more",
+        "latestDown": "latest {{price}}, {{percent}} less",
+        "showAll": "Show all {{count}}",
+        "showFewer": "Show fewer"
+      },
       "categories": {
         "title": "By category",
         "rest": "Other categories"

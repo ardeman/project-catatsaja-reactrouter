@@ -16,10 +16,12 @@ import {
   totalsByCategory,
 } from '~/lib/utils/finance-analysis'
 import { cn } from '~/lib/utils/shadcn'
+import { similarItems } from '~/lib/utils/similar-items'
 
 import { BalanceChart } from './balance-chart'
 import { CashFlowChart } from './cash-flow-chart'
 import { CategoryBreakdown } from './category-breakdown'
+import { ItemBreakdown } from './item-breakdown'
 
 type TProperties = {
   entries: TFinanceEntry[]
@@ -37,9 +39,11 @@ const Section = ({
   action?: ReactNode
   children: ReactNode
 }) => (
-  <section className="glass-surface motion-enter grid gap-3 rounded-xl border p-4">
+  <section className="glass-surface motion-enter grid grid-cols-1 gap-3 rounded-xl border p-4">
     <div className="flex flex-wrap items-start justify-between gap-2">
-      <div className="grid gap-0.5">
+      {/* Takes the free width and wraps, so a long subtitle can't widen the
+          page on a phone. */}
+      <div className="grid min-w-0 flex-1 basis-48 gap-0.5">
         <h2 className="text-sm font-medium">{title}</h2>
         {subtitle && (
           <p className="text-xs text-muted-foreground">{subtitle}</p>
@@ -114,6 +118,8 @@ export const Analysis = ({ entries, book }: TProperties) => {
       expenseCategories: totalsByCategory(entries, 'expense'),
       incomeCategories: totalsByCategory(entries, 'income'),
       largest: largestEntry(entries, 'expense'),
+      expenseItems: similarItems(entries, 'expense'),
+      incomeItems: similarItems(entries, 'income'),
     }
   }, [entries])
 
@@ -147,9 +153,14 @@ export const Analysis = ({ entries, book }: TProperties) => {
     shownType === 'expense'
       ? analysis.expenseCategories
       : analysis.incomeCategories
+  const items =
+    shownType === 'expense' ? analysis.expenseItems : analysis.incomeItems
 
   return (
-    <div className="grid gap-4">
+    // One column that may shrink below its content (`grid-cols-1`): the
+    // charts draw at their measured width, and a plain grid kept them as
+    // wide as they were drawn when the window got narrower.
+    <div className="grid grid-cols-1 gap-4">
       <dl className="grid grid-cols-2 gap-2">
         {savingsRate !== undefined && (
           <Tile
@@ -360,6 +371,20 @@ export const Analysis = ({ entries, book }: TProperties) => {
           <CategoryBreakdown
             totals={categories}
             book={book}
+          />
+        </Section>
+      )}
+
+      {/* Follows the type chosen for the categories above. */}
+      {items.length > 0 && (
+        <Section
+          title={t('finances.analysis.items.title')}
+          subtitle={t('finances.analysis.items.subtitle')}
+        >
+          <ItemBreakdown
+            items={items}
+            book={book}
+            showsPriceChange={shownType === 'expense'}
           />
         </Section>
       )}

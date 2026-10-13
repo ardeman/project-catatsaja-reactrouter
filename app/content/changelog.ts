@@ -23,6 +23,20 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Analysis by item: things you bought more than once, grouped by name even when written differently (telur, Telur 1kg, TELUR), with how often, the average price and whether the latest price went up or down.',
+          id: 'Analisis per item: yang kamu beli lebih dari sekali, dikelompokkan menurut nama walau ditulis berbeda (telur, Telur 1kg, TELUR), lengkap dengan berapa kali, harga rata-rata, dan apakah harga terakhir naik atau turun.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'The finance charts shrink to fit when the window gets narrower, instead of making the page scroll sideways.',
+          id: 'Grafik keuangan kini menyesuaikan saat jendela menyempit, tidak lagi membuat halaman bergeser ke samping.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Encryption is now your choice when you sign up: set it up right away, or continue without it and turn it on later in Settings → Account → Security.',
           id: 'Enkripsi kini pilihanmu saat mendaftar: siapkan langsung, atau lanjut tanpa enkripsi dan aktifkan nanti di Pengaturan → Akun → Keamanan.',
         },

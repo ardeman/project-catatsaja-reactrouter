@@ -475,6 +475,16 @@
       "periodTable": {
         "title": "Per periode"
       },
+      "items": {
+        "title": "Per item",
+        "subtitle": "Yang muncul lebih dari sekali, dikelompokkan menurut nama (ukuran seperti 1kg atau x2 tidak dihitung).",
+        "each_one": "{{count}} kali · rata-rata {{price}}",
+        "each_other": "{{count}} kali · rata-rata {{price}}",
+        "latestUp": "terakhir {{price}}, {{percent}} lebih mahal",
+        "latestDown": "terakhir {{price}}, {{percent}} lebih murah",
+        "showAll": "Lihat semua {{count}}",
+        "showFewer": "Lihat lebih sedikit"
+      },
       "categories": {
         "title": "Per kategori",
         "rest": "Kategori lainnya"
