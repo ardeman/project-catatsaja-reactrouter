@@ -1,6 +1,9 @@
 import { useState } from 'react'
 
-import { RecipientWithoutEncryption } from '~/apis/firestore/shared-document'
+import {
+  InviteRefused,
+  RecipientWithoutEncryption,
+} from '~/apis/firestore/shared-document'
 import { setTaskPermission } from '~/apis/firestore/task'
 import { TTaskPermissionRequest } from '~/lib/types/task'
 import { getErrorMessage } from '~/lib/utils/firebase-error'
@@ -22,6 +25,8 @@ export const useShareTask = () => {
       // dialog asks whether to share it without encryption.
       if (error instanceof RecipientWithoutEncryption)
         return 'needsPlain' as const
+      // They can't be invited by this person: the dialog says so.
+      if (error instanceof InviteRefused) return 'refused' as const
       setIsError(true)
       const message = getErrorMessage(error)
       toast({

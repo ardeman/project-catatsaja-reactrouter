@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router'
 
 import { Button } from '~/components/ui/button'
 import { navIcons } from '~/lib/constants/navigation'
+import { useGetBlocked } from '~/lib/hooks/use-get-blocked'
 import { useGetInvitations } from '~/lib/hooks/use-get-invitations'
 import { useGetUsers } from '~/lib/hooks/use-get-users'
+import { useUpdateBlock } from '~/lib/hooks/use-update-block'
 import { useUpdateInvitation } from '~/lib/hooks/use-update-invitation'
 import { TInvitation } from '~/lib/types/common'
 
@@ -18,16 +20,23 @@ const pages = {
 
 // Items shared with the person that wait for them to accept, at the top of
 // every list page: nothing shared appears in their lists until they do. Accepting opens
-// the item; declining removes the invitation for good.
+// the item; declining removes the invitation for good; blocking also stops
+// that person inviting them again (until unblocked in Settings → Account).
 export const Invitations = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { data } = useGetInvitations()
-  const invitations = data ?? []
+  const { data: blocked } = useGetBlocked()
+  // From someone blocked meanwhile: declined as they are blocked, hidden
+  // until then.
+  const invitations = (data ?? []).filter(
+    (invitation) => !blocked?.includes(invitation.owner),
+  )
   const { data: owners } = useGetUsers([
     ...new Set(invitations.map((invitation) => invitation.owner)),
   ])
   const { accept, decline, pendingId } = useUpdateInvitation()
+  const { block } = useUpdateBlock()
 
   if (invitations.length === 0) return null
 
@@ -81,6 +90,16 @@ export const Invitations = () => {
                 </p>
               </div>
               <div className="ml-auto flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={isPending}
+                  title={t('block.hint')}
+                  className="text-destructive-text hover:text-destructive-text"
+                  onClick={() => void block(invitation.owner, invitations)}
+                >
+                  {t('block.action')}
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"

@@ -50,7 +50,8 @@
       "recent": "Recent",
       "find": "Find this person",
       "notFound": "No one uses Catat Saja with {{email}}. Check the address, or ask them to sign up first.",
-      "alreadyIn": "{{email}} already has access or an invitation."
+      "alreadyIn": "{{email}} already has access or an invitation.",
+      "refused": "{{email}} can’t be invited right now."
     },
     "copyLink": "Copy link",
     "linkCopied": "Link copied",
@@ -642,7 +643,7 @@
       "description": "Share any note, task list, finance book or health log with other people who use Catat Saja.",
       "steps": [
         "Choose Share in the icon bar, find someone by their email, and give them read-only or edit access. They get an invitation, and the item is added to their list once they accept.",
-        "Something shared with you shows as an invitation at the top of the app: Accept to add it to your list, or Decline.",
+        "Something shared with you shows as an invitation at the top of your lists: Accept to add it to your list, Decline, or Block to also stop that person inviting you (unblock them in Settings → Account).",
         "Changes show up for everyone straight away. People with read-only access can't change anything.",
         "You can copy a link to the item, and undo removing someone.",
         "Something shared with you can be taken off your own list with Remove from my list; it stays for everyone else."
@@ -689,7 +690,7 @@
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices. So the app works offline, each browser you use also keeps a copy of your items (encrypted items stay encrypted) and of an entry you were typing and hadn't saved; for an encrypted book, that draft is kept only until the tab closes. Signing out deletes them from that browser.",
     "encryption": "With end-to-end encryption (offered when you sign up, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
     "ai": "Receipt scanning, quick add and note helpers are optional. Only when you use one is what you chose sent to Google’s Gemini (through Firebase AI Logic): a receipt photo, the text you typed, or the note’s title and text, even for end-to-end encrypted items. Google may keep it and use it to improve its services. We don’t store what is sent; what you add or change is stored like anything else. You agree to this once, before the first use, and can take it back in Settings → Account.",
-    "sharing": "When you share a note, task, book or health log, the people you invite can see its content (their invitation shows its title), and it is added to their lists only if they accept. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
+    "sharing": "When you share a note, task, book or health log, the people you invite can see its content (their invitation shows its title), and it is added to their lists only if they accept. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users. If you block someone, they can't invite you any more; your list of blocked people is private and they aren't told.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
     "security": "To keep out abuse, the app uses Firebase App Check with Google reCAPTCHA, which checks that requests come from this app using signals from your browser.",
     "video": "The home page has videos hosted on YouTube. They load only when you press play or choose a story, from YouTube's privacy-enhanced mode (youtube-nocookie.com); YouTube's own privacy policy then applies to them.",
@@ -1534,6 +1535,20 @@
     "toast": {
       "archived": "Archived. Find it under Archived at the bottom of the list.",
       "restored": "Moved back to your list"
+    }
+  },
+  "block": {
+    "action": "Block",
+    "hint": "Decline, and stop this person inviting you. You can unblock them in Settings → Account.",
+    "toast": {
+      "blocked": "Blocked. They can’t invite you any more.",
+      "unblocked": "Unblocked. They can invite you again."
+    },
+    "settings": {
+      "title": "Blocked people",
+      "description": "People you blocked can’t invite you to anything. They aren’t told that you blocked them.",
+      "empty": "You haven’t blocked anyone.",
+      "unblock": "Unblock"
     }
   }
 }

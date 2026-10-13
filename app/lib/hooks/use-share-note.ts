@@ -1,7 +1,10 @@
 import { useState } from 'react'
 
 import { setNotePermission } from '~/apis/firestore/note'
-import { RecipientWithoutEncryption } from '~/apis/firestore/shared-document'
+import {
+  InviteRefused,
+  RecipientWithoutEncryption,
+} from '~/apis/firestore/shared-document'
 import { TNotePermissionRequest } from '~/lib/types/note'
 import { getErrorMessage } from '~/lib/utils/firebase-error'
 
@@ -22,6 +25,8 @@ export const useShareNote = () => {
       // dialog asks whether to share it without encryption.
       if (error instanceof RecipientWithoutEncryption)
         return 'needsPlain' as const
+      // They can't be invited by this person: the dialog says so.
+      if (error instanceof InviteRefused) return 'refused' as const
       setIsError(true)
       const message = getErrorMessage(error)
       toast({

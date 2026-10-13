@@ -57,6 +57,20 @@ service cloud.firestore {
         && !('invites' in request.resource.data);
     }
 
+    // Someone newly invited must not have blocked the person inviting. The
+    // app invites one person at a time, added at the end of `invites.read`,
+    // so that is the one to check.
+    function isInviteAllowed() {
+      let after = invitedReaders(request.resource.data);
+      let added = after.toSet().difference(invitedReaders(resource.data).toSet());
+      return added.size() == 0
+        || (
+          added.size() == 1
+            && added == [after[after.size() - 1]].toSet()
+            && !exists(/databases/$(database)/documents/users/$(after[after.size() - 1])/blocked/$(request.auth.uid))
+        );
+    }
+
     // The owner may change anything, including inviting and roles, but not
     // the owner, and may not give anyone access directly: people get it by
     // accepting an invitation. A writer must already be a reader.
@@ -65,7 +79,8 @@ service cloud.firestore {
       return isOwner(resource.data.owner)
         && request.resource.data.owner == resource.data.owner
         && request.resource.data.permissions.read.toSet().difference(readersBefore).size() == 0
-        && request.resource.data.permissions.write.toSet().difference(readersBefore).size() == 0;
+        && request.resource.data.permissions.write.toSet().difference(readersBefore).size() == 0
+        && isInviteAllowed();
     }
 
     // Someone invited accepting: they join with exactly the access they were
@@ -159,6 +174,12 @@ service cloud.firestore {
 
       // The sealed private key (end-to-end encryption): its owner only.
       match /keys/{keyId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // People the person blocked: their own private list, so nobody can see
+      // who blocked them. Invitations from them are refused (`isOwnerUpdate`).
+      match /blocked/{blockedId} {
         allow read, write: if isOwner(userId);
       }
     }

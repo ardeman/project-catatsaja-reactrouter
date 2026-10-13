@@ -33,9 +33,12 @@ export type TPermissions = {
   // Invited and not accepted yet (shown as invited in the share dialog).
   invited?: TAccessLists
   // 'needsPlain': encrypted, and the person hasn't turned encryption on.
+  // 'refused': they can't be invited by this person.
   handleShare: (
     parameters: THandleSetPermission,
-  ) => Promise<'shared' | 'needsPlain' | 'failed' | undefined> | void
+  ) => Promise<
+    'shared' | 'needsPlain' | 'refused' | 'failed' | undefined
+  > | void
   handleUnshare: (parameters: Pick<THandleDeletePermission, 'uid'>) => void
   path?: string
 }

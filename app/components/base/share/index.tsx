@@ -53,6 +53,8 @@ export const Share = (properties: TPermissions) => {
   const [needsPlain, setNeedsPlain] = useState<
     { uid: string; email: string; permission: 'read' | 'write' } | undefined
   >()
+  // Someone who can't be invited by this person (shown neutrally).
+  const [refused, setRefused] = useState<string>()
   const currentLink = `${location.origin}${path}`
 
   const onSubmit = handleSubmit(async (data) => {
@@ -141,9 +143,11 @@ export const Share = (properties: TPermissions) => {
       ''
     setEmail('')
     setValue('user', '')
+    setRefused(undefined)
     const result = await handleShare({ uid, permission })
     if (result === 'needsPlain' && permission !== 'delete')
       setNeedsPlain({ uid, email, permission })
+    if (result === 'refused') setRefused(email)
   }
 
   const handleSharePlain = async () => {
@@ -213,6 +217,14 @@ export const Share = (properties: TPermissions) => {
           )}
         />
 
+        {refused && (
+          <p
+            role="alert"
+            className="text-sm text-muted-foreground"
+          >
+            {t('form.user.refused', { email: refused })}
+          </p>
+        )}
         {(isNotFound || isAlreadyIn) && (
           <p
             role="status"

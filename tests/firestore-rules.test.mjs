@@ -91,6 +91,25 @@ describe('users', () => {
     await assertFails(as(STRANGER).doc(path).set({ v: 1 }))
   })
 
+  test('who someone blocked is private to them', async () => {
+    await seed(`users/${OWNER}/blocked/${STRANGER}`, { blockedAt: new Date() })
+    await assertSucceeds(
+      as(OWNER).doc(`users/${OWNER}/blocked/${STRANGER}`).get(),
+    )
+    await assertSucceeds(
+      as(OWNER)
+        .doc(`users/${OWNER}/blocked/${READER}`)
+        .set({ blockedAt: new Date() }),
+    )
+    await assertFails(
+      as(STRANGER).doc(`users/${OWNER}/blocked/${STRANGER}`).get(),
+    )
+    await assertFails(as(STRANGER).collection(`users/${OWNER}/blocked`).get())
+    await assertFails(
+      as(STRANGER).doc(`users/${OWNER}/blocked/${STRANGER}`).delete(),
+    )
+  })
+
   test('currencies are private to their owner', async () => {
     const path = `users/${OWNER}/currencies/usd`
     await assertSucceeds(as(OWNER).doc(path).set({ code: 'USD' }))
@@ -564,6 +583,31 @@ for (const [collection, content] of Object.entries(collections)) {
               'permissions.read': [...members, STRANGER],
               invites: { read: [], write: [] },
             }),
+        )
+      })
+
+      test('nobody can invite someone who blocked them', async () => {
+        await seed(path, shared)
+        await seed(`users/${STRANGER}/blocked/${OWNER}`, {
+          blockedAt: new Date(),
+        })
+        await assertFails(
+          as(OWNER)
+            .doc(path)
+            .update({ invites: { read: [STRANGER], write: [] } }),
+        )
+        // Only one new person at a time, so each can be checked.
+        await assertFails(
+          as(OWNER)
+            .doc(path)
+            .update({
+              invites: { read: [UNREGISTERED, 'someone'], write: [] },
+            }),
+        )
+        await assertSucceeds(
+          as(OWNER)
+            .doc(path)
+            .update({ invites: { read: [UNREGISTERED], write: [] } }),
         )
       })
 

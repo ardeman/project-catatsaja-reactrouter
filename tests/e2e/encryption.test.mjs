@@ -688,4 +688,66 @@ describe('end-to-end encryption', () => {
     await indra.context.close()
     await hana.context.close()
   })
+
+  test('blocking stops invitations until unblocked', async () => {
+    const skipSetup = async (page) => {
+      await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+      await page
+        .getByRole('button', { name: 'Continue without encryption' })
+        .click()
+      await page.waitForURL(/\/notes/, { timeout: 30_000 })
+    }
+    const jaya = await newDevice(browser)
+    await signUp(jaya.page, 'Jaya', 'jaya@example.com')
+    await skipSetup(jaya.page)
+    const kiki = await newDevice(browser)
+    await signUp(kiki.page, 'Kiki', 'kiki@example.com')
+    await skipSetup(kiki.page)
+    const jayaUid = await uidOf('jaya@example.com')
+    const kikiUid = await uidOf('kiki@example.com')
+
+    await createNote(kiki.page, 'Kiki spam one')
+    await shareWith(kiki.page, 'jaya@example.com', 'Read only')
+    await kiki.page.keyboard.press('Escape')
+    const invitation = (title) =>
+      jaya.page.getByRole('listitem').filter({ hasText: title })
+    await jaya.page.goto(`${APP}/notes`)
+    await invitation('Kiki spam one')
+      .getByRole('button', { name: 'Block' })
+      .click({ timeout: 30_000 })
+    await invitation('Kiki spam one').waitFor({ state: 'hidden' })
+    assert.ok(
+      await dbGetWhen(
+        `users/${jayaUid}/blocked/${kikiUid}`,
+        (fields) => !!fields,
+      ),
+      'blocked',
+    )
+
+    // Kiki can't invite Jaya again, and isn't told why.
+    const second = await createNote(kiki.page, 'Kiki spam two')
+    const dialog = await shareWith(kiki.page, 'jaya@example.com', 'Read only')
+    await dialog
+      .getByText(/jaya@example\.com can.t be invited right now/)
+      .waitFor({ timeout: 15_000 })
+    await kiki.page.keyboard.press('Escape')
+    assert.ok(
+      !JSON.stringify((await dbGet(`notes/${second}`)).invites ?? {}).includes(
+        jayaUid,
+      ),
+    )
+
+    // Unblocked in the settings: invitations come again.
+    await jaya.page.goto(`${APP}/settings/account`)
+    await jaya.page.getByRole('button', { name: 'Unblock' }).click()
+    await jaya.page.getByText(/You haven.t blocked anyone/).waitFor()
+    await kiki.page.goto(`${APP}/notes/${second}`)
+    await kiki.page.locator('textarea[name=title]').waitFor()
+    await shareWith(kiki.page, 'jaya@example.com', 'Read only')
+    await kiki.page.keyboard.press('Escape')
+    await jaya.page.goto(`${APP}/notes`)
+    await invitation('Kiki spam two').waitFor({ timeout: 30_000 })
+    await jaya.context.close()
+    await kiki.context.close()
+  })
 })

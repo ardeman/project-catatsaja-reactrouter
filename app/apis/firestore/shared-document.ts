@@ -132,6 +132,17 @@ export class RecipientWithoutEncryption extends Error {
   }
 }
 
+// The person can't be invited by this owner (they blocked them). Said
+// neutrally in the app: nobody learns that they were blocked.
+export class InviteRefused extends Error {
+  constructor() {
+    super('share/invite-refused')
+  }
+}
+
+const isPermissionDenied = (error: unknown) =>
+  (error as { code?: string } | undefined)?.code === 'permission-denied'
+
 // Sharing, changing access or removing someone. Someone new is invited
 // (`invites`) and gets access only once they accept; people who already
 // have access, or an invitation, just change role. On an encrypted item an
@@ -139,7 +150,7 @@ export class RecipientWithoutEncryption extends Error {
 // can show the title (they must have turned encryption on, unless
 // `allowPlain` stores the item plain again), and removing someone or
 // cancelling an invitation gives the item a new key for the others.
-export const setSharedPermission = async (
+const writeSharedPermission = async (
   name: TCollection,
   item: TShared,
   uid: string,
@@ -213,6 +224,21 @@ export const setArchived = async (
   return updateDoc(doc(database, name, id), {
     archivedBy: isArchived ? arrayUnion(uid) : arrayRemove(uid),
   })
+}
+
+export const setSharedPermission = async (
+  ...parameters: Parameters<typeof writeSharedPermission>
+) => {
+  const [, item, uid] = parameters
+  const isNew =
+    !item.permissions?.read.includes(uid) && !item.invites?.read.includes(uid)
+  try {
+    return await writeSharedPermission(...parameters)
+  } catch (error: unknown) {
+    // The rules refuse an invitation to someone who blocked the owner.
+    if (isNew && isPermissionDenied(error)) throw new InviteRefused()
+    throw error
+  }
 }
 
 // Accepting an invitation: the access offered (and nothing more), and the

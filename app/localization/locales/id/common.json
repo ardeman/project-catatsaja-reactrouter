@@ -50,7 +50,8 @@
       "recent": "Terakhir",
       "find": "Cari orang ini",
       "notFound": "Tidak ada yang memakai Catat Saja dengan {{email}}. Periksa alamatnya, atau minta mereka mendaftar dulu.",
-      "alreadyIn": "{{email}} sudah punya akses atau undangan."
+      "alreadyIn": "{{email}} sudah punya akses atau undangan.",
+      "refused": "{{email}} tidak bisa diundang saat ini."
     },
     "copyLink": "Salin tautan",
     "linkCopied": "Tautan disalin",
@@ -642,7 +643,7 @@
       "description": "Bagikan catatan, daftar tugas, buku keuangan, atau catatan kesehatan dengan orang lain yang memakai Catat Saja.",
       "steps": [
         "Pilih Bagikan di bilah ikon, cari seseorang dengan emailnya, lalu beri akses hanya baca atau bisa mengubah. Mereka mendapat undangan, dan item masuk ke daftar mereka setelah diterima.",
-        "Item yang dibagikan kepadamu muncul sebagai undangan di bagian atas aplikasi: Terima untuk menambahkannya ke daftarmu, atau Tolak.",
+        "Item yang dibagikan kepadamu muncul sebagai undangan di bagian atas daftarmu: Terima untuk menambahkannya ke daftarmu, Tolak, atau Blokir agar orang itu juga tidak bisa mengundangmu lagi (buka blokir di Pengaturan → Akun).",
         "Perubahan langsung terlihat oleh semua orang. Orang dengan akses hanya baca tidak bisa mengubah apa pun.",
         "Kamu bisa menyalin tautan ke item, dan mengurungkan saat menghapus seseorang.",
         "Item yang dibagikan kepadamu bisa dihapus dari daftarmu sendiri dengan Hapus dari daftar saya; item tetap ada untuk yang lain."
@@ -689,7 +690,7 @@
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
     "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, dan kapan item berubah. Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
     "ai": "Pindai struk, tambah cepat, dan bantuan catatan bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, atau judul dan isi catatan, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
-    "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu undang bisa melihat isinya (undangan mereka menampilkan judulnya), dan item baru masuk ke daftar mereka jika mereka menerimanya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna.",
+    "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu undang bisa melihat isinya (undangan mereka menampilkan judulnya), dan item baru masuk ke daftar mereka jika mereka menerimanya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna. Jika kamu memblokir seseorang, mereka tidak bisa mengundangmu lagi; daftar orang yang kamu blokir bersifat pribadi dan mereka tidak diberi tahu.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
     "video": "Halaman utama memuat video yang di-hosting di YouTube. Video baru dimuat saat kamu menekan putar atau memilih sebuah cerita, melalui mode privasi YouTube (youtube-nocookie.com); setelah itu kebijakan privasi YouTube berlaku untuknya.",
@@ -1534,6 +1535,20 @@
     "toast": {
       "archived": "Diarsipkan. Lihat di bagian Arsip di bawah daftar.",
       "restored": "Dikembalikan ke daftarmu"
+    }
+  },
+  "block": {
+    "action": "Blokir",
+    "hint": "Tolak, dan hentikan orang ini mengundangmu. Kamu bisa membuka blokirnya di Pengaturan → Akun.",
+    "toast": {
+      "blocked": "Diblokir. Mereka tidak bisa mengundangmu lagi.",
+      "unblocked": "Blokir dibuka. Mereka bisa mengundangmu lagi."
+    },
+    "settings": {
+      "title": "Orang yang diblokir",
+      "description": "Orang yang kamu blokir tidak bisa mengundangmu ke apa pun. Mereka tidak diberi tahu bahwa kamu memblokirnya.",
+      "empty": "Kamu belum memblokir siapa pun.",
+      "unblock": "Buka blokir"
     }
   }
 }

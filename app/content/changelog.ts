@@ -37,6 +37,20 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Block: if someone keeps inviting you, block them from their invitation and they can’t invite you any more, without being told. Unblock them in Settings → Account.',
+          id: 'Blokir: jika seseorang terus mengundangmu, blokir dari undangannya dan mereka tidak bisa mengundangmu lagi, tanpa diberi tahu. Buka blokir di Pengaturan → Akun.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Sharing says when nobody uses Catat Saja with that email, instead of getting stuck; invitations no longer hide behind the create button on a computer.',
+          id: 'Berbagi kini memberi tahu jika tidak ada yang memakai Catat Saja dengan email itu, tidak lagi macet; undangan tidak lagi tertutup tombol buat di komputer.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Sharing is now an invitation: the other person sees it at the top of the app and accepts or declines, and nothing joins their lists until they accept. Everything already shared stays shared.',
           id: 'Berbagi kini berupa undangan: orang yang diajak melihatnya di bagian atas aplikasi lalu menerima atau menolak, dan tidak ada yang masuk ke daftarnya sebelum diterima. Semua yang sudah dibagikan tetap dibagikan.',
         },

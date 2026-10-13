@@ -1,7 +1,10 @@
 import { useState } from 'react'
 
 import { setFinancePermission } from '~/apis/firestore/finance'
-import { RecipientWithoutEncryption } from '~/apis/firestore/shared-document'
+import {
+  InviteRefused,
+  RecipientWithoutEncryption,
+} from '~/apis/firestore/shared-document'
 import { TFinancePermissionRequest } from '~/lib/types/finance'
 import { getErrorMessage } from '~/lib/utils/firebase-error'
 
@@ -22,6 +25,8 @@ export const useShareFinance = () => {
       // dialog asks whether to share it without encryption.
       if (error instanceof RecipientWithoutEncryption)
         return 'needsPlain' as const
+      // They can't be invited by this person: the dialog says so.
+      if (error instanceof InviteRefused) return 'refused' as const
       setIsError(true)
       const message = getErrorMessage(error)
       toast({
