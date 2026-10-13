@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Adding entries to a book: the form stays at the top as you scroll, more compact and slightly see-through, with the balance, income, expenses and the difference from your accounts above it, so you can check the entries and whether the book matches while you type.',
+          id: 'Menambah entri di buku: formulirnya tetap di atas saat kamu menggulir, lebih ringkas dan sedikit tembus pandang, dengan saldo, pemasukan, pengeluaran, dan selisih dengan akunmu di atasnya, jadi kamu bisa memeriksa entri dan apakah bukunya sudah cocok sambil mengetik.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Emails to verify your address, reset your password or confirm a new email now come in the language you use the app in.',
           id: 'Email untuk memverifikasi alamat, mengatur ulang kata sandi, atau mengonfirmasi email baru kini dikirim dalam bahasa yang kamu pakai di aplikasi.',
         },

@@ -14,7 +14,7 @@ import {
 } from '~/components/ui/tooltip'
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceCurrency, TFinanceForm } from '~/lib/types/finance'
-import { sumAccounts } from '~/lib/utils/finance'
+import { accountsDifference, sumAccounts } from '~/lib/utils/finance'
 import { cn } from '~/lib/utils/shadcn'
 
 type TProperties = {
@@ -39,9 +39,11 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
   if (isReadOnly && accounts.length === 0) return null
 
   const actual = sumAccounts(accounts)
-  // Rounded to the book's smallest unit, so float noise reads as a match.
-  const unit = 10 ** book.maximumFractionDigits
-  const difference = Math.round((actual - balance) * unit) / unit
+  const difference = accountsDifference(
+    accounts,
+    balance,
+    book.maximumFractionDigits,
+  )
 
   const handleAdd = () => {
     const id = crypto.randomUUID()

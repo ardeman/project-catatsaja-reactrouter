@@ -60,6 +60,7 @@ import { Accounts } from './accounts'
 import { AddCurrency } from './add-currency'
 import { Analysis } from './analysis'
 import { EntryForm } from './entry-form.client'
+import { FloatingSummary } from './floating-summary'
 import { QuickAdd } from './quick-add.client'
 import { ReceiptScan } from './receipt-scan.client'
 import { TFormProperties } from './type'
@@ -533,6 +534,15 @@ export const Form = (properties: TFormProperties) => {
                   history={history}
                   onSave={handleSaveEntry}
                   onDelete={handleDeleteEntry}
+                  summary={
+                    <FloatingSummary
+                      book={book}
+                      income={income}
+                      expense={expense}
+                      balance={balance}
+                      accounts={accounts ?? []}
+                    />
+                  }
                 />
               ) : (
                 <div className="motion-fade flex flex-wrap gap-2">

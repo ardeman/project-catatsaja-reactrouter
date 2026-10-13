@@ -402,6 +402,7 @@
     "entries_other": "{{count}} entri",
     "summary": {
       "balance": "Saldo",
+      "difference": "Selisih",
       "income": "Pemasukan",
       "expense": "Pengeluaran",
       "incomeExpense": "Masuk <in>{{income}}</in> · Keluar <out>{{expense}}</out>",

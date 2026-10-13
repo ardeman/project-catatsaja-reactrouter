@@ -402,6 +402,7 @@
     "entries_other": "{{count}} entries",
     "summary": {
       "balance": "Balance",
+      "difference": "Difference",
       "income": "Income",
       "expense": "Expenses",
       "incomeExpense": "In <in>{{income}}</in> · Out <out>{{expense}}</out>",

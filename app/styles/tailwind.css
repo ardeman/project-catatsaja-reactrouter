@@ -128,6 +128,17 @@
     }
   }
 
+  /* A floating panel (with .glass-surface) that lets what scrolls under it
+     show through, lightly blurred. */
+  .glass-float {
+    @supports (backdrop-filter: blur(1px)) or
+      (-webkit-backdrop-filter: blur(1px)) {
+      background-color: var(--glass-float-tint);
+      -webkit-backdrop-filter: blur(3px) saturate(140%);
+      backdrop-filter: blur(3px) saturate(140%);
+    }
+  }
+
   .glass-primary {
     background-color: hsl(var(--primary));
     border-color: hsl(var(--primary) / 0.5);
@@ -215,6 +226,7 @@
     --ring: 20 14.3% 4.1%;
     --radius: 1rem;
     --glass-tint: hsl(var(--background) / 0.78);
+    --glass-float-tint: hsl(var(--background) / 0.72);
     --glass-highlight: hsl(var(--background) / 0.65);
     --glass-border: hsl(var(--foreground) / 0.12);
     --glass-shadow:
@@ -279,6 +291,7 @@
     --input: 12 6.5% 15.1%;
     --ring: 35.5 91.7% 32.9%;
     --glass-tint: hsl(var(--secondary) / 0.78);
+    --glass-float-tint: hsl(var(--secondary) / 0.72);
     --glass-highlight: hsl(var(--foreground) / 0.08);
     --glass-border: hsl(var(--foreground) / 0.16);
     --glass-shadow:

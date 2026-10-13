@@ -58,8 +58,16 @@ const toFinanceCurrency = (
 })
 
 export const EntryForm = (properties: TEntryFormProperties) => {
-  const { onClose, entry, book, currencies, history, onSave, onDelete } =
-    properties
+  const {
+    onClose,
+    entry,
+    book,
+    currencies,
+    history,
+    onSave,
+    onDelete,
+    summary,
+  } = properties
   const { t, i18n } = useTranslation(['common', 'zod'])
   const { data: userData } = useUserData()
   const isEditing = !!entry
@@ -270,11 +278,21 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       ref={panelReference}
       aria-labelledby="finance-entry-title"
       className={cn(
-        'motion-enter scroll-mt-36 p-3 sm:p-4 [&_[role=combobox]]:h-8 [&_button[aria-haspopup=dialog]]:h-8 [&_input]:h-8 [&_label]:block [&_label]:text-xs [&_label]:leading-tight',
-        !isEditing && 'glass-surface rounded-xl border',
+        'motion-enter [&_[role=combobox]]:h-8 [&_button[aria-haspopup=dialog]]:h-8 [&_input]:h-8 [&_label]:block [&_label]:text-xs [&_label]:leading-tight',
+        isEditing
+          ? 'scroll-mt-36 p-3 sm:p-4'
+          : // Adding floats under the book's toolbar, compact and see-through,
+            // so the entries scrolling under it can be checked while typing.
+            'glass-surface glass-float sticky top-[7.5rem] z-30 max-h-[calc(100dvh-14rem)] scroll-mt-[7.5rem] overflow-y-auto rounded-xl border p-2.5 shadow-lg sm:p-3 md:top-[8.5rem] md:max-h-[calc(100dvh-10rem)] md:scroll-mt-[8.5rem] [&_[role=combobox]]:bg-background [&_input]:bg-background',
       )}
     >
-      <div className="mb-2 flex items-center justify-between gap-2">
+      {!isEditing && summary}
+      <div
+        className={cn(
+          'flex items-center justify-between gap-2',
+          isEditing ? 'mb-2' : 'mb-1.5',
+        )}
+      >
         <h2
           id="finance-entry-title"
           className="text-base font-semibold"
@@ -328,7 +346,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       <FormProvider {...formMethods}>
         <form
           onSubmit={onSubmit}
-          className="grid gap-2.5"
+          className={cn('grid', isEditing ? 'gap-2.5' : 'gap-2')}
         >
           {savedCount > 0 && (
             <p
@@ -373,14 +391,21 @@ export const EntryForm = (properties: TEntryFormProperties) => {
 
           {/* Top-aligned: the category's "chosen from earlier entries" note
               must not push the description down. */}
-          <div className="grid items-start gap-2.5 sm:grid-cols-2">
+          <div
+            className={cn(
+              'grid items-start gap-2',
+              isEditing
+                ? 'sm:grid-cols-2'
+                : 'grid-cols-[repeat(2,minmax(0,1fr))]',
+            )}
+          >
             <Input
               name="description"
               label={t('finances.form.description.label')}
               placeholder={t('finances.form.description.placeholder')}
             />
 
-            <div className="grid gap-1">
+            <div className="grid grid-cols-1 gap-1">
               <Label>
                 {t('finances.form.category.label')}{' '}
                 <sup className="text-destructive">*</sup>

@@ -38,6 +38,17 @@ export const normalizeAccounts = (accounts: TFinanceAccount[] = []) =>
 export const sumAccounts = (accounts: TFinanceAccount[] = []) =>
   accounts.reduce((total, account) => total + (Number(account.balance) || 0), 0)
 
+// What the accounts hold minus the book's balance, rounded to the book's
+// smallest unit so float noise reads as a match.
+export const accountsDifference = (
+  accounts: TFinanceAccount[],
+  balance: number,
+  fractionDigits: number,
+) => {
+  const unit = 10 ** fractionDigits
+  return Math.round((sumAccounts(accounts) - balance) * unit) / unit
+}
+
 // Today in the person's own time zone, as YYYY-MM-DD.
 export const today = () => {
   const now = new Date()
