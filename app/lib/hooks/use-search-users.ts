@@ -10,12 +10,13 @@ export const useSearchUsers = (email: string) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>()
 
-  // A new email starts with no results and no error, set while rendering so
-  // the previous search's results never show for it.
+  // A new email starts as not searched yet (no results, no error), set while
+  // rendering so the previous search's results never show for it, and
+  // "nobody found" shows only once the search is done.
   const [searchedEmail, setSearchedEmail] = useState(email)
   if (email !== searchedEmail) {
     setSearchedEmail(email)
-    setData([])
+    setData(undefined)
     setError(undefined)
   }
 

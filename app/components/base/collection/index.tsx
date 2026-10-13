@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router'
 
 import { Button } from '~/components/base/button'
 import { LoadingSpinner } from '~/components/base/loading-spinner'
+import { Invitations } from '~/components/layouts/invitations'
 import { cn } from '~/lib/utils/shadcn'
 
 import { ITEM_CLASS, MasonryGrid, TLayoutProperties } from './masonry.client'
@@ -171,6 +172,8 @@ export const Collection = <T extends TCollectionItem>(
         {createLabel}
       </Button>
       <div className={cn('flex flex-1 flex-col gap-6 md:mt-16')}>
+        {/* Below the floating create button, so it never covers them. */}
+        <Invitations />
         {renderContent()}
       </div>
     </div>

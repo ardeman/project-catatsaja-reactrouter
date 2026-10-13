@@ -4,7 +4,6 @@ import { Outlet } from 'react-router'
 
 import { fetchUserData } from '~/apis/firestore/user'
 import { EncryptionGate } from '~/components/layouts/encryption-gate'
-import { Invitations } from '~/components/layouts/invitations'
 import { MaintenanceGate } from '~/components/layouts/maintenance-gate'
 import { Navbar } from '~/components/layouts/navbar'
 import { ScrollArea } from '~/components/ui/scroll-area'
@@ -56,7 +55,6 @@ const Main = () => {
         <Navbar />
         <MaintenanceGate>
           <EncryptionGate>
-            <Invitations />
             <Outlet />
           </EncryptionGate>
         </MaintenanceGate>

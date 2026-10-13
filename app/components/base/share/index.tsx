@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleUser, Copy as CopyIcon, Trash, UserSearch } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -31,7 +31,6 @@ import { shareSchema } from '~/lib/validations/common'
 
 export const Share = (properties: TPermissions) => {
   const { write, read, invited, handleShare, handleUnshare, path } = properties
-  const [disabled, setDisabled] = useState(false)
   const [email, setEmail] = useState('')
   const { t } = useTranslation(['common', 'zod'])
   const {
@@ -58,7 +57,6 @@ export const Share = (properties: TPermissions) => {
 
   const onSubmit = handleSubmit(async (data) => {
     setEmail(data.user)
-    setDisabled(true)
   })
 
   // Everyone with access or an invitation: not offered again.
@@ -81,11 +79,18 @@ export const Share = (properties: TPermissions) => {
   const availableUsers = searchResults?.filter(
     (user) => !permissions.has(user.uid),
   )
+  const isFound = (availableUsers?.length ?? 0) > 0
+  // What the search found for the email still in the field: nobody, or only
+  // people who already have access or an invitation.
+  const typed = (useWatch({ control, name: 'user' }) ?? '').trim().toLowerCase()
+  const isSearchShown =
+    !!email && !isSearching && !searchError && typed === email.toLowerCase()
+  const isNotFound = isSearchShown && searchResults?.length === 0
+  const isAlreadyIn = isSearchShown && !!searchResults?.length && !isFound
   // People the person already shares with, not on this item yet, matching
   // what is typed; hidden while a search runs or shows someone.
-  const typed = (useWatch({ control, name: 'user' }) ?? '').trim().toLowerCase()
   const suggestions =
-    disabled || isSearching || (availableUsers?.length ?? 0) > 0
+    isSearching || isFound
       ? []
       : contacts
           .filter(
@@ -100,7 +105,6 @@ export const Share = (properties: TPermissions) => {
   const handleChooseContact = (contactEmail: string) => {
     setValue('user', contactEmail)
     setEmail(contactEmail)
-    setDisabled(true)
   }
 
   const getPermission = (uid: string) => {
@@ -108,18 +112,10 @@ export const Share = (properties: TPermissions) => {
     if (read.includes(uid) || invited?.read.includes(uid)) return 'read'
   }
 
-  useEffect(() => {
-    if (!searchResults?.some((user) => !permissions.has(user.uid))) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- reacts to results that arrive after the submit; doing it while rendering could loop, as `permissions` is rebuilt whenever `read` or `write` is a new array
-      setDisabled(false)
-    }
-  }, [searchResults, permissions])
-
   const handleDeletePermission = (parameters: THandleDeletePermission) => {
     const { email, uid } = parameters
     if (email === getValues().user) {
       setEmail('')
-      setDisabled(false)
       setValue('user', '')
       return
     }
@@ -144,7 +140,6 @@ export const Share = (properties: TPermissions) => {
       usersById.get(uid)?.email ??
       ''
     setEmail('')
-    setDisabled(false)
     setValue('user', '')
     const result = await handleShare({ uid, permission })
     if (result === 'needsPlain' && permission !== 'delete')
@@ -202,11 +197,11 @@ export const Share = (properties: TPermissions) => {
           name="user"
           placeholder={t('form.user.placeholder')}
           required
-          disabled={disabled || isSearching}
+          disabled={isSearching}
           rightNode={({ className }) => (
             <Button
               type="submit"
-              disabled={disabled || isSearching}
+              disabled={isSearching}
               variant="ghost"
               size="icon"
               aria-label={t('form.user.find')}
@@ -218,6 +213,16 @@ export const Share = (properties: TPermissions) => {
           )}
         />
 
+        {(isNotFound || isAlreadyIn) && (
+          <p
+            role="status"
+            className="text-sm text-muted-foreground"
+          >
+            {t(isNotFound ? 'form.user.notFound' : 'form.user.alreadyIn', {
+              email,
+            })}
+          </p>
+        )}
         {searchError && (
           <p
             role="alert"

@@ -16,8 +16,8 @@ const pages = {
   healthLogs: 'health',
 } as const satisfies Record<TInvitation['name'], keyof typeof navIcons>
 
-// Items shared with the person that wait for them to accept, above every
-// page: nothing shared appears in their lists until they do. Accepting opens
+// Items shared with the person that wait for them to accept, at the top of
+// every list page: nothing shared appears in their lists until they do. Accepting opens
 // the item; declining removes the invitation for good.
 export const Invitations = () => {
   const { t } = useTranslation()
@@ -34,7 +34,7 @@ export const Invitations = () => {
   return (
     <section
       aria-labelledby="invitations-title"
-      className="mx-auto grid w-full max-w-6xl gap-2 px-4 pt-4 md:px-10 md:pt-6"
+      className="mx-auto grid w-full max-w-6xl gap-2"
     >
       <h2
         id="invitations-title"

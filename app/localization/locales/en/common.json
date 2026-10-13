@@ -48,7 +48,9 @@
     "user": {
       "placeholder": "Enter an email address",
       "recent": "Recent",
-      "find": "Find this person"
+      "find": "Find this person",
+      "notFound": "No one uses Catat Saja with {{email}}. Check the address, or ask them to sign up first.",
+      "alreadyIn": "{{email}} already has access or an invitation."
     },
     "copyLink": "Copy link",
     "linkCopied": "Link copied",

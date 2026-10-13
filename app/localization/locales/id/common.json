@@ -48,7 +48,9 @@
     "user": {
       "placeholder": "Masukkan alamat email",
       "recent": "Terakhir",
-      "find": "Cari orang ini"
+      "find": "Cari orang ini",
+      "notFound": "Tidak ada yang memakai Catat Saja dengan {{email}}. Periksa alamatnya, atau minta mereka mendaftar dulu.",
+      "alreadyIn": "{{email}} sudah punya akses atau undangan."
     },
     "copyLink": "Salin tautan",
     "linkCopied": "Tautan disalin",
