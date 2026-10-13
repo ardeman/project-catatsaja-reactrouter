@@ -20,19 +20,19 @@
     .drop { flood-opacity: 0.45 }
     .tile-edge { stroke: #ffffff; stroke-opacity: 0.12 }
 
-    .light .tile-top { stop-color: #ffffff }
-    .light .tile-bottom { stop-color: #f0eee9 }
+    .light .tile-top { stop-color: #f0eeea }
+    .light .tile-bottom { stop-color: #dcd8d2 }
     .light .glow { stop-opacity: 0.5 }
-    .light .glass-1 { stop-opacity: 0.9 }
-    .light .glass-2 { stop-opacity: 0.55 }
-    .light .glass-3 { stop-opacity: 0.4 }
-    .light .rim-mid { stop-color: #a8a29e; stop-opacity: 0.25 }
-    .light .rim-edge { stop-color: #78716c; stop-opacity: 0.35 }
+    .light .glass-1 { stop-color: #ffffff; stop-opacity: 0.95 }
+    .light .glass-2 { stop-color: #f5f5f4; stop-opacity: 0.85 }
+    .light .glass-3 { stop-color: #e7e5e4; stop-opacity: 0.85 }
+    .light .rim-mid { stop-color: #a8a29e; stop-opacity: 0.55 }
+    .light .rim-edge { stop-color: #78716c; stop-opacity: 0.7 }
     .light .ring-1 { stop-color: #e7e5e4; stop-opacity: 1 }
     .light .ring-2 { stop-color: #a8a29e; stop-opacity: 1 }
     .light .writing { stroke: #44403c; opacity: 0.85 }
     .light .holes { fill: #78716c; opacity: 0.5 }
-    .light .drop { flood-opacity: 0.18 }
+    .light .drop { flood-opacity: 0.3 }
     .light .tile-edge { stroke: #000000; stroke-opacity: 0.1 }
   </style>
   <defs>
