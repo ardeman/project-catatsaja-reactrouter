@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BookUser, CircleUser, Trash, Copy as CopyIcon } from 'lucide-react'
+import { CircleUser, Copy as CopyIcon, Trash, UserSearch } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Input } from '~/components/base/input'
@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import { Input as UIInput } from '~/components/ui/input'
 import { auth } from '~/lib/configs/firebase'
+import { useGetContacts } from '~/lib/hooks/use-get-contacts'
 import { useGetUsers } from '~/lib/hooks/use-get-users'
 import { useSearchUsers } from '~/lib/hooks/use-search-users'
 import { toast } from '~/lib/hooks/use-toast'
@@ -42,7 +43,8 @@ export const Share = (properties: TPermissions) => {
     resolver: zodResolver(shareSchema(t)),
     defaultValues: { user: '' },
   })
-  const { handleSubmit, getValues, setValue } = formMethods
+  const { handleSubmit, getValues, setValue, control } = formMethods
+  const { data: contacts } = useGetContacts()
   const [copied, setCopied] = useState(false)
   const [removed, setRemoved] = useState<
     { uid: string; email: string; permission: 'read' | 'write' } | undefined
@@ -71,6 +73,28 @@ export const Share = (properties: TPermissions) => {
   const availableUsers = searchResults?.filter(
     (user) => !permissions.has(user.uid),
   )
+  // People the person already shares with, not on this item yet, matching
+  // what is typed; hidden while a search runs or shows someone.
+  const typed = (useWatch({ control, name: 'user' }) ?? '').trim().toLowerCase()
+  const suggestions =
+    disabled || isSearching || (availableUsers?.length ?? 0) > 0
+      ? []
+      : contacts
+          .filter(
+            (user) =>
+              !permissions.has(user.uid) &&
+              (!typed ||
+                user.email.toLowerCase().includes(typed) ||
+                user.displayName?.toLowerCase().includes(typed)),
+          )
+          .slice(0, 5)
+  // Choosing one is the same as typing their email and searching.
+  const handleChooseContact = (contactEmail: string) => {
+    setValue('user', contactEmail)
+    setEmail(contactEmail)
+    setDisabled(true)
+  }
+
   const getPermission = (uid: string) =>
     write.includes(uid) ? 'write' : read.includes(uid) ? 'read' : undefined
 
@@ -175,9 +199,11 @@ export const Share = (properties: TPermissions) => {
               disabled={disabled || isSearching}
               variant="ghost"
               size="icon"
+              aria-label={t('form.user.find')}
+              title={t('form.user.find')}
               className={className}
             >
-              <BookUser />
+              <UserSearch />
             </Button>
           )}
         />
@@ -189,6 +215,41 @@ export const Share = (properties: TPermissions) => {
           >
             {searchError}
           </p>
+        )}
+        {suggestions.length > 0 && (
+          <div className="grid gap-1">
+            <p className="text-xs text-muted-foreground">
+              {t('form.user.recent')}
+            </p>
+            <ul className="grid gap-0.5">
+              {suggestions.map((user) => (
+                <li key={user.uid}>
+                  <button
+                    type="button"
+                    onClick={() => handleChooseContact(user.email)}
+                    className="flex w-full min-w-0 items-center gap-2 rounded-md px-2 py-1.5 text-left hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
+                  >
+                    <Avatar className="size-7">
+                      <AvatarImage src={user.photoURL} />
+                      <AvatarFallback>
+                        <CircleUser className="size-5" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="grid min-w-0">
+                      <span className="truncate text-sm">
+                        {user.displayName || user.email}
+                      </span>
+                      {user.displayName && (
+                        <span className="truncate text-xs text-muted-foreground">
+                          {user.email}
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
         {availableUsers?.map(({ uid, photoURL, displayName, email }) => (
           <Permission

@@ -479,4 +479,67 @@ describe('end-to-end encryption', () => {
     await ana.context.close()
     await budi.context.close()
   })
+
+  test('a new account can go without encryption', async () => {
+    const { page } = await newDevice(browser)
+    await signUp(page, 'Gita', 'gita@example.com')
+    await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+    await page
+      .getByRole('button', { name: 'Continue without encryption' })
+      .click()
+    await page.getByText('Protect your data').waitFor({ state: 'hidden' })
+    const gitaUid = await uidOf('gita@example.com')
+    const profile = await dbGet(`users/${gitaUid}`)
+    assert.equal(profile.encryptionRequired?.booleanValue, false)
+    assert.ok(!profile.publicKey, 'no keys')
+
+    // Stored plain, and not asked again on the next visit.
+    await createNote(page, 'Gita plain note')
+    const note = (await dbList('notes')).find(
+      (item) => item.fields.owner?.stringValue === gitaUid,
+    )
+    assert.equal(note.fields.title?.stringValue, 'Gita plain note')
+    await page.goto(`${APP}/notes`)
+    await page.waitForTimeout(3000)
+    assert.equal(await page.getByText('Protect your data').count(), 0)
+    await page.context().close()
+  })
+
+  test('the share dialog suggests people already shared with', async () => {
+    const skipSetup = async (page) => {
+      await page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+      await page
+        .getByRole('button', { name: 'Continue without encryption' })
+        .click()
+      await page.waitForURL(/\/notes/, { timeout: 30_000 })
+    }
+    const eko = await newDevice(browser)
+    await signUp(eko.page, 'Eko', 'eko@example.com')
+    await skipSetup(eko.page)
+    const dewi = await newDevice(browser)
+    await signUp(dewi.page, 'Dewi', 'dewi@example.com')
+    await skipSetup(dewi.page)
+
+    await createNote(dewi.page, 'Dewi first note')
+    await shareWith(dewi.page, 'eko@example.com', 'Read only')
+    await dewi.page.keyboard.press('Escape')
+
+    // Another note: Eko is suggested, and choosing him finds him.
+    await createNote(dewi.page, 'Dewi second note')
+    await dewi.page
+      .getByRole('button', { name: 'Share', exact: true })
+      .first()
+      .click()
+    const dialog = dewi.page.getByRole('dialog')
+    await dialog.getByText('Recent').waitFor({ timeout: 15_000 })
+    await dialog.getByRole('button', { name: /eko@example\.com/ }).click()
+    await dialog.getByText('eko@example.com').waitFor()
+    assert.equal(
+      await dialog.locator('input[name=user]').inputValue(),
+      'eko@example.com',
+    )
+    await dialog.getByRole('combobox').last().waitFor()
+    await eko.context.close()
+    await dewi.context.close()
+  })
 })

@@ -292,6 +292,24 @@ const storedItems = async () => {
   return { uid, items }
 }
 
+// The people on the person's items (owners and everyone they are shared
+// with), from the most recently changed item: suggestions when sharing.
+export const fetchContactIds = async () => {
+  const { uid, items } = await storedItems()
+  const changedAt = (data: DocumentData) =>
+    (data.updatedAt ?? data.createdAt)?.seconds ?? 0
+  const ids = items
+    .map(({ document }) => document.data())
+    .toSorted((a, b) => changedAt(b) - changedAt(a))
+    .flatMap((data) => [
+      data.owner,
+      ...(data.permissions?.write ?? []),
+      ...(data.permissions?.read ?? []),
+    ])
+    .filter((id): id is string => typeof id === 'string' && id !== uid)
+  return [...new Set(ids)]
+}
+
 // Before turning encryption off: encrypted items others shared with the
 // person, which they won't be able to read afterwards.
 export const countEncryptedFromOthers = async () => {
