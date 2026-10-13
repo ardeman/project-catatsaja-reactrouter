@@ -46,6 +46,11 @@ A change is done only when the **Checks** command in `README.md` passes. If you 
 - **Secrets:** never commit `.env`, API keys or service account files. A new variable goes in `.env.example`, `environment.ts`, the workflow's build `env` and the README's environment table.
 - **Generated files:** don't edit `public/site.webmanifest` (change `app/lib/constants/metadata.ts`), the icons in `public/` (change `scripts/icon/logo.svg` and run `pnpm generate:icons`), `.react-router/` or `build/`.
 
+## Marketing videos
+
+- The promo and stories videos live outside this repository, in the folder named by `video-marketing.json` (gitignored; copy `video-marketing.example.json` if it's missing, and ask where the folder is if the path doesn't exist). Read its `readme` and `rules` before working there, and follow them: they cover paid voice and music credits and capturing real screens.
+- After a release people can see in the videos (screens, the logo), offer to recapture and re-render them; their screens come from this app on the emulators.
+
 ## Keeping docs current
 
 - When you change a command, the layout, the setup or deployment, update `README.md`. When you change a convention or rule, update this file.

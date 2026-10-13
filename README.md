@@ -97,6 +97,8 @@ firebase deploy --only firestore   # rules and indexes
 pnpm dev               # http://localhost:5173
 ```
 
+The promo and stories videos are made outside this repository (no media or promo scripts go in it). To work on them, copy `video-marketing.example.json` to `video-marketing.json` and point `folder` at the video project on your machine (`readme` and `rules` at its README and agent rules); like `.env`, the copy is not committed.
+
 pnpm refuses package versions published less than a day ago (its `minimumReleaseAge` default), so a brand-new release can only be installed the next day. Dependency install scripts run only when allowed in `pnpm-workspace.yaml` (`allowBuilds`).
 
 ### Environment variables
