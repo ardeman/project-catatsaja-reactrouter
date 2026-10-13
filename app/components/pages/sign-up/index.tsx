@@ -12,12 +12,14 @@ import { PasswordToggle } from '~/components/base/password-toggle'
 import { Button as UIButton } from '~/components/ui/button'
 import { appName } from '~/lib/constants/metadata'
 import { useTheme } from '~/lib/contexts/theme'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useRegister } from '~/lib/hooks/use-register'
 import { TSignUpRequest } from '~/lib/types/user'
 import { signUpSchema } from '~/lib/validations/user'
 
 export const SignUpPage = () => {
   const { t, i18n } = useTranslation(['common', 'zod'])
+  useDocumentTitle(t('auth.signUp.title'))
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const { theme, size } = useTheme()

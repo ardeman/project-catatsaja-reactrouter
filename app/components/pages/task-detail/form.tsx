@@ -15,6 +15,7 @@ import { ToastAction } from '~/components/ui/toast'
 import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateTask } from '~/lib/hooks/use-create-task'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
@@ -105,6 +106,7 @@ export const Form = (properties: TFormProperties) => {
     name: 'content',
   })
   const watchTitle = watch('title')
+  useDocumentTitle(watchTitle || t('navigation.tasks'))
   const watchItem = watch('item')
   const watchContent = watch('content')
   const isCreating = useRef(false)

@@ -21,6 +21,55 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'Encryption is now your choice when you sign up: set it up right away, or continue without it and turn it on later in Settings → Account → Security.',
+          id: 'Enkripsi kini pilihanmu saat mendaftar: siapkan langsung, atau lanjut tanpa enkripsi dan aktifkan nanti di Pengaturan → Akun → Keamanan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'When sharing, the people you already share with are suggested under the email field; tap one instead of typing their email.',
+          id: 'Saat berbagi, orang yang sudah sering kamu ajak berbagi muncul sebagai saran di bawah kolom email; ketuk salah satunya tanpa perlu mengetik emailnya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The browser tab shows where you are: the note, list, book or health log you have open, or the page’s name.',
+          id: 'Tab browser menunjukkan posisimu: catatan, daftar, buku, atau log kesehatan yang sedang dibuka, atau nama halamannya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'In a book, the Add entry, scan and Quick add buttons stay at the top as you scroll, and the Quick add form floats like the entry form.',
+          id: 'Di buku, tombol Tambah entri, pindai, dan Tambah cepat tetap di atas saat menggulir, dan formulir Tambah cepat melayang seperti formulir entri.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'A calculation in an amount (such as 10 000+11 900) now groups every number the same way as you type, and Save or Cancel works with one tap right after it.',
+          id: 'Hitungan di kolom nominal (seperti 10.000+11.900) kini mengelompokkan setiap angka dengan cara yang sama saat diketik, dan Simpan atau Batal langsung bisa diketuk sekali setelahnya.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'A book’s card shows its latest entries by date, not the last ones you typed in.',
+          id: 'Kartu buku menampilkan entri terbaru menurut tanggal, bukan yang terakhir kamu ketik.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'The button next to the email field when sharing now says what it does: find this person.',
+          id: 'Tombol di samping kolom email saat berbagi kini menjelaskan fungsinya: cari orang ini.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'A redrawn app icon: a glass notepad and a glossy pencil, sharp at every size and filling the whole icon on your home screen. In the app and the browser tab it follows your theme: dark on the light theme, light on the dark theme.',

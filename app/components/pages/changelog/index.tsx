@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { releases, TChangeKind } from '~/content/changelog'
 import { githubRepository, githubUser } from '~/lib/constants/metadata'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { cn } from '~/lib/utils/shadcn'
 
 const kindClassName: Record<TChangeKind, string> = {
@@ -19,6 +20,7 @@ const groupedReleases = [...new Set(releases.map((release) => release.date))]
 
 export const ChangelogPage = () => {
   const { t, i18n } = useTranslation()
+  useDocumentTitle(t('navigation.changelog'))
   const language = i18n.language === 'id' ? 'id' : 'en'
   const formatDate = (date: string) =>
     new Intl.DateTimeFormat(language, {

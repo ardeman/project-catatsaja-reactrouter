@@ -14,6 +14,7 @@ import { Label } from '~/components/ui/label'
 import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateHealthLog } from '~/lib/hooks/use-create-health-log'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
@@ -103,6 +104,7 @@ export const Form = (properties: TFormProperties) => {
     formState: { isDirty },
   } = formMethods
   const values = watch()
+  useDocumentTitle(values.name || t('navigation.health'))
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
   const units = userData?.labUnits ?? 'conventional'

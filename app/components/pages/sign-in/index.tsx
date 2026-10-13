@@ -12,6 +12,7 @@ import { Input } from '~/components/base/input'
 import { PasswordToggle } from '~/components/base/password-toggle'
 import { Button as UIButton } from '~/components/ui/button'
 import { appName } from '~/lib/constants/metadata'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useLogin } from '~/lib/hooks/use-login'
 import { useLoginGoogle } from '~/lib/hooks/use-login-google'
 import { TSignInRequest } from '~/lib/types/user'
@@ -19,6 +20,7 @@ import { signInSchema } from '~/lib/validations/user'
 
 export const SignInPage = () => {
   const { t } = useTranslation(['common', 'zod'])
+  useDocumentTitle(t('auth.signIn.title'))
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const formMethods = useForm<TSignInRequest>({

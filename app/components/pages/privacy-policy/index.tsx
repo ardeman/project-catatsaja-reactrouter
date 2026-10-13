@@ -1,6 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next'
 
 import { contactEmail } from '~/lib/constants/metadata'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 
 const paragraphs = [
   'collect',
@@ -16,6 +17,7 @@ const paragraphs = [
 
 export const PrivacyPolicyPage = () => {
   const { t } = useTranslation()
+  useDocumentTitle(t('navigation.privacyPolicy'))
   return (
     <div className="grid gap-6">
       <div className="grid gap-1">

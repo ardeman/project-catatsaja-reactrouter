@@ -9,12 +9,14 @@ import { Button } from '~/components/base/button'
 import { Card, CardContent, CardFooter } from '~/components/base/card'
 import { Input } from '~/components/base/input'
 import { Button as UIButton } from '~/components/ui/button'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useForgotPassword } from '~/lib/hooks/use-forgot-password'
 import { TEmailRequest } from '~/lib/types/user'
 import { emailSchema } from '~/lib/validations/user'
 
 export const ForgotPasswordPage: FC = () => {
   const { t } = useTranslation(['common', 'zod'])
+  useDocumentTitle(t('auth.forgotPassword.title'))
   const [disabled, setDisabled] = useState(false)
   const [timerForgotPassword, setTimerForgotPassword] = useState<number>()
   const formMethods = useForm<TEmailRequest>({

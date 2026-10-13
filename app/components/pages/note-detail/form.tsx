@@ -12,6 +12,7 @@ import { useNote } from '~/components/pages/notes'
 import { auth } from '~/lib/configs/firebase'
 import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateNote } from '~/lib/hooks/use-create-note'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
@@ -81,6 +82,7 @@ export const Form = (properties: TFormProperties) => {
     setFocus,
   } = formMethods
   const watchTitle = watch('title')
+  useDocumentTitle(watchTitle || t('navigation.notes'))
   const watchContent = watch('content')
   const syncEditor = useRef<(() => void) | null>(null)
   const registerSync = useCallback((sync: (() => void) | null) => {

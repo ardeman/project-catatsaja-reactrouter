@@ -1,9 +1,11 @@
 import { Trans, useTranslation } from 'react-i18next'
 
 import { appName } from '~/lib/constants/metadata'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 
 export const TermsOfServicePage = () => {
   const { t } = useTranslation()
+  useDocumentTitle(t('navigation.termsOfService'))
   return (
     <div className="grid gap-6">
       <h1 className="text-3xl font-semibold">

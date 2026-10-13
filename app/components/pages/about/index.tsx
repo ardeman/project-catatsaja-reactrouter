@@ -9,6 +9,7 @@ import {
   githubRepository,
   githubUser,
 } from '~/lib/constants/metadata'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 
 const sections = ['features', 'private', 'everywhere'] as const
 
@@ -28,6 +29,7 @@ const ExternalLink = (properties: ComponentProps<'a'>) => (
 
 export const AboutPage = () => {
   const { t } = useTranslation()
+  useDocumentTitle(t('navigation.about'))
   return (
     <div className="grid gap-8">
       <div className="grid gap-3">

@@ -44,7 +44,9 @@
       "removed": "{{email}} tidak lagi punya akses"
     },
     "user": {
-      "placeholder": "Masukkan alamat email"
+      "placeholder": "Masukkan alamat email",
+      "recent": "Terakhir",
+      "find": "Cari orang ini"
     },
     "copyLink": "Salin tautan",
     "linkCopied": "Tautan disalin",
@@ -563,7 +565,7 @@
       "description": "Buat akun, lalu gunakan menu untuk berpindah antara Catatan, Tugas, Keuangan, dan Kesehatan.",
       "steps": [
         "Daftar dengan email dan kata sandi (lalu buka tautan di email verifikasi), atau masuk dengan Google.",
-        "Akun baru langsung menyiapkan enkripsi end-to-end: pilih frasa sandi dan simpan kode pemulihan di tempat yang aman.",
+        "Akun baru ditawari enkripsi end-to-end setelah mendaftar: pilih frasa sandi dan simpan kode pemulihan di tempat yang aman, atau lanjut tanpa enkripsi dan aktifkan nanti.",
         "Pilih Pasang aplikasi di halaman utama atau di menu akun untuk menambahkan Catat Saja ke ponsel atau komputer. Aplikasi tetap terbuka saat sedang offline.",
         "Semuanya tersimpan sendiri saat kamu mengetik. Status \"Menyimpan…\" dan \"Tersimpan\" di sebelah tanggal menunjukkan kapan selesai."
       ]
@@ -635,7 +637,7 @@
       "title": "Enkripsi end-to-end",
       "description": "Item kamu dienkripsi di perangkatmu, jadi hanya kamu dan orang yang kamu ajak berbagi yang bisa membacanya; kami pun tidak bisa.",
       "steps": [
-        "Enkripsi aktif untuk akun baru. Jika akunmu lebih lama, aktifkan di Pengaturan → Akun → Keamanan.",
+        "Akun baru bisa menyiapkannya setelah mendaftar. Jika kamu melewatinya, atau akunmu lebih lama, aktifkan di Pengaturan → Akun → Keamanan.",
         "Buka data kamu di setiap perangkat dengan frasa sandi, kode pemulihan, atau passkey (sidik jari, wajah, atau PIN perangkat).",
         "Simpan kode pemulihan baik-baik: jika lupa frasa sandi, hanya kode ini jalan kembali ke item terenkripsi kamu.",
         "Pilih Kunci perangkat ini di menu akun setelah selesai memakai komputer bersama."
@@ -666,11 +668,11 @@
     }
   },
   "privacyPolicy": {
-    "updated": "Terakhir diperbarui: 12 Oktober 2026",
+    "updated": "Terakhir diperbarui: 13 Oktober 2026",
     "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google.",
-    "encryption": "Dengan enkripsi end-to-end (aktif untuk akun baru, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, dan kapan item berubah. Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
+    "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, dan kapan item berubah. Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
     "ai": "Pindai struk, tambah cepat, dan bantuan catatan bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, atau judul dan isi catatan, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu bagikan bisa melihat isinya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
@@ -1400,7 +1402,9 @@
       "next": "Lanjut",
       "back": "Kembali",
       "turnOn": "Aktifkan enkripsi",
-      "creating": "Menyiapkan…"
+      "creating": "Menyiapkan…",
+      "skip": "Lanjut tanpa enkripsi",
+      "skipHint": "Item-mu tetap dilindungi oleh akunmu, tapi tidak terenkripsi end-to-end. Kamu bisa mengaktifkannya kapan saja di Pengaturan → Akun → Keamanan."
     },
     "recovery": {
       "title": "Simpan kode pemulihanmu",

@@ -9,12 +9,14 @@ import { Button } from '~/components/ui/button'
 import { appName } from '~/lib/constants/metadata'
 import { readStartPage } from '~/lib/constants/navigation'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 
 const noSubscribe = () => () => {}
 const hasHistory = () => history.length > 1
 
 export const NotFoundPage = () => {
   const { t } = useTranslation()
+  useDocumentTitle(t('notFound.title'))
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { data: user } = useAuthUser()

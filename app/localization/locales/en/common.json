@@ -44,7 +44,9 @@
       "removed": "{{email}} no longer has access"
     },
     "user": {
-      "placeholder": "Enter an email address"
+      "placeholder": "Enter an email address",
+      "recent": "Recent",
+      "find": "Find this person"
     },
     "copyLink": "Copy link",
     "linkCopied": "Link copied",
@@ -563,7 +565,7 @@
       "description": "Create an account, then use the menu to move between Notes, Tasks, Finances and Health.",
       "steps": [
         "Sign up with your email and a password (then open the link in the verification email), or sign in with Google.",
-        "New accounts set up end-to-end encryption: choose a passphrase and save the recovery code somewhere safe.",
+        "New accounts are offered end-to-end encryption right after signing up: choose a passphrase and save the recovery code somewhere safe, or continue without it and turn it on later.",
         "Choose Install app on the home page or in the account menu to add Catat Saja to your phone or computer. It opens even when you are offline.",
         "Everything saves itself as you type. The \"Saving…\" and \"Saved\" status next to the date shows when it is done."
       ]
@@ -635,7 +637,7 @@
       "title": "End-to-end encryption",
       "description": "Your items are encrypted on your device, so only you and the people you share with can read them; not even we can.",
       "steps": [
-        "It is on for new accounts. If your account is older, turn it on in Settings → Account → Security.",
+        "New accounts can set it up right after signing up. If you skipped it, or your account is older, turn it on in Settings → Account → Security.",
         "Unlock your data on each device with your passphrase, your recovery code, or a passkey (fingerprint, face or device PIN).",
         "Keep your recovery code safe: if you forget your passphrase, it is the only way back into your encrypted items.",
         "Choose Lock this device in the account menu when you are done on a shared computer."
@@ -666,11 +668,11 @@
     }
   },
   "privacyPolicy": {
-    "updated": "Last updated: 12 October 2026",
+    "updated": "Last updated: 13 October 2026",
     "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books, health logs and settings you create.",
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices.",
-    "encryption": "With end-to-end encryption (on for new accounts, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
+    "encryption": "With end-to-end encryption (offered when you sign up, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
     "ai": "Receipt scanning, quick add and note helpers are optional. Only when you use one is what you chose sent to Google’s Gemini (through Firebase AI Logic): a receipt photo, the text you typed, or the note’s title and text, even for end-to-end encrypted items. Google may keep it and use it to improve its services. We don’t store what is sent; what you add or change is stored like anything else. You agree to this once, before the first use, and can take it back in Settings → Account.",
     "sharing": "When you share a note, task, book or health log, the people you share it with see its content. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
@@ -1400,7 +1402,9 @@
       "next": "Next",
       "back": "Back",
       "turnOn": "Turn on encryption",
-      "creating": "Setting up…"
+      "creating": "Setting up…",
+      "skip": "Continue without encryption",
+      "skipHint": "Your items are then protected by your sign-in, but not end-to-end encrypted. You can turn it on any time in Settings → Account → Security."
     },
     "recovery": {
       "title": "Save your recovery code",

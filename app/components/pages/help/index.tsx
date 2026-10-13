@@ -1,10 +1,13 @@
 import { useTranslation } from 'react-i18next'
 
+import { useDocumentTitle } from '~/lib/hooks/use-document-title'
+
 import { figures } from './figure'
 import { helpSections as sections } from './type'
 
 export const HelpPage = () => {
   const { t } = useTranslation()
+  useDocumentTitle(t('navigation.help'))
   return (
     <div className="grid gap-8">
       <div className="grid gap-3">
