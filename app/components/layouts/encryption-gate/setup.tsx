@@ -8,6 +8,7 @@ import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
 import { useSetUpEncryption } from '~/lib/hooks/use-set-up-encryption'
+import { useSkipEncryption } from '~/lib/hooks/use-skip-encryption'
 import { toast } from '~/lib/hooks/use-toast'
 import { useUpdateEncryption } from '~/lib/hooks/use-update-encryption'
 import { generateRecoveryCode } from '~/lib/utils/crypto'
@@ -107,6 +108,7 @@ export const SetupEncryption = ({
   const [hasSaved, setHasSaved] = useState(false)
   const { mutate: setUp, isPending } = useSetUpEncryption()
   const passkeys = useUpdateEncryption()
+  const skip = useSkipEncryption()
   const formMethods = useForm<TSetUpPassphraseForm>({
     resolver: zodResolver(setUpPassphraseSchema(t)),
     defaultValues: { passphrase: '', confirm: '' },
@@ -169,6 +171,23 @@ export const SetupEncryption = ({
             </p>
             <Button type="submit">{t('encryption.setup.next')}</Button>
           </form>
+          {/* A new account may go without it for now (the setup otherwise
+              comes first); it stays available in the settings. */}
+          {isRequired && (
+            <div className="grid gap-1 border-t pt-3 text-center">
+              <Button
+                type="button"
+                variant="ghost"
+                disabled={skip.isPending}
+                onClick={() => void skip.mutate()}
+              >
+                {t('encryption.setup.skip')}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                {t('encryption.setup.skipHint')}
+              </p>
+            </div>
+          )}
         </FormProvider>
       )}
 

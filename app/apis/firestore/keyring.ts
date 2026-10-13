@@ -283,6 +283,13 @@ export const removeKeyring = async () => {
   await deleteDoc(keyringReference())
 }
 
+// A new account going without encryption for now: the "must set up" mark
+// goes. It can be turned on later in the settings, like any older account.
+export const declineEncryption = async () => {
+  const { database, uid } = requireUser()
+  await updateDoc(doc(database, 'users', uid), { encryptionRequired: false })
+}
+
 // --- Public keys ----------------------------------------------------------
 
 // The public keys of the given people (undefined: not turned on).
