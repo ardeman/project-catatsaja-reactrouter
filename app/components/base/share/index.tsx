@@ -207,7 +207,7 @@ export const Share = (properties: TPermissions) => {
           placeholder={t('form.user.placeholder')}
           required
           disabled={isSearching}
-          rightNode={({ className }) => (
+          rightNode={
             <Button
               type="submit"
               disabled={isSearching}
@@ -215,11 +215,11 @@ export const Share = (properties: TPermissions) => {
               size="icon"
               aria-label={t('form.user.find')}
               title={t('form.user.find')}
-              className={className}
+              className="absolute right-1 size-8"
             >
               <UserSearch />
             </Button>
-          )}
+          }
         />
 
         {refused && (
