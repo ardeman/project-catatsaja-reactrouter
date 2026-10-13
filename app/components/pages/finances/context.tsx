@@ -12,6 +12,7 @@ import { useNavigate, useLocation } from 'react-router'
 
 import { useCreateFinance } from '~/lib/hooks/use-create-finance'
 import { useDeleteFinance } from '~/lib/hooks/use-delete-finance'
+import { useLoadFinanceEntries } from '~/lib/hooks/use-load-finance-entries'
 import { usePinFinance } from '~/lib/hooks/use-pin-finance'
 import { useUnlinkFinance } from '~/lib/hooks/use-unlink-finance'
 import { TFinanceResponse } from '~/lib/types/finance'
@@ -58,6 +59,7 @@ const FinanceProvider = (properties: PropsWithChildren) => {
   const [selectedConfirmation, setSelectedConfirmation] =
     useState<TFinanceConfirmation>()
   const { mutate: mutatePinFinance } = usePinFinance()
+  const { mutate: loadEntries } = useLoadFinanceEntries()
   const { mutate: mutateDeleteFinance } = useDeleteFinance()
   const { mutate: mutateUnlinkFinance } = useUnlinkFinance()
   const { mutate: mutateCreateFinance, isPending: isDuplicatePending } =
@@ -117,10 +119,16 @@ const FinanceProvider = (properties: PropsWithChildren) => {
   const handleDuplicateFinance = async (
     properties_: THandleDuplicateFinance,
   ) => {
-    const { title, currency, content, accounts } = properties_.finance
     if (isDuplicating.current) return
     isDuplicating.current = true
     try {
+      // From the list, a book's entries are read from its months first.
+      const source =
+        'id' in properties_.finance && !properties_.finance.content
+          ? await loadEntries(properties_.finance)
+          : properties_.finance
+      if (!source) return
+      const { title, currency, content, accounts } = source
       return await mutateCreateFinance(
         {
           title: title ? t('finances.duplicateTitle', { title }) : '',

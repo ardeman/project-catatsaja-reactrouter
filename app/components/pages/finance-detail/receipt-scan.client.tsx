@@ -153,7 +153,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
   }
 
   const handleAdd = () => {
-    if (!onAdd(chosen)) return
+    onAdd(chosen)
     setReceipt(undefined)
   }
 

@@ -30,8 +30,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'A finance book tells you when it is nearly full (it holds a few thousand entries) and stops taking new ones before it can’t be saved, so nothing you add is lost; start a new book, for example one per year, to keep going.',
-          id: 'Buku keuangan memberi tahu saat hampir penuh (muat beberapa ribu entri) dan berhenti menerima entri baru sebelum tidak bisa disimpan, jadi tidak ada yang hilang; buat buku baru, misalnya satu per tahun, untuk melanjutkan.',
+          en: 'Finance books no longer fill up: keep adding entries for as long as you like, and saving stays quick in big books, since only the month you changed is saved. Each book switches over by itself the first time someone who can edit it opens it.',
+          id: 'Buku keuangan tidak lagi bisa penuh: tambahkan entri sebanyak yang kamu mau, dan menyimpan tetap cepat di buku besar, karena hanya bulan yang diubah yang disimpan. Tiap buku beralih dengan sendirinya saat pertama kali dibuka oleh orang yang bisa mengubahnya.',
         },
       },
       {

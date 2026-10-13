@@ -754,4 +754,216 @@ describe('end-to-end encryption', () => {
     await jaya.context.close()
     await kiki.context.close()
   })
+
+  test("a book's entries are kept in month documents", async () => {
+    const monthsOf = (id) => dbList(`finances/${id}/months`)
+    const addEntry = async (page, description) => {
+      await page.getByRole('button', { name: 'Add entry' }).click()
+      await page.locator('input[name=description]').fill(description)
+      await page.locator('#finance-entry-amount').fill('50000')
+      await page.getByRole('combobox', { name: 'Category' }).click()
+      await page.getByRole('option', { name: 'Food & drinks' }).click()
+      await page
+        .locator('form')
+        .getByRole('button', { name: 'Save' })
+        .last()
+        .click()
+    }
+    const opensWith = async (page, id, text) => {
+      await page.goto(`${APP}/finances/${id}`)
+      await page.getByText(text).first().waitFor({ timeout: 30_000 })
+    }
+
+    // An encrypted book: its months are blobs, with ids that don't show the
+    // month, and the book keeps no entries.
+    const lina = await newDevice(browser)
+    await signUp(lina.page, 'Lina', 'lina@example.com')
+    await lina.page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+    await setUpEncryption(lina.page, 'lina passphrase 1')
+    await lina.page.goto(`${APP}/finances/create`)
+    await lina.page.locator('textarea[name=title]').fill('Lina book')
+    await lina.page.getByRole('button', { name: 'Save' }).click()
+    await lina.page.waitForURL(/\/finances\/(?!create)/, { timeout: 30_000 })
+    const bookId = new URL(lina.page.url()).pathname.split('/').pop()
+    await addEntry(lina.page, 'Lina lunch')
+    await lina.page.waitForTimeout(4000)
+    const book = await dbGet(`finances/${bookId}`)
+    assert.equal(book.entryStore?.integerValue, '2')
+    assert.ok(book.encrypted && !book.content, 'no entries in the book')
+    let months = await monthsOf(bookId)
+    assert.equal(months.length, 1)
+    assert.deepEqual(Object.keys(months[0].fields), ['encrypted'])
+    assert.doesNotMatch(months[0].id, /^\d{4}-\d{2}$/, 'month not readable')
+    assert.ok(!JSON.stringify(months).includes('Lina lunch'), 'encrypted')
+
+    // Shared, then the person removed: the months get the new key (and new
+    // ids) in the same write, and still open for the owner.
+    const mira = await newDevice(browser)
+    await signUp(mira.page, 'Mira', 'mira@example.com')
+    await mira.page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+    await setUpEncryption(mira.page, 'mira passphrase 1')
+    await lina.page.goto(`${APP}/finances/${bookId}`)
+    await lina.page.getByText('Lina lunch').waitFor({ timeout: 30_000 })
+    await shareWith(lina.page, 'mira@example.com', 'Read and write')
+    await lina.page.keyboard.press('Escape')
+    await acceptInvitation(mira.page, 'Lina book')
+    await opensWith(mira.page, bookId, 'Lina lunch')
+    await addEntry(mira.page, 'Mira dinner')
+    await opensWith(lina.page, bookId, 'Mira dinner')
+
+    const before = months[0].id
+    await lina.page
+      .getByRole('button', { name: /^Shared with/ })
+      .first()
+      .click()
+    await lina.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Remove mira@example.com' })
+      .click()
+    await lina.page.waitForTimeout(3000)
+    await lina.page.keyboard.press('Escape')
+    months = await monthsOf(bookId)
+    assert.equal(months.length, 1)
+    assert.notEqual(months[0].id, before, 'renamed under the new key')
+    await opensWith(lina.page, bookId, 'Mira dinner')
+
+    // Turning encryption off stores the months plain with the book, and on
+    // again encrypts them again.
+    await lina.page.goto(`${APP}/settings/account`)
+    await lina.page.getByRole('button', { name: 'Turn off encryption' }).click()
+    const off = lina.page.getByRole('dialog')
+    await off.locator('input[name=passphrase]').fill('lina passphrase 1')
+    await off.getByRole('button', { name: 'Turn off encryption' }).click()
+    await lina.page
+      .getByText('Encryption turned off', { exact: true })
+      .waitFor({ timeout: 30_000 })
+    assert.equal(
+      (await dbGet(`finances/${bookId}`)).title?.stringValue,
+      'Lina book',
+    )
+    months = await monthsOf(bookId)
+    assert.equal(months.length, 1)
+    assert.match(months[0].id, /^\d{4}-\d{2}$/)
+    assert.ok(JSON.stringify(months).includes('Mira dinner'), 'plain again')
+
+    await lina.page
+      .getByRole('button', { name: 'Turn on encryption' })
+      .first()
+      .click()
+    await setUpEncryption(
+      lina.page,
+      'lina passphrase 2',
+      lina.page.getByRole('dialog'),
+    )
+    await lina.page.waitForTimeout(6000)
+    months = await monthsOf(bookId)
+    assert.equal(months.length, 1)
+    assert.deepEqual(Object.keys(months[0].fields), ['encrypted'])
+    assert.ok(!JSON.stringify(months).includes('Mira dinner'), 'encrypted')
+    await opensWith(lina.page, bookId, 'Mira dinner')
+    await lina.context.close()
+    await mira.context.close()
+
+    // A book from before month documents moves into them when it is opened
+    // by someone who can change it.
+    const nanda = await newDevice(browser)
+    await signUp(nanda.page, 'Nanda', 'nanda@example.com')
+    await skipEncryptionSetup(nanda.page)
+    const nandaUid = await uidOf('nanda@example.com')
+    const entry = (id, date, description) => ({
+      mapValue: {
+        fields: {
+          id: { stringValue: id },
+          date: { stringValue: date },
+          type: { stringValue: 'expense' },
+          category: { stringValue: 'fnb' },
+          description: { stringValue: description },
+          quantity: { integerValue: '1' },
+          amount: { integerValue: '35000' },
+          rate: { integerValue: '1' },
+          currency: {
+            mapValue: {
+              fields: {
+                code: { stringValue: 'IDR' },
+                symbol: { stringValue: 'Rp' },
+                maximumFractionDigits: { integerValue: '0' },
+              },
+            },
+          },
+        },
+      },
+    })
+    const people = { arrayValue: { values: [{ stringValue: nandaUid }] } }
+    await dbPatch('finances/oldbook', {
+      owner: { stringValue: nandaUid },
+      permissions: { mapValue: { fields: { read: people, write: people } } },
+      title: { stringValue: 'Old book' },
+      createdAt: { timestampValue: new Date().toISOString() },
+      content: {
+        arrayValue: {
+          values: [
+            entry('e1', '2026-08-30', 'August lunch'),
+            entry('e2', '2026-09-02', 'September lunch'),
+          ],
+        },
+      },
+    })
+    await opensWith(nanda.page, 'oldbook', 'September lunch')
+    const moved = await dbGetWhen(
+      'finances/oldbook',
+      (fields) => fields?.entryStore?.integerValue === '2',
+    )
+    assert.ok(!moved.content, 'entries moved out of the book')
+    months = await monthsOf('oldbook')
+    assert.deepEqual(
+      months.map((month) => month.id).toSorted(),
+      ['2026-08', '2026-09'],
+    )
+    assert.equal(
+      moved.summary.mapValue.fields.count.integerValue,
+      '2',
+      'summary written',
+    )
+    await nanda.page.goto(`${APP}/finances`)
+    await nanda.page.getByText('September lunch').waitFor({ timeout: 15_000 })
+
+    // From the list, which has only summaries, copying and deleting read the
+    // months first: the copy and the book brought back by Undo keep them.
+    const card = (title) =>
+      nanda.page
+        .locator('.group\\/card')
+        .filter({ has: nanda.page.getByRole('link', { name: title, exact: true }) })
+    const booksWith = async (count) => {
+      for (let attempt = 0; attempt < 30; attempt++) {
+        const books = (await dbList('finances')).filter(
+          (item) => item.fields.owner?.stringValue === nandaUid,
+        )
+        if (books.length === count) return books
+        await new Promise((resolve) => setTimeout(resolve, 500))
+      }
+      assert.fail(`expected ${count} books`)
+    }
+    const monthIdsOf = async (id) =>
+      (await monthsOf(id)).map((month) => month.id).toSorted()
+
+    await card('Old book').getByRole('button', { name: 'Duplicate' }).click()
+    const [copy] = (await booksWith(2)).filter((item) => item.id !== 'oldbook')
+    assert.equal(copy.fields.title.stringValue, 'Old book (copy)')
+    assert.deepEqual(await monthIdsOf(copy.id), ['2026-08', '2026-09'])
+
+    await card('Old book').getByRole('button', { name: 'Delete' }).click()
+    await nanda.page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Confirm' })
+      .click()
+    await nanda.page.getByRole('button', { name: 'Undo' }).click()
+    const books = await booksWith(2)
+    const restored = books.find(
+      (item) => item.fields.title?.stringValue === 'Old book',
+    )
+    assert.ok(restored && restored.id !== 'oldbook', 'brought back')
+    assert.deepEqual(await monthsOf('oldbook'), [], 'old months deleted')
+    assert.deepEqual(await monthIdsOf(restored.id), ['2026-08', '2026-09'])
+    await nanda.context.close()
+  })
 })

@@ -192,6 +192,38 @@ export const decryptJson = async <T>(
   return JSON.parse(new TextDecoder().decode(plain)) as T
 }
 
+// A stable id for a label under an item's content key (a book's month,
+// "2026-10"), that reveals nothing about the label without the key: a key
+// for HMAC-SHA-256 is first derived from it (HKDF), so the content key itself
+// is never used for anything but AES-GCM.
+export const keyedId = async (contentKey: CryptoKey, label: string) => {
+  const material = await subtle().importKey(
+    'raw',
+    await subtle().exportKey('raw', contentKey),
+    'HKDF',
+    false,
+    ['deriveKey'],
+  )
+  const hmacKey = await subtle().deriveKey(
+    {
+      name: 'HKDF',
+      hash: 'SHA-256',
+      salt: new Uint8Array(new ArrayBuffer(0)),
+      info: new TextEncoder().encode('catatsaja keyed id'),
+    },
+    material,
+    { name: 'HMAC', hash: 'SHA-256', length: 256 },
+    false,
+    ['sign'],
+  )
+  const mac = new Uint8Array(
+    await subtle().sign('HMAC', hmacKey, new TextEncoder().encode(label)),
+  )
+  let hex = ''
+  for (const byte of mac.slice(0, 16)) hex += byte.toString(16).padStart(2, '0')
+  return hex
+}
+
 // --- Recovery code ----------------------------------------------------------
 
 // 20 random bytes (160 bits) in Crockford base32: 32 characters, shown in

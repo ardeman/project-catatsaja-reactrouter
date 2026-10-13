@@ -278,7 +278,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
 
   const onSubmit = handleSubmit(
     (data) => {
-      if (!onSave(data)) return
+      onSave(data)
       if (draftKey && !isEditing) clearDraft(draftKey)
       if (isEditing) {
         onClose()

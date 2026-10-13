@@ -12,7 +12,8 @@ export type THandlePinFinance = {
 
 // Any book content: a stored book, or the detail form's current values.
 export type THandleDuplicateFinance = {
-  finance: TFinanceForm
+  // What is on screen, or a book from the list (entries not read yet).
+  finance: TFinanceForm | TFinanceResponse
 }
 
 export type TCardProperties = {

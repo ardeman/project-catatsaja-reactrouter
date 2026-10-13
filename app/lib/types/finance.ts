@@ -81,6 +81,9 @@ export type TFinanceResponse = {
   invites?: TAccessLists
   // Missing on books not saved since summaries were added.
   summary?: TFinanceSummary
+  // 2 once its entries are in month documents (`finance-months.ts`); they
+  // are still read into `content`.
+  entryStore?: number
 } & TFinanceForm
 
 export type TFinancePermissionRequest = THandleSetPermission & {

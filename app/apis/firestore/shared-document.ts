@@ -1,11 +1,11 @@
 import {
-  addDoc,
   arrayRemove,
   arrayUnion,
   collection,
   deleteField,
   doc,
   DocumentData,
+  DocumentReference,
   FieldPath,
   Firestore,
   getDoc,
@@ -15,6 +15,8 @@ import {
   QueryDocumentSnapshot,
   updateDoc,
   where,
+  writeBatch,
+  WriteBatch,
 } from 'firebase/firestore'
 
 import { auth } from '~/lib/configs/firebase'
@@ -23,6 +25,7 @@ import { TInvitation } from '~/lib/types/common'
 import {
   canEncrypt,
   contentFields,
+  contentKeyOf,
   decodeDocument,
   encodeChanges,
   encodeNew,
@@ -34,6 +37,7 @@ import {
   sealFor,
   TCollection,
 } from '~/lib/utils/encrypted-document'
+import { decodeMonth, encodeMonth } from '~/lib/utils/finance-months'
 
 import { fetchPublicKeys } from './keyring'
 
@@ -79,9 +83,59 @@ const invitedTo = (database: Firestore, name: TCollection, uid: string) =>
     where(new FieldPath('invites', 'read'), 'array-contains', uid),
   )
 
+// Documents stored under an item, written in the same batch as it (a book's
+// months), with the content key the item was encrypted with.
+type TChildren = (
+  batch: WriteBatch,
+  reference: DocumentReference,
+  contentKey?: CryptoKey,
+) => Promise<void>
+
+// A moved book's months, as stored (`finance-months.ts`), decoded with the
+// book's key: none for a plain book.
+export const readMonths = async (
+  reference: DocumentReference,
+  contentKey?: CryptoKey,
+) => {
+  const snap = await getDocs(collection(reference, 'months'))
+  return Promise.all(
+    snap.docs.map(async (document) => {
+      const month = await decodeMonth(
+        document.ref.path,
+        document.data(),
+        contentKey,
+      )
+      if (!month) throw new Error('encryption/locked')
+      return { reference: document.ref, ...month }
+    }),
+  )
+}
+
+// When an item's key or mode changes (encrypting, storing it plain,
+// removing someone), what is stored under it changes in the same batch: the
+// rules check a book's months against the book as it is after the write.
+const rewriteChildren = async (
+  batch: WriteBatch,
+  name: TCollection,
+  reference: DocumentReference,
+  data: DocumentData | TShared,
+  from: CryptoKey | undefined,
+  to: CryptoKey | undefined,
+) => {
+  if (name !== 'finances' || (data as { entryStore?: number }).entryStore !== 2)
+    return
+  const months = await readMonths(reference, from)
+  for (const month of months) {
+    const encoded = await encodeMonth(month.month, month.content, to)
+    batch.delete(month.reference)
+    batch.set(doc(reference, 'months', encoded.id), encoded.data)
+  }
+}
+
 export const createShared = async (
   name: TCollection,
   data: Record<string, unknown>,
+  children?: TChildren,
 ) => {
   const { database, uid } = requireUser()
   // Restoring a deleted item passes it back as read: drop what isn't stored,
@@ -93,26 +147,33 @@ export const createShared = async (
     invites: _invites,
     ...stored
   } = data
-  const document = await encodeNew(name, {
+  const { document, contentKey } = await encodeNew(name, {
     ...stored,
     owner: uid,
     permissions: { read: [uid], write: [uid] },
     createdAt: new Date(),
   })
-  return addDoc(collection(database, name), document)
+  const reference = doc(collection(database, name))
+  const batch = writeBatch(database)
+  batch.set(reference, document)
+  await children?.(batch, reference, contentKey)
+  await batch.commit()
+  return reference
 }
 
 export const updateShared = async (
   name: TCollection,
   id: string,
   changes: Record<string, unknown>,
+  children?: TChildren,
 ) => {
   const { database } = requireUser()
   const encoded = await encodeChanges(name, id, changes)
-  return updateDoc(doc(database, name, id), {
-    ...encoded,
-    updatedAt: new Date(),
-  })
+  const reference = doc(database, name, id)
+  const batch = writeBatch(database)
+  batch.update(reference, { ...encoded, updatedAt: new Date() })
+  await children?.(batch, reference, contentKeyOf(name, id))
+  return batch.commit()
 }
 
 // Leaving an item shared with you: off its lists, and your sealed key gone.
@@ -186,10 +247,23 @@ const writeSharedPermission = async (
   if (permission === 'delete') {
     const publicKeys = await fetchPublicKeys(audienceOf(access))
     for (const [reader, key] of publicKeys) if (!key) publicKeys.delete(reader)
-    return updateDoc(reference, {
-      ...access,
-      ...(await rotate(name, item.id, publicKeys as Map<string, string>)),
-    })
+    const from = contentKeyOf(name, item.id)
+    const rotated = await rotate(
+      name,
+      item.id,
+      publicKeys as Map<string, string>,
+    )
+    const batch = writeBatch(database)
+    batch.update(reference, { ...access, ...rotated })
+    await rewriteChildren(
+      batch,
+      name,
+      reference,
+      item,
+      from,
+      contentKeyOf(name, item.id),
+    )
+    return batch.commit()
   }
 
   if (!isNew) return updateDoc(reference, access)
@@ -205,13 +279,23 @@ const writeSharedPermission = async (
   if (!options.allowPlain) throw new RecipientWithoutEncryption()
   // Shared without encryption: stored plain for everyone from now on.
   const plain = plainOf(name, item.id)
-  forget(name, item.id)
-  return updateDoc(reference, {
+  const batch = writeBatch(database)
+  batch.update(reference, {
     ...plain,
     ...access,
     encrypted: deleteField(),
     keys: deleteField(),
   })
+  await rewriteChildren(
+    batch,
+    name,
+    reference,
+    item,
+    contentKeyOf(name, item.id),
+    undefined,
+  )
+  forget(name, item.id)
+  return batch.commit()
 }
 
 // Archiving or bringing back an item for the person only: it leaves their
@@ -445,7 +529,8 @@ export const encryptOwnItems = async () => {
         data,
         publicKeys as Map<string, string>,
       )
-      await updateDoc(document.ref, {
+      const batch = writeBatch(database)
+      batch.update(document.ref, {
         ...fields,
         ...Object.fromEntries(
           contentFields[name]
@@ -453,6 +538,15 @@ export const encryptOwnItems = async () => {
             .map((field) => [field, deleteField()]),
         ),
       })
+      await rewriteChildren(
+        batch,
+        name,
+        document.ref,
+        data,
+        undefined,
+        contentKeyOf(name, document.id),
+      )
+      await batch.commit()
       encrypted++
     }
   }
@@ -504,21 +598,42 @@ export const decryptOwnItems = async () => {
   for (const { name, document } of items) {
     const data = document.data()
     if (data.owner !== uid || !isEncrypted(data)) continue
-    const plain = await decodeDocument(name, document.id, data, uid)
-    if (!plain) throw new Error('encryption/locked')
-    await updateDoc(document.ref, {
-      ...Object.fromEntries(
-        contentFields[name]
-          .filter((field) => Object.hasOwn(plain, field))
-          .map((field) => [field, plain[field]]),
-      ),
-      encrypted: deleteField(),
-      keys: deleteField(),
-    })
-    forget(name, document.id)
+    await storePlain(name, document.ref, data, uid)
     decrypted++
   }
   return decrypted
+}
+
+// An encrypted item stored plain again (with what is stored under it), for
+// everyone with access.
+const storePlain = async (
+  name: TCollection,
+  reference: DocumentReference,
+  data: DocumentData,
+  uid: string,
+) => {
+  const plain = await decodeDocument(name, reference.id, data, uid)
+  if (!plain) throw new Error('encryption/locked')
+  const batch = writeBatch(reference.firestore)
+  batch.update(reference, {
+    ...Object.fromEntries(
+      contentFields[name]
+        .filter((field) => Object.hasOwn(plain, field))
+        .map((field) => [field, plain[field]]),
+    ),
+    encrypted: deleteField(),
+    keys: deleteField(),
+  })
+  await rewriteChildren(
+    batch,
+    name,
+    reference,
+    data,
+    contentKeyOf(name, reference.id),
+    undefined,
+  )
+  await batch.commit()
+  forget(name, reference.id)
 }
 
 // The owner's encrypted items that someone with access can't read (they
@@ -551,17 +666,6 @@ export const shareUnencrypted = async (
     const snapshot = await getDoc(doc(database, name, id))
     const data = snapshot.data()
     if (!data || !isEncrypted(data)) continue
-    const plain = await decodeDocument(name, id, data, uid)
-    if (!plain) throw new Error('encryption/locked')
-    await updateDoc(snapshot.ref, {
-      ...Object.fromEntries(
-        contentFields[name]
-          .filter((field) => Object.hasOwn(plain, field))
-          .map((field) => [field, plain[field]]),
-      ),
-      encrypted: deleteField(),
-      keys: deleteField(),
-    })
-    forget(name, id)
+    await storePlain(name, snapshot.ref, data, uid)
   }
 }

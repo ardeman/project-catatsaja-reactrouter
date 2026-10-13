@@ -17,8 +17,12 @@ export const useDeleteFinance = () => {
   const mutate = async (finance: TFinanceResponse) => {
     setIsPending(true)
     try {
-      const { isPinned: _isPinned, id: _id, ...data } = finance
-      await deleteFinance(finance)
+      // As deleted, with its entries (read from its months from the list).
+      const {
+        isPinned: _isPinned,
+        id: _id,
+        ...data
+      } = await deleteFinance(finance)
       toast({
         description: t('finances.toast.deleted'),
         action: (

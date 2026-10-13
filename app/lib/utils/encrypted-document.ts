@@ -102,11 +102,16 @@ export const decodeDocument = async (
   }
 }
 
-// A new item: encrypted for its creator when they use encryption.
-export const encodeNew = async (collection: TCollection, data: TData) => {
+// A new item: encrypted for its creator when they use encryption, with the
+// content key it was encrypted with (none when plain), for what is stored
+// under it.
+export const encodeNew = async (
+  collection: TCollection,
+  data: TData,
+): Promise<{ document: TData; contentKey?: CryptoKey }> => {
   const uid = data.owner as string
   const ownPublicKey = getPublicKey()
-  if (!ownPublicKey || !canEncrypt()) return data
+  if (!ownPublicKey || !canEncrypt()) return { document: data }
   const contentKey = await generateContentKey()
   const encrypted = await encryptJson(pick(collection, data), contentKey)
   const sealed = await wrapContentKey(
@@ -114,11 +119,19 @@ export const encodeNew = async (collection: TCollection, data: TData) => {
     await importPublicKey(ownPublicKey),
   )
   return {
-    ...omit(collection, data),
-    encrypted,
-    keys: { [uid]: sealed },
+    document: {
+      ...omit(collection, data),
+      encrypted,
+      keys: { [uid]: sealed },
+    },
+    contentKey,
   }
 }
+
+// The content key of an item decrypted on this device; none for a plain
+// item (or one not read yet).
+export const contentKeyOf = (collection: TCollection, id: string) =>
+  contentKeys.get(cacheKey(collection, id))
 
 // Changes to an item: for an encrypted one, its whole content encrypted
 // again with the changes in (the blob is one field). Fails rather than
@@ -127,6 +140,9 @@ export const encodeChanges = async (
   collection: TCollection,
   id: string,
   changes: TData,
+  // Content fields to take out of the item (a book's entries, once moved
+  // into months).
+  dropped: string[] = [],
 ) => {
   const key = cacheKey(collection, id)
   const contentKey = contentKeys.get(key)
@@ -134,8 +150,13 @@ export const encodeChanges = async (
   const plain = plainContent.get(key)
   if (!plain) throw new Error('encryption/locked')
   const contentChanges = pick(collection, changes)
-  if (Object.keys(contentChanges).length === 0) return changes
-  const next = { ...plain, ...contentChanges }
+  if (Object.keys(contentChanges).length === 0 && dropped.length === 0)
+    return changes
+  const next = Object.fromEntries(
+    Object.entries({ ...plain, ...contentChanges }).filter(
+      ([field]) => !dropped.includes(field),
+    ),
+  )
   const encrypted = await encryptJson(next, contentKey)
   plainContent.set(key, next)
   return { ...omit(collection, changes), encrypted }

@@ -542,11 +542,6 @@
       "add_one": "Tambah {{count}} entri",
       "add_other": "Tambah {{count}} entri"
     },
-    "capacity": {
-      "nearlyFull": "Buku ini sudah {{percent}}% penuh. Satu buku muat beberapa ribu entri; buat buku baru, misalnya satu per tahun, untuk terus menambah.",
-      "full": "Buku ini sudah penuh: tidak bisa menampung entri lagi. Buat buku baru untuk terus menambah; entri di sini masih bisa diubah atau dihapus.",
-      "noRoom": "Buku ini tidak punya ruang lagi untuk entri ini. Buat buku baru untuknya."
-    },
     "quickAdd": {
       "title": "Tambah cepat",
       "label": "Apa yang kamu bayar atau terima?",
@@ -693,7 +688,7 @@
     "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
-    "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, dan kapan item berubah. Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
+    "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, kapan item berubah, dan berapa bulan yang dicakup entri sebuah buku keuangan (tanpa bulan apa saja). Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
     "ai": "Pindai struk, tambah cepat, dan bantuan catatan bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, atau judul dan isi catatan, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu undang bisa melihat isinya (undangan mereka menampilkan judulnya), dan item baru masuk ke daftar mereka jika mereka menerimanya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna. Jika kamu memblokir seseorang, mereka tidak bisa mengundangmu lagi; daftar orang yang kamu blokir bersifat pribadi dan mereka tidak diberi tahu.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",

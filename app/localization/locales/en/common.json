@@ -542,11 +542,6 @@
       "add_one": "Add {{count}} entry",
       "add_other": "Add {{count}} entries"
     },
-    "capacity": {
-      "nearlyFull": "This book is {{percent}}% full. A book has room for a few thousand entries; start a new one, for example one per year, to keep adding.",
-      "full": "This book is full: it can't hold more entries. Start a new book to keep adding; you can still change or delete entries here.",
-      "noRoom": "There's no room in this book for these entries. Start a new book for them."
-    },
     "quickAdd": {
       "title": "Quick add",
       "label": "What did you pay or receive?",
@@ -693,7 +688,7 @@
     "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books, health logs and settings you create.",
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices. So the app works offline, each browser you use also keeps a copy of your items (encrypted items stay encrypted) and of an entry you were typing and hadn't saved; for an encrypted book, that draft is kept only until the tab closes. Signing out deletes them from that browser.",
-    "encryption": "With end-to-end encryption (offered when you sign up, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, and when it changed. If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
+    "encryption": "With end-to-end encryption (offered when you sign up, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, when it changed, and how many months a finance book's entries span (never which months). If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
     "ai": "Receipt scanning, quick add and note helpers are optional. Only when you use one is what you chose sent to Google’s Gemini (through Firebase AI Logic): a receipt photo, the text you typed, or the note’s title and text, even for end-to-end encrypted items. Google may keep it and use it to improve its services. We don’t store what is sent; what you add or change is stored like anything else. You agree to this once, before the first use, and can take it back in Settings → Account.",
     "sharing": "When you share a note, task, book or health log, the people you invite can see its content (their invitation shows its title), and it is added to their lists only if they accept. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users. If you block someone, they can't invite you any more; your list of blocked people is private and they aren't told.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",

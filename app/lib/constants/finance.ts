@@ -96,12 +96,6 @@ export const findCategory = (key: string) =>
 export const categoryColor = (key: string) =>
   `var(--cat-${findCategory(key)?.color ?? 'other'})`
 
-// How full a book may get (of Firestore's 1 MiB per document, which holds
-// all its entries) before it suggests a new book, and before adding stops
-// so saving can't fail.
-export const bookNearlyFull = 0.8
-export const bookFull = 0.95
-
 // Used when someone has no currencies set up yet.
 export const fallbackCurrency = {
   code: 'IDR',
