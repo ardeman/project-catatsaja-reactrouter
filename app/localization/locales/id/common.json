@@ -207,7 +207,7 @@
       "addItem": "Tambah",
       "editItem": "Edit item",
       "doneEditing": "Selesai mengedit",
-      "editHint": "Centang lingkaran untuk menyelesaikan item. Ketuk pensilnya untuk mengedit. Tekan lama lalu seret pegangannya untuk mengurutkan item.",
+      "editHint": "Centang lingkaran untuk menyelesaikan item. Ketuk teks atau pensilnya untuk mengedit. Tekan lama lalu seret pegangannya untuk mengurutkan item.",
       "addHint": "Tekan Enter atau Tambah. Tempel beberapa baris untuk menambah beberapa item. Teks yang belum ditambahkan tetap disimpan saat menyimpan atau keluar.",
       "arrange": "Tekan lama lalu seret untuk mengurutkan",
       "deleteCompleted": "Hapus yang selesai",

@@ -75,19 +75,17 @@ for (const encrypted of [false, true]) {
       .waitFor()
     assert.equal(await page.getByRole('checkbox').count(), 3)
     await page.getByText('Buy rice', { exact: true }).click()
-    assert.equal(await page.locator('textarea[name^="content."]').count(), 0)
-    await page
-      .getByRole('button', { name: 'Edit item', exact: true })
-      .first()
-      .click()
     const edit = page.locator('textarea[name="content.0.item"]')
-    await edit.fill('Buy brown rice')
+    await edit.waitFor()
+    assert.equal(await page.locator('textarea[name^="content."]').count(), 1)
+    await edit.fill('Buy brown rice\nSecond line')
     await edit.press('ArrowLeft')
     await edit.press('ArrowUp')
     assert.equal(
       await edit.evaluate((element) => document.activeElement === element),
       true,
     )
+    await edit.fill('Buy brown rice')
     await page
       .getByRole('button', { name: 'Done editing', exact: true })
       .click()
@@ -130,7 +128,8 @@ for (const encrypted of [false, true]) {
       .getByRole('button', { name: 'Edit item', exact: true })
       .click()
     const vegetables = page.locator('textarea[name="content.1.item"]')
-    await vegetables.evaluate((element) => element.setSelectionRange(4, 4))
+    await vegetables.fill('First line\nBuy vegetables')
+    await vegetables.evaluate((element) => element.setSelectionRange(15, 15))
     await vegetables.press('ArrowDown')
     const fruit = page.locator('textarea[name="content.2.item"]')
     await fruit.waitFor()
@@ -139,34 +138,94 @@ for (const encrypted of [false, true]) {
       return document.activeElement === input && input.selectionStart === 4
     })
     assert.equal(await fruit.evaluate((element) => element.selectionStart), 4)
+    await fruit.press('ArrowUp')
+    await page.waitForFunction(() => {
+      const input = document.querySelector('textarea[name="content.1.item"]')
+      return document.activeElement === input && input.selectionStart === 15
+    })
+    assert.equal(
+      await vegetables.evaluate((element) => element.selectionStart),
+      15,
+    )
+    await vegetables.fill('Buy vegetables')
+    await input.fill('Pending draft')
+    await input.evaluate((element) => element.setSelectionRange(4, 4))
+    await input.press('ArrowUp')
+    await page.waitForFunction(() => {
+      const input = document.querySelector('textarea[name="content.4.item"]')
+      return document.activeElement === input && input.selectionStart === 4
+    })
+    assert.equal(await input.inputValue(), 'Pending draft')
     await page
       .getByRole('button', { name: 'Done editing', exact: true })
       .click()
+    await input.fill('')
     // Holding the grip reorders only unfinished items; a quick drag cancels.
-    const drag = async (hold) => {
+    const drag = async ({
+      shouldHold,
+      source = 4,
+      target = 3,
+      shouldCancel = false,
+      screenshotPath,
+    }) => {
       const handle = await page
-        .locator('[data-task-index="4"]')
-        .getByRole('button', { name: 'Hold and drag to arrange' })
+        .locator(`[data-task-index="${source}"]`)
+        .locator('button')
+        .first()
         .boundingBox()
-      const target = await page.locator('[data-task-index="3"]').boundingBox()
+      const destination = await page
+        .locator(`[data-task-index="${target}"]`)
+        .boundingBox()
       await page.mouse.move(
         handle.x + handle.width / 2,
         handle.y + handle.height / 2,
       )
       await page.mouse.down()
-      if (hold) await page.waitForTimeout(400)
+      if (shouldHold) await page.waitForTimeout(400)
       await page.mouse.move(
-        target.x + target.width / 2,
-        target.y + target.height / 2,
+        destination.x + destination.width / 2,
+        destination.y + destination.height / 2,
       )
+      const marker = page.locator('[data-task-drop-marker]')
+      if (shouldHold) {
+        await marker.waitFor()
+        assert.equal(
+          await page
+            .locator(`[data-task-index="${target}"]`)
+            .getAttribute('data-task-drop'),
+          source < target ? 'after' : 'before',
+        )
+        assert.equal(
+          await page
+            .locator(`[data-task-index="${source}"]`)
+            .getAttribute('data-task-dragging'),
+          'true',
+        )
+        if (screenshotPath)
+          await page
+            .locator('form.group\\/form')
+            .screenshot({ path: screenshotPath })
+      } else assert.equal(await marker.count(), 0)
+      if (shouldCancel)
+        await page
+          .locator(`[data-task-index="${source}"]`)
+          .locator('button')
+          .first()
+          .dispatchEvent('pointercancel', { pointerId: 1 })
       await page.mouse.up()
+      await marker.waitFor({ state: 'hidden' })
     }
-    await drag(false)
+    await drag({ shouldHold: false })
     assert.equal(
       await page.getByRole('checkbox').nth(2).getAttribute('aria-label'),
       'Take bags',
     )
-    await drag(true)
+    await drag({ shouldHold: true })
+    assert.equal(
+      await page.getByRole('checkbox').nth(2).getAttribute('aria-label'),
+      'Bring wallet',
+    )
+    await drag({ shouldHold: true, source: 3, target: 4, shouldCancel: true })
     assert.equal(
       await page.getByRole('checkbox').nth(2).getAttribute('aria-label'),
       'Bring wallet',
@@ -221,8 +280,10 @@ for (const encrypted of [false, true]) {
               })
               .first()
               .click()
-            await page.locator('form.group\\/form').screenshot({
-              path: `${process.env.TASK_UX_SCREENSHOTS}/${language}-${theme}.png`,
+            await drag({
+              shouldHold: true,
+              shouldCancel: true,
+              screenshotPath: `${process.env.TASK_UX_SCREENSHOTS}/${language}-${theme}.png`,
             })
             await page
               .getByRole('button', {

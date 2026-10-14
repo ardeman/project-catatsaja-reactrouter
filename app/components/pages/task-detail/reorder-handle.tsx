@@ -5,13 +5,21 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils/shadcn'
 
+import { TDragPreview } from './type'
+
 type TProperties = {
   index: number
   checked: boolean
   onMove: (target: number) => void
+  onPreview: (preview?: TDragPreview) => void
 }
 
-export const ReorderHandle = ({ index, checked, onMove }: TProperties) => {
+export const ReorderHandle = ({
+  index,
+  checked,
+  onMove,
+  onPreview,
+}: TProperties) => {
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
   const gesture = useRef<{
@@ -25,8 +33,15 @@ export const ReorderHandle = ({ index, checked, onMove }: TProperties) => {
     clearTimeout(gesture.current?.timer)
     gesture.current = undefined
     setActive(false)
+    onPreview()
   }
-  useEffect(() => () => clearTimeout(gesture.current?.timer), [])
+  useEffect(
+    () => () => {
+      clearTimeout(gesture.current?.timer)
+      if (gesture.current?.ready) onPreview()
+    },
+    [onPreview],
+  )
 
   return (
     <Button
@@ -53,6 +68,7 @@ export const ReorderHandle = ({ index, checked, onMove }: TProperties) => {
             if (!gesture.current) return
             gesture.current.ready = true
             setActive(true)
+            onPreview({ source: index, target: index })
           }, 350),
         }
       }}
@@ -69,8 +85,11 @@ export const ReorderHandle = ({ index, checked, onMove }: TProperties) => {
         const row = document
           .elementFromPoint(event.clientX, event.clientY)
           ?.closest<HTMLElement>('[data-task-index]')
-        if (row?.dataset.taskChecked === String(checked))
-          current.target = Number(row.dataset.taskIndex)
+        if (row?.dataset.taskChecked !== String(checked)) return
+        const target = Number(row.dataset.taskIndex)
+        if (target === current.target) return
+        current.target = target
+        onPreview({ source: index, target })
       }}
       onPointerUp={() => {
         const current = gesture.current

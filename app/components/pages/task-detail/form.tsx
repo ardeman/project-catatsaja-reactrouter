@@ -35,12 +35,12 @@ import { cn } from '~/lib/utils/shadcn'
 import { taskSchema } from '~/lib/validations/task'
 
 import { ReorderHandle } from './reorder-handle'
-import { TFormProperties } from './type'
+import { TDragPreview, TFormProperties } from './type'
 
 type TItem = TTaskForm['content'][number]
 
 const inputClassName =
-  'border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none px-0 py-1 focus-visible:shadow-none focus:outline-hidden resize-none min-h-8'
+  'border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none px-0 py-1 focus-visible:shadow-none focus:outline-hidden resize-none min-h-7'
 
 // Items as stored: empty ones are dropped.
 const toStoredContent = (content: TItem[]) =>
@@ -48,9 +48,12 @@ const toStoredContent = (content: TItem[]) =>
     .filter((item) => item.item.trim().length > 0)
     .map(({ checked, item }) => ({ checked, item }))
 
-// Let the browser move down inside wrapped text. Only the last visual line
-// continues to the next item, keeping its character column.
-const getLastLineColumn = (input: HTMLTextAreaElement) => {
+// Keep native navigation inside wrapped text; cross items only from the
+// first or last visual line, preserving the character column.
+const getBoundaryLineColumn = (
+  input: HTMLTextAreaElement,
+  direction: -1 | 1 = 1,
+) => {
   const caret = input.selectionEnd
   if (input.selectionStart !== caret) return
   const mirror = document.createElement('div')
@@ -86,13 +89,13 @@ const getLastLineColumn = (input: HTMLTextAreaElement) => {
     return marker.getBoundingClientRect().top
   }
   try {
-    const lastTop = topAt(input.value.length)
-    if (topAt(caret) < lastTop - 1) return
+    const boundaryTop = topAt(direction === -1 ? 0 : input.value.length)
+    if (Math.abs(topAt(caret) - boundaryTop) > 1) return
     let start = 0
     let end = caret
     while (start < end) {
       const middle = Math.floor((start + end) / 2)
-      if (topAt(middle) < lastTop - 1) start = middle + 1
+      if (topAt(middle) < boundaryTop - 1) start = middle + 1
       else end = middle
     }
     return caret - start
@@ -123,6 +126,7 @@ export const Form = (properties: TFormProperties) => {
     : ''
   const { data: userData } = useUserData()
   const [selectedEdit, setSelectedEdit] = useState<number>()
+  const [dragPreview, setDragPreview] = useState<TDragPreview>()
   const [isCreatingTask, setIsCreatingTask] = useState(false)
   const formElement = useRef<HTMLFormElement>(null)
   const isPinned = task?.isPinned
@@ -339,22 +343,32 @@ export const Form = (properties: TFormProperties) => {
   }
 
   const focusItem = (
-    name: 'item' | `content.${number}.item`,
+    name: 'title' | 'item' | `content.${number}.item`,
     caret?: number,
+    shouldUseLastLine = false,
   ) => {
     requestAnimationFrame(() => {
       const input = formElement.current?.elements.namedItem(name)
       if (!(input instanceof HTMLTextAreaElement)) return
       input.focus()
       if (caret === undefined) return
-      const position = Math.min(caret, input.value.length)
+      let position = Math.min(caret, input.value.length)
+      if (shouldUseLastLine) {
+        input.setSelectionRange(input.value.length, input.value.length)
+        const lineLength = getBoundaryLineColumn(input) ?? input.value.length
+        position = input.value.length - lineLength + Math.min(caret, lineLength)
+      }
       input.setSelectionRange(position, position)
     })
   }
 
-  const startEditing = (index: number, caret?: number) => {
+  const startEditing = (
+    index: number,
+    caret?: number,
+    shouldUseLastLine = false,
+  ) => {
     setSelectedEdit(index)
-    focusItem(`content.${index}.item`, caret)
+    focusItem(`content.${index}.item`, caret, shouldUseLastLine)
   }
 
   const focusNextOpen = (afterIndex: number, column?: number) => {
@@ -380,17 +394,21 @@ export const Form = (properties: TFormProperties) => {
     }
   }
 
-  const focusPreviousOpen = (beforeIndex: number, shouldFocusEnd = false) => {
+  const focusPreviousOpen = (
+    beforeIndex: number,
+    shouldFocusEnd = false,
+    column?: number,
+  ) => {
     const previous = openIndexes.findLast((index) => index < beforeIndex)
     if (previous === undefined) {
       setSelectedEdit(undefined)
-      setFocus('title')
+      if (column === undefined) setFocus('title')
+      else focusItem('title', column, true)
     } else {
       startEditing(
         previous,
-        shouldFocusEnd
-          ? getValues(`content.${previous}.item`).length
-          : undefined,
+        shouldFocusEnd ? getValues(`content.${previous}.item`).length : column,
+        column !== undefined,
       )
     }
   }
@@ -426,13 +444,14 @@ export const Form = (properties: TFormProperties) => {
         break
       }
       case 'ArrowUp': {
-        if (event.currentTarget.selectionStart !== 0) return
+        const column = getBoundaryLineColumn(event.currentTarget, -1)
+        if (column === undefined) return
         event.preventDefault()
-        focusPreviousOpen(index)
+        focusPreviousOpen(index, false, column)
         break
       }
       case 'ArrowDown': {
-        const column = getLastLineColumn(event.currentTarget)
+        const column = getBoundaryLineColumn(event.currentTarget)
         if (column === undefined) return
         event.preventDefault()
         focusNextOpen(index, column)
@@ -463,12 +482,15 @@ export const Form = (properties: TFormProperties) => {
       addPendingItems()
       return
     }
-    const isBackOut =
-      (event.key === 'Backspace' && watchItem.length === 0) ||
-      event.key === 'ArrowUp'
-    if (!isBackOut || event.currentTarget.selectionStart !== 0) return
-    event.preventDefault()
-    focusPreviousOpen(watchContent.length, event.key === 'Backspace')
+    if (event.key === 'Backspace' && watchItem.length === 0) {
+      event.preventDefault()
+      focusPreviousOpen(watchContent.length, true)
+    } else if (event.key === 'ArrowUp') {
+      const column = getBoundaryLineColumn(event.currentTarget, -1)
+      if (column === undefined) return
+      event.preventDefault()
+      focusPreviousOpen(watchContent.length, false, column)
+    }
   }
 
   const handleNewItemPaste = (
@@ -500,26 +522,54 @@ export const Form = (properties: TFormProperties) => {
     const isEditing = selectedEdit === index
     const group = item.checked ? doneIndexes : openIndexes
     const position = group.indexOf(index)
+    const isDragging = dragPreview?.source === index
+    const dropSide =
+      dragPreview?.target === index && dragPreview.source !== index
+        ? dragPreview.source < index
+          ? 'after'
+          : 'before'
+        : undefined
 
     return (
       <div
         key={field.id}
         data-task-index={index}
         data-task-checked={item.checked}
-        className="group/item flex min-h-11 items-start gap-2"
+        data-task-dragging={isDragging || undefined}
+        data-task-drop={dropSide}
+        className={cn(
+          'group/item relative flex min-h-11 items-center gap-2 rounded-md',
+          isEditing && 'items-start sm:items-center',
+          isDragging && 'bg-primary/5 opacity-50',
+          dropSide && 'bg-primary/5',
+        )}
       >
+        {dropSide && (
+          <span
+            aria-hidden="true"
+            data-task-drop-marker
+            className={cn(
+              'pointer-events-none absolute inset-x-0 z-10 h-0.5 rounded-full bg-primary before:absolute before:-top-0.5 before:left-0 before:size-1.5 before:rounded-full before:bg-primary',
+              dropSide === 'before' ? '-top-0.5' : '-bottom-0.5',
+            )}
+          />
+        )}
         {!isReadOnly && (
           <ReorderHandle
             index={index}
             checked={item.checked}
             onMove={(target) => moveItem(index, target)}
+            onPreview={setDragPreview}
           />
         )}
         <Checkbox
           name={`content.${index}.checked`}
           className="m-0 w-full"
-          containerClassName="items-start"
-          inputClassName="mt-1"
+          containerClassName={cn(
+            'items-center',
+            isEditing && 'items-start sm:items-center',
+          )}
+          inputClassName={isEditing ? 'mt-3.5 sm:mt-0' : undefined}
           aria-label={item.item}
           disabled={isReadOnly}
           onChange={(checked) => {
@@ -529,28 +579,31 @@ export const Form = (properties: TFormProperties) => {
           rightNode={
             <div
               className={cn(
-                'flex min-w-0 flex-1 items-start gap-2',
-                isEditing && 'flex-col sm:flex-row',
+                'flex min-w-0 flex-1 items-center gap-2',
+                isEditing && 'flex-col items-start sm:flex-row sm:items-center',
               )}
             >
               {isEditing ? (
                 <Textarea
                   name={`content.${index}.item`}
-                  className="w-full min-w-0 flex-1"
+                  className="mt-1.5 w-full min-w-0 flex-1 sm:mt-0"
                   inputClassName={inputClassName}
                   rows={1}
                   aria-label={t('tasks.form.item.label')}
                   onKeyDown={(event) => handleContentKeyDown(event, index)}
                 />
               ) : (
-                <span
+                <button
+                  type="button"
+                  disabled={isReadOnly}
+                  onClick={() => startEditing(index)}
                   className={cn(
-                    'min-h-8 min-w-0 flex-1 py-1 text-left text-sm wrap-break-word whitespace-pre-wrap',
+                    'min-w-0 flex-1 cursor-text py-1 text-left text-sm wrap-break-word whitespace-pre-wrap disabled:cursor-default',
                     item.checked && 'text-muted-foreground line-through',
                   )}
                 >
                   {item.item}
-                </span>
+                </button>
               )}
               {!isReadOnly && (
                 <div
@@ -716,8 +769,8 @@ export const Form = (properties: TFormProperties) => {
           {openIndexes.map((index) => renderItem(index))}
         </div>
         {!isReadOnly && (
-          <div>
-            <div className="flex items-start gap-2">
+          <div className="pl-19 sm:pl-16">
+            <div className="flex items-center gap-2">
               <Textarea
                 name="item"
                 aria-label={t('tasks.form.placeholder.label')}

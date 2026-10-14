@@ -21,6 +21,41 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'Tap a task item’s text or pencil to edit it. Dragging stays on the grip button.',
+          id: 'Ketuk teks item tugas atau pensilnya untuk mengedit. Gunakan tombol pegangan untuk menyeret.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Task text, checkboxes and drag handles now line up vertically in each row.',
+          id: 'Teks tugas, kotak centang, dan pegangan untuk menyeret kini sejajar secara vertikal dalam setiap baris.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The add-item field now lines up with the item text and editing fields.',
+          id: 'Kolom tambah item kini sejajar dengan teks item dan kolom pengeditan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Dragging a task item now shows a line where it will land before you release it.',
+          id: 'Saat menyeret item tugas, kini muncul garis tempat item akan diletakkan sebelum dilepas.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Arrow Up now keeps your cursor column when moving to the previous task item, just like Arrow Down.',
+          id: 'Panah Atas kini mempertahankan kolom kursor saat berpindah ke item tugas sebelumnya, seperti Panah Bawah.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'New task lists stay locked until the saved list opens, so typing immediately after Save cannot be lost.',
