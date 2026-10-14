@@ -7,6 +7,7 @@ import { TFinanceCurrency } from '~/lib/types/finance'
 import {
   formatPeriod,
   niceTicks,
+  scaleLimit,
   TGranularity,
   TPeriod,
 } from '~/lib/utils/finance-analysis'
@@ -20,8 +21,9 @@ type TProperties = {
 }
 
 const PLOT_HEIGHT = 168
-const TOP = 8
 const AXIS_BAND = 24
+// Room for the value of a column cut off at the top or bottom.
+const CUT_LABEL = 14
 const LEFT = 44
 const RADIUS = 4
 
@@ -50,6 +52,48 @@ const columnPath = (
   ].join(' ')
 }
 
+// A column cut off at the edge of the plot: a break across it near the end,
+// and its value past the end.
+const CutMark = ({
+  x,
+  width,
+  end,
+  sign,
+  label,
+}: {
+  x: number
+  width: number
+  end: number
+  sign: 1 | -1
+  label: string
+}) => {
+  const at = end + sign * 12
+  return (
+    <>
+      {[0, 4].map((offset) => (
+        <line
+          key={offset}
+          x1={x - 1}
+          x2={x + width + 1}
+          y1={at + sign * offset + 2}
+          y2={at + sign * offset - 2}
+          className="stroke-card"
+          strokeWidth={1.5}
+        />
+      ))}
+      <text
+        x={x + width / 2}
+        y={end - sign * 5}
+        dy={sign === 1 ? 0 : '0.7em'}
+        textAnchor="middle"
+        className="fill-foreground text-[10px] font-medium tabular-nums"
+      >
+        {label}
+      </text>
+    </>
+  )
+}
+
 // Income above the line and expenses below it, one column pair per period.
 export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
   const { t, i18n } = useTranslation()
@@ -61,13 +105,22 @@ export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
     maximumFractionDigits: 1,
   })
 
-  const maxIncome = Math.max(0, ...periods.map((period) => period.income))
-  const maxExpense = Math.max(0, ...periods.map((period) => period.expense))
-  const ticks = niceTicks(-maxExpense, maxIncome)
+  // A day far above the rest (a salary) would flatten every other column:
+  // the scale follows the others and it is drawn cut off, with its value.
+  const ticks = niceTicks(
+    -scaleLimit(periods.map((period) => period.expense)),
+    scaleLimit(periods.map((period) => period.income)),
+  )
   const top = ticks.at(-1) ?? 0
   const bottom = ticks[0] ?? 0
+  const isCutAbove = periods.some((period) => period.income > top)
+  const isCutBelow = periods.some((period) => period.expense > -bottom)
+  const TOP = isCutAbove ? 8 + CUT_LABEL : 8
+  const plotBottom = TOP + PLOT_HEIGHT + (isCutBelow ? CUT_LABEL : 0)
   const y = (value: number) =>
-    TOP + ((top - value) / (top - bottom || 1)) * PLOT_HEIGHT
+    TOP +
+    ((top - Math.min(Math.max(value, bottom), top)) / (top - bottom || 1)) *
+      PLOT_HEIGHT
   const plotWidth = Math.max(width - LEFT, 0)
   const slot = plotWidth / Math.max(periods.length, 1)
   const barWidth = Math.min(24, Math.max(2, slot * 0.6))
@@ -75,7 +128,7 @@ export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
   const labelEvery = Math.ceil(
     periods.length / Math.max(Math.floor(plotWidth / 56), 1),
   )
-  const height = TOP + PLOT_HEIGHT + AXIS_BAND
+  const height = plotBottom + AXIS_BAND
   const active = index === undefined ? undefined : periods[index]
 
   return (
@@ -150,10 +203,28 @@ export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
                     className="fill-viz-expense"
                   />
                 )}
+                {period.income > top && (
+                  <CutMark
+                    x={x}
+                    width={barWidth}
+                    end={y(top)}
+                    sign={1}
+                    label={compact.format(period.income)}
+                  />
+                )}
+                {period.expense > -bottom && (
+                  <CutMark
+                    x={x}
+                    width={barWidth}
+                    end={y(bottom)}
+                    sign={-1}
+                    label={compact.format(-period.expense)}
+                  />
+                )}
                 {position % labelEvery === 0 && (
                   <text
                     x={center}
-                    y={TOP + PLOT_HEIGHT + 16}
+                    y={plotBottom + 16}
                     textAnchor="middle"
                     className="fill-muted-foreground text-[10px]"
                   >

@@ -149,6 +149,20 @@ export const spendingChange = (periods: TPeriod[]) => {
   return (current - previous) / previous
 }
 
+// The largest value a chart's scale is drawn to: the largest, unless one or
+// two values dwarf the rest (over three times the next), which are then drawn
+// cut off so the others stay readable (a payday among daily spending).
+export const scaleLimit = (values: number[]) => {
+  const sorted = values.filter((value) => value > 0).toSorted((a, b) => b - a)
+  let limit = sorted[0] ?? 0
+  for (let index = 0; index < 2; index++) {
+    const next = sorted[index + 1]
+    if (!next || sorted[index] <= 3 * next) break
+    limit = next
+  }
+  return limit
+}
+
 // Round axis ticks (1, 2 or 5 × a power of ten) covering min..max, always
 // including 0.
 export const niceTicks = (min: number, max: number, count = 4) => {
