@@ -78,7 +78,7 @@ An optional Catat Saja Plus subscription pays for what costs money to run; the c
 
 **Technical**
 
-- [ ] Find why copying a book from the list sometimes never saves in the end-to-end test (`tests/e2e/encryption.test.mjs`, "month documents"): the months are read, then the new book's write is never acknowledged, with no error; it doesn't happen with Firestore's debug log on.
+- [ ] Find why copying a book from the list sometimes never saves on the CI runner (rarely locally), then check copy, delete and Undo from the list again in `tests/e2e/encryption.test.mjs` ("month documents"). Known: the months are read, then nothing is written: no write is queued (Firestore's IndexedDB shows one primary tab, network on, no pending writes), no toast, no browser error; it didn't happen with Firestore's debug log on. Next: log each step of `handleDuplicateFinance` → `createFinance` → `createShared` on a draft pull request (checked by CI, not deployed).
 - [ ] The note page loads 1.1 MB of JavaScript for the editor (Milkdown with CodeMirror): load it only when a note opens, and leave out code languages nobody uses.
 - [ ] More end-to-end tests (today they cover encryption, sharing, month documents, the AI features and health reminders; archiving, blocking and offline drafts have none yet; the rules have their own tests).
 - [ ] Read form values with `useWatch` instead of react-hook-form's `watch()`, then turn on `react-hooks/incompatible-library` (`eslint.config.mjs`).
