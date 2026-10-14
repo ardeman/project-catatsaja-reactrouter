@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Quick add and receipt scanning now share one Gemini button with the same sparkle icon as notes. Type or scan inside one card, then check the entries before adding them.',
+          id: 'Tambah cepat dan pindai struk kini ada dalam satu tombol Gemini dengan ikon bintang seperti di catatan. Ketik atau pindai dalam satu kartu, lalu periksa entri sebelum menambahkannya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Type dates directly, with automatic separators and English or Indonesian month names, or use the calendar. Dates start in DD-MM-YYYY format; choose another format in Settings → General.',
           id: 'Ketik tanggal langsung dengan pemisah otomatis dan nama bulan dalam bahasa Inggris atau Indonesia, atau gunakan kalender. Format awal tanggal adalah DD-MM-YYYY; pilih format lain di Pengaturan → Umum.',
         },

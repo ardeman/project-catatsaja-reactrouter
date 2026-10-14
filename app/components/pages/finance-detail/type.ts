@@ -31,6 +31,8 @@ export type TReceiptScanProperties = {
   // Past entries from every book, newest first, for category suggestions.
   history: TFinanceEntry[]
   onAdd: (entries: TFinanceEntry[]) => void
+  // Receipt scanning temporarily replaces the typed input in the shared card.
+  onActiveChange?: (isActive: boolean) => void
   // Quick add's unsaved text (lib/utils/drafts); none, no draft.
   draftKey?: string
   isPrivate?: boolean

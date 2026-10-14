@@ -543,6 +543,8 @@
       "add_other": "Tambah {{count}} entri"
     },
     "quickAdd": {
+      "gemini": "Gemini",
+      "methods": "Ketik pengeluaran atau pemasukan, atau pindai struk. Periksa entri sebelum menambahkannya.",
       "title": "Tambah cepat",
       "label": "Apa yang kamu bayar atau terima?",
       "placeholder": "makan siang 45rb, parkir 5rb, belanja 230rb kemarin, gaji 8jt",
@@ -615,7 +617,7 @@
         "Entri bisa memakai mata uang lain: kursnya ikut tersimpan, jadi total buku tidak berubah. Atur mata uang dan kurs di Pengaturan → Mata uang.",
         "Tambahkan Akunmu (dompet, rekening bank) untuk mencocokkannya dengan saldo buku.",
         "Buku menampilkan arus kas, saldo dari waktu ke waktu, dan pengeluaran per kategori, dalam bentuk grafik atau tabel.",
-        "Pindai struk membaca foto struk menjadi entri, dan Tambah cepat mengubah teks seperti \"makan siang 45rb, gaji 8jt kemarin\" menjadi entri. Keduanya memakai Gemini, dan kamu memeriksa entrinya sebelum ditambahkan."
+        "Pilih Gemini untuk memindai struk atau memakai Tambah cepat. Pindai struk membaca foto menjadi entri, dan Tambah cepat mengubah teks seperti \"makan siang 45rb, gaji 8jt kemarin\" menjadi entri. Keduanya memakai Gemini, dan kamu memeriksa entrinya sebelum ditambahkan."
       ]
     },
     "health": {

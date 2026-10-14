@@ -73,7 +73,6 @@ import { AddCurrency } from './add-currency'
 import { Analysis } from './analysis'
 import { EntryForm } from './entry-form.client'
 import { QuickAdd } from './quick-add.client'
-import { ReceiptScan } from './receipt-scan.client'
 import { Summary } from './summary'
 import { TFormProperties } from './type'
 
@@ -603,12 +602,6 @@ export const Form = (properties: TFormProperties) => {
                     <Plus className="size-4" />
                     {t('finances.entry.add')}
                   </Button>
-                  <ReceiptScan
-                    book={book}
-                    currencies={currencies}
-                    history={history}
-                    onAdd={handleAddEntries}
-                  />
                   <QuickAdd
                     book={book}
                     currencies={currencies}

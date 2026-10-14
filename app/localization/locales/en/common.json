@@ -543,6 +543,8 @@
       "add_other": "Add {{count}} entries"
     },
     "quickAdd": {
+      "gemini": "Gemini",
+      "methods": "Type expenses or income, or scan a receipt. Review the entries before adding them.",
       "title": "Quick add",
       "label": "What did you pay or receive?",
       "placeholder": "lunch 45rb, parking 5rb, groceries 230rb yesterday, salary 8jt",
@@ -615,7 +617,7 @@
         "An entry can be in another currency: it keeps the rate you used, so the book's totals never shift. Set your currencies and rates in Settings → Currency.",
         "Add Your accounts (wallets, bank accounts) to check them against the book's balance.",
         "The book shows cash flow, the balance over time and spending by category, as charts or as a table.",
-        "Scan receipt reads a photo of a receipt into entries, and Quick add turns typed text like \"lunch 45rb, salary 8jt yesterday\" into entries. Both use Gemini, and you check the entries before they are added."
+        "Choose Gemini to scan a receipt or use Quick add. Scan receipt reads a photo into entries, and Quick add turns typed text like \"lunch 45rb, salary 8jt yesterday\" into entries. Both use Gemini, and you check the entries before they are added."
       ]
     },
     "health": {

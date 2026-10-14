@@ -1,5 +1,5 @@
 import { ScanText } from 'lucide-react'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -44,13 +44,16 @@ const isRealDayText = (text: string) =>
 // person checks before they are added. The photo goes to Google only when
 // they choose one, after agreeing once to a notice saying so (`AiNotice`).
 export const ReceiptScan = (properties: TReceiptScanProperties) => {
-  const { book, currencies, history, onAdd } = properties
+  const { book, currencies, history, onAdd, onActiveChange } = properties
   const { t, i18n } = useTranslation()
   const money = useMoney()
   const { mutate: scan, isPending } = useScanReceipt()
   const { run, notice } = useAiConsent()
   const fileInput = useRef<HTMLInputElement>(null)
   const [receipt, setReceipt] = useState<TReceipt>()
+  useEffect(() => {
+    onActiveChange?.(isPending || !!receipt)
+  }, [isPending, receipt, onActiveChange])
   const [mode, setMode] = useState<TReceiptMode>('total')
   // Lines left out when adding each item, by their place on the receipt.
   const [skipped, setSkipped] = useState<Set<number>>(new Set())
@@ -171,7 +174,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
       {receipt ? (
         <section
           aria-labelledby="receipt-review-title"
-          className="motion-enter glass-surface glass-float order-last grid max-h-[calc(100dvh-18rem-var(--summary-height,0px))] basis-full gap-3 overflow-y-auto rounded-xl border p-3 shadow-lg sm:p-4 md:max-h-[calc(100dvh-14rem-var(--summary-height,0px))] [&_[role=combobox]]:bg-background [&_input]:bg-background [&_textarea]:bg-background"
+          className="motion-enter grid gap-3"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2
@@ -349,7 +352,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
           title={t('finances.receipt.scanHint')}
         >
           <ScanText className="size-4" />
-          <span className="hidden sm:inline">{t('finances.receipt.scan')}</span>
+          <span>{t('finances.receipt.scan')}</span>
         </Button>
       )}
       {isPending && (
