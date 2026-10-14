@@ -34,18 +34,72 @@ import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { taskSchema } from '~/lib/validations/task'
 
+import { ReorderHandle } from './reorder-handle'
 import { TFormProperties } from './type'
 
 type TItem = TTaskForm['content'][number]
 
 const inputClassName =
-  'border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-fit'
+  'border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none px-0 py-1 focus-visible:shadow-none focus:outline-hidden resize-none min-h-8'
 
 // Items as stored: empty ones are dropped.
 const toStoredContent = (content: TItem[]) =>
   content
     .filter((item) => item.item.trim().length > 0)
     .map(({ checked, item }) => ({ checked, item }))
+
+// Let the browser move down inside wrapped text. Only the last visual line
+// continues to the next item, keeping its character column.
+const getLastLineColumn = (input: HTMLTextAreaElement) => {
+  const caret = input.selectionEnd
+  if (input.selectionStart !== caret) return
+  const mirror = document.createElement('div')
+  const style = getComputedStyle(input)
+  for (const property of [
+    'font',
+    'letter-spacing',
+    'line-height',
+    'padding',
+    'border',
+    'box-sizing',
+    'word-break',
+    'overflow-wrap',
+  ])
+    mirror.style.setProperty(property, style.getPropertyValue(property))
+  Object.assign(mirror.style, {
+    position: 'fixed',
+    visibility: 'hidden',
+    whiteSpace: 'pre-wrap',
+    width: `${input.getBoundingClientRect().width}px`,
+    top: '0',
+    left: '0',
+  })
+  const before = document.createTextNode('')
+  const marker = document.createElement('span')
+  marker.textContent = '\u{200B}'
+  const after = document.createTextNode('')
+  mirror.append(before, marker, after)
+  document.body.append(mirror)
+  const topAt = (position: number) => {
+    before.textContent = input.value.slice(0, position)
+    after.textContent = input.value.slice(position)
+    return marker.getBoundingClientRect().top
+  }
+  try {
+    const lastTop = topAt(input.value.length)
+    if (topAt(caret) < lastTop - 1) return
+    let start = 0
+    let end = caret
+    while (start < end) {
+      const middle = Math.floor((start + end) / 2)
+      if (topAt(middle) < lastTop - 1) start = middle + 1
+      else end = middle
+    }
+    return caret - start
+  } finally {
+    mirror.remove()
+  }
+}
 
 export const Form = (properties: TFormProperties) => {
   const { task } = properties
@@ -69,6 +123,7 @@ export const Form = (properties: TFormProperties) => {
     : ''
   const { data: userData } = useUserData()
   const [selectedEdit, setSelectedEdit] = useState<number>()
+  const formElement = useRef<HTMLFormElement>(null)
   const isPinned = task?.isPinned
   const canWrite = task?.permissions?.write.includes(userData?.uid || '')
   const isOwner = task?.owner === userData?.uid
@@ -236,6 +291,37 @@ export const Form = (properties: TFormProperties) => {
     })
   }
 
+  const handleDeleteCompleted = () => {
+    const deleted = doneIndexes.map((index) => ({
+      index,
+      item: getValues(`content.${index}`),
+    }))
+    setSelectedEdit(undefined)
+    remove(doneIndexes)
+    toast({
+      description: t('tasks.form.completedDeleted', {
+        count: doneIndexes.length,
+      }),
+      action: (
+        <ToastAction
+          altText={t('form.undo')}
+          onClick={() => {
+            setSelectedEdit(undefined)
+            for (const { index, item } of deleted)
+              insert(Math.min(index, getValues('content').length), item)
+          }}
+        >
+          {t('form.undo')}
+        </ToastAction>
+      ),
+    })
+  }
+
+  const moveItem = (index: number, target: number) => {
+    move(index, target)
+    setSelectedEdit(undefined)
+  }
+
   // Move within its own group (open or completed).
   const handleMove = (index: number, direction: -1 | 1) => {
     const group = watchContent[index].checked ? doneIndexes : openIndexes
@@ -245,30 +331,60 @@ export const Form = (properties: TFormProperties) => {
     if (selectedEdit === index) setSelectedEdit(target)
   }
 
-  const startEditing = (index: number) => {
-    setSelectedEdit(index)
+  const focusItem = (
+    name: 'item' | `content.${number}.item`,
+    caret?: number,
+  ) => {
     requestAnimationFrame(() => {
-      setFocus(`content.${index}.item`)
+      const input = formElement.current?.elements.namedItem(name)
+      if (!(input instanceof HTMLTextAreaElement)) return
+      input.focus()
+      if (caret === undefined) return
+      const position = Math.min(caret, input.value.length)
+      input.setSelectionRange(position, position)
     })
   }
 
-  const focusNextOpen = (afterIndex: number) => {
+  const startEditing = (index: number, caret?: number) => {
+    setSelectedEdit(index)
+    focusItem(`content.${index}.item`, caret)
+  }
+
+  const focusNextOpen = (afterIndex: number, column?: number) => {
     const next = openIndexes.find((index) => index > afterIndex)
     if (next === undefined) {
       setSelectedEdit(undefined)
-      setFocus('item')
+      focusItem(
+        'item',
+        column === undefined
+          ? undefined
+          : Math.min(column, getValues('item').split('\n', 1)[0].length),
+      )
     } else {
-      startEditing(next)
+      startEditing(
+        next,
+        column === undefined
+          ? undefined
+          : Math.min(
+              column,
+              getValues(`content.${next}.item`).split('\n', 1)[0].length,
+            ),
+      )
     }
   }
 
-  const focusPreviousOpen = (beforeIndex: number) => {
+  const focusPreviousOpen = (beforeIndex: number, shouldFocusEnd = false) => {
     const previous = openIndexes.findLast((index) => index < beforeIndex)
     if (previous === undefined) {
       setSelectedEdit(undefined)
       setFocus('title')
     } else {
-      startEditing(previous)
+      startEditing(
+        previous,
+        shouldFocusEnd
+          ? getValues(`content.${previous}.item`).length
+          : undefined,
+      )
     }
   }
 
@@ -298,7 +414,8 @@ export const Form = (properties: TFormProperties) => {
         if (item.length > 0) break
         event.preventDefault()
         handleRemoveItem(index)
-        focusPreviousOpen(index)
+        // Removing an item shifts the indexes after it, but not the previous one.
+        focusPreviousOpen(index, true)
         break
       }
       case 'ArrowUp': {
@@ -308,9 +425,10 @@ export const Form = (properties: TFormProperties) => {
         break
       }
       case 'ArrowDown': {
-        if (event.currentTarget.selectionEnd !== item.length) return
+        const column = getLastLineColumn(event.currentTarget)
+        if (column === undefined) return
         event.preventDefault()
-        focusNextOpen(index)
+        focusNextOpen(index, column)
         break
       }
     }
@@ -343,7 +461,7 @@ export const Form = (properties: TFormProperties) => {
       event.key === 'ArrowUp'
     if (!isBackOut || event.currentTarget.selectionStart !== 0) return
     event.preventDefault()
-    focusPreviousOpen(watchContent.length)
+    focusPreviousOpen(watchContent.length, event.key === 'Backspace')
   }
 
   const handleNewItemPaste = (
@@ -379,8 +497,17 @@ export const Form = (properties: TFormProperties) => {
     return (
       <div
         key={field.id}
+        data-task-index={index}
+        data-task-checked={item.checked}
         className="group/item flex min-h-11 items-start gap-2"
       >
+        {!isReadOnly && (
+          <ReorderHandle
+            index={index}
+            checked={item.checked}
+            onMove={(target) => moveItem(index, target)}
+          />
+        )}
         <Checkbox
           name={`content.${index}.checked`}
           className="m-0 w-full"
@@ -402,25 +529,21 @@ export const Form = (properties: TFormProperties) => {
               {isEditing ? (
                 <Textarea
                   name={`content.${index}.item`}
-                  containerClassName="flex-1"
-                  className="w-full"
+                  className="w-full min-w-0 flex-1"
                   inputClassName={inputClassName}
                   rows={1}
                   aria-label={t('tasks.form.item.label')}
                   onKeyDown={(event) => handleContentKeyDown(event, index)}
                 />
               ) : (
-                <button
-                  type="button"
-                  disabled={isReadOnly}
-                  onClick={() => startEditing(index)}
+                <span
                   className={cn(
-                    'min-h-8 min-w-0 flex-1 cursor-text text-left text-sm wrap-break-word whitespace-pre-wrap disabled:cursor-default',
+                    'min-h-8 min-w-0 flex-1 py-1 text-left text-sm wrap-break-word whitespace-pre-wrap',
                     item.checked && 'text-muted-foreground line-through',
                   )}
                 >
                   {item.item}
-                </button>
+                </span>
               )}
               {!isReadOnly && (
                 <div
@@ -510,6 +633,7 @@ export const Form = (properties: TFormProperties) => {
   return (
     <FormProvider {...formMethods}>
       <form
+        ref={formElement}
         onSubmit={handleCreate}
         className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
       >
@@ -583,15 +707,14 @@ export const Form = (properties: TFormProperties) => {
           {openIndexes.map((index) => renderItem(index))}
         </div>
         {!isReadOnly && (
-          <div className="rounded-lg border bg-background p-3">
+          <div>
             <div className="flex items-start gap-2">
               <Textarea
                 name="item"
                 aria-label={t('tasks.form.placeholder.label')}
-                label={t('tasks.form.placeholder.label')}
                 placeholder={t('tasks.form.placeholder.label')}
                 className="min-w-0 flex-1"
-                inputClassName="min-h-11 resize-none"
+                inputClassName={inputClassName}
                 rows={1}
                 readOnly={isReadOnly}
                 onKeyDown={handleNewItemKeyDown}
@@ -600,7 +723,7 @@ export const Form = (properties: TFormProperties) => {
               />
               <Button
                 type="button"
-                className="mt-6 min-h-11"
+                className="min-h-11"
                 disabled={!watchItem.trim()}
                 onClick={() => addPendingItems()}
               >
@@ -615,12 +738,25 @@ export const Form = (properties: TFormProperties) => {
         )}
         {doneIndexes.length > 0 && (
           <section className="space-y-1 border-t pt-4">
-            <h2 className="text-xs font-medium text-muted-foreground">
-              {t('tasks.completed', {
-                count: doneIndexes.length,
-                total: watchContent.length,
-              })}
-            </h2>
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-xs font-medium text-muted-foreground">
+                {t('tasks.completed', {
+                  count: doneIndexes.length,
+                  total: watchContent.length,
+                })}
+              </h2>
+              {!isReadOnly && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDeleteCompleted}
+                >
+                  <Trash />
+                  {t('tasks.form.deleteCompleted')}
+                </Button>
+              )}
+            </div>
             {doneIndexes.map((index) => renderItem(index))}
           </section>
         )}

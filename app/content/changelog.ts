@@ -23,8 +23,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'Task lists have an Add button, clearer editing instructions and larger controls on phones. Text you have not added yet is kept when you save or leave the list.',
-          id: 'Daftar tugas kini punya tombol Tambah, petunjuk mengedit yang lebih jelas, dan tombol yang lebih besar di ponsel. Teks yang belum ditambahkan tetap disimpan saat menyimpan atau keluar dari daftar.',
+          en: 'Hold and drag the grip to arrange task items, or delete all completed items with undo. Tap the pencil to edit. Adding and editing use matching fields, and keyboard navigation keeps your cursor position. Unfinished text is kept when you save or leave.',
+          id: 'Tekan lama lalu seret pegangan untuk mengurutkan tugas, atau hapus semua item yang selesai dengan pilihan urungkan. Ketuk pensil untuk mengedit. Kolom menambah dan mengedit kini seragam, dan navigasi papan ketik mempertahankan posisi kursor. Teks yang belum ditambahkan tetap disimpan saat menyimpan atau keluar.',
         },
       },
       {

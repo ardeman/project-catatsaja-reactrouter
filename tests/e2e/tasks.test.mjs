@@ -42,7 +42,9 @@ for (const encrypted of [false, true]) {
     const input = page.locator('textarea[name=item]')
     await input.fill('Buy rice')
     await page.getByRole('button', { name: 'Add', exact: true }).click()
-    await page.getByRole('button', { name: 'Buy rice', exact: true }).waitFor()
+    await page
+      .getByRole('checkbox', { name: 'Buy rice', exact: true })
+      .waitFor()
     assert.equal(await input.inputValue(), '')
     await input.fill('Buy vegetables')
     await page.getByRole('button', { name: 'Save', exact: true }).click()
@@ -50,7 +52,7 @@ for (const encrypted of [false, true]) {
     const url = page.url()
     const id = url.split('/').pop()
     await page
-      .getByRole('button', { name: 'Buy vegetables', exact: true })
+      .getByRole('checkbox', { name: 'Buy vegetables', exact: true })
       .waitFor()
     await input.fill('Buy fruit')
     // An idle pause must keep unfinished text editable in the add field.
@@ -62,8 +64,12 @@ for (const encrypted of [false, true]) {
       .getByRole('link', { name: 'Untitled task' })
       .waitFor({ state: 'attached' })
     await page.goto(url)
-    await page.getByRole('button', { name: 'Buy fruit', exact: true }).waitFor()
+    await page
+      .getByRole('checkbox', { name: 'Buy fruit', exact: true })
+      .waitFor()
     assert.equal(await page.getByRole('checkbox').count(), 3)
+    await page.getByText('Buy rice', { exact: true }).click()
+    assert.equal(await page.locator('textarea[name^="content."]').count(), 0)
     await page
       .getByRole('button', { name: 'Edit item', exact: true })
       .first()
@@ -86,14 +92,85 @@ for (const encrypted of [false, true]) {
     await input.fill('Take bags\nBring wallet')
     await page.getByRole('button', { name: 'Add', exact: true }).click()
     await page
-      .getByRole('button', { name: 'Bring wallet', exact: true })
+      .getByRole('checkbox', { name: 'Bring wallet', exact: true })
       .waitFor()
     await page.waitForTimeout(1000)
     await page.reload()
     await page
-      .getByRole('button', { name: 'Bring wallet', exact: true })
+      .getByRole('checkbox', { name: 'Bring wallet', exact: true })
       .waitFor()
     assert.equal(await page.getByRole('checkbox').count(), 5)
+    // Empty add input returns to the end of the last unfinished item.
+    await input.focus()
+    await input.press('Backspace')
+    const lastEdit = page.locator('textarea[name="content.4.item"]')
+    await lastEdit.waitFor()
+    await page.waitForFunction(() => {
+      const input = document.querySelector('textarea[name="content.4.item"]')
+      return (
+        document.activeElement === input &&
+        input.selectionStart === input.value.length
+      )
+    })
+    assert.equal(
+      await lastEdit.evaluate((element) => element.selectionStart),
+      12,
+    )
+    await page
+      .getByRole('button', { name: 'Done editing', exact: true })
+      .click()
+    await page
+      .locator('[data-task-index="1"]')
+      .getByRole('button', { name: 'Edit item', exact: true })
+      .click()
+    const vegetables = page.locator('textarea[name="content.1.item"]')
+    await vegetables.evaluate((element) => element.setSelectionRange(4, 4))
+    await vegetables.press('ArrowDown')
+    const fruit = page.locator('textarea[name="content.2.item"]')
+    await fruit.waitFor()
+    await page.waitForFunction(() => {
+      const input = document.querySelector('textarea[name="content.2.item"]')
+      return document.activeElement === input && input.selectionStart === 4
+    })
+    assert.equal(await fruit.evaluate((element) => element.selectionStart), 4)
+    await page
+      .getByRole('button', { name: 'Done editing', exact: true })
+      .click()
+    // Holding the grip reorders only unfinished items; a quick drag cancels.
+    const drag = async (hold) => {
+      const handle = await page
+        .locator('[data-task-index="4"]')
+        .getByRole('button', { name: 'Hold and drag to arrange' })
+        .boundingBox()
+      const target = await page.locator('[data-task-index="3"]').boundingBox()
+      await page.mouse.move(
+        handle.x + handle.width / 2,
+        handle.y + handle.height / 2,
+      )
+      await page.mouse.down()
+      if (hold) await page.waitForTimeout(400)
+      await page.mouse.move(
+        target.x + target.width / 2,
+        target.y + target.height / 2,
+      )
+      await page.mouse.up()
+    }
+    await drag(false)
+    assert.equal(
+      await page.getByRole('checkbox').nth(2).getAttribute('aria-label'),
+      'Take bags',
+    )
+    await drag(true)
+    assert.equal(
+      await page.getByRole('checkbox').nth(2).getAttribute('aria-label'),
+      'Bring wallet',
+    )
+    await page
+      .getByRole('button', { name: 'Delete completed', exact: true })
+      .click()
+    assert.equal(await page.getByRole('checkbox').count(), 4)
+    await page.getByRole('button', { name: 'Undo', exact: true }).last().click()
+    await page.getByRole('heading', { name: 'Completed (1 of 5)' }).waitFor()
     const stored = await dbGetWhen(`tasks/${id}`, (fields) =>
       encrypted
         ? fields?.encrypted
@@ -190,7 +267,7 @@ for (const encrypted of [false, true]) {
       .getByRole('link', { name: 'Pending-only list', exact: true })
       .click()
     await page
-      .getByRole('button', { name: 'Remember keys', exact: true })
+      .getByRole('checkbox', { name: 'Remember keys', exact: true })
       .waitFor()
     assert.equal(
       (await dbList('tasks')).filter(

@@ -207,8 +207,11 @@
       "addItem": "Add",
       "editItem": "Edit item",
       "doneEditing": "Done editing",
-      "editHint": "Check the circle to complete an item. Tap its text or pencil to edit, reorder or remove it.",
-      "addHint": "Press Enter or Add. Paste multiple lines to add several items. Unfinished text is kept when you save or leave."
+      "editHint": "Check the circle to complete an item. Tap the pencil to edit. Hold and drag the grip to arrange items.",
+      "addHint": "Press Enter or Add. Paste multiple lines to add several items. Unfinished text is kept when you save or leave.",
+      "arrange": "Hold and drag to arrange",
+      "deleteCompleted": "Delete completed",
+      "completedDeleted": "Deleted {{count}} completed items."
     },
     "toast": {
       "deleted": "Task deleted",
