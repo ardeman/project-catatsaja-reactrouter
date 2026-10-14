@@ -41,7 +41,6 @@ import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useIsStuck } from '~/lib/hooks/use-is-stuck'
 import { useMoney } from '~/lib/hooks/use-money'
-import { useMoveFinanceEntries } from '~/lib/hooks/use-move-finance-entries'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
@@ -122,25 +121,7 @@ export const Form = (properties: TFormProperties) => {
   const canWrite = finance?.permissions?.write.includes(userData?.uid || '')
   const isOwner = finance?.owner === userData?.uid
   const isEditable = isOwner || canWrite
-  // A book from before month documents moves into them when someone who can
-  // change it opens it online, once per visit, and can't be changed until
-  // that's done. If it can't move (offline), it works as before.
-  const { mutate: moveEntries } = useMoveFinanceEntries()
-  const [triedMoving, setTriedMoving] = useState<string>()
-  const isMoving =
-    !!finance &&
-    !!isEditable &&
-    finance.entryStore !== 2 &&
-    triedMoving !== finance.id &&
-    navigator.onLine
-  const movingId = useRef<string>(undefined)
-  useEffect(() => {
-    if (!isMoving || !finance || movingId.current === finance.id) return
-    const { id } = finance
-    movingId.current = id
-    void moveEntries(id).finally(() => setTriedMoving(id))
-  }, [isMoving, finance, moveEntries])
-  const isReadOnly = !!finance && (!isEditable || isMoving)
+  const isReadOnly = !!finance && !isEditable
   const sharedCount = new Set(
     [
       ...(finance?.permissions?.read || []),

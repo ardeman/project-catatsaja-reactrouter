@@ -122,8 +122,7 @@ const rewriteChildren = async (
   from: CryptoKey | undefined,
   to: CryptoKey | undefined,
 ) => {
-  if (name !== 'finances' || (data as { entryStore?: number }).entryStore !== 2)
-    return
+  if (name !== 'finances') return
   const months = await readMonths(reference, from)
   for (const month of months) {
     const encoded = await encodeMonth(month.month, month.content, to)

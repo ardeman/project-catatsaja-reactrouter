@@ -24,7 +24,7 @@ import {
 export const contentFields = {
   notes: ['title', 'content'],
   tasks: ['title', 'content'],
-  finances: ['title', 'content', 'currency', 'accounts', 'summary'],
+  finances: ['title', 'currency', 'accounts', 'summary'],
   healthLogs: [
     'name',
     'birthDate',
@@ -140,9 +140,6 @@ export const encodeChanges = async (
   collection: TCollection,
   id: string,
   changes: TData,
-  // Content fields to take out of the item (a book's entries, once moved
-  // into months).
-  dropped: string[] = [],
 ) => {
   const key = cacheKey(collection, id)
   const contentKey = contentKeys.get(key)
@@ -150,13 +147,8 @@ export const encodeChanges = async (
   const plain = plainContent.get(key)
   if (!plain) throw new Error('encryption/locked')
   const contentChanges = pick(collection, changes)
-  if (Object.keys(contentChanges).length === 0 && dropped.length === 0)
-    return changes
-  const next = Object.fromEntries(
-    Object.entries({ ...plain, ...contentChanges }).filter(
-      ([field]) => !dropped.includes(field),
-    ),
-  )
+  if (Object.keys(contentChanges).length === 0) return changes
+  const next = { ...plain, ...contentChanges }
   const encrypted = await encryptJson(next, contentKey)
   plainContent.set(key, next)
   return { ...omit(collection, changes), encrypted }

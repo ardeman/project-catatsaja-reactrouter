@@ -221,15 +221,13 @@ export const bookSummary = (entries: TFinanceEntry[]): TFinanceSummary => {
 
 const emptySummary = bookSummary([])
 
-// A book's summary: worked out from its entries while they are in the book
-// document, so it is never out of date, or the stored one.
+// A book's summary: worked out from its entries when they are at hand (an
+// open book), otherwise the stored one.
 export const summaryOf = (
   book: Pick<TFinanceResponse, 'content' | 'summary'>,
 ) => (book.content ? bookSummary(book.content) : (book.summary ?? emptySummary))
 
-// The entries known without opening a book: all of them while they are in
-// the book document, otherwise the summary's newest ones. For search and
-// category suggestions.
-export const knownEntries = (
-  book: Pick<TFinanceResponse, 'content' | 'summary'>,
-) => book.content ?? book.summary?.recent ?? []
+// The entries known without opening a book: its summary's newest ones. For
+// search and category suggestions.
+export const knownEntries = (book: Pick<TFinanceResponse, 'summary'>) =>
+  book.summary?.recent ?? []

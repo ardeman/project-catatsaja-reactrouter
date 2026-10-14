@@ -1,10 +1,8 @@
 import {
   collection,
-  deleteField,
   doc,
   onSnapshot,
   QueryDocumentSnapshot,
-  runTransaction,
   updateDoc,
   writeBatch,
 } from 'firebase/firestore'
@@ -20,11 +18,7 @@ import {
   TFinancePermissionRequest,
   TUpdateFinanceRequest,
 } from '~/lib/types/finance'
-import {
-  contentKeyOf,
-  decodeDocument,
-  encodeChanges,
-} from '~/lib/utils/encrypted-document'
+import { contentKeyOf } from '~/lib/utils/encrypted-document'
 import { bookSummary } from '~/lib/utils/finance-analysis'
 import {
   decodeMonth,
@@ -45,10 +39,10 @@ import {
   updateShared,
 } from './shared-document'
 
-// A book's entries are in its months once moved (`entryStore` 2,
-// `finance-months.ts`), or in the book itself (`content`) before. The app
-// sees `content` either way. Whenever entries are written, the book's
-// summary (what lists and search show) is written with them.
+// A book's entries are in its months (`finance-months.ts`, `entryStore` 2
+// on the book), read into `content` for the app. Whenever entries are
+// written, the book's summary (what lists and search show) is written with
+// them.
 
 // The months of each open book as last read, to write only the ones that
 // changed: month → its document id and entries.
@@ -83,16 +77,27 @@ export const createFinance = (data: TCreateFinanceRequest) => {
   )
 }
 
-export const updateFinance = (data: TUpdateFinanceRequest) => {
+// A book's months as stored: as last read by its page, or read now.
+const monthsOf = async (id: string) => {
+  const known = storedMonths.get(id)
+  if (known) return known
+  const { database } = requireFirestore()
+  const months = await readMonths(
+    doc(database, 'finances', id),
+    contentKeyOf('finances', id),
+  )
+  return new Map(
+    months.map((month) => [
+      month.month,
+      { id: month.reference.id, content: month.content },
+    ]),
+  )
+}
+
+export const updateFinance = async (data: TUpdateFinanceRequest) => {
   const { id, content, ...rest } = data
-  const months = storedMonths.get(id)
   if (!content) return updateShared('finances', id, rest)
-  if (!months)
-    return updateShared('finances', id, {
-      ...rest,
-      content,
-      summary: bookSummary(content),
-    })
+  const months = await monthsOf(id)
   // Only the months whose entries changed are written, with the book.
   return updateShared(
     'finances',
@@ -112,45 +117,11 @@ export const updateFinance = (data: TUpdateFinanceRequest) => {
   )
 }
 
-// Moving a book's entries out of the book document into months, once, by
-// someone who can change it, when they open it online. A transaction, so
-// two devices can't both move it; doesn't touch `updatedAt`: it isn't an
-// edit.
-export const moveFinanceEntries = async (id: string) => {
-  const { database, uid } = requireFirestore()
-  const reference = doc(database, 'finances', id)
-  await runTransaction(database, async (transaction) => {
-    const snapshot = await transaction.get(reference)
-    const raw = snapshot.data()
-    if (!raw || raw.entryStore === 2) return
-    const book = await decodeDocument('finances', id, raw, uid)
-    if (!book) return
-    const content = (book.content as TFinanceEntry[] | undefined) ?? []
-    const contentKey = contentKeyOf('finances', id)
-    const encoded = await encodeChanges(
-      'finances',
-      id,
-      { summary: bookSummary(content) },
-      ['content'],
-    )
-    transaction.update(reference, {
-      ...encoded,
-      ...(!contentKey && { content: deleteField() }),
-      entryStore: 2,
-    })
-    for (const [month, entries] of groupByMonth(content)) {
-      const month_ = await encodeMonth(month, entries, contentKey)
-      transaction.set(doc(reference, 'months', month_.id), month_.data)
-    }
-  })
-}
-
 // A book with all its entries, read when they aren't at hand (deleting or
 // copying from the list, which has only summaries).
 export const withEntries = async (
   finance: TFinanceResponse,
 ): Promise<TFinanceResponse> => {
-  if (finance.entryStore !== 2) return finance
   const { database } = requireFirestore()
   const months = await readMonths(
     doc(database, 'finances', finance.id),
@@ -185,18 +156,16 @@ export const pinFinance = async (data: TPinFinanceRequest) => {
 export const deleteFinance = async (finance: TFinanceResponse) => {
   const { database } = requireFirestore()
   const reference = doc(database, 'finances', finance.id)
-  const months =
-    finance.entryStore === 2
-      ? await readMonths(reference, contentKeyOf('finances', finance.id))
-      : []
+  const months = await readMonths(
+    reference,
+    contentKeyOf('finances', finance.id),
+  )
   const batch = writeBatch(database)
   for (const month of months) batch.delete(month.reference)
   batch.delete(reference)
   await batch.commit()
   storedMonths.delete(finance.id)
-  return finance.entryStore === 2
-    ? { ...finance, content: entriesOfMonths(months) }
-    : finance
+  return { ...finance, content: entriesOfMonths(months) }
 }
 
 export const unlinkFinance = (finance: TFinanceResponse) =>
@@ -233,9 +202,8 @@ export const subscribeToFinance = (
     // Newer snapshots replace one still being decrypted.
     latest += 1
     if (!hasBook) return
-    if (book?.entryStore !== 2) {
-      storedMonths.delete(id)
-      onData(book)
+    if (!book) {
+      onData(undefined)
       return
     }
     if (!months) return
@@ -266,7 +234,7 @@ export const subscribeToFinance = (
     (item) => {
       book = item
       hasBook = true
-      if (!stopMonths && item?.entryStore === 2)
+      if (!stopMonths && item)
         stopMonths = onSnapshot(
           collection(database, 'finances', id, 'months'),
           (snap) => {

@@ -52,7 +52,6 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 **Upcoming (dated)**
 
 - [ ] Around 2026-10-17 to 10-20: enforce App Check for Cloud Firestore once its "outdated client requests" stay near 0% for a few days (Firebase console → App Check). Authentication stays on monitoring: enforcing it needs App Check back in `firebase.ts` (AGENTS.md → Decisions).
-- [ ] Once no tab runs an app older than `appVersion` 2: tighten `firestore.rules` so new books must start in month documents (`entryStore` 2, no `content`), with rules tests.
 
 **Planned**
 

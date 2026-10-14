@@ -219,45 +219,17 @@ service cloud.firestore {
       allow delete: if isOwner(resource.data.owner);
     }
 
-    // A book's entries are kept in it (`content`, books from before) or, once
-    // moved (`entryStore` 2), in one document per month under it. A moved
-    // book never takes `content` back: entries written there would be lost
-    // from the months.
-    function isEntryStoreKept() {
-      let after = request.resource.data;
-      return (!('entryStore' in resource.data) || 'entryStore' in after)
-        && (
-          !('entryStore' in after)
-            || (after.entryStore == 2 && !('content' in after))
-        );
-    }
-
-    function isValidNewBook() {
-      return !('entryStore' in request.resource.data)
-        || (
-          request.resource.data.entryStore == 2
-            && !('content' in request.resource.data)
-        );
-    }
-
-    // A writer moving a book's entries into months: in the same write the
-    // months are created, `content` goes (into `encrypted` on an encrypted
-    // book) and the book is marked moved. Once only.
-    function isMoveUpdate() {
-      return canWrite(resource.data.permissions.write)
-        && !('entryStore' in resource.data)
-        && request.resource.data.get('entryStore', 0) == 2
-        && changedKeys().hasOnly(['entryStore', 'content', 'summary', 'encrypted']);
+    // A book's entries are in one document per month under it (`months`),
+    // never in the book: it has `entryStore` 2 and no `content`, always.
+    function isMonthsBook(data) {
+      return data.get('entryStore', 0) == 2 && !('content' in data);
     }
 
     match /finances/{financeId} {
       allow read: if canReadShared();
-      allow create: if isValidNewShared() && isValidNewBook();
-      allow update: if isEntryStoreKept()
-        && (
-          canUpdateShared(['title', 'content', 'currency', 'accounts', 'summary', 'encrypted'])
-            || isMoveUpdate()
-        );
+      allow create: if isValidNewShared() && isMonthsBook(request.resource.data);
+      allow update: if isMonthsBook(request.resource.data)
+        && canUpdateShared(['title', 'currency', 'accounts', 'summary', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
 
       // A month of a moved book's entries. Read by its readers (not by people
@@ -278,7 +250,7 @@ service cloud.firestore {
 
         function isValidMonth(book) {
           let data = request.resource.data;
-          return book.get('entryStore', 0) == 2
+          return isMonthsBook(book)
             && (
               'encrypted' in book
                 ? data.keys().hasOnly(['encrypted'])

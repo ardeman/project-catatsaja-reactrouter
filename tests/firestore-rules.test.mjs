@@ -177,13 +177,7 @@ describe('collections that are not part of the app', () => {
 const collections = {
   notes: { title: 'A note', content: 'Text' },
   tasks: { title: 'A list', content: [] },
-  finances: {
-    title: 'A book',
-    content: [],
-    currency: {},
-    accounts: [],
-    summary: {},
-  },
+  finances: { title: 'A book', currency: {}, accounts: [], summary: {} },
   healthLogs: {
     name: 'Me',
     birthDate: '1990-01-01',
@@ -194,8 +188,12 @@ const collections = {
   },
 }
 
-for (const [collection, content] of Object.entries(collections)) {
+// Stored with each document but not changed by writers.
+const fixed = { finances: { entryStore: 2 } }
+
+for (const [collection, fields] of Object.entries(collections)) {
   const path = `${collection}/doc`
+  const content = { ...fields, ...fixed[collection] }
   const shared = {
     ...content,
     owner: OWNER,
@@ -319,7 +317,7 @@ for (const [collection, content] of Object.entries(collections)) {
 
     test('a writer changes every content field; a reader none', async () => {
       await seed(path, shared)
-      for (const field of Object.keys(content)) {
+      for (const field of Object.keys(fields)) {
         const changed = Array.isArray(content[field])
           ? [{ id: 'changed' }]
           : `Changed ${field}`
@@ -431,6 +429,7 @@ for (const [collection, content] of Object.entries(collections)) {
 
     describe('encrypted', () => {
       const encrypted = {
+        ...fixed[collection],
         owner: OWNER,
         permissions: { read: [OWNER, WRITER, READER], write: [OWNER, WRITER] },
         pinnedBy: [],
@@ -730,20 +729,8 @@ describe('finance months', () => {
     )
   })
 
-  test('no months for a book whose entries have not moved', async () => {
-    await seed(book, { ...plainBook, content: [] })
-    await assertFails(as(OWNER).doc(`${book}/months/2026-10`).set(month))
-  })
-
-  test('a writer moves a book into months in one write, once', async () => {
-    await seed(book, { ...plainBook, content: [{ id: 'e1' }] })
-    const database = as(WRITER)
-    const batch = database.batch()
-    batch.set(database.doc(book), movedPlain)
-    batch.set(database.doc(`${book}/months/2026-10`), month)
-    await assertSucceeds(batch.commit())
-
-    // Moved: `content` never comes back, and the mark stays.
+  test('a book never holds its entries itself', async () => {
+    await seed(book, movedPlain)
     await assertFails(
       as(WRITER)
         .doc(book)
@@ -755,40 +742,16 @@ describe('finance months', () => {
         .update({ content: [] }),
     )
     await assertFails(as(OWNER).doc(book).set(plainBook))
-  })
-
-  test('moving keeps nothing behind and changes nothing else', async () => {
-    await seed(book, { ...plainBook, content: [{ id: 'e1' }] })
+    await seed(book, { ...plainBook, content: [] })
+    await assertFails(as(OWNER).doc(`${book}/months/2026-10`).set(month))
     await assertFails(
-      as(WRITER)
+      as(OWNER)
         .doc(book)
-        .update({ entryStore: 2 }),
-    )
-    await assertFails(
-      as(WRITER)
-        .doc(book)
-        .set({ ...movedPlain, title: 'Renamed', updatedAt: new Date() }),
-    )
-    await assertFails(
-      as(READER)
-        .doc(book)
-        .set(movedPlain),
+        .update({ title: 'Renamed' }),
     )
   })
 
-  test('an encrypted book moves with its blob rewritten', async () => {
-    await seed(book, encryptedBook)
-    const database = as(WRITER)
-    const batch = database.batch()
-    batch.set(database.doc(book), {
-      ...movedEncrypted,
-      encrypted: { v: 1, iv: 'iv2', ct: 'ct2' },
-    })
-    batch.set(database.doc(`${book}/months/x1`), sealedMonth)
-    await assertSucceeds(batch.commit())
-  })
-
-  test('a new book may start moved, with its months, but not with content', async () => {
+  test('a new book starts with its months, never with content or unmarked', async () => {
     const created = {
       ...movedPlain,
       permissions: { read: [OWNER], write: [OWNER] },
@@ -805,6 +768,8 @@ describe('finance months', () => {
         .doc('finances/other')
         .set({ ...created, content: [] }),
     )
+    const { entryStore: _entryStore, ...unmarked } = created
+    await assertFails(as(OWNER).doc('finances/third').set(unmarked))
   })
 
   test('encrypting a moved book rewrites its months in the same write', async () => {
