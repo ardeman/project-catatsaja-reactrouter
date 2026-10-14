@@ -25,7 +25,7 @@ permissions:
   contents: read
 
 jobs:
-  checks:
+  validation:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -57,13 +57,61 @@ jobs:
           key: firebase-emulators-${{ runner.os }}-${{ hashFiles('package.json') }}
       - name: Test the Firestore rules
         run: pnpm test:rules
+
+  e2e:
+    name: End-to-end (${{ matrix.suite }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      # Finish every suite even if another fails, so all failures are visible.
+      fail-fast: false
+      matrix:
+        suite: [encryption, ai, tasks]
+    # Each suite needs its own runner: they use the same ports and some
+    # reset the emulator database. Scenarios within a file stay sequential.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Cache the Firebase emulators
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ runner.os }}-${{ hashFiles('package.json') }}
       # The end-to-end tests drive Google Chrome; Playwright installs it and
       # the system libraries it needs on whatever Ubuntu the runner has
       # (--force: the runner image may already have a Chrome of its own).
       - name: Install Chrome
         run: pnpm exec playwright install --with-deps --force chrome
       - name: End-to-end tests
-        run: pnpm test:e2e
+        run: pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja 'node --test --test-concurrency=1 tests/e2e/${{ matrix.suite }}.test.mjs'
+
+  # Keep the existing "checks" status as the gate for branch protection
+  # and deployment, including every matrix job.
+  checks:
+    needs: [validation, e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every check to pass
+        env:
+          VALIDATION_RESULT: ${{ needs.validation.result }}
+          E2E_RESULT: ${{ needs.e2e.result }}
+        run: test "$VALIDATION_RESULT" = success && test "$E2E_RESULT" = success
 
   deploy:
     needs: checks
