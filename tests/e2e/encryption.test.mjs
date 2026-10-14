@@ -949,6 +949,31 @@ describe('end-to-end encryption', () => {
         url: nanda.page.url(),
         shown: (await nanda.page.locator('body').innerText()).slice(-400),
         errors,
+        // TEMP: Firestore's own state in IndexedDB: who is primary, and
+        // the writes waiting to be sent.
+        firestore: await nanda.page.evaluate(async () => {
+          const names = (await indexedDB.databases()).map((d) => d.name)
+          const name = names.find((n) => n?.includes('main'))
+          if (!name) return { names }
+          const db = await new Promise((resolve, reject) => {
+            const request = indexedDB.open(name)
+            request.onsuccess = () => resolve(request.result)
+            request.onerror = () => reject(request.error)
+          })
+          const all = (store) =>
+            new Promise((resolve) => {
+              if (!db.objectStoreNames.contains(store)) return resolve('none')
+              const request = db.transaction(store).objectStore(store).getAll()
+              request.onsuccess = () => resolve(request.result)
+            })
+          const mutations = await all('mutations')
+          return {
+            owner: await all('owner'),
+            clients: await all('clientMetadata'),
+            pendingWrites: Array.isArray(mutations) ? mutations.length : mutations,
+            now: Date.now(),
+          }
+        }),
         books: (await dbList('finances'))
           .filter((item) => item.fields.owner?.stringValue === nandaUid)
           .map((item) => item.fields.title?.stringValue),
