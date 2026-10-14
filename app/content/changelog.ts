@@ -21,6 +21,20 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'The expenses and income switch sits above both breakdown cards, making it clearer that it changes categories and items together.',
+          id: 'Pilihan pengeluaran dan pemasukan berada di atas kedua kartu rincian, sehingga lebih jelas bahwa kategori dan item berubah bersama.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Chart tooltips show full labels and give amounts more room, making large numbers easier to read.',
+          id: 'Tooltip grafik menampilkan label lengkap dan memberi lebih banyak ruang untuk jumlah, sehingga angka besar lebih mudah dibaca.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'The difference between your accounts and a book now shows which way it goes: more in your accounts in green, less in orange, and a check mark when they match. Before, both were red.',

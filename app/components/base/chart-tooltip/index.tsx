@@ -15,27 +15,28 @@ type TProperties = {
   width: number
 }
 
-const TOOLTIP_WIDTH = 176
+const TOOLTIP_WIDTH = 224
 
-// A chart's hover and keyboard readout of one point: values lead, names
-// follow, each series keyed by a short stroke of its colour.
+// A chart's hover and keyboard readout of one point, with each label above
+// its amount so long currencies and translated labels don't compete for space.
 export const ChartTooltip = ({ title, rows, x, width }: TProperties) => {
+  const tooltipWidth = Math.min(TOOLTIP_WIDTH, width)
   const left = Math.min(
-    Math.max(x - TOOLTIP_WIDTH / 2, 0),
-    Math.max(width - TOOLTIP_WIDTH, 0),
+    Math.max(x - tooltipWidth / 2, 0),
+    Math.max(width - tooltipWidth, 0),
   )
   return (
     <div
       role="status"
       aria-live="polite"
-      className="pointer-events-none absolute top-0 z-10 grid gap-1 rounded-lg border bg-popover px-2.5 py-2 text-xs text-popover-foreground shadow-md"
-      style={{ left, width: TOOLTIP_WIDTH }}
+      className="pointer-events-none absolute top-0 z-10 grid gap-2 rounded-lg border bg-popover px-3 py-2.5 text-xs text-popover-foreground shadow-md"
+      style={{ left, width: tooltipWidth }}
     >
       <p className="text-muted-foreground">{title}</p>
       {rows.map((row) => (
         <p
           key={row.label}
-          className="flex items-center gap-2"
+          className="grid grid-cols-[0.75rem_minmax(0,1fr)] items-center gap-x-2"
         >
           <span
             aria-hidden="true"
@@ -45,8 +46,10 @@ export const ChartTooltip = ({ title, rows, x, width }: TProperties) => {
             )}
             style={{ backgroundColor: row.color }}
           />
-          <span className="font-semibold tabular-nums">{row.value}</span>
-          <span className="truncate text-muted-foreground">{row.label}</span>
+          <span className="text-muted-foreground">{row.label}</span>
+          <span className="col-start-2 text-sm leading-snug font-semibold [overflow-wrap:anywhere] tabular-nums">
+            {row.value}
+          </span>
         </p>
       ))}
     </div>

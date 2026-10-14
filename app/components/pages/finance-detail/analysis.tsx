@@ -333,41 +333,40 @@ export const Analysis = ({ entries, book }: TProperties) => {
         </Section>
       )}
 
+      {hasBothTypes && (
+        <div className="flex">
+          <Segmented
+            label={t('finances.form.type.label')}
+            value={shownType}
+            options={[
+              {
+                value: 'expense',
+                label: t('finances.summary.expense'),
+                icon: (
+                  <BanknoteArrowUp
+                    aria-hidden="true"
+                    className="size-3.5 text-expense"
+                  />
+                ),
+              },
+              {
+                value: 'income',
+                label: t('finances.summary.income'),
+                icon: (
+                  <BanknoteArrowDown
+                    aria-hidden="true"
+                    className="size-3.5 text-income"
+                  />
+                ),
+              },
+            ]}
+            onChange={setType}
+          />
+        </div>
+      )}
+
       {categories.length > 0 && (
-        <Section
-          title={t('finances.analysis.categories.title')}
-          action={
-            hasBothTypes && (
-              <Segmented
-                label={t('finances.analysis.categories.title')}
-                value={shownType}
-                options={[
-                  {
-                    value: 'expense',
-                    label: t('finances.summary.expense'),
-                    icon: (
-                      <BanknoteArrowUp
-                        aria-hidden="true"
-                        className="size-3.5 text-expense"
-                      />
-                    ),
-                  },
-                  {
-                    value: 'income',
-                    label: t('finances.summary.income'),
-                    icon: (
-                      <BanknoteArrowDown
-                        aria-hidden="true"
-                        className="size-3.5 text-income"
-                      />
-                    ),
-                  },
-                ]}
-                onChange={setType}
-              />
-            )
-          }
-        >
+        <Section title={t('finances.analysis.categories.title')}>
           <CategoryBreakdown
             totals={categories}
             book={book}
@@ -375,7 +374,7 @@ export const Analysis = ({ entries, book }: TProperties) => {
         </Section>
       )}
 
-      {/* Follows the type chosen for the categories above. */}
+      {/* Both breakdowns follow the type chosen above them. */}
       {items.length > 0 && (
         <Section
           title={t('finances.analysis.items.title')}
