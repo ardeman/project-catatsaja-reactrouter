@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-14',
+    title: {
+      en: 'A clearer account check',
+      id: 'Cek akun yang lebih jelas',
+    },
+    changes: [
+      {
+        kind: 'fixed',
+        text: {
+          en: 'The difference between your accounts and a book now shows which way it goes: more in your accounts in green, less in orange, and a check mark when they match. Before, both were red.',
+          id: 'Selisih antara akunmu dan buku kini menunjukkan arahnya: lebih banyak di akunmu berwarna hijau, lebih sedikit berwarna oranye, dan tanda centang saat cocok. Sebelumnya keduanya merah.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-13',
     title: {
       en: 'Account emails in your language',

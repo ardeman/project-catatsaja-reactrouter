@@ -17,6 +17,8 @@ import { TFinanceCurrency, TFinanceForm } from '~/lib/types/finance'
 import { accountsDifference, sumAccounts } from '~/lib/utils/finance'
 import { cn } from '~/lib/utils/shadcn'
 
+import { Difference, differenceClassName } from './difference'
+
 type TProperties = {
   book: TFinanceCurrency
   balance: number
@@ -161,9 +163,7 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
               <dd
                 className={cn(
                   'pr-[calc(--spacing(3)+1px)] text-right text-sm font-medium whitespace-nowrap tabular-nums',
-                  difference === 0
-                    ? 'text-emerald-600 dark:text-emerald-400'
-                    : 'text-destructive-text',
+                  differenceClassName(difference),
                 )}
               >
                 <Tooltip
@@ -180,7 +180,10 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
                         setIsDifferenceHintOpen(true)
                       }}
                     >
-                      {money(difference, book, true)}
+                      <Difference
+                        difference={difference}
+                        book={book}
+                      />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-64">

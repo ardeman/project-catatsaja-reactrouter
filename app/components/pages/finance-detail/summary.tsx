@@ -5,6 +5,8 @@ import { TFinanceAccount, TFinanceCurrency } from '~/lib/types/finance'
 import { accountsDifference } from '~/lib/utils/finance'
 import { cn } from '~/lib/utils/shadcn'
 
+import { Difference, differenceClassName } from './difference'
+
 type TProperties = {
   book: TFinanceCurrency
   income: number
@@ -73,11 +75,13 @@ export const Summary = (properties: TProperties) => {
       : [
           {
             label: t('finances.summary.difference'),
-            value: money(difference, book, true),
-            className:
-              difference === 0
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-destructive-text',
+            value: (
+              <Difference
+                difference={difference}
+                book={book}
+              />
+            ),
+            className: differenceClassName(difference),
           },
         ]),
   ]
