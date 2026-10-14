@@ -924,8 +924,18 @@ describe('end-to-end encryption', () => {
       '2',
       'summary written',
     )
+    // Browser errors, for a failure message.
+    const errors = []
+    nanda.page.on('pageerror', (error) => errors.push(error.message))
+    nanda.page.on('console', (message) => {
+      if (message.type() === 'error') errors.push(message.text())
+    })
     await nanda.page.goto(`${APP}/finances`)
     await nanda.page.getByText('September lunch').waitFor({ timeout: 15_000 })
+    // The masonry list settles before its buttons are clicked: a card that
+    // moves under the pointer gets the click on its link instead.
+    await nanda.page.waitForLoadState('networkidle').catch(() => {})
+    await nanda.page.waitForTimeout(1500)
 
     // From the list, which has only summaries, copying and deleting read the
     // months first: the copy and the book brought back by Undo keep them.
@@ -934,8 +944,15 @@ describe('end-to-end encryption', () => {
         .locator('.group\\/card')
         .filter({ has: nanda.page.getByRole('link', { name: title, exact: true }) })
     // What the page says (toasts, alerts), for a failure message.
-    const said = () =>
-      nanda.page.locator('[role=status], [role=alert], li[role=status]').allTextContents()
+    const said = async () =>
+      JSON.stringify({
+        url: nanda.page.url(),
+        shown: (await nanda.page.locator('body').innerText()).slice(-400),
+        errors,
+        books: (await dbList('finances'))
+          .filter((item) => item.fields.owner?.stringValue === nandaUid)
+          .map((item) => item.fields.title?.stringValue),
+      })
     const booksWith = async (count) => {
       for (let attempt = 0; attempt < 60; attempt++) {
         const books = (await dbList('finances')).filter(
@@ -951,7 +968,9 @@ describe('end-to-end encryption', () => {
         .getByText(text, { exact: true })
         .first()
         .waitFor({ timeout: 30_000 })
-        .catch(async () => assert.fail(`no "${text}"; the page said: ${await said()}`))
+        .catch(async () =>
+          assert.fail(`no "${text}"; the page said: ${await said()}`),
+        )
     const monthIdsOf = async (id) =>
       (await monthsOf(id)).map((month) => month.id).toSorted()
 
