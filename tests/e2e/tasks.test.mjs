@@ -54,10 +54,16 @@ for (const encrypted of [false, true]) {
     await page
       .getByRole('checkbox', { name: 'Buy vegetables', exact: true })
       .waitFor()
+    // Immediate typing must reach the saved list, and title edits must not
+    // consume unfinished text from the add field during idle autosave.
+    const title = page.locator('textarea[name=title]')
     await input.fill('Buy fruit')
+    await title.fill('Shopping')
     // An idle pause must keep unfinished text editable in the add field.
     await page.waitForTimeout(800)
     assert.equal(await input.inputValue(), 'Buy fruit')
+    assert.equal(await page.getByRole('checkbox').count(), 2)
+    await title.fill('')
     await page.getByRole('button', { name: 'Back', exact: true }).click()
     await page.waitForURL(/\/tasks$/)
     await page

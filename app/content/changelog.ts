@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-15',
+    title: {
+      en: 'Safer task creation',
+      id: 'Pembuatan tugas yang lebih aman',
+    },
+    changes: [
+      {
+        kind: 'fixed',
+        text: {
+          en: 'New task lists stay locked until the saved list opens, so typing immediately after Save cannot be lost.',
+          id: 'Daftar tugas baru tetap terkunci hingga daftar yang disimpan terbuka, agar teks yang langsung diketik setelah Simpan tidak hilang.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-14',
     title: {
       en: 'A clearer account check',

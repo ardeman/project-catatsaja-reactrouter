@@ -123,12 +123,13 @@ export const Form = (properties: TFormProperties) => {
     : ''
   const { data: userData } = useUserData()
   const [selectedEdit, setSelectedEdit] = useState<number>()
+  const [isCreatingTask, setIsCreatingTask] = useState(false)
   const formElement = useRef<HTMLFormElement>(null)
   const isPinned = task?.isPinned
   const canWrite = task?.permissions?.write.includes(userData?.uid || '')
   const isOwner = task?.owner === userData?.uid
   const isEditable = isOwner || canWrite
-  const isReadOnly = !!task && !isEditable
+  const isReadOnly = isCreatingTask || (!!task && !isEditable)
   const sharedCount = new Set(
     [
       ...(task?.permissions?.read || []),
@@ -213,10 +214,16 @@ export const Form = (properties: TFormProperties) => {
     }
     if (isCreating.current || (!title && storedContent.length === 0)) return
     isCreating.current = true
+    // Keep the old creation form locked until navigation finishes, so text
+    // cannot be entered into a form whose cleanup is about to run.
+    setIsCreatingTask(true)
     const reference = await mutateCreateTask({ title, content: storedContent })
     // Stays set after success: the page switches to the new item and this
     // form unmounts, which must not create it a second time.
-    if (!reference) isCreating.current = false
+    if (!reference) {
+      isCreating.current = false
+      setIsCreatingTask(false)
+    }
     return reference
   }
 
@@ -663,11 +670,13 @@ export const Form = (properties: TFormProperties) => {
             <Action
               className="w-full"
               buttonClassName="glass-surface"
-              isLoading={isCreatePending}
+              isLoading={isCreatePending || isCreatingTask}
               isCreate={true}
               handleBack={handleBackTask}
               disabled={!isDirty}
-              handleToggleCheckAll={handleToggleCheckAll}
+              handleToggleCheckAll={
+                isReadOnly ? undefined : handleToggleCheckAll
+              }
               checkedAll={checkedAll}
               {...historyActions}
             />
