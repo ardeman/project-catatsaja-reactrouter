@@ -23,8 +23,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'Tap a task item’s text or pencil to edit it. Dragging stays on the grip button.',
-          id: 'Ketuk teks item tugas atau pensilnya untuk mengedit. Gunakan tombol pegangan untuk menyeret.',
+          en: 'Tap a task item’s text or pencil to edit it. Clicking the text places the cursor near the clicked position. Dragging stays on the grip button.',
+          id: 'Ketuk teks item tugas atau pensilnya untuk mengedit. Kursor ditempatkan di dekat titik teks yang diklik. Gunakan tombol pegangan untuk menyeret.',
         },
       },
       {
@@ -37,8 +37,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'The add-item field now lines up with the item text and editing fields.',
-          id: 'Kolom tambah item kini sejajar dengan teks item dan kolom pengeditan.',
+          en: 'The add-item field lines up with the item text and editing fields. On phones, the Add button sits below it to give you more typing space.',
+          id: 'Kolom tambah item sejajar dengan teks item dan kolom pengeditan. Di ponsel, tombol Tambah berada di bawahnya agar ruang mengetik lebih luas.',
         },
       },
       {

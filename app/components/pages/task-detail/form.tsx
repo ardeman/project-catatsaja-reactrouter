@@ -34,6 +34,7 @@ import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { taskSchema } from '~/lib/validations/task'
 
+import { getClickedCaret } from './click-caret.client'
 import { ReorderHandle } from './reorder-handle'
 import { TDragPreview, TFormProperties } from './type'
 
@@ -596,7 +597,18 @@ export const Form = (properties: TFormProperties) => {
                 <button
                   type="button"
                   disabled={isReadOnly}
-                  onClick={() => startEditing(index)}
+                  onClick={(event) =>
+                    startEditing(
+                      index,
+                      event.detail === 0
+                        ? undefined
+                        : getClickedCaret(
+                            event.currentTarget,
+                            event.clientX,
+                            event.clientY,
+                          ),
+                    )
+                  }
                   className={cn(
                     'min-w-0 flex-1 cursor-text py-1 text-left text-sm wrap-break-word whitespace-pre-wrap disabled:cursor-default',
                     item.checked && 'text-muted-foreground line-through',
@@ -770,12 +782,12 @@ export const Form = (properties: TFormProperties) => {
         </div>
         {!isReadOnly && (
           <div className="pl-19 sm:pl-16">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
               <Textarea
                 name="item"
                 aria-label={t('tasks.form.placeholder.label')}
                 placeholder={t('tasks.form.placeholder.label')}
-                className="min-w-0 flex-1"
+                className="w-full min-w-0 sm:flex-1"
                 inputClassName={inputClassName}
                 rows={1}
                 readOnly={isReadOnly}
@@ -785,7 +797,7 @@ export const Form = (properties: TFormProperties) => {
               />
               <Button
                 type="button"
-                className="min-h-11"
+                className="min-h-11 self-end sm:self-auto"
                 disabled={!watchItem.trim()}
                 onClick={() => addPendingItems()}
               >

@@ -74,7 +74,36 @@ for (const encrypted of [false, true]) {
       .getByRole('checkbox', { name: 'Buy fruit', exact: true })
       .waitFor()
     assert.equal(await page.getByRole('checkbox').count(), 3)
-    await page.getByText('Buy rice', { exact: true }).click()
+    const clickItemText = async (index, caret) => {
+      const text = page.locator(
+        `[data-task-index="${index}"] button.cursor-text`,
+      )
+      const point = await text.evaluate((element, offset) => {
+        const range = document.createRange()
+        range.setStart(element.firstChild, offset)
+        range.setEnd(element.firstChild, offset + 1)
+        const rectangle = range.getBoundingClientRect()
+        return {
+          x: rectangle.left + 1,
+          y: rectangle.top + rectangle.height / 2,
+        }
+      }, caret)
+      await page.mouse.click(point.x, point.y)
+      await page.waitForFunction(
+        ({ index, caret }) => {
+          const input = document.querySelector(
+            `textarea[name="content.${index}.item"]`,
+          )
+          return (
+            document.activeElement === input &&
+            input.selectionStart === caret &&
+            input.selectionEnd === caret
+          )
+        },
+        { index, caret },
+      )
+    }
+    await clickItemText(0, 4)
     const edit = page.locator('textarea[name="content.0.item"]')
     await edit.waitFor()
     assert.equal(await page.locator('textarea[name^="content."]').count(), 1)
@@ -85,6 +114,10 @@ for (const encrypted of [false, true]) {
       await edit.evaluate((element) => document.activeElement === element),
       true,
     )
+    await page
+      .getByRole('button', { name: 'Done editing', exact: true })
+      .click()
+    await clickItemText(0, 17)
     await edit.fill('Buy brown rice')
     await page
       .getByRole('button', { name: 'Done editing', exact: true })
