@@ -1,5 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronDown, ChevronUp, Trash } from 'lucide-react'
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Pencil,
+  Plus,
+  Trash,
+} from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -129,6 +136,7 @@ export const Form = (properties: TFormProperties) => {
   // any time (autosave, leaving the page, the Save button).
   const save = async () => {
     if (isReadOnly) return
+    addPendingItems(false)
     const { title, content } = getValues()
     const storedContent = toStoredContent(content)
     if (selectedTask) {
@@ -165,8 +173,10 @@ export const Form = (properties: TFormProperties) => {
 
   useAutosave({
     save,
-    watch: [watchTitle, JSON.stringify(watchContent)],
-    saveWhenIdle: !!selectedTask,
+    // The add field stays unfinished during idle saves, but is included
+    // when leaving or pressing Save.
+    watch: [watchTitle, JSON.stringify(watchContent), watchItem],
+    saveWhenIdle: !!selectedTask && !watchItem.trim(),
   })
 
   // Undo and redo over the title and items together, in steps (a pause in
@@ -269,6 +279,7 @@ export const Form = (properties: TFormProperties) => {
     const item = getValues(`content.${index}.item`)
     switch (event.key) {
       case 'Enter': {
+        if (event.shiftKey || event.nativeEvent.isComposing) return
         event.preventDefault()
         if (item.trim().length === 0) {
           handleRemoveItem(index)
@@ -291,11 +302,13 @@ export const Form = (properties: TFormProperties) => {
         break
       }
       case 'ArrowUp': {
+        if (event.currentTarget.selectionStart !== 0) return
         event.preventDefault()
         focusPreviousOpen(index)
         break
       }
       case 'ArrowDown': {
+        if (event.currentTarget.selectionEnd !== item.length) return
         event.preventDefault()
         focusNextOpen(index)
         break
@@ -303,24 +316,32 @@ export const Form = (properties: TFormProperties) => {
     }
   }
 
+  const addPendingItems = (shouldFocus = true) => {
+    const items = getValues('item')
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => ({ checked: false, item }))
+    if (items.length === 0) return
+    setSelectedEdit(undefined)
+    append(items, { shouldFocus: false })
+    setValue('item', '')
+    if (shouldFocus) requestAnimationFrame(() => setFocus('item'))
+  }
+
   const handleNewItemKeyDown = (
     event: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
     if (event.key === 'Enter') {
+      if (event.shiftKey || event.nativeEvent.isComposing) return
       event.preventDefault()
-      setSelectedEdit(undefined)
-      if (watchItem.trim().length === 0) return
-      append({ checked: false, item: watchItem.trim() })
-      setValue('item', '')
-      requestAnimationFrame(() => {
-        setFocus('item')
-      })
+      addPendingItems()
       return
     }
     const isBackOut =
       (event.key === 'Backspace' && watchItem.length === 0) ||
       event.key === 'ArrowUp'
-    if (!isBackOut) return
+    if (!isBackOut || event.currentTarget.selectionStart !== 0) return
     event.preventDefault()
     focusPreviousOpen(watchContent.length)
   }
@@ -342,7 +363,6 @@ export const Form = (properties: TFormProperties) => {
     for (const line of lines) {
       append({ checked: false, item: line })
     }
-    setValue('item', '')
     requestAnimationFrame(() => {
       setFocus('item')
     })
@@ -359,7 +379,7 @@ export const Form = (properties: TFormProperties) => {
     return (
       <div
         key={field.id}
-        className="group/item flex min-h-8 items-start gap-2"
+        className="group/item flex min-h-11 items-start gap-2"
       >
         <Checkbox
           name={`content.${index}.checked`}
@@ -373,7 +393,12 @@ export const Form = (properties: TFormProperties) => {
             if (isEditing) setSelectedEdit(undefined)
           }}
           rightNode={
-            <div className="flex min-w-0 flex-1 items-start gap-2">
+            <div
+              className={cn(
+                'flex min-w-0 flex-1 items-start gap-2',
+                isEditing && 'flex-col sm:flex-row',
+              )}
+            >
               {isEditing ? (
                 <Textarea
                   name={`content.${index}.item`}
@@ -390,7 +415,7 @@ export const Form = (properties: TFormProperties) => {
                   disabled={isReadOnly}
                   onClick={() => startEditing(index)}
                   className={cn(
-                    'min-w-0 flex-1 cursor-text text-left text-sm wrap-break-word whitespace-pre-wrap disabled:cursor-default',
+                    'min-h-8 min-w-0 flex-1 cursor-text text-left text-sm wrap-break-word whitespace-pre-wrap disabled:cursor-default',
                     item.checked && 'text-muted-foreground line-through',
                   )}
                 >
@@ -402,7 +427,7 @@ export const Form = (properties: TFormProperties) => {
                   className={cn(
                     'flex items-center gap-1',
                     !isEditing &&
-                      'hidden sm:flex sm:opacity-0 sm:group-focus-within/item:opacity-100 sm:group-hover/item:opacity-100',
+                      'sm:opacity-0 sm:group-focus-within/item:opacity-100 sm:group-hover/item:opacity-100',
                   )}
                 >
                   {isEditing && (
@@ -410,7 +435,7 @@ export const Form = (properties: TFormProperties) => {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="size-8 sm:size-6 [&_svg]:size-3.5"
+                        className="size-11 sm:size-8 [&_svg]:size-3.5"
                         type="button"
                         aria-label={t('actions.moveUp')}
                         title={t('actions.moveUp')}
@@ -423,7 +448,7 @@ export const Form = (properties: TFormProperties) => {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="size-8 sm:size-6 [&_svg]:size-3.5"
+                        className="size-11 sm:size-8 [&_svg]:size-3.5"
                         type="button"
                         aria-label={t('actions.moveDown')}
                         title={t('actions.moveDown')}
@@ -438,15 +463,41 @@ export const Form = (properties: TFormProperties) => {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="size-8 text-destructive sm:size-6 [&_svg]:size-3.5"
+                    className="size-11 sm:size-8 [&_svg]:size-3.5"
                     type="button"
-                    aria-label={t('actions.deleteItem')}
-                    title={t('actions.deleteItem')}
+                    aria-label={t(
+                      isEditing
+                        ? 'tasks.form.doneEditing'
+                        : 'tasks.form.editItem',
+                    )}
+                    title={t(
+                      isEditing
+                        ? 'tasks.form.doneEditing'
+                        : 'tasks.form.editItem',
+                    )}
                     onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => handleRemoveItem(index)}
+                    onClick={() =>
+                      isEditing
+                        ? setSelectedEdit(undefined)
+                        : startEditing(index)
+                    }
                   >
-                    <Trash />
+                    {isEditing ? <Check /> : <Pencil />}
                   </Button>
+                  {isEditing && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-11 text-destructive sm:size-8 [&_svg]:size-3.5"
+                      type="button"
+                      aria-label={t('actions.deleteItem')}
+                      title={t('actions.deleteItem')}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => handleRemoveItem(index)}
+                    >
+                      <Trash />
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -516,27 +567,52 @@ export const Form = (properties: TFormProperties) => {
           readOnly={isReadOnly}
         />
         <div className="space-y-1">
+          {watchContent.length > 0 && (
+            <p className="text-sm text-muted-foreground">
+              {t('tasks.progress', {
+                done: doneIndexes.length,
+                total: watchContent.length,
+              })}
+            </p>
+          )}
+          {!isReadOnly && (
+            <p className="pb-2 text-xs text-muted-foreground">
+              {t('tasks.form.editHint')}
+            </p>
+          )}
           {openIndexes.map((index) => renderItem(index))}
         </div>
-        <Textarea
-          name="item"
-          placeholder={t('tasks.form.placeholder.label')}
-          containerClassName={cn('flex-1', isReadOnly && 'hidden')}
-          inputClassName={inputClassName}
-          rows={1}
-          readOnly={isReadOnly}
-          onKeyDown={handleNewItemKeyDown}
-          onPaste={handleNewItemPaste}
-          onFocus={() => setSelectedEdit(undefined)}
-          leftNode={({ className }) => (
-            <div
-              className={cn(
-                className,
-                'relative left-0 mr-2 size-4 rounded-full border border-dashed border-primary opacity-50',
-              )}
-            />
-          )}
-        />
+        {!isReadOnly && (
+          <div className="rounded-lg border bg-background p-3">
+            <div className="flex items-start gap-2">
+              <Textarea
+                name="item"
+                aria-label={t('tasks.form.placeholder.label')}
+                label={t('tasks.form.placeholder.label')}
+                placeholder={t('tasks.form.placeholder.label')}
+                className="min-w-0 flex-1"
+                inputClassName="min-h-11 resize-none"
+                rows={1}
+                readOnly={isReadOnly}
+                onKeyDown={handleNewItemKeyDown}
+                onPaste={handleNewItemPaste}
+                onFocus={() => setSelectedEdit(undefined)}
+              />
+              <Button
+                type="button"
+                className="mt-6 min-h-11"
+                disabled={!watchItem.trim()}
+                onClick={() => addPendingItems()}
+              >
+                <Plus />
+                {t('tasks.form.addItem')}
+              </Button>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {t('tasks.form.addHint')}
+            </p>
+          </div>
+        )}
         {doneIndexes.length > 0 && (
           <section className="space-y-1 border-t pt-4">
             <h2 className="text-xs font-medium text-muted-foreground">

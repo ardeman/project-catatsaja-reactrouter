@@ -203,7 +203,12 @@
       },
       "item": {
         "label": "Item"
-      }
+      },
+      "addItem": "Add",
+      "editItem": "Edit item",
+      "doneEditing": "Done editing",
+      "editHint": "Check the circle to complete an item. Tap its text or pencil to edit, reorder or remove it.",
+      "addHint": "Press Enter or Add. Paste multiple lines to add several items. Unfinished text is kept when you save or leave."
     },
     "toast": {
       "deleted": "Task deleted",

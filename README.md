@@ -27,7 +27,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 **Done**
 
 - **Notes:** rich Markdown editor (Milkdown) with live preview cards, pinning, autosave, and a page per note.
-- **Tasks:** checklists with add-by-paste (one item per line), tap an item to edit it, reordering, check all, undo after removing an item, and completed items grouped at the bottom.
+- **Tasks:** checklists with an Add button or Enter, add-by-paste (one item per line), tap an item or its pencil to edit it, reordering, check all, undo after removing an item, and completed items grouped at the bottom. Unfinished item text is kept when saving or leaving.
 - **Saving:** notes and tasks save as you type and when you leave the page, with a "Saving… / Saved" status; a new note or task is kept when you leave it. Undo and redo in the icon bar of every note, task list, finance book and health log step over the whole item (a step at each pause in changes; Gemini's changes are a step of their own).
 - **Search:** one search box finds notes, tasks, finances and health logs together by title and content (Ctrl/⌘ K or `/` from anywhere); "See all" filters a list.
 - **Offline:** items are kept in the browser, so saves made offline upload when you're back online, even after a reload; a new entry or Quick add text you haven't saved comes back when you open the book again. Signing out removes both from that browser.
@@ -157,7 +157,7 @@ pnpm validate   # lint + typecheck + knip + unit tests
 
 **Rules tests** — `pnpm test:rules` runs `tests/firestore-rules.test.mjs` against the Firestore emulator (it needs Java 21). The deploy workflow runs them before every deploy, so they don't have to pass locally.
 
-**End-to-end tests** — `pnpm test:e2e` runs `tests/e2e/encryption.test.mjs` (encryption and sharing with three accounts) and `tests/e2e/ai.test.mjs` (receipt scanning, quick add, note helpers and taking back consent, with Gemini replaced by fixed answers, plus health reminders), one after the other: the app on the Auth and Firestore emulators, driven by Playwright in the installed Google Chrome (about four minutes; needs Java 21 and port 5199 free). The deploy workflow runs them before every deploy too.
+**End-to-end tests** — `pnpm test:e2e` runs `tests/e2e/encryption.test.mjs` (encryption and sharing with three accounts) and `tests/e2e/ai.test.mjs` (receipt scanning, quick add, note helpers and taking back consent, with Gemini replaced by fixed answers, plus health reminders), and `tests/e2e/tasks.test.mjs` (adding, editing and keeping unfinished task input), one after the other: the app on the Auth and Firestore emulators, driven by Playwright in the installed Google Chrome (about four minutes; needs Java 21 and port 5199 free). The deploy workflow runs them before every deploy too.
 
 ### Git hooks and commit messages
 

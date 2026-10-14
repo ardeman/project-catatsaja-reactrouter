@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Task lists have an Add button, clearer editing instructions and larger controls on phones. Text you have not added yet is kept when you save or leave the list.',
+          id: 'Daftar tugas kini punya tombol Tambah, petunjuk mengedit yang lebih jelas, dan tombol yang lebih besar di ponsel. Teks yang belum ditambahkan tetap disimpan saat menyimpan atau keluar dari daftar.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Quick add and receipt scanning now share one Gemini button with the same sparkle icon as notes. Type or scan inside one card, then check the entries before adding them.',
           id: 'Tambah cepat dan pindai struk kini ada dalam satu tombol Gemini dengan ikon bintang seperti di catatan. Ketik atau pindai dalam satu kartu, lalu periksa entri sebelum menambahkannya.',
         },
