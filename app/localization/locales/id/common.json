@@ -935,6 +935,13 @@
       "agreed": "Kamu sudah setuju mengirim isi ke Gemini saat memakai fitur AI.",
       "notAgreed": "Kamu akan ditanya sebelum fitur AI pertama kali mengirim sesuatu.",
       "withdraw": "Batalkan persetujuan"
+    },
+    "dateFormat": {
+      "title": "Format tanggal",
+      "description": "Pilih cara tanggal ditampilkan dan diketik. Pemisah ditambahkan otomatis. Nama bulan dalam bahasa Inggris dan Indonesia diterima.",
+      "toast": {
+        "updated": "Format tanggal diperbarui."
+      }
     }
   },
   "notFound": {
@@ -1148,7 +1155,9 @@
   "datePicker": {
     "choose": "Pilih tanggal",
     "today": "Hari ini",
-    "yesterday": "Kemarin"
+    "yesterday": "Kemarin",
+    "invalid": "Masukkan tanggal yang valid dalam format {{format}}.",
+    "openCalendar": "Buka kalender"
   },
   "numberInput": {
     "calculator": "Keyboard kalkulator: ketik perhitungan seperti (24/22)*28500000"

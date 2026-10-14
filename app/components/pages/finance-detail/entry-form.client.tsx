@@ -70,12 +70,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     draftKey,
     isPrivate = false,
   } = properties
-  const { t, i18n } = useTranslation(['common', 'zod'])
+  const { t } = useTranslation(['common', 'zod'])
   const { data: userData } = useUserData()
   const isEditing = !!entry
   const panelReference = useRef<HTMLElement>(null)
   const [editingFields, setEditingFields] = useState({
-    date: false,
     currency: false,
     rate: false,
   })
@@ -163,13 +162,6 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const currency = watch('currency')
   const category = watch('category')
   const rate = watch('rate')
-  const date = watch('date')
-  const dateLabel = new Intl.DateTimeFormat(i18n.language, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(`${date}T00:00:00`))
   const description = watch('description')
   const isForeign = currency.code !== book.code
 
@@ -293,7 +285,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
         description: '',
       })
       setIsSuggested(false)
-      setEditingFields({ date: false, currency: false, rate: false })
+      setEditingFields({ currency: false, rate: false })
       setSavedCount((count) => count + 1)
       setFocusRequest((count) => count + 1)
     },
@@ -384,38 +376,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               {t('finances.entry.ready')}
             </p>
           )}
-          <div className="grid grid-cols-[minmax(0,1fr)_5rem] items-end gap-2">
-            <EditableValue
-              label={t('finances.form.date.label')}
-              value={dateLabel}
-              required
-              isEditing={editingFields.date}
-              onEdit={() =>
-                setEditingFields((fields) => ({ ...fields, date: true }))
-              }
-            >
-              <DatePicker
-                name="date"
-                label={t('finances.form.date.label')}
-                required
-                defaultOpen
-              />
-            </EditableValue>
-            <div className="flex items-center gap-1.5">
-              <Label
-                htmlFor="finance-entry-quantity"
-                title={t('finances.form.quantity.label')}
-              >
-                {t('finances.form.quantity.shortLabel')}
-              </Label>
-              <NumberInput
-                name="quantity"
-                id="finance-entry-quantity"
-                accessibleLabel={t('finances.form.quantity.label')}
-                className="min-w-0 flex-1"
-              />
-            </div>
-          </div>
+          <DatePicker
+            name="date"
+            label={t('finances.form.date.label')}
+            required
+          />
 
           {/* Top-aligned: the category's "chosen from earlier entries" note
               must not push the description down. */}
@@ -490,12 +455,12 @@ export const EntryForm = (properties: TEntryFormProperties) => {
             </div>
           </div>
 
-          {/* The label on its own row, so the amount input and the currency
-              start level, with a calculation's result shown under the input. */}
-          <div className="grid grid-cols-[1fr_auto] items-start gap-x-2 gap-y-1">
+          {/* Keep quantity after amount, with all inputs level even when
+              the amount shows a calculation result underneath. */}
+          <div className="grid grid-cols-[minmax(0,1fr)_5rem_auto] items-start gap-x-2 gap-y-1">
             <Label
               htmlFor="finance-entry-amount"
-              className="col-span-2"
+              className="col-span-3"
             >
               {t('finances.form.amount.label')}{' '}
               <sup className="text-destructive">*</sup>
@@ -507,6 +472,20 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               calculatorKeyboard
               fractionDigits={currency.maximumFractionDigits}
             />
+            <div className="flex items-center gap-1.5">
+              <Label
+                htmlFor="finance-entry-quantity"
+                title={t('finances.form.quantity.label')}
+              >
+                {t('finances.form.quantity.shortLabel')}
+              </Label>
+              <NumberInput
+                name="quantity"
+                id="finance-entry-quantity"
+                accessibleLabel={t('finances.form.quantity.label')}
+                className="min-w-0 flex-1"
+              />
+            </div>
             <EditableValue
               label={t('finances.form.currency.label')}
               value={`${currency.code} (${currency.symbol})`}

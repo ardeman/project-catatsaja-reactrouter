@@ -935,6 +935,13 @@
       "agreed": "You’ve agreed to send content to Gemini when you use an AI feature.",
       "notAgreed": "You’ll be asked before an AI feature first sends anything.",
       "withdraw": "Take back my agreement"
+    },
+    "dateFormat": {
+      "title": "Date format",
+      "description": "Choose how dates are displayed and typed. Separators are added automatically. English and Indonesian month names are accepted.",
+      "toast": {
+        "updated": "Date format updated."
+      }
     }
   },
   "notFound": {
@@ -1148,7 +1155,9 @@
   "datePicker": {
     "choose": "Choose a date",
     "today": "Today",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "invalid": "Enter a valid date in {{format}} format.",
+    "openCalendar": "Open calendar"
   },
   "numberInput": {
     "calculator": "Calculator keyboard: type a calculation such as (24/22)*28500000"

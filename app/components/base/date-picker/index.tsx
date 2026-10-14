@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
 import {
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -23,7 +22,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '~/components/ui/popover'
-import { cn } from '~/lib/utils/shadcn'
+import { useUserData } from '~/lib/hooks/use-get-user'
+import { dateFormats, parseDateInput } from '~/lib/utils/date-input'
+
+import { DateInput } from './date-input'
 
 type TProperties = {
   // Holds a date as YYYY-MM-DD.
@@ -84,13 +86,13 @@ export const DatePicker = (properties: TProperties) => {
   const { control } = useFormContext()
   const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(defaultOpen)
+  const [selection, setSelection] = useState(0)
+  const { data: userData } = useUserData()
+  const dateFormat =
+    userData?.dateFormat && dateFormats.includes(userData.dateFormat)
+      ? userData.dateFormat
+      : 'DD-MM-YYYY'
   const locale = i18n.language === 'id' ? indonesian : enUS
-  const format = new Intl.DateTimeFormat(i18n.language, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
 
   return (
     <FormField
@@ -98,11 +100,11 @@ export const DatePicker = (properties: TProperties) => {
       name={name}
       render={({ field }) => {
         const value = (field.value as string) || ''
-        const dateLabel = value
-          ? format.format(toDate(value))
-          : t('datePicker.choose')
+        const validValue =
+          parseDateInput(value, 'YYYY-MM-DD') === value ? value : ''
         const choose = (next: string) => {
           field.onChange(next)
+          setSelection((current) => current + 1)
           setIsOpen(false)
         }
         return (
@@ -116,22 +118,30 @@ export const DatePicker = (properties: TProperties) => {
               open={isOpen}
               onOpenChange={setIsOpen}
             >
-              <PopoverTrigger asChild>
-                <FormControl>
+              <div className="relative">
+                <DateInput
+                  key={selection}
+                  value={value}
+                  format={dateFormat}
+                  label={label ?? t('datePicker.choose')}
+                  required={required}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  inputRef={field.ref}
+                />
+                <PopoverTrigger asChild>
                   <Button
                     type="button"
-                    variant="outline"
-                    className={cn(
-                      'h-9 w-full min-w-0 justify-start gap-2 rounded-md px-3 text-base font-normal md:text-sm',
-                      !value && 'text-muted-foreground',
-                    )}
-                    title={dateLabel}
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-0 right-0 h-full w-9"
+                    aria-label={t('datePicker.openCalendar')}
+                    title={t('datePicker.openCalendar')}
                   >
-                    <CalendarDays className="size-4 shrink-0 text-muted-foreground" />
-                    <span className="min-w-0 truncate">{dateLabel}</span>
+                    <CalendarDays className="size-4 text-muted-foreground" />
                   </Button>
-                </FormControl>
-              </PopoverTrigger>
+                </PopoverTrigger>
+              </div>
               <PopoverContent
                 className="glass-surface w-auto p-0"
                 align="start"
@@ -150,8 +160,8 @@ export const DatePicker = (properties: TProperties) => {
                   }}
                   classNames={dropdownClassNames}
                   components={{ Chevron }}
-                  selected={value ? toDate(value) : undefined}
-                  defaultMonth={value ? toDate(value) : undefined}
+                  selected={validValue ? toDate(validValue) : undefined}
+                  defaultMonth={validValue ? toDate(validValue) : undefined}
                   onSelect={(date) => date && choose(toValue(date))}
                   autoFocus // eslint-disable-line jsx-a11y/no-autofocus
                 />

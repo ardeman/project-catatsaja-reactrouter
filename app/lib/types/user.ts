@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 import { TNavPage } from '~/lib/constants/navigation'
 import { Theme, Size } from '~/lib/contexts/theme'
+import { TDateFormat } from '~/lib/types/date'
 import { TBmiStandard, TLabUnits } from '~/lib/types/health'
 import { TCurrencyFormatRequest } from '~/lib/types/settings'
 import { emailSchema, signInSchema, signUpSchema } from '~/lib/validations/user'
@@ -24,6 +25,7 @@ export type TUserResponse = {
   language?: string
   theme?: Theme
   size?: Size
+  dateFormat?: TDateFormat
   currencyFormat?: TCurrencyFormatRequest
   // Main pages in the person's order, and the one the app opens on.
   navOrder?: TNavPage[]

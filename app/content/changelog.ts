@@ -23,6 +23,20 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Type dates directly, with automatic separators and English or Indonesian month names, or use the calendar. Dates start in DD-MM-YYYY format; choose another format in Settings → General.',
+          id: 'Ketik tanggal langsung dengan pemisah otomatis dan nama bulan dalam bahasa Inggris atau Indonesia, atau gunakan kalender. Format awal tanggal adalah DD-MM-YYYY; pilih format lain di Pengaturan → Umum.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The quantity field now follows the amount when adding or editing a finance entry.',
+          id: 'Kolom jumlah kini berada setelah nominal saat menambah atau mengedit entri keuangan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'The expenses and income switch sits above both breakdown cards, making it clearer that it changes categories and items together.',
           id: 'Pilihan pengeluaran dan pemasukan berada di atas kedua kartu rincian, sehingga lebih jelas bahwa kategori dan item berubah bersama.',
         },

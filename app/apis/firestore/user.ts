@@ -12,6 +12,7 @@ import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 
 import { auth } from '~/lib/configs/firebase'
 import { firestore } from '~/lib/configs/firestore'
+import { TDateFormat } from '~/lib/types/date'
 import {
   TCurrencyFormatRequest,
   TUpdateAppearanceRequest,
@@ -191,6 +192,20 @@ export const updateCurrencyFormat = async (data: TCurrencyFormatRequest) => {
   const reference = doc(firestore, 'users', auth.currentUser.uid)
   return await updateDoc(reference, {
     currencyFormat: data,
+    updatedAt: new Date(),
+  })
+}
+
+export const updateDateFormat = async (data: TDateFormat) => {
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const reference = doc(firestore, 'users', auth.currentUser.uid)
+  return await updateDoc(reference, {
+    dateFormat: data,
     updatedAt: new Date(),
   })
 }
