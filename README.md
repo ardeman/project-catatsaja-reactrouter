@@ -49,9 +49,21 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 ## Roadmap
 
+**Upcoming (dated)**
+
+- [ ] Around 2026-10-17 to 10-20: enforce App Check for Cloud Firestore once its "outdated client requests" stay near 0% for a few days (Firebase console → App Check). Authentication stays on monitoring: enforcing it needs App Check back in `firebase.ts` (AGENTS.md → Decisions).
+- [ ] Once no tab runs an app older than `appVersion` 2: tighten `firestore.rules` so new books must start in month documents (`entryStore` 2, no `content`), with rules tests.
+
 **Planned**
 
-- [ ] Finances: budgets.
+- [ ] Finances: budgets, a monthly limit per category with what is left (decide first whether it is free or Plus: it is also listed under Plus below).
+- [ ] Finances: recurring entries (salary, rent, bills) confirmed with one tap when due, instead of typed again.
+- [ ] Finances: filter a book's entries by category, type and date range.
+- [ ] Finances: transfers between a book's accounts, counted as neither income nor expense.
+- [ ] Tasks: due dates with reminders, through a calendar file (.ics) like health reminders, so no server is needed.
+- [ ] Export all your data as a file, decrypted on the device: a backup in case the passphrase is lost. Free, apart from Plus's finance exports and reports.
+- [ ] Trash: deleted items kept for 30 days, beyond the Undo toast.
+- [ ] Labels shared across notes, tasks and books (such as "Holiday 2026").
 - [ ] Push notifications for health reminders (needs Cloud Functions and the Blaze plan; today reminders show in the app and go to the phone's calendar).
 
 **Revenue**
@@ -66,7 +78,9 @@ An optional Catat Saja Plus subscription pays for what costs money to run; the c
 
 **Technical**
 
-- [ ] More end-to-end tests (today they cover encryption, sharing, the AI features and health reminders; the rules have their own tests).
+- [ ] Find why copying a book from the list sometimes never saves in the end-to-end test (`tests/e2e/encryption.test.mjs`, "month documents"): the months are read, then the new book's write is never acknowledged, with no error; it doesn't happen with Firestore's debug log on.
+- [ ] The note page loads 1.1 MB of JavaScript for the editor (Milkdown with CodeMirror): load it only when a note opens, and leave out code languages nobody uses.
+- [ ] More end-to-end tests (today they cover encryption, sharing, month documents, the AI features and health reminders; archiving, blocking and offline drafts have none yet; the rules have their own tests).
 - [ ] Read form values with `useWatch` instead of react-hook-form's `watch()`, then turn on `react-hooks/incompatible-library` (`eslint.config.mjs`).
 - [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
 - [ ] TypeScript 7, once typescript-eslint supports it.
