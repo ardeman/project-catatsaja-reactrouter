@@ -279,9 +279,10 @@ export const subscribeToFinance = (
     },
     onError,
   )
+  // The months stay known after the page closes: leaving a book saves it
+  // once more, after its listener has stopped.
   return () => {
     stopBook()
     stopMonths?.()
-    storedMonths.delete(id)
   }
 }

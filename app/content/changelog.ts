@@ -27,6 +27,20 @@ export const releases: TRelease[] = [
           id: 'Selisih antara akunmu dan buku kini menunjukkan arahnya: lebih banyak di akunmu berwarna hijau, lebih sedikit berwarna oranye, dan tanda centang saat cocok. Sebelumnya keduanya merah.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The cash flow chart stays readable when one day is far bigger than the rest, such as payday: that column is cut off with its amount written on it, so the other days are no longer flattened.',
+          id: 'Grafik arus kas tetap mudah dibaca saat satu hari jauh lebih besar dari yang lain, misalnya hari gajian: kolom itu dipotong dengan jumlahnya tertulis, jadi hari-hari lain tidak lagi rata.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'A change made just before leaving a finance book is no longer refused.',
+          id: 'Perubahan yang dibuat tepat sebelum meninggalkan buku keuangan tidak lagi ditolak.',
+        },
+      },
     ],
   },
   {
