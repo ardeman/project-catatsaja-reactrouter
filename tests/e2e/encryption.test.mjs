@@ -928,7 +928,7 @@ describe('end-to-end encryption', () => {
     const errors = []
     nanda.page.on('pageerror', (error) => errors.push(error.message))
     nanda.page.on('console', (message) => {
-      if (message.type() === 'error') errors.push(message.text())
+      if (message.type() === 'error' || /firebase|firestore|permission|denied/i.test(message.text())) errors.push(message.text().slice(0, 300))
     })
     await nanda.page.goto(`${APP}/finances`)
     await nanda.page.getByText('September lunch').waitFor({ timeout: 15_000 })
@@ -947,7 +947,7 @@ describe('end-to-end encryption', () => {
     const said = async () =>
       JSON.stringify({
         url: nanda.page.url(),
-        shown: (await nanda.page.locator('body').innerText()).slice(-400),
+        shown: await nanda.page.locator('body').innerText(),
         errors,
         // TEMP: Firestore's own state in IndexedDB: who is primary, and
         // the writes waiting to be sent.
