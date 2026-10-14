@@ -66,7 +66,7 @@ jobs:
       # Finish every suite even if another fails, so all failures are visible.
       fail-fast: false
       matrix:
-        suite: [encryption, ai, tasks]
+        suite: [encryption, sharing, ai, tasks]
     # Each suite needs its own runner: they use the same ports and some
     # reset the emulator database. Scenarios within a file stay sequential.
     steps:

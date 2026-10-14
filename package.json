@@ -15,7 +15,7 @@
     "typecheck": "react-router typegen && tsc",
     "test:unit": "node --test tests/category-classifier.test.mjs tests/receipt.test.mjs tests/health-reminders.test.mjs tests/growth-reference.test.mjs tests/merge-stored.test.mjs tests/similar-items.test.mjs tests/date-input.test.mjs",
     "test:rules": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only firestore --project demo-catatsaja 'node --test tests/firestore-rules.test.mjs'",
-    "test:e2e": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja 'node --test --test-concurrency=1 tests/e2e/encryption.test.mjs tests/e2e/ai.test.mjs tests/e2e/tasks.test.mjs'",
+    "test:e2e": "pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja 'node --test --test-concurrency=1 tests/e2e/encryption.test.mjs tests/e2e/sharing.test.mjs tests/e2e/ai.test.mjs tests/e2e/tasks.test.mjs'",
     "format": "prettier --write .",
     "prepare": "husky",
     "validate": "pnpm lint && pnpm typecheck && pnpm knip && pnpm test:unit"

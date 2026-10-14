@@ -8,6 +8,7 @@ A change is done only when the **Checks** command in `README.md` passes. If you 
 
 ## Conventions
 
+- Keep independent end-to-end scenarios out of the dependent Ana/Budi/Cici sequence in `tests/e2e/encryption.test.mjs`. Each independent scenario creates its own accounts. A new suite must be listed in both the workflow's `e2e` matrix and `pnpm test:e2e`. Update the suite descriptions in `README.md`, which owns the commands and execution layout.
 - Use Conventional Commit subjects; see `README.md` for the format and hooks.
 - Fix ESLint and knip findings; don't silence them with `eslint-disable` or knip ignores unless you add a comment saying why.
 - Import app code through the `~/` alias (`~/lib/...`, `~/components/...`), not relative paths that climb out of a folder.

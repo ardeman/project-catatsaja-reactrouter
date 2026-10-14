@@ -231,3 +231,27 @@ export const skipEncryptionSetup = async (page) => {
     .click()
   await setup.waitFor({ state: 'hidden', timeout: 30_000 })
 }
+
+// Prepare the dev server before encryption or sharing scenarios start.
+export const warmUpApp = async (browser) => {
+  // A first visit to each kind of page: the dev server prepares its
+  // dependencies on first use and reloads, which mustn't happen mid-test.
+  await resetEmulators()
+  const { page } = await newDevice(browser)
+  await signUp(page, 'Warm-up', 'warm-up@example.com')
+  await page.getByText('Protect your data').waitFor({ timeout: 60_000 })
+  for (const path of [
+    '/notes/create',
+    '/tasks/create',
+    '/finances/create',
+    '/health/create',
+    '/settings',
+    '/settings/account',
+    '/settings/health',
+  ]) {
+    await page.goto(`${APP}${path}`)
+    await page.waitForTimeout(2000)
+  }
+  await page.context().close()
+  await resetEmulators()
+}
