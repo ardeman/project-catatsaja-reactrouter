@@ -126,9 +126,10 @@ export const stopApp = (server) => {
 export const launch = () => chromium.launch({ channel: 'chrome' })
 
 // A browser of its own: a separate device (nothing kept between them).
-export const newDevice = async (browser) => {
+export const newDevice = async (browser, options = {}) => {
   const context = await browser.newContext({
     viewport: { width: 1100, height: 900 },
+    ...options,
   })
   const page = await context.newPage()
   return { context, page }

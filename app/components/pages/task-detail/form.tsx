@@ -8,6 +8,7 @@ import {
   Trash,
 } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -130,6 +131,7 @@ export const Form = (properties: TFormProperties) => {
   const [dragPreview, setDragPreview] = useState<TDragPreview>()
   const [isCreatingTask, setIsCreatingTask] = useState(false)
   const formElement = useRef<HTMLFormElement>(null)
+  const pointerCaret = useRef<{ fieldId: string; caret: number }>(undefined)
   const isPinned = task?.isPinned
   const canWrite = task?.permissions?.write.includes(userData?.uid || '')
   const isOwner = task?.owner === userData?.uid
@@ -348,19 +350,17 @@ export const Form = (properties: TFormProperties) => {
     caret?: number,
     shouldUseLastLine = false,
   ) => {
-    requestAnimationFrame(() => {
-      const input = formElement.current?.elements.namedItem(name)
-      if (!(input instanceof HTMLTextAreaElement)) return
-      input.focus()
-      if (caret === undefined) return
-      let position = Math.min(caret, input.value.length)
-      if (shouldUseLastLine) {
-        input.setSelectionRange(input.value.length, input.value.length)
-        const lineLength = getBoundaryLineColumn(input) ?? input.value.length
-        position = input.value.length - lineLength + Math.min(caret, lineLength)
-      }
-      input.setSelectionRange(position, position)
-    })
+    const input = formElement.current?.elements.namedItem(name)
+    if (!(input instanceof HTMLTextAreaElement)) return
+    input.focus()
+    if (caret === undefined) return
+    let position = Math.min(caret, input.value.length)
+    if (shouldUseLastLine) {
+      input.setSelectionRange(input.value.length, input.value.length)
+      const lineLength = getBoundaryLineColumn(input) ?? input.value.length
+      position = input.value.length - lineLength + Math.min(caret, lineLength)
+    }
+    input.setSelectionRange(position, position)
   }
 
   const startEditing = (
@@ -368,7 +368,9 @@ export const Form = (properties: TFormProperties) => {
     caret?: number,
     shouldUseLastLine = false,
   ) => {
-    setSelectedEdit(index)
+    // Mount and focus within the tap's event, while mobile keyboard focus
+    // is still allowed, rather than waiting for an animation frame.
+    flushSync(() => setSelectedEdit(index))
     focusItem(`content.${index}.item`, caret, shouldUseLastLine)
   }
 
@@ -597,18 +599,39 @@ export const Form = (properties: TFormProperties) => {
                 <button
                   type="button"
                   disabled={isReadOnly}
-                  onClick={(event) =>
+                  onPointerDown={(event) => {
+                    if (!event.isPrimary) return
+                    pointerCaret.current = {
+                      fieldId: field.id,
+                      caret: getClickedCaret(
+                        event.currentTarget,
+                        event.clientX,
+                        event.clientY,
+                      ),
+                    }
+                  }}
+                  onPointerCancel={() => {
+                    pointerCaret.current = undefined
+                  }}
+                  onKeyDown={() => {
+                    pointerCaret.current = undefined
+                  }}
+                  onClick={(event) => {
+                    const tappedCaret = pointerCaret.current
+                    pointerCaret.current = undefined
                     startEditing(
                       index,
-                      event.detail === 0
-                        ? undefined
-                        : getClickedCaret(
-                            event.currentTarget,
-                            event.clientX,
-                            event.clientY,
-                          ),
+                      tappedCaret?.fieldId === field.id
+                        ? tappedCaret.caret
+                        : event.detail === 0
+                          ? undefined
+                          : getClickedCaret(
+                              event.currentTarget,
+                              event.clientX,
+                              event.clientY,
+                            ),
                     )
-                  }
+                  }}
                   className={cn(
                     'min-w-0 flex-1 cursor-text py-1 text-left text-sm wrap-break-word whitespace-pre-wrap disabled:cursor-default',
                     item.checked && 'text-muted-foreground line-through',

@@ -162,7 +162,7 @@ pnpm validate   # lint + typecheck + knip + unit tests
 - `tests/e2e/encryption.test.mjs`: the dependent encryption lifecycle with Ana, Budi and Cici.
 - `tests/e2e/sharing.test.mjs`: independent accounts, sharing suggestions and invitations, archiving, blocking, and encrypted finance month storage.
 - `tests/e2e/ai.test.mjs`: receipt scanning, quick add, note helpers and taking back consent, with Gemini replaced by fixed answers, plus health reminders.
-- `tests/e2e/tasks.test.mjs`: adding, editing, reordering and keeping unfinished task input.
+- `tests/e2e/tasks.test.mjs`: adding, editing, reordering, keeping unfinished task input, and touch cursor placement on mobile.
 
 The deploy workflow runs the four files in parallel on separate runners, each with its own app and emulators, and requires all of them to pass before every deploy. Scenarios within each file run in order; the local command stays sequential to avoid port and database conflicts. For adding or splitting suites, follow [AGENTS.md](AGENTS.md).
 

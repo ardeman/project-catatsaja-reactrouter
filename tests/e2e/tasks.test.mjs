@@ -378,3 +378,100 @@ for (const encrypted of [false, true]) {
     await context.close()
   })
 }
+
+test('mobile taps preserve the caret and focus within the tap event', async () => {
+  const { page, context } = await newDevice(browser, {
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  })
+  try {
+    await page.addInitScript(() => {
+      let isInClick = false
+      window.addEventListener(
+        'click',
+        (event) => {
+          isInClick = true
+          // Cover touch-generated clicks with no mouse click count as well.
+          if (
+            event.target instanceof HTMLElement &&
+            event.target.closest('button.cursor-text')
+          )
+            Object.defineProperty(event, 'detail', { value: 0 })
+        },
+        true,
+      )
+      window.addEventListener('click', () => {
+        isInClick = false
+      })
+      const focus = HTMLTextAreaElement.prototype.focus
+      HTMLTextAreaElement.prototype.focus = function focusTaskInput(options) {
+        if (this.name.startsWith('content.'))
+          window.__taskFocusOutsideTap = !isInClick
+        return focus.call(this, options)
+      }
+    })
+    await signUp(
+      page,
+      'Mobile task tester',
+      `mobile-tasks-${Date.now()}@example.com`,
+    )
+    await skipEncryptionSetup(page)
+    await page.goto(`${APP}/tasks/create`)
+    const wrapped =
+      'A longer mobile task item that wraps across several lines on a phone screen.'
+    await page.locator('textarea[name=title]').fill('Mobile cursor')
+    await page.locator('textarea[name=item]').fill(wrapped)
+    await page.getByRole('button', { name: 'Save', exact: true }).tap()
+    await page.waitForURL(/\/tasks\/(?!create)/)
+    const edit = page.locator('textarea[name="content.0.item"]')
+    for (const text of [wrapped, 'First line\nSecond mobile line']) {
+      if (text !== wrapped) {
+        await edit.fill(text)
+        await page
+          .getByRole('button', { name: 'Done editing', exact: true })
+          .tap()
+      }
+      const caret = text.indexOf(text === wrapped ? 'phone' : 'mobile') + 2
+      const item = page.locator('[data-task-index="0"] button.cursor-text')
+      // Navigation can leave the old creation form in the DOM briefly.
+      // Wait for the saved item's visible, enabled text before measuring.
+      await item.click({ trial: true })
+      const point = await item.evaluate((element, offset) => {
+        const range = document.createRange()
+        range.setStart(element.firstChild, 0)
+        range.setEnd(element.firstChild, 1)
+        const firstTop = range.getBoundingClientRect().top
+        range.setStart(element.firstChild, offset)
+        range.setEnd(element.firstChild, offset + 1)
+        const rectangle = range.getBoundingClientRect()
+        return {
+          x: rectangle.left + 1,
+          y: rectangle.top + rectangle.height / 2,
+          isLowerLine: rectangle.top > firstTop,
+        }
+      }, caret)
+      assert.equal(point.isLowerLine, true, JSON.stringify(point))
+      await page.touchscreen.tap(point.x, point.y)
+      await page.waitForFunction((caret) => {
+        const input = document.querySelector('textarea[name="content.0.item"]')
+        return (
+          document.activeElement === input &&
+          input.selectionStart === caret &&
+          input.selectionEnd === caret
+        )
+      }, caret)
+      assert.equal(
+        await page.evaluate(() => window.__taskFocusOutsideTap),
+        false,
+      )
+      await page.keyboard.type('|')
+      assert.equal(
+        await edit.inputValue(),
+        `${text.slice(0, caret)}|${text.slice(caret)}`,
+      )
+    }
+  } finally {
+    await context.close()
+  }
+})

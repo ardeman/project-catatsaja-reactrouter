@@ -23,8 +23,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'Tap a task item’s text or pencil to edit it. Clicking the text places the cursor near the clicked position. Dragging stays on the grip button.',
-          id: 'Ketuk teks item tugas atau pensilnya untuk mengedit. Kursor ditempatkan di dekat titik teks yang diklik. Gunakan tombol pegangan untuk menyeret.',
+          en: 'Tap a task item’s text or pencil to edit it. On phones too, tapping the text focuses the input and places the cursor near the tapped position. Dragging stays on the grip button.',
+          id: 'Ketuk teks item tugas atau pensilnya untuk mengedit. Di ponsel juga, mengetuk teks langsung memfokuskan kolom dan menempatkan kursor di dekat titik yang diketuk. Gunakan tombol pegangan untuk menyeret.',
         },
       },
       {
