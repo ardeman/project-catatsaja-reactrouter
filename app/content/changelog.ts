@@ -44,6 +44,13 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
+          en: 'In a finance book, the small balance bar appears only once the whole summary card has scrolled away, and the page no longer jumps when it does.',
+          id: 'Di buku keuangan, bilah saldo kecil baru muncul setelah seluruh kartu ringkasan tergulir keluar, dan halaman tidak lagi melompat saat itu terjadi.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
           en: 'When dictation fails, the message now says why (no speech heard, or no microphone) instead of a general error.',
           id: 'Saat dikte gagal, pesannya kini menyebutkan penyebabnya (tidak ada suara terdengar, atau tidak ada mikrofon), bukan galat umum.',
         },

@@ -179,17 +179,22 @@ export const Form = (properties: TFormProperties) => {
     sentinel: summarySentinel,
     isStuck: isSummaryStuck,
   } = useIsStuck<HTMLDivElement>()
-  // The floating totals' height, so the "Add entry" card floats below them.
+  // The floating totals' height (0 while hidden), so the "Add entry" card
+  // floats below them.
+  const compactSummary = useRef<HTMLDivElement>(null)
   const [summaryHeight, setSummaryHeight] = useState(0)
   useEffect(() => {
-    const element = summaryReference.current
-    if (!element) return
+    const element = compactSummary.current
+    if (!isSummaryStuck || !element) {
+      setSummaryHeight(0)
+      return
+    }
     const observer = new ResizeObserver(() =>
       setSummaryHeight(element.offsetHeight),
     )
     observer.observe(element)
     return () => observer.disconnect()
-  }, [summaryReference])
+  }, [isSummaryStuck])
   const { income, expense, balance } = useMemo(
     () => summarize(entries),
     [entries],
@@ -513,23 +518,14 @@ export const Form = (properties: TFormProperties) => {
           </div>
         </form>
 
-        {/* The totals stay under the toolbar while scrolling, compact; the
-            accounts below them scroll away. At rest the two look like one
-            card. `!mb-0` undoes the stack's spacing between the parts. */}
+        {/* The totals and the accounts look like one card. `!mb-0` undoes
+            the stack's spacing between the parts. */}
         <div
-          ref={summarySentinel}
-          aria-hidden="true"
-          className="!mb-0 h-0"
-        />
-        <div
-          ref={summaryReference}
           className={cn(
-            'glass-surface sticky top-[7.5rem] z-30 transition-[padding,border-radius] duration-200 motion-reduce:transition-none md:top-[8.5rem]',
-            isSummaryStuck
-              ? 'glass-float rounded-xl border px-3 py-2 shadow-lg sm:px-4'
-              : hasAccounts
-                ? '!mb-0 rounded-t-xl border border-b-0 bg-none px-4 pt-4 pb-3 [clip-path:inset(-2rem_-2rem_0_-2rem)]'
-                : 'rounded-xl border p-4',
+            'glass-surface',
+            hasAccounts
+              ? '!mb-0 rounded-t-xl border border-b-0 bg-none px-4 pt-4 pb-3 [clip-path:inset(-2rem_-2rem_0_-2rem)]'
+              : '!mb-0 rounded-xl border p-4',
           )}
         >
           <Summary
@@ -538,14 +534,14 @@ export const Form = (properties: TFormProperties) => {
             expense={expense}
             balance={balance}
             accounts={accounts ?? []}
-            isCompact={isSummaryStuck}
+            isCompact={false}
           />
         </div>
         {hasAccounts && (
           <div
             // The shadow is cut at the top, so the join with the totals
             // doesn't show.
-            className="glass-surface rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)]"
+            className="glass-surface !mb-0 rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)]"
           >
             <Accounts
               book={book}
@@ -554,6 +550,34 @@ export const Form = (properties: TFormProperties) => {
             />
           </div>
         )}
+        {/* Once the whole card has scrolled under the toolbar, a compact
+            copy of the totals floats there. It sticks at the card's bottom
+            edge and takes no height, so showing it doesn't move the page. */}
+        <div
+          ref={summarySentinel}
+          aria-hidden="true"
+          className="!mb-0 h-0"
+        />
+        <div
+          ref={summaryReference}
+          className="sticky top-[7.5rem] z-30 h-0 md:top-[8.5rem]"
+        >
+          {isSummaryStuck && (
+            <div
+              ref={compactSummary}
+              className="motion-fade glass-surface glass-float rounded-xl border px-3 py-2 shadow-lg sm:px-4"
+            >
+              <Summary
+                book={book}
+                income={income}
+                expense={expense}
+                balance={balance}
+                accounts={accounts ?? []}
+                isCompact
+              />
+            </div>
+          )}
+        </div>
 
         {finance && (
           <div className="flex justify-center">
