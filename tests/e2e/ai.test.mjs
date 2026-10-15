@@ -1,5 +1,5 @@
 // End-to-end tests of the AI features (receipt scanning, quick add, note
-// helpers, dictation, taking back consent) and health reminders, on the local
+// and task list helpers, dictation, taking back consent) and health reminders, on the local
 // emulators:
 //   pnpm test:e2e
 // Gemini is replaced by fixed answers (nothing reaches Google, and runs cost
@@ -92,7 +92,23 @@ const answers = [
     'Tidy up this note',
     { title: 'Shopping', markdown: 'Buy milk and bread.', items: [] },
   ],
+  // Before plain dictation, whose prompt starts the same.
+  [
+    'Transcribe this voice recording as a to-do list',
+    { text: 'Buy stamps\nPost the letter' },
+  ],
   ['Transcribe this voice recording', { text: 'Call the dentist on Monday.' }],
+  [
+    'Break down the open items of this task list',
+    { title: '', items: ['Pick a date', 'Book the venue'] },
+  ],
+  [
+    'Translate this task list',
+    {
+      title: 'Persiapan pesta',
+      items: ['Pilih tanggal', 'Pesan tempat', 'Kirim undangan'],
+    },
+  ],
   [
     'Turn this note into a checklist',
     { title: 'Shopping list', markdown: '', items: ['Buy milk', 'Buy bread'] },
@@ -356,6 +372,85 @@ describe('AI features and reminders', () => {
     )
     assert.ok(notes.length > 1)
     assert.equal(stored, undefined, 'the note stays encrypted')
+  })
+
+  test('task list helpers break items into steps, translate, and dictate items', async () => {
+    const { page } = device
+    const item = (text) => page.getByRole('button', { name: text, exact: true })
+    await page.goto(`${APP}/tasks/create`)
+    await page.locator('textarea[name=title]').fill('Party prep')
+    await page.locator('textarea[name=item]').fill('Plan the party')
+    await page.locator('textarea[name=item]').press('Enter')
+    await page.locator('textarea[name=item]').fill('Send invitations')
+    await page.locator('textarea[name=item]').press('Enter')
+    await page.getByRole('button', { name: 'Save' }).click()
+    await page.waitForURL(/\/tasks\/(?!create)/, { timeout: 30_000 })
+    await page.waitForTimeout(2000)
+    // Done items are left alone when breaking down.
+    await page
+      .getByRole('checkbox', { name: 'Send invitations', exact: true })
+      .click()
+    await page.waitForTimeout(1500)
+
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    await page.getByRole('menuitem', { name: 'Break into steps' }).click()
+    await shows(page, 'Open items in steps')
+    assert.equal(calls.at(-1), 'Break down the open items of this task list')
+    await page.getByRole('button', { name: 'Replace open items' }).click()
+    await item('Book the venue').waitFor({ timeout: 30_000 })
+    await item('Plan the party').waitFor({ state: 'hidden' })
+    assert.ok(await item('Send invitations').isVisible())
+    // One step back from the bar.
+    await page.getByRole('button', { name: 'Undo', exact: true }).click()
+    await item('Plan the party').waitFor()
+    await page.getByRole('button', { name: 'Redo', exact: true }).click()
+    await item('Book the venue').waitFor()
+
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    await page
+      .getByRole('menuitem', { name: 'Translate (English ↔ Indonesian)' })
+      .click()
+    await page.getByRole('button', { name: 'Replace list' }).click()
+    await item('Kirim undangan').waitFor({ timeout: 30_000 })
+    assert.equal(
+      await page.locator('textarea[name=title]').inputValue(),
+      'Persiapan pesta',
+    )
+    // What was done stays done.
+    assert.ok(
+      await page
+        .getByRole('checkbox', { name: 'Kirim undangan', exact: true })
+        .isChecked(),
+    )
+    assert.equal(
+      await page
+        .getByRole('checkbox', { name: 'Pilih tanggal', exact: true })
+        .isChecked(),
+      false,
+    )
+
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    await page.getByRole('menuitem', { name: 'Dictate items' }).click()
+    await page.getByRole('button', { name: 'Start recording' }).click()
+    await shows(page, 'Recording…')
+    await page.waitForTimeout(1500)
+    await page.getByRole('button', { name: 'Stop recording' }).click()
+    const transcript = page.getByLabel('What you said')
+    await transcript.waitFor({ timeout: 30_000 })
+    assert.equal(
+      calls.at(-1),
+      'Transcribe this voice recording as a to-do list',
+    )
+    await page.getByRole('button', { name: 'Insert' }).click()
+    await item('Post the letter').waitFor({ timeout: 30_000 })
+    assert.ok(await item('Buy stamps').isVisible())
+    await page.waitForTimeout(3000)
+    const tasks = await dbList('tasks')
+    assert.equal(
+      tasks.find((task) => JSON.stringify(task).includes('stamps')),
+      undefined,
+      'the task list stays encrypted',
+    )
   })
 
   test('taking back consent shows the notice again', async () => {

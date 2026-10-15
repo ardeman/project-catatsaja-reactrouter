@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { taskSchema } from '~/lib/validations/task'
+import { taskHelperSchema, taskSchema } from '~/lib/validations/task'
 
 import {
   TAccessLists,
@@ -39,3 +39,7 @@ export type TTaskResponse = {
 export type TTaskPermissionRequest = THandleSetPermission & {
   task: TTaskResponse
 }
+
+export type TTaskHelper = 'breakDown' | 'suggest' | 'translate'
+
+export type TTaskHelperResult = z.infer<typeof taskHelperSchema>

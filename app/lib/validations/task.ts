@@ -13,3 +13,10 @@ export const taskSchema = (t: TFunction) => {
     content: z.array(taskItem),
   })
 }
+
+// What Gemini returns for a task list helper (`app/apis/ai/task.ts`): the
+// title (empty unless translating) and the items. Checked before use.
+export const taskHelperSchema = z.object({
+  title: z.string(),
+  items: z.array(z.string()),
+})

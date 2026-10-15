@@ -249,6 +249,32 @@
     "empty": {
       "title": "Belum ada tugas",
       "description": "Buat daftar belanja, pekerjaan rumah, atau apa saja yang punya langkah."
+    },
+    "ai": {
+      "applied": "Daftar diubah. Urungkan dari bilah di atas jika perlu.",
+      "dictate": "Dikte item",
+      "dictateHint": "Setiap baris menjadi item di akhir daftar. Kamu bisa mengurungkannya dari bilah.",
+      "breakDown": {
+        "action": "Pecah jadi langkah",
+        "title": "Item terbuka per langkah",
+        "hint": "Mengganti item yang belum selesai dengan ini; item yang selesai tetap. Bisa diurungkan dari bilah di atas.",
+        "apply": "Ganti item terbuka",
+        "working": "Gemini sedang memecah daftarmu jadi langkah…"
+      },
+      "suggest": {
+        "action": "Sarankan item lain",
+        "title": "Saran item",
+        "hint": "Ditambahkan di akhir daftar. Bisa diurungkan dari bilah di atas.",
+        "apply": "Tambahkan ke daftar",
+        "working": "Gemini sedang mencari item lain…"
+      },
+      "translate": {
+        "action": "Terjemahkan (Inggris ↔ Indonesia)",
+        "title": "Daftar terjemahan",
+        "hint": "Mengganti judul dan item dengan terjemahannya; yang sudah selesai tetap selesai. Bisa diurungkan dari bilah di atas.",
+        "apply": "Ganti daftar",
+        "working": "Gemini sedang menerjemahkan daftarmu…"
+      }
     }
   },
   "finances": {
@@ -695,7 +721,7 @@
     },
     "gemini": {
       "title": "Bantuan Gemini",
-      "description": "Bantuan opsional yang memakai Gemini dari Google: pindai struk, tambah cepat, dikte, dan bantuan catatan.",
+      "description": "Bantuan opsional yang memakai Gemini dari Google: pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas.",
       "steps": [
         "Saat pertama kali memakainya, pemberitahuan menjelaskan apa yang dikirim. Tidak ada yang dikirim sampai kamu memilih foto, menekan tombol, atau menghentikan rekaman.",
         "Kamu selalu melihat hasilnya dulu, dan tidak ada yang ditambahkan atau diubah sampai kamu menyetujuinya. Perubahan dari Gemini bisa diurungkan.",
@@ -723,7 +749,7 @@
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
     "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, kapan item berubah, dan berapa bulan yang dicakup entri sebuah buku keuangan (tanpa bulan apa saja). Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
-    "ai": "Pindai struk, tambah cepat, dikte, dan bantuan catatan bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, rekaman suara yang kamu buat, atau judul dan isi catatan, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
+    "ai": "Pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, rekaman suara yang kamu buat, atau judul dan isi catatan atau daftar tugas, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu undang bisa melihat isinya (undangan mereka menampilkan judulnya), dan item baru masuk ke daftar mereka jika mereka menerimanya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna. Jika kamu memblokir seseorang, mereka tidak bisa mengundangmu lagi; daftar orang yang kamu blokir bersifat pribadi dan mereka tidak diberi tahu.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
@@ -965,7 +991,7 @@
     },
     "ai": {
       "title": "Fitur AI",
-      "description": "Pindai struk, tambah cepat, dikte, dan bantuan catatan memakai Gemini milik Google. Hanya yang kamu proses yang dikirim, dan hanya saat kamu memakainya.",
+      "description": "Pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas memakai Gemini milik Google. Hanya yang kamu proses yang dikirim, dan hanya saat kamu memakainya.",
       "agreed": "Kamu sudah setuju mengirim isi ke Gemini saat memakai fitur AI.",
       "notAgreed": "Kamu akan ditanya sebelum fitur AI pertama kali mengirim sesuatu.",
       "withdraw": "Batalkan persetujuan"
@@ -1553,7 +1579,7 @@
   "ai": {
     "notice": {
       "title": "Pakai Gemini?",
-      "send": "Yang kamu proses (foto struk, teks yang kamu ketik, rekaman suara, atau catatan) dikirim ke Gemini milik Google untuk dibaca, dituliskan, atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
+      "send": "Yang kamu proses (foto struk, teks yang kamu ketik, rekaman suara, catatan, atau daftar tugas) dikirim ke Gemini milik Google untuk dibaca, dituliskan, atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
       "encryption": "Ini berlaku juga untuk item yang terenkripsi end-to-end: isinya keluar dari perangkatmu, sedangkan yang kamu simpan tetap dienkripsi seperti biasa. Catat Saja tidak menyimpan apa yang dikirim.",
       "check": "Tidak ada yang dikirim sampai kamu memakai salah satu fitur ini, dan kamu memeriksa hasilnya sebelum ada yang ditambahkan atau diubah. Persetujuan ini bisa dibatalkan di Pengaturan → Akun.",
       "confirm": "Lanjutkan"

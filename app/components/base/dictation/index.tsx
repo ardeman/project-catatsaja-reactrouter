@@ -36,7 +36,7 @@ const formatTime = (seconds: number) =>
 // transcript can be edited before it is inserted. Opened through
 // `useAiConsent`, so the notice comes first.
 export const Dictation = (properties: TProperties) => {
-  const { open, setOpen, onInsert, hint } = properties
+  const { open, setOpen, onInsert, hint, kind } = properties
   const { t } = useTranslation()
   const textId = useId()
   const { mutate: transcribe, isPending } = useTranscribeAudio()
@@ -86,11 +86,14 @@ export const Dictation = (properties: TProperties) => {
       setIsRecording(false)
       if (discard.current) return
       const blob = new Blob(chunks, { type: next.mimeType })
-      const answer = await transcribe({
-        // Gemini takes the plain type, without the codec.
-        mimeType: (next.mimeType || type).split(';', 1)[0] ?? 'audio/webm',
-        data: await toBase64(blob),
-      })
+      const answer = await transcribe(
+        {
+          // Gemini takes the plain type, without the codec.
+          mimeType: (next.mimeType || type).split(';', 1)[0] ?? 'audio/webm',
+          data: await toBase64(blob),
+        },
+        kind,
+      )
       if (answer) setText(answer)
     })
     discard.current = false

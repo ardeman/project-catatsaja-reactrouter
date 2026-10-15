@@ -30,6 +30,20 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Gemini in task lists: dictate items, break open items into steps, get suggestions for what is missing, or translate the list. You check the result before it changes the list, and can undo it.',
+          id: 'Gemini di daftar tugas: dikte item, pecah item yang belum selesai jadi langkah, dapatkan saran item yang terlewat, atau terjemahkan daftarnya. Kamu memeriksa hasilnya sebelum daftar diubah, dan bisa mengurungkannya.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'When dictation fails, the message now says why (no speech heard, or no microphone) instead of a general error.',
+          id: 'Saat dikte gagal, pesannya kini menyebutkan penyebabnya (tidak ada suara terdengar, atau tidak ada mikrofon), bukan galat umum.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Format notes with labeled buttons: choose Format, right-click, or touch and hold for bold, italic, headings and lists.',
           id: 'Format catatan dengan tombol berlabel: pilih Format, klik kanan, atau sentuh dan tahan untuk teks tebal, miring, judul dan daftar.',
         },

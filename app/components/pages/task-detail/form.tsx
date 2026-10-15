@@ -35,9 +35,10 @@ import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { taskSchema } from '~/lib/validations/task'
 
+import { AiHelpers } from './ai-helpers'
 import { getClickedCaret } from './click-caret.client'
 import { ReorderHandle } from './reorder-handle'
-import { TDragPreview, TFormProperties } from './type'
+import { TDragPreview, TFormProperties, TTaskList } from './type'
 
 type TItem = TTaskForm['content'][number]
 
@@ -280,6 +281,33 @@ export const Form = (properties: TFormProperties) => {
         canUndo: history.canUndo,
         canRedo: history.canRedo,
       }
+
+  // The list as on screen, with what is still in the add field.
+  const getList = (): TTaskList => {
+    addPendingItems(false)
+    const { title, content } = getValues()
+    return { title, content: toStoredContent(content) }
+  }
+
+  // An AI helper's list, after the person accepted the preview: a step of
+  // its own, undone from the bar.
+  const handleApply = (next: TTaskList) => {
+    history.checkpoint(getList())
+    restore(next)
+    toast({ description: t('tasks.ai.applied') })
+  }
+
+  const aiMenu = isReadOnly
+    ? undefined
+    : (buttonClassName: string) => (
+        <AiHelpers
+          getList={getList}
+          hasOpenItems={openIndexes.length > 0}
+          hasItems={watchContent.length > 0}
+          onApply={handleApply}
+          triggerClassName={buttonClassName}
+        />
+      )
 
   const handleToggleCheckAll = () => {
     const shouldCheck = !checkedAll
@@ -752,6 +780,7 @@ export const Form = (properties: TFormProperties) => {
                 isReadOnly ? undefined : handleToggleCheckAll
               }
               checkedAll={checkedAll}
+              extra={aiMenu}
               {...historyActions}
             />
           ) : (
@@ -766,6 +795,7 @@ export const Form = (properties: TFormProperties) => {
                 isReadOnly ? undefined : handleToggleCheckAll
               }
               checkedAll={checkedAll}
+              extra={aiMenu}
               {...historyActions}
             />
           )}

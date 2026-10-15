@@ -40,6 +40,7 @@ const errorKeys: Record<string, string> = {
   'typed/unreadable': 'errors.typedUnreadable',
   'typed/empty': 'errors.typedEmpty',
   'note/unreadable': 'errors.noteUnreadable',
+  'task/unreadable': 'errors.noteUnreadable',
   'dictation/unreadable': 'errors.noteUnreadable',
   'dictation/empty': 'errors.dictationEmpty',
   'dictation/microphone': 'errors.microphone',
@@ -49,7 +50,15 @@ const errorKeys: Record<string, string> = {
 }
 
 // Codes the app throws itself, as the error's message.
-const appCodes = ['encryption/', 'receipt/', 'image/', 'typed/', 'note/']
+const appCodes = [
+  'encryption/',
+  'receipt/',
+  'image/',
+  'typed/',
+  'note/',
+  'task/',
+  'dictation/',
+]
 
 const codeOf = (error: unknown) => {
   if (error instanceof FirebaseError) {
