@@ -121,14 +121,17 @@ pnpm refuses package versions published less than a day ago (its `minimumRelease
 
 `.env` is git-ignored. In CI the same names come from repository secrets.
 
-| Variable                  | Used for                                                                                                                                            |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_FIREBASE_*`         | Firebase web app config (Project settings → Your apps)                                                                                              |
-| `VITE_GRAVATAR_API_KEY`   | Profile avatars from Gravatar                                                                                                                       |
-| `VITE_APP_CHECK_SITE_KEY` | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it                                                         |
-| `VITE_USE_EMULATORS`      | Development only (not set in the workflow): `true` runs `pnpm dev` against the local Auth and Firestore emulators (`pnpm emulators`, needs Java 21) |
+| Variable                     | Used for                                                                                                                                            |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_FIREBASE_*`            | Firebase web app config (Project settings → Your apps)                                                                                              |
+| `VITE_GRAVATAR_API_KEY`      | Profile avatars from Gravatar                                                                                                                       |
+| `VITE_APP_CHECK_SITE_KEY`    | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it                                                         |
+| `VITE_APP_CHECK_DEBUG_TOKEN` | Development only. A registered App Check debug token, kept in the ignored `.env`; ignored in production                                             |
+| `VITE_USE_EMULATORS`         | Development only (not set in the workflow): `true` runs `pnpm dev` against the local Auth and Firestore emulators (`pnpm emulators`, needs Java 21) |
 
 Variables are read in one place, `app/lib/utils/environment.ts`.
+
+When developing against Firebase with App Check enabled, create a debug token in Firebase console → App Check → Apps → the web app's menu → Manage debug tokens, and save it as `VITE_APP_CHECK_DEBUG_TOKEN` in `.env`. Restart `pnpm dev` after changing it. This lets local browsers use the same registered token instead of generating unregistered ones that receive HTTP 403. Without that variable, register each browser's token printed in its console. Keep debug tokens private and revoke them in Firebase if exposed. The emulator mode needs no token. See [Firebase's debug provider guide](https://firebase.google.com/docs/app-check/web/debug-provider).
 
 ## Commands
 

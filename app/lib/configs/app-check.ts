@@ -12,8 +12,8 @@ import { environment } from '~/lib/utils/environment'
 // monitored). Firestore and AI Logic take the app from here, so it starts
 // before their first request, but not on the public pages, which then don't
 // load reCAPTCHA. Enforcing it for Authentication would need it back in
-// `firebase.ts`, before sign-in's first request. In development a debug token
-// is printed to the console, to register there.
+// `firebase.ts`, before sign-in's first request. Development uses the registered
+// token from .env, or prints a browser-specific one to register in Firebase.
 //
 // The app is exported from what starts App Check, not passed through: with
 // `"sideEffects": false` in package.json, a plain re-export skips this module.
@@ -22,7 +22,10 @@ const startAppCheck = (firebase: FirebaseApp) => {
   if (!appCheckSiteKey || useEmulators) return firebase
   try {
     if (import.meta.env.DEV)
-      Object.assign(globalThis, { FIREBASE_APPCHECK_DEBUG_TOKEN: true })
+      Object.assign(globalThis, {
+        FIREBASE_APPCHECK_DEBUG_TOKEN:
+          environment.VITE_APP_CHECK_DEBUG_TOKEN || true,
+      })
     initializeAppCheck(firebase, {
       provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
       isTokenAutoRefreshEnabled: true,

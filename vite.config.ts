@@ -4,6 +4,12 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter()],
+  // Milkdown uses Vue internally; keep Vue's default feature flags explicit.
+  define: {
+    __VUE_OPTIONS_API__: 'true',
+    __VUE_PROD_DEVTOOLS__: 'false',
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
+  },
   resolve: {
     tsconfigPaths: true,
   },

@@ -21,4 +21,8 @@ export const environment = {
   // without it.
   VITE_APP_CHECK_SITE_KEY: import.meta.env.VITE_APP_CHECK_SITE_KEY as
     string | undefined,
+  // Development only: a registered debug token shared by local browsers.
+  VITE_APP_CHECK_DEBUG_TOKEN: import.meta.env.DEV
+    ? (import.meta.env.VITE_APP_CHECK_DEBUG_TOKEN as string | undefined)
+    : undefined,
 }
