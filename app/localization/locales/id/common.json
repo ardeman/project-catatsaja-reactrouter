@@ -209,7 +209,9 @@
         "apply": "Buat daftar tugas",
         "working": "Gemini sedang membuat daftar tugas dari catatanmu…"
       },
-      "empty": "Tulis sesuatu dulu untuk diproses Gemini"
+      "empty": "Tulis sesuatu dulu untuk diproses Gemini",
+      "dictate": "Dikte",
+      "dictateHint": "Ditambahkan di akhir catatan. Kamu bisa mengurungkannya dari bilah."
     }
   },
   "tasks": {
@@ -693,9 +695,9 @@
     },
     "gemini": {
       "title": "Bantuan Gemini",
-      "description": "Bantuan opsional yang memakai Gemini dari Google: pindai struk, tambah cepat, dan bantuan catatan.",
+      "description": "Bantuan opsional yang memakai Gemini dari Google: pindai struk, tambah cepat, dikte, dan bantuan catatan.",
       "steps": [
-        "Saat pertama kali memakainya, pemberitahuan menjelaskan apa yang dikirim. Tidak ada yang dikirim sampai kamu memilih foto atau menekan tombol.",
+        "Saat pertama kali memakainya, pemberitahuan menjelaskan apa yang dikirim. Tidak ada yang dikirim sampai kamu memilih foto, menekan tombol, atau menghentikan rekaman.",
         "Kamu selalu melihat hasilnya dulu, dan tidak ada yang ditambahkan atau diubah sampai kamu menyetujuinya. Perubahan dari Gemini bisa diurungkan.",
         "Paket gratis Gemini mengizinkan Google memakai yang dikirim untuk meningkatkan layanannya, termasuk dari item terenkripsi, jadi jangan kirim yang ingin kamu rahasiakan.",
         "Kamu bisa berhenti memakai Gemini kapan saja di Pengaturan → Akun → Fitur AI."
@@ -721,7 +723,7 @@
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
     "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, kapan item berubah, dan berapa bulan yang dicakup entri sebuah buku keuangan (tanpa bulan apa saja). Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
-    "ai": "Pindai struk, tambah cepat, dan bantuan catatan bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, atau judul dan isi catatan, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
+    "ai": "Pindai struk, tambah cepat, dikte, dan bantuan catatan bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, rekaman suara yang kamu buat, atau judul dan isi catatan, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu undang bisa melihat isinya (undangan mereka menampilkan judulnya), dan item baru masuk ke daftar mereka jika mereka menerimanya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna. Jika kamu memblokir seseorang, mereka tidak bisa mengundangmu lagi; daftar orang yang kamu blokir bersifat pribadi dan mereka tidak diberi tahu.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
@@ -963,7 +965,7 @@
     },
     "ai": {
       "title": "Fitur AI",
-      "description": "Pindai struk, tambah cepat, dan bantuan catatan memakai Gemini milik Google. Hanya yang kamu proses yang dikirim, dan hanya saat kamu memakainya.",
+      "description": "Pindai struk, tambah cepat, dikte, dan bantuan catatan memakai Gemini milik Google. Hanya yang kamu proses yang dikirim, dan hanya saat kamu memakainya.",
       "agreed": "Kamu sudah setuju mengirim isi ke Gemini saat memakai fitur AI.",
       "notAgreed": "Kamu akan ditanya sebelum fitur AI pertama kali mengirim sesuatu.",
       "withdraw": "Batalkan persetujuan"
@@ -1010,7 +1012,22 @@
     "imageUnreadable": "Gambar ini tidak bisa dibuka. Coba foto JPEG atau PNG.",
     "typedUnreadable": "Teksnya tidak terbaca. Tulis setiap hal dengan jumlahnya, misalnya “makan siang 45rb, parkir 5rb”.",
     "typedEmpty": "Tidak ada jumlah yang ditemukan. Tulis setiap hal dengan jumlahnya, misalnya “makan siang 45rb”.",
-    "noteUnreadable": "Jawaban Gemini tidak bisa dipakai. Coba lagi."
+    "noteUnreadable": "Jawaban Gemini tidak bisa dipakai. Coba lagi.",
+    "dictationEmpty": "Tidak ada suara yang terdengar. Coba lagi lebih dekat ke mikrofon.",
+    "microphone": "Mikrofon tidak bisa dipakai. Izinkan akses mikrofon untuk situs ini di pengaturan browser.",
+    "dictationUnsupported": "Browser ini tidak bisa merekam suara. Coba Chrome, Edge, Firefox atau Safari versi terbaru."
+  },
+  "dictation": {
+    "title": "Dikte",
+    "description": "Bicaralah dalam bahasa apa pun. Saat kamu berhenti, Gemini menuliskan ucapanmu untuk kamu periksa.",
+    "start": "Mulai merekam",
+    "stop": "Berhenti merekam",
+    "ready": "Tekan mikrofon untuk mulai (hingga 5 menit).",
+    "recording": "Merekam… {{time}} dari {{max}}",
+    "working": "Gemini sedang menuliskan ucapanmu…",
+    "transcript": "Ucapanmu",
+    "again": "Rekam ulang",
+    "insert": "Sisipkan"
   },
   "actions": {
     "back": "Kembali",
@@ -1536,7 +1553,7 @@
   "ai": {
     "notice": {
       "title": "Pakai Gemini?",
-      "send": "Yang kamu proses (foto struk, teks yang kamu ketik, atau catatan) dikirim ke Gemini milik Google untuk dibaca atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
+      "send": "Yang kamu proses (foto struk, teks yang kamu ketik, rekaman suara, atau catatan) dikirim ke Gemini milik Google untuk dibaca, dituliskan, atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
       "encryption": "Ini berlaku juga untuk item yang terenkripsi end-to-end: isinya keluar dari perangkatmu, sedangkan yang kamu simpan tetap dienkripsi seperti biasa. Catat Saja tidak menyimpan apa yang dikirim.",
       "check": "Tidak ada yang dikirim sampai kamu memakai salah satu fitur ini, dan kamu memeriksa hasilnya sebelum ada yang ditambahkan atau diubah. Persetujuan ini bisa dibatalkan di Pengaturan → Akun.",
       "confirm": "Lanjutkan"

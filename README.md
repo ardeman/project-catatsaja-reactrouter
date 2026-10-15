@@ -164,7 +164,7 @@ pnpm validate   # lint + typecheck + knip + unit tests
 
 - `tests/e2e/encryption.test.mjs`: the dependent encryption lifecycle with Ana, Budi and Cici.
 - `tests/e2e/sharing.test.mjs`: independent accounts, note keyboard saving with and without encryption, button/right-click/long-touch formatting, sharing suggestions and invitations, read-only note editing, archiving, blocking, and encrypted finance month storage.
-- `tests/e2e/ai.test.mjs`: receipt scanning, quick add, note helpers and taking back consent, with Gemini replaced by fixed answers, plus health reminders.
+- `tests/e2e/ai.test.mjs`: receipt scanning, quick add, note helpers, dictation (with Chrome's fake microphone) and taking back consent, with Gemini replaced by fixed answers, plus health reminders.
 - `tests/e2e/tasks.test.mjs`: adding, editing, reordering, keeping unfinished task input, and touch cursor placement on mobile.
 
 The deploy workflow runs the four files in parallel on separate runners, each with its own app and emulators, and requires all of them to pass before every deploy. Scenarios within each file run in order; the local command stays sequential to avoid port and database conflicts. For adding or splitting suites, follow [AGENTS.md](AGENTS.md).
@@ -234,7 +234,7 @@ app/
                         _layout.auth.*    sign in, sign up, forgot password
                         _layout._main.*   signed-in app (notes, tasks, finances, health, settings)
   apis/firestore/     Firestore reads and writes per collection (note, task, finance, health-log, user, currency)
-  apis/ai/            Gemini calls through Firebase AI Logic (receipt, typed entries, note helpers)
+  apis/ai/            Gemini calls through Firebase AI Logic (receipt, typed entries, note helpers, dictation)
   components/
     ui/               shadcn/ui primitives (generated)
     base/             Shared app components built on ui/

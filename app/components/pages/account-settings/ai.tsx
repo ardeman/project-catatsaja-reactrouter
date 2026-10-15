@@ -12,7 +12,7 @@ import {
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateAiConsent } from '~/lib/hooks/use-update-ai-consent'
 
-// AI features (receipt scanning, quick add, note helpers) send what the
+// AI features (receipt scanning, quick add, dictation, note helpers) send what the
 // person chooses to Google's Gemini, after a one-time notice. Agreeing can
 // be taken back here; the notice then shows again before the next use.
 export const Ai = () => {

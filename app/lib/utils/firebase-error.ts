@@ -40,6 +40,10 @@ const errorKeys: Record<string, string> = {
   'typed/unreadable': 'errors.typedUnreadable',
   'typed/empty': 'errors.typedEmpty',
   'note/unreadable': 'errors.noteUnreadable',
+  'dictation/unreadable': 'errors.noteUnreadable',
+  'dictation/empty': 'errors.dictationEmpty',
+  'dictation/microphone': 'errors.microphone',
+  'dictation/unsupported': 'errors.dictationUnsupported',
   // A passkey prompt dismissed or timed out.
   NotAllowedError: 'errors.passkeyCancelled',
 }

@@ -3,6 +3,7 @@ import {
   ListChecks,
   ListCollapse,
   LoaderCircle,
+  Mic,
   Sparkles,
   SpellCheck,
 } from 'lucide-react'
@@ -12,6 +13,7 @@ import { useNavigate } from 'react-router'
 
 import { AiNotice } from '~/components/base/ai-notice'
 import { Button } from '~/components/base/button'
+import { Dictation } from '~/components/base/dictation'
 import { Markdown } from '~/components/base/markdown'
 import { Modal } from '~/components/base/modal'
 import { Button as UIButton } from '~/components/ui/button'
@@ -35,11 +37,12 @@ const helpers: { key: TNoteHelper; icon: typeof Sparkles }[] = [
   { key: 'checklist', icon: ListChecks },
 ]
 
-// Gemini helpers for a note: summarise, tidy up, translate and turn into a
-// checklist. The note goes to Google only when a helper is picked, after
+// Gemini helpers for a note: dictate, summarise, tidy up, translate and turn
+// into a checklist. The note goes to Google only when a helper is picked, after
 // agreeing once to `AiNotice`, and the result is previewed before it is
 // applied. Changing the note needs write access; a checklist is a new task
-// list, so readers can make one too.
+// list, so readers can make one too. Dictating needs no content (it adds
+// some), and sends only the recording.
 export const AiHelpers = (properties: TAiHelpersProperties) => {
   const { getNote, isEditable, hasContent, onApply, triggerClassName } =
     properties
@@ -48,6 +51,7 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
   const { run, notice } = useAiConsent()
   const { mutate: runHelper, pending } = useNoteHelper()
   const { mutate: createTask, isPending: isCreating } = useCreateTask()
+  const [isDictating, setIsDictating] = useState(false)
   const [result, setResult] = useState<{
     helper: TNoteHelper
     answer: TNoteHelperResult
@@ -88,6 +92,16 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
     setResult(undefined)
   }
 
+  const handleDictate = () => run(() => setIsDictating(true))
+
+  const handleInsert = (text: string) => {
+    const { title, content } = getNote()
+    onApply({
+      title,
+      content: content.trim() ? `${content.trimEnd()}\n\n${text}` : text,
+    })
+  }
+
   const available = helpers.filter(
     ({ key }) => isEditable || key === 'checklist',
   )
@@ -100,19 +114,28 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
             type="button"
             variant="outline"
             className={triggerClassName}
-            disabled={!!pending || !hasContent}
+            disabled={!!pending || (!hasContent && !isEditable)}
             aria-label={t(pending ? 'notes.ai.working' : 'notes.ai.menu')}
-            title={t(hasContent ? 'notes.ai.menu' : 'notes.ai.empty')}
+            title={t(
+              hasContent || isEditable ? 'notes.ai.menu' : 'notes.ai.empty',
+            )}
             aria-busy={!!pending}
           >
             {pending ? <LoaderCircle className="animate-spin" /> : <Sparkles />}
           </UIButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          {isEditable && (
+            <DropdownMenuItem onSelect={handleDictate}>
+              <Mic className="size-4" />
+              {t('notes.ai.dictate')}
+            </DropdownMenuItem>
+          )}
           {available.map(({ key, icon: Icon }) => (
             <DropdownMenuItem
               key={key}
               onSelect={() => handlePick(key)}
+              disabled={!hasContent}
             >
               <Icon className="size-4" />
               {t(`notes.ai.${key}.action`)}
@@ -189,6 +212,12 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
           </div>
         )}
       </Modal>
+      <Dictation
+        open={isDictating}
+        setOpen={setIsDictating}
+        onInsert={handleInsert}
+        hint={t('notes.ai.dictateHint')}
+      />
       <AiNotice {...notice} />
     </>
   )

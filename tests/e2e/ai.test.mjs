@@ -1,5 +1,5 @@
 // End-to-end tests of the AI features (receipt scanning, quick add, note
-// helpers, taking back consent) and health reminders, on the local
+// helpers, dictation, taking back consent) and health reminders, on the local
 // emulators:
 //   pnpm test:e2e
 // Gemini is replaced by fixed answers (nothing reaches Google, and runs cost
@@ -92,6 +92,7 @@ const answers = [
     'Tidy up this note',
     { title: 'Shopping', markdown: 'Buy milk and bread.', items: [] },
   ],
+  ['Transcribe this voice recording', { text: 'Call the dentist on Monday.' }],
   [
     'Turn this note into a checklist',
     { title: 'Shopping list', markdown: '', items: ['Buy milk', 'Buy bread'] },
@@ -141,7 +142,13 @@ let healthUrl
 
 before(async () => {
   server = await startApp()
-  browser = await launch()
+  // Chrome's fake microphone (a beep) for dictation, allowed without asking.
+  browser = await launch({
+    args: [
+      '--use-fake-ui-for-media-stream',
+      '--use-fake-device-for-media-stream',
+    ],
+  })
   // A first visit to each kind of page: the dev server prepares its
   // dependencies on first use and reloads, which mustn't happen mid-test.
   await resetEmulators()
@@ -317,6 +324,38 @@ describe('AI features and reminders', () => {
     const tasks = await dbList('tasks')
     assert.equal(tasks.length, 1)
     assert.ok(tasks[0].fields.encrypted, 'the new task list is encrypted')
+  })
+
+  test('dictation records, is checked and edited, then added to the note', async () => {
+    const { page } = device
+    await createNote(page, 'Errands')
+    await page.waitForTimeout(2000)
+    // Dictating works on an empty note; the other helpers wait for text.
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    assert.ok(
+      await page.getByRole('menuitem', { name: 'Tidy up' }).isDisabled(),
+    )
+    await page.getByRole('menuitem', { name: 'Dictate' }).click()
+    await page.getByRole('button', { name: 'Start recording' }).click()
+    await shows(page, 'Recording…')
+    await page.waitForTimeout(1500)
+    const before = calls.length
+    await page.getByRole('button', { name: 'Stop recording' }).click()
+    const transcript = page.getByLabel('What you said')
+    await transcript.waitFor({ timeout: 30_000 })
+    assert.equal(calls.length, before + 1)
+    assert.equal(calls.at(-1), 'Transcribe this voice recording')
+    assert.equal(await transcript.inputValue(), 'Call the dentist on Monday.')
+    await transcript.fill('Call the dentist on Tuesday.')
+    await page.getByRole('button', { name: 'Insert' }).click()
+    await shows(page, 'Call the dentist on Tuesday.')
+    await page.waitForTimeout(3000)
+    const notes = await dbList('notes')
+    const stored = notes.find((note) =>
+      JSON.stringify(note).includes('dentist'),
+    )
+    assert.ok(notes.length > 1)
+    assert.equal(stored, undefined, 'the note stays encrypted')
   })
 
   test('taking back consent shows the notice again', async () => {

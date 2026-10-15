@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Dictate notes: choose Gemini, then Dictate, and speak in any language. You check the text before it is added to the note.',
+          id: 'Dikte catatan: pilih Gemini, lalu Dikte, dan bicaralah dalam bahasa apa pun. Kamu memeriksa teksnya sebelum ditambahkan ke catatan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Format notes with labeled buttons: choose Format, right-click, or touch and hold for bold, italic, headings and lists.',
           id: 'Format catatan dengan tombol berlabel: pilih Format, klik kanan, atau sentuh dan tahan untuk teks tebal, miring, judul dan daftar.',
         },
