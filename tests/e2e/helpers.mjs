@@ -53,6 +53,17 @@ export const dbGetWhen = async (path, isReady, timeout = 15_000) => {
   return fields
 }
 
+// The collection's documents once `isReady` holds, like `dbGetWhen`.
+export const dbListWhen = async (collection, isReady, timeout = 15_000) => {
+  const end = Date.now() + timeout
+  let documents = await dbList(collection)
+  while (!isReady(documents) && Date.now() < end) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    documents = await dbList(collection)
+  }
+  return documents
+}
+
 export const dbPatch = async (path, fields) => {
   const mask = Object.keys(fields)
     .map((field) => `updateMask.fieldPaths=${field}`)

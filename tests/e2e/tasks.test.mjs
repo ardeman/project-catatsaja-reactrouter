@@ -7,7 +7,7 @@ import { after, before, test } from 'node:test'
 import {
   APP,
   dbGetWhen,
-  dbList,
+  dbListWhen,
   dbPatch,
   launch,
   newDevice,
@@ -369,9 +369,14 @@ for (const encrypted of [false, true]) {
     await page
       .getByRole('checkbox', { name: 'Remember keys', exact: true })
       .waitFor()
+    const owned = (documents) =>
+      documents.filter((task) => task.fields.owner?.stringValue === uid)
     assert.equal(
-      (await dbList('tasks')).filter(
-        (task) => task.fields.owner?.stringValue === uid,
+      owned(
+        await dbListWhen(
+          'tasks',
+          (documents) => owned(documents).length >= (encrypted ? 2 : 1),
+        ),
       ).length,
       encrypted ? 2 : 1,
     )

@@ -130,7 +130,10 @@ describe('sharing and finance storage', () => {
         0,
         'selection alone does not open a competing toolbar',
       )
-      await editor.click({ button: 'right', position: { x: 20, y: 10 } })
+      // Right click over the selected words, so the menu keeps the selection.
+      await editor
+        .getByText('Project plan', { exact: true })
+        .click({ button: 'right', position: { x: 10, y: 8 } })
       await menu.getByRole('button', { name: 'Bold', exact: true }).click()
       await editor.locator('strong').waitFor()
       assert.equal(
