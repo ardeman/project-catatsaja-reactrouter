@@ -166,6 +166,14 @@ pnpm validate   # lint + typecheck + knip + unit tests
 
 The deploy workflow runs the four files in parallel on separate runners, each with its own app and emulators, and requires all of them to pass before every deploy. Scenarios within each file run in order; the local command stays sequential to avoid port and database conflicts. For adding or splitting suites, follow [AGENTS.md](AGENTS.md).
 
+Locally, run `pnpm validate` and only the E2E file or scenario affected by a change. The full E2E suite is not required locally before each push; CI runs it before deployment. For example, with Java 21 on your path, check task editing with:
+
+```sh
+pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja 'node --test --test-concurrency=1 tests/e2e/tasks.test.mjs'
+```
+
+For documentation and static crawler files, no local E2E run is needed. Reuse passing checks when the relevant code is unchanged. Run the full local suite when requested or when investigating a failure that targeted tests cannot resolve.
+
 ### Git hooks and commit messages
 
 Husky installs two hooks:
@@ -205,6 +213,8 @@ For a change to how data is stored, raise `appVersion` in the release and set `m
 Open apps switch at once, without a reload; the public pages (landing, About, How to use and the rest) stay up. Deploy, check the app, then set `maintenance` to `false`. Nobody can change `config` from the app (`firestore.rules`).
 
 ### Google Search Console
+
+The production build groups shared icons, UI libraries and the small components used by public pages in `vite.config.ts` to reduce script requests. Feature modules keep their separate dynamic imports; avoid merging all shared code into one bundle, which pulls unused app features onto public pages.
 
 `public/sitemap.xml` lists the six prerendered public pages. Keep it in step with `prerender` in `react-router.config.ts` when adding or removing a public page. `public/robots.txt` points crawlers to the sitemap and excludes sign-in and app paths from crawling.
 

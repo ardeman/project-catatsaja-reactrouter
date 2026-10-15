@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Public pages now make fewer script requests when opening.',
+          id: 'Halaman publik kini memuat lebih sedikit berkas skrip saat dibuka.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Tap a task item’s text or pencil to edit it. On phones too, tapping the text focuses the input and places the cursor near the tapped position. Dragging stays on the grip button.',
           id: 'Ketuk teks item tugas atau pensilnya untuk mengedit. Di ponsel juga, mengetuk teks langsung memfokuskan kolom dan menempatkan kursor di dekat titik yang diketuk. Gunakan tombol pegangan untuk menyeret.',
         },
