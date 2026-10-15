@@ -1,13 +1,16 @@
 import { useTranslation } from 'react-i18next'
 
+import { cycleWindows } from '~/lib/utils/cycle-calendar'
 import { today } from '~/lib/utils/finance'
 import { daysBetween, entriesOf, periodStats } from '~/lib/utils/health'
 
 import { EntryList } from './entry-list'
+import { PeriodCalendar } from './period-calendar'
 import { TSectionProperties } from './type'
 
-// Logged periods and what they suggest: the next period, the fertile
-// window and the average cycle. Estimates, said as such.
+// Logged periods and what they suggest: the next period and the days it
+// could fall on, the fertile window, ovulation and the average cycle, also
+// on a calendar. Estimates, said as such.
 export const PeriodSection = (properties: TSectionProperties) => {
   const { log } = properties
   const { t, i18n } = useTranslation()
@@ -22,6 +25,9 @@ export const PeriodSection = (properties: TSectionProperties) => {
   })
   const date = (value: string) =>
     dayFormat.format(new Date(`${value}T00:00:00Z`))
+  const range = ([from, to]: [string, string]) =>
+    from === to ? date(from) : `${date(from)} – ${date(to)}`
+  const windows = stats && cycleWindows(stats, stats.nextStart)
 
   return (
     <EntryList
@@ -39,7 +45,7 @@ export const PeriodSection = (properties: TSectionProperties) => {
         secondary: entry.flow ? t(`health.flow.${entry.flow}`) : undefined,
       })}
     >
-      {stats && (
+      {stats && windows && (
         <section className="glass-surface grid gap-3 rounded-xl border p-4">
           <dl className="grid grid-cols-2 gap-x-2 gap-y-3">
             <div className="col-span-2">
@@ -63,11 +69,33 @@ export const PeriodSection = (properties: TSectionProperties) => {
             </div>
             <div>
               <dt className="text-xs text-muted-foreground">
+                {t('health.period.predicted')}
+              </dt>
+              <dd className="font-medium">{range(windows.predicted)}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">
+                {t('health.period.possible')}
+              </dt>
+              <dd className="font-medium">{range(windows.possible)}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">
                 {t('health.period.fertile')}
               </dt>
-              <dd className="font-medium">
-                {date(stats.fertileStart)} – {date(stats.fertileEnd)}
-              </dd>
+              <dd className="font-medium">{range(windows.fertile)}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">
+                {t('health.period.ovulation')}
+              </dt>
+              <dd className="font-medium">{range(windows.ovulation)}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">
+                {t('health.period.ovulationWindow')}
+              </dt>
+              <dd className="font-medium">{range(windows.ovulationWindow)}</dd>
             </div>
             <div>
               <dt className="text-xs text-muted-foreground">
@@ -92,6 +120,11 @@ export const PeriodSection = (properties: TSectionProperties) => {
               : t('health.period.basedOn', { count: stats.cycleCount })}{' '}
             {t('health.period.disclaimer')}
           </p>
+          <PeriodCalendar
+            periods={entries}
+            stats={stats}
+            today={now}
+          />
         </section>
       )}
     </EntryList>

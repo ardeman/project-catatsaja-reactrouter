@@ -96,7 +96,8 @@ export const caloriesByDay = (entries: THealthEntry[]) => {
 // six cycles (start to start), 28 days until there are two periods; the
 // average period length, 5 days until one has an end. Ovulation is taken
 // as 14 days before the next period, the fertile window as the five days
-// before it and the day after. Estimates only: cycles vary.
+// before it and the day after. The shortest and longest recent cycles say
+// how far a period may stray from the estimate. Estimates only: cycles vary.
 export const periodStats = (entries: THealthEntry[], today: string) => {
   const periods = entriesOf(entries, 'period').toReversed()
   if (periods.length === 0) return
@@ -133,6 +134,8 @@ export const periodStats = (entries: THealthEntry[], today: string) => {
     cycleLength,
     periodLength,
     cycleCount: recent.length,
+    shortestCycle: recent.length > 0 ? Math.min(...recent) : cycleLength,
+    longestCycle: recent.length > 0 ? Math.max(...recent) : cycleLength,
     nextStart,
     ovulation,
     fertileStart: addDays(ovulation, -5),

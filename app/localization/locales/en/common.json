@@ -1396,6 +1396,10 @@
       "late_other": "{{count}} days late",
       "cycleDay": "Cycle day",
       "fertile": "Fertile window",
+      "predicted": "Expected period",
+      "possible": "Possible period days",
+      "ovulation": "Ovulation day",
+      "ovulationWindow": "Ovulation window",
       "averageCycle": "Average cycle",
       "averagePeriod": "Average period",
       "days_one": "{{count}} day",
@@ -1406,7 +1410,15 @@
       "basedOn_one": "Based on your last cycle.",
       "basedOn_other": "Based on your last {{count}} cycles.",
       "notEnough": "Log two periods for estimates from your own cycle; until then a 28-day cycle is assumed.",
-      "disclaimer": "Estimates only, as cycles vary: not a method of birth control."
+      "disclaimer": "Estimates only, as cycles vary: not a method of birth control.",
+      "calendar": {
+        "period": "Period",
+        "predicted": "Expected period",
+        "possible": "Possible period",
+        "fertile": "Fertile window",
+        "ovulationWindow": "Ovulation window",
+        "ovulation": "Ovulation day"
+      }
     },
     "status": {
       "normal": "Normal",

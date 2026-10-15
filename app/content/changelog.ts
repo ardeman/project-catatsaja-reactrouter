@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-16',
+    title: {
+      en: 'A calendar for periods',
+      id: 'Kalender menstruasi',
+    },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Periods in a health log now show on a calendar: the days you logged, and ahead of today the expected period, the other days it could start on, the fertile window, the ovulation window and the likely ovulation day. The summary above it lists the same dates for the next cycle.',
+          id: 'Menstruasi di catatan kesehatan kini tampil di kalender: hari-hari yang kamu catat, dan setelah hari ini perkiraan menstruasi, hari lain yang mungkin menjadi awalnya, masa subur, masa ovulasi dan perkiraan hari ovulasi. Ringkasan di atasnya mencantumkan tanggal yang sama untuk siklus berikutnya.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-15',
     title: {
       en: 'Safer task creation',

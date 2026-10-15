@@ -1396,6 +1396,10 @@
       "late_other": "terlambat {{count}} hari",
       "cycleDay": "Hari siklus",
       "fertile": "Masa subur",
+      "predicted": "Perkiraan menstruasi",
+      "possible": "Kemungkinan hari menstruasi",
+      "ovulation": "Hari ovulasi",
+      "ovulationWindow": "Masa ovulasi",
       "averageCycle": "Rata-rata siklus",
       "averagePeriod": "Rata-rata menstruasi",
       "days_one": "{{count}} hari",
@@ -1406,7 +1410,15 @@
       "basedOn_one": "Berdasarkan siklus terakhirmu.",
       "basedOn_other": "Berdasarkan {{count}} siklus terakhirmu.",
       "notEnough": "Catat dua kali menstruasi untuk perkiraan dari siklusmu sendiri; sampai saat itu dianggap siklus 28 hari.",
-      "disclaimer": "Hanya perkiraan karena siklus bisa berubah: bukan metode kontrasepsi."
+      "disclaimer": "Hanya perkiraan karena siklus bisa berubah: bukan metode kontrasepsi.",
+      "calendar": {
+        "period": "Menstruasi",
+        "predicted": "Perkiraan menstruasi",
+        "possible": "Kemungkinan menstruasi",
+        "fertile": "Masa subur",
+        "ovulationWindow": "Masa ovulasi",
+        "ovulation": "Hari ovulasi"
+      }
     },
     "status": {
       "normal": "Normal",
