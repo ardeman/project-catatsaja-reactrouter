@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /auth
+Disallow: /notes
+Disallow: /tasks
+Disallow: /finances
+Disallow: /health
+Disallow: /settings
+
+Sitemap: https://catatsaja.ardeman.com/sitemap.xml

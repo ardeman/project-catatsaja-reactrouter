@@ -204,6 +204,12 @@ For a change to how data is stored, raise `appVersion` in the release and set `m
 
 Open apps switch at once, without a reload; the public pages (landing, About, How to use and the rest) stay up. Deploy, check the app, then set `maintenance` to `false`. Nobody can change `config` from the app (`firestore.rules`).
 
+### Google Search Console
+
+`public/sitemap.xml` lists the six prerendered public pages. Keep it in step with `prerender` in `react-router.config.ts` when adding or removing a public page. `public/robots.txt` points crawlers to the sitemap and excludes sign-in and app paths from crawling.
+
+In [Google Search Console](https://search.google.com/search-console), the `ardeman.com` Domain property covers this app's subdomain; verify it with Google's DNS TXT record. A URL-prefix property for `https://catatsaja.ardeman.com/` is also an option. After deploying these files, submit `https://catatsaja.ardeman.com/sitemap.xml` in **Sitemaps**. Use **URL Inspection** to check the homepage and request indexing. See [Google's setup guide](https://support.google.com/webmasters/answer/10267942).
+
 ## Project layout
 
 ```text
@@ -232,7 +238,7 @@ app/
   content/            changelog.ts: release notes for /changelog, in both languages
   localization/       i18next setup; locales/<en|id>/common.json and zod.json
   styles/             tailwind.css (Tailwind 4 config: theme, plugins, colours), Milkdown editor theme
-public/               Icons (generated from scripts/icon/logo.svg; maskable ones for Android), site.webmanifest (generated), sw.js (service worker)
+public/               Icons (generated), site.webmanifest (generated), sw.js, robots.txt, sitemap.xml
 scripts/              generate-manifest.mjs, generate-icons.mjs and the logo's vector master (icon/logo.svg)
 firestore.rules       Security rules (owner and read/write permission lists)
 firestore.indexes.json
