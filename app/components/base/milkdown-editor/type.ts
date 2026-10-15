@@ -11,6 +11,10 @@ export type TMilkdownEditorProperties<TFormValues extends FieldValues> = {
   value?: string
   // Receives a function that copies the editor's current text into the form.
   registerSync?: (sync: (() => void) | null) => void
+  // Receives a function that applies a format at the editor's selection.
+  registerFormat?: (format: TFormat | null) => void
+  // Receives the formats at the cursor whenever they change.
+  onActiveFormatsChange?: (formats: TEditorFormat[]) => void
 }
 
 export type TEditorFormat =
@@ -26,7 +30,17 @@ export type TEditorFormat =
   | 'numbers'
   | 'text'
 
+type TFormat = (value: TEditorFormat) => void
+
 export type TFormattingMenuProperties = {
   children: ReactNode
   readOnly: boolean
+  active: TEditorFormat[]
+  registerFormat?: (format: TFormat | null) => void
+}
+
+export type TFormattingBarProperties = {
+  onFormat: TFormat
+  active: TEditorFormat[]
+  buttonClassName?: string
 }

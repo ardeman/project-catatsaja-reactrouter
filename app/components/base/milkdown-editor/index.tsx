@@ -2,15 +2,19 @@ import { Crepe } from '@milkdown/crepe'
 import { editorViewCtx } from '@milkdown/kit/core'
 import { replaceAll } from '@milkdown/kit/utils'
 import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/react'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { PathValue, useFormContext } from 'react-hook-form'
 
+import { activeFormatsPlugin } from './active-formats'
 import { codeTheme } from './code-theme'
 import { FormattingMenu } from './formatting-menu.client'
-import { TMilkdownEditorProperties } from './type'
+import { TEditorFormat, TMilkdownEditorProperties } from './type'
 
 import '@milkdown/crepe/theme/common/style.css'
 import '~/styles/crepe.css'
+
+export { FormattingBar } from './formatting-bar'
+export type { TEditorFormat } from './type'
 
 // Each keyed editor owns its factory and cleanup, including after creating a
 // note or applying an AI edit. A page-wide provider could reuse an old factory.
@@ -33,6 +37,8 @@ const Editor = <TFormValues extends Record<string, unknown>>(
     readOnly = false,
     value,
     registerSync,
+    registerFormat,
+    onActiveFormatsChange,
   } = properties
   const { register, setValue, getValues, setFocus, getFieldState } =
     useFormContext<TFormValues>()
@@ -43,6 +49,11 @@ const Editor = <TFormValues extends Record<string, unknown>>(
   // Markdown this component put into the editor itself, so the change
   // listener does not report it back as an edit.
   const appliedMarkdown = useRef<string>(undefined)
+  const [activeFormats, setActiveFormats] = useState<TEditorFormat[]>([])
+  const activeFormatsChange = useRef(onActiveFormatsChange)
+  useEffect(() => {
+    activeFormatsChange.current = onActiveFormatsChange
+  }, [onActiveFormatsChange])
 
   useEditor((root) => {
     const crepe = new Crepe({
@@ -60,6 +71,12 @@ const Editor = <TFormValues extends Record<string, unknown>>(
         },
       },
     })
+    crepe.editor.use(
+      activeFormatsPlugin((formats) => {
+        setActiveFormats(formats)
+        activeFormatsChange.current?.(formats)
+      }),
+    )
     crepe.setReadonly(readOnlyReference.current)
     crepe.on((listener) => {
       listener.markdownUpdated((_, markdown) => {
@@ -182,7 +199,11 @@ const Editor = <TFormValues extends Record<string, unknown>>(
         className="sr-only"
         onFocus={handleFocus}
       />
-      <FormattingMenu readOnly={readOnly}>
+      <FormattingMenu
+        readOnly={readOnly}
+        registerFormat={registerFormat}
+        active={activeFormats}
+      >
         <Milkdown />
       </FormattingMenu>
     </>

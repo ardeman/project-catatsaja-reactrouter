@@ -147,7 +147,7 @@
       "content": {
         "label": "Content",
         "placeholder": "Start writing here…",
-        "hint": "Choose Format, right-click, or touch and hold to format your note."
+        "hint": "Choose Format (T) in the bar, right-click, or touch and hold to format your note."
       },
       "saveShortcut": "⌘S / Ctrl+S to save"
     },

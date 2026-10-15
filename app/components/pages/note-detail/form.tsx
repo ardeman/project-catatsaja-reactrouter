@@ -5,8 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useEventListener } from 'usehooks-ts'
 
-import { Action } from '~/components/base/action'
-import { MilkdownEditor } from '~/components/base/milkdown-editor'
+import { Action, actionButtonClassName } from '~/components/base/action'
+import {
+  FormattingBar,
+  MilkdownEditor,
+  TEditorFormat,
+} from '~/components/base/milkdown-editor'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Textarea } from '~/components/base/textarea'
 import { useNote } from '~/components/pages/notes'
@@ -22,6 +26,7 @@ import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { useUpdateNote } from '~/lib/hooks/use-update-note'
 import { TNoteForm } from '~/lib/types/note'
 import { getDateLabel } from '~/lib/utils/parser'
+import { cn } from '~/lib/utils/shadcn'
 import { noteSchema } from '~/lib/validations/note'
 
 import { AiHelpers } from './ai-helpers'
@@ -88,6 +93,15 @@ export const Form = (properties: TFormProperties) => {
   const registerSync = useCallback((sync: (() => void) | null) => {
     syncEditor.current = sync
   }, [])
+  const formatEditor = useRef<((value: TEditorFormat) => void) | null>(null)
+  const registerFormat = useCallback(
+    (format: ((value: TEditorFormat) => void) | null) => {
+      formatEditor.current = format
+    },
+    [],
+  )
+  const [isFormatting, setIsFormatting] = useState(false)
+  const [activeFormats, setActiveFormats] = useState<TEditorFormat[]>([])
   const isCreating = useRef(false)
   const formElement = useRef<HTMLFormElement>(null)
   // Bumped to start the editor again from the form, after an AI helper
@@ -217,7 +231,7 @@ export const Form = (properties: TFormProperties) => {
         onSubmit={handleCreate}
         className="group/form is-shown mx-auto w-full max-w-3xl space-y-4"
       >
-        <div className="sticky top-20 z-40 flex justify-center md:top-24">
+        <div className="sticky top-20 z-40 flex flex-col gap-1 md:top-24">
           <Action
             className="w-full"
             buttonClassName="glass-surface"
@@ -238,8 +252,19 @@ export const Form = (properties: TFormProperties) => {
               sharedCount,
             })}
             {...historyActions}
+            {...(!isReadOnly && {
+              handleToggleFormat: () => setIsFormatting((value) => !value),
+              isFormatting,
+            })}
             extra={aiMenu}
           />
+          {isFormatting && !isReadOnly && (
+            <FormattingBar
+              buttonClassName={cn(actionButtonClassName, 'glass-surface')}
+              active={activeFormats}
+              onFormat={(value) => formatEditor.current?.(value)}
+            />
+          )}
         </div>
         <div className="rounded-xl border bg-card p-4 sm:p-6 md:p-8">
           <Textarea
@@ -269,6 +294,8 @@ export const Form = (properties: TFormProperties) => {
               readOnly={isReadOnly}
               value={note?.content}
               registerSync={registerSync}
+              registerFormat={registerFormat}
+              onActiveFormatsChange={setActiveFormats}
             />
           </div>
           {!isReadOnly && !watchContent.trim() && (

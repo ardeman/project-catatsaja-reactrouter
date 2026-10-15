@@ -12,6 +12,7 @@ export type TButtonProperties = {
   form?: string
   type?: 'button' | 'submit' | 'reset'
   onClick?: MouseEventHandler<HTMLButtonElement>
+  onMouseDown?: MouseEventHandler<HTMLButtonElement>
   className?: HTMLAttributes<HTMLButtonElement>['className']
   containerClassName?: HTMLAttributes<HTMLDivElement>['className']
   disabled?: boolean

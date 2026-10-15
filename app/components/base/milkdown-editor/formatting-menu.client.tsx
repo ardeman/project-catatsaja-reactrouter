@@ -16,53 +16,24 @@ import {
 import { toggleStrikethroughCommand } from '@milkdown/kit/preset/gfm'
 import { TextSelection } from '@milkdown/kit/prose/state'
 import { useInstance } from '@milkdown/react'
-import {
-  Bold,
-  ChevronDown,
-  Code,
-  Link,
-  Sigma,
-  Strikethrough,
-  Heading1,
-  Heading2,
-  Italic,
-  List,
-  ListOrdered,
-  Type,
-} from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
-import {
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-  PopoverTrigger,
-} from '~/components/ui/popover'
+import { Popover, PopoverAnchor, PopoverContent } from '~/components/ui/popover'
+import { cn } from '~/lib/utils/shadcn'
 
+import { formats } from './formats'
 import { TEditorFormat, TFormattingMenuProperties } from './type'
-
-const formats = [
-  { value: 'bold', icon: Bold },
-  { value: 'italic', icon: Italic },
-  { value: 'code', icon: Code },
-  { value: 'strikethrough', icon: Strikethrough },
-  { value: 'link', icon: Link },
-  { value: 'formula', icon: Sigma },
-  { value: 'heading', icon: Heading1 },
-  { value: 'subheading', icon: Heading2 },
-  { value: 'bullets', icon: List },
-  { value: 'numbers', icon: ListOrdered },
-  { value: 'text', icon: Type },
-] as const
 
 export const FormattingMenu = ({
   children,
   readOnly,
+  active,
+  registerFormat,
 }: TFormattingMenuProperties) => {
   const { t } = useTranslation()
-  const [loading, getEditor] = useInstance()
+  const [, getEditor] = useInstance()
   const [open, setOpen] = useState(false)
   const [point, setPoint] = useState({ x: 0, y: 0 })
   const container = useRef<HTMLDivElement>(null)
@@ -235,33 +206,23 @@ export const FormattingMenu = ({
     setOpen(false)
   }
 
+  // The formatting row in the page's toolbar formats through this.
+  const formatReference = useRef(format)
+  useEffect(() => {
+    formatReference.current = format
+  })
+  useEffect(() => {
+    if (!registerFormat) return
+    registerFormat((value) => formatReference.current(value))
+    return () => registerFormat(null)
+  }, [registerFormat])
+
   return (
     <div ref={container}>
       <Popover
         open={!readOnly && open}
         onOpenChange={setOpen}
       >
-        {!readOnly && (
-          <PopoverTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="mb-3 gap-1.5 text-muted-foreground"
-              disabled={loading}
-              title={t('notes.formatting.toggle')}
-              onClick={(event) => {
-                openedFromPointer.current = false
-                const bounds = event.currentTarget.getBoundingClientRect()
-                setPoint({ x: bounds.left, y: bounds.bottom })
-              }}
-            >
-              <Type aria-hidden="true" />
-              {t('notes.formatting.toggle')}
-              <ChevronDown aria-hidden="true" />
-            </Button>
-          </PopoverTrigger>
-        )}
         <PopoverAnchor asChild>
           <span
             aria-hidden="true"
@@ -299,7 +260,11 @@ export const FormattingMenu = ({
                 key={value}
                 type="button"
                 variant="ghost"
-                className="justify-start px-2 text-xs"
+                aria-pressed={active.includes(value)}
+                className={cn(
+                  'justify-start px-2 text-xs',
+                  active.includes(value) && 'text-primary',
+                )}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => format(value)}
               >

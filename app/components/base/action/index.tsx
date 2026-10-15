@@ -12,12 +12,17 @@ import {
   Undo2,
   Users,
   ListChecks,
+  Type,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
 import { TActionProperties } from '~/lib/types/common'
 import { cn } from '~/lib/utils/shadcn'
+
+// The bar's button style, also used by rows shown under it.
+export const actionButtonClassName =
+  'h-8 w-full rounded-full bg-accent p-0 text-muted-foreground opacity-100 ring-offset-background transition-all duration-300 group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none sm:h-6 sm:opacity-0'
 
 export const Action = (properties: TActionProperties) => {
   const {
@@ -45,13 +50,12 @@ export const Action = (properties: TActionProperties) => {
     handleRedo,
     canUndo = false,
     canRedo = false,
+    handleToggleFormat,
+    isFormatting = false,
     extra,
   } = properties
   const { t } = useTranslation()
-  const buttonClassName = cn(
-    'h-8 w-full rounded-full bg-accent p-0 text-muted-foreground opacity-100 ring-offset-background transition-all duration-300 group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none sm:h-6 sm:opacity-0',
-    buttonClassNameProperty,
-  )
+  const buttonClassName = cn(actionButtonClassName, buttonClassNameProperty)
 
   return (
     <div className={cn(className, 'flex justify-between gap-1')}>
@@ -202,6 +206,23 @@ export const Action = (properties: TActionProperties) => {
           disabled={!canRedo}
         >
           <Redo2 />
+        </Button>
+      )}
+      {handleToggleFormat && (
+        <Button
+          variant="outline"
+          aria-label={t('notes.formatting.toggle')}
+          title={t('notes.formatting.toggle')}
+          aria-pressed={isFormatting}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleToggleFormat()
+          }}
+          containerClassName="flex-1 flex items-center"
+          className={cn(buttonClassName, isFormatting && 'text-primary')}
+        >
+          <Type />
         </Button>
       )}
       {extra && (

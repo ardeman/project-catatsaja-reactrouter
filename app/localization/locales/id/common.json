@@ -147,7 +147,7 @@
       "content": {
         "label": "Konten",
         "placeholder": "Mulai menulis di sini…",
-        "hint": "Pilih Format, klik kanan, atau sentuh dan tahan untuk memformat catatan."
+        "hint": "Pilih Format (T) di bilah, klik kanan, atau sentuh dan tahan untuk memformat catatan."
       },
       "saveShortcut": "⌘S / Ctrl+S untuk menyimpan"
     },

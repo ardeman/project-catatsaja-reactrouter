@@ -83,6 +83,9 @@ export type TActionProperties = {
   handleRedo?: () => void
   canUndo?: boolean
   canRedo?: boolean
+  // Shows or hides the text formatting row (notes).
+  handleToggleFormat?: () => void
+  isFormatting?: boolean
   // More buttons (such as a menu), drawn with the bar's button style.
   extra?: (buttonClassName: string) => ReactNode
 }

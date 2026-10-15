@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'In a note, the Format button sits in the bar at the top. Press it to show a second row of buttons for bold, code, links, headings and lists, which stays in reach while you scroll. The formats used where the cursor is light up, here and in the right-click menu.',
+          id: 'Di catatan, tombol Format ada di bilah atas. Tekan untuk menampilkan baris tombol kedua untuk tebal, kode, tautan, judul dan daftar, yang tetap terjangkau saat kamu menggulir. Format yang dipakai di posisi kursor menyala, di sini dan di menu klik kanan.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'Dictate notes: choose Gemini, then Dictate, and speak in any language. You check the text before it is added to the note.',
