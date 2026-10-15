@@ -7,9 +7,9 @@ import {
   Link,
   List,
   ListOrdered,
+  Pilcrow,
   Sigma,
   Strikethrough,
-  Type,
 } from 'lucide-react'
 
 export const formats = [
@@ -23,5 +23,5 @@ export const formats = [
   { value: 'subheading', icon: Heading2 },
   { value: 'bullets', icon: List },
   { value: 'numbers', icon: ListOrdered },
-  { value: 'text', icon: Type },
+  { value: 'text', icon: Pilcrow },
 ] as const
