@@ -4,7 +4,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { enUS, id as indonesian } from 'react-day-picker/locale'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +19,7 @@ import {
 } from '~/components/ui/form'
 import {
   Popover,
+  PopoverAnchor,
   PopoverContent,
   PopoverTrigger,
 } from '~/components/ui/popover'
@@ -87,6 +88,9 @@ export const DatePicker = (properties: TProperties) => {
   const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(defaultOpen)
   const [selection, setSelection] = useState(0)
+  // Opened from the text field: focus stays there so typing still works.
+  const [isFromInput, setIsFromInput] = useState(false)
+  const anchor = useRef<HTMLDivElement>(null)
   const { data: userData } = useUserData()
   const dateFormat =
     userData?.dateFormat && dateFormats.includes(userData.dateFormat)
@@ -116,35 +120,62 @@ export const DatePicker = (properties: TProperties) => {
             )}
             <Popover
               open={isOpen}
-              onOpenChange={setIsOpen}
+              onOpenChange={(open) => {
+                setIsFromInput(false)
+                setIsOpen(open)
+              }}
             >
-              <div className="relative">
-                <DateInput
-                  key={selection}
-                  value={value}
-                  format={dateFormat}
-                  label={label ?? t('datePicker.choose')}
-                  required={required}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  inputRef={field.ref}
-                />
-                <PopoverTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-0 right-0 h-full w-9"
-                    aria-label={t('datePicker.openCalendar')}
-                    title={t('datePicker.openCalendar')}
-                  >
-                    <CalendarDays className="size-4 text-muted-foreground" />
-                  </Button>
-                </PopoverTrigger>
-              </div>
+              <PopoverAnchor asChild>
+                <div
+                  ref={anchor}
+                  className="relative"
+                >
+                  <DateInput
+                    key={selection}
+                    value={value}
+                    format={dateFormat}
+                    label={label ?? t('datePicker.choose')}
+                    required={required}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    onFocus={() => {
+                      if (isOpen) return
+                      setIsFromInput(true)
+                      setIsOpen(true)
+                    }}
+                    inputRef={field.ref}
+                  />
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-0 right-0 h-full w-9"
+                      aria-label={t('datePicker.openCalendar')}
+                      title={t('datePicker.openCalendar')}
+                    >
+                      <CalendarDays className="size-4 text-muted-foreground" />
+                    </Button>
+                  </PopoverTrigger>
+                </div>
+              </PopoverAnchor>
               <PopoverContent
                 className="glass-surface w-auto p-0"
                 align="start"
+                onOpenAutoFocus={(event) => {
+                  if (isFromInput) event.preventDefault()
+                }}
+                onCloseAutoFocus={(event) => {
+                  if (isFromInput) event.preventDefault()
+                }}
+                // Clicking or focusing the field keeps the calendar open.
+                onInteractOutside={(event) => {
+                  if (
+                    event.target instanceof Node &&
+                    anchor.current?.contains(event.target)
+                  )
+                    event.preventDefault()
+                }}
               >
                 <Calendar
                   mode="single"
@@ -163,7 +194,9 @@ export const DatePicker = (properties: TProperties) => {
                   selected={validValue ? toDate(validValue) : undefined}
                   defaultMonth={validValue ? toDate(validValue) : undefined}
                   onSelect={(date) => date && choose(toValue(date))}
-                  autoFocus // eslint-disable-line jsx-a11y/no-autofocus
+                  // Follows a date typed in the field.
+                  key={validValue}
+                  autoFocus={!isFromInput} // eslint-disable-line jsx-a11y/no-autofocus -- moves into the calendar only when opened from its button
                 />
                 <div className="flex gap-2 border-t p-3">
                   <Button

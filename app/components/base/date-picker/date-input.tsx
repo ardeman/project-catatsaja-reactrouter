@@ -17,6 +17,8 @@ type TProperties = {
   required?: boolean
   onChange: (value: string) => void
   onBlur: () => void
+  // Focusing or clicking the field (opens the calendar).
+  onFocus?: () => void
   inputRef: (input: HTMLInputElement | null) => void
 }
 
@@ -29,6 +31,7 @@ export const DateInput = ({
   required,
   onChange,
   onBlur,
+  onFocus,
   inputRef,
 }: TProperties) => {
   const { t, i18n } = useTranslation()
@@ -88,6 +91,8 @@ export const DateInput = ({
           setInvalid(parseDateInput(text, format) === undefined)
           onBlur()
         }}
+        onFocus={onFocus}
+        onClick={onFocus}
         onInvalid={() => setInvalid(true)}
         title={invalid ? error : format}
       />

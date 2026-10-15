@@ -35,6 +35,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'The calendar opens as soon as you click or move into a date field, and you can still type the date.',
+          id: 'Kalender langsung terbuka saat kamu mengklik atau masuk ke kolom tanggal, dan kamu tetap bisa mengetik tanggalnya.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'When dictation fails, the message now says why (no speech heard, or no microphone) instead of a general error.',
