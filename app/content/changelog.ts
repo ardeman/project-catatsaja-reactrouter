@@ -44,8 +44,8 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
-          en: 'In a finance book, the small balance bar appears only once the whole summary card has scrolled away, and the page no longer jumps when it does.',
-          id: 'Di buku keuangan, bilah saldo kecil baru muncul setelah seluruh kartu ringkasan tergulir keluar, dan halaman tidak lagi melompat saat itu terjadi.',
+          en: 'In a finance book, the small balance bar appears only once the whole summary card has scrolled away, rising in as you scroll, and the page no longer jumps when it does.',
+          id: 'Di buku keuangan, bilah saldo kecil baru muncul setelah seluruh kartu ringkasan tergulir keluar, naik perlahan mengikuti guliran, dan halaman tidak lagi melompat saat itu terjadi.',
         },
       },
       {

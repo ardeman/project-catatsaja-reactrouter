@@ -195,6 +195,46 @@ export const Form = (properties: TFormProperties) => {
     observer.observe(element)
     return () => observer.disconnect()
   }, [isSummaryStuck])
+  // The floating totals come in with the scrolling: over their own height
+  // past the card's bottom edge they rise into place and fade in, so they
+  // follow the card going up instead of popping in.
+  useEffect(() => {
+    const element = compactSummary.current
+    const wrapper = summaryReference.current
+    const marker = summarySentinel.current
+    if (
+      !isSummaryStuck ||
+      !element ||
+      !wrapper ||
+      !marker ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches
+    )
+      return
+    let frame = 0
+    const update = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const passed =
+          wrapper.getBoundingClientRect().top -
+          marker.getBoundingClientRect().top
+        const progress = Math.min(
+          1,
+          Math.max(0, passed / (element.offsetHeight || 1)),
+        )
+        element.style.opacity = String(progress)
+        element.style.transform = `translateY(${(1 - progress) * 0.75}rem)`
+      })
+    }
+    update()
+    document.addEventListener('scroll', update, {
+      capture: true,
+      passive: true,
+    })
+    return () => {
+      cancelAnimationFrame(frame)
+      document.removeEventListener('scroll', update, { capture: true })
+    }
+  }, [isSummaryStuck, summaryReference, summarySentinel])
   const { income, expense, balance } = useMemo(
     () => summarize(entries),
     [entries],
@@ -565,7 +605,7 @@ export const Form = (properties: TFormProperties) => {
           {isSummaryStuck && (
             <div
               ref={compactSummary}
-              className="motion-fade glass-surface glass-float rounded-xl border px-3 py-2 shadow-lg sm:px-4"
+              className="glass-surface glass-float rounded-xl border px-3 py-2 shadow-lg motion-safe:opacity-0 sm:px-4"
             >
               <Summary
                 book={book}
