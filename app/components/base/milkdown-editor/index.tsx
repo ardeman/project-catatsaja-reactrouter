@@ -1,7 +1,7 @@
 import { Crepe } from '@milkdown/crepe'
 import { editorViewCtx } from '@milkdown/kit/core'
 import { replaceAll } from '@milkdown/kit/utils'
-import { Milkdown, useEditor } from '@milkdown/react'
+import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/react'
 import { useCallback, useEffect, useRef } from 'react'
 import { PathValue, useFormContext } from 'react-hook-form'
 
@@ -11,11 +11,22 @@ import { TMilkdownEditorProperties } from './type'
 import '@milkdown/crepe/theme/common/style.css'
 import '~/styles/crepe.css'
 
+// Each keyed editor owns its factory and cleanup, including after creating a
+// note or applying an AI edit. A page-wide provider could reuse an old factory.
 export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
+  properties: TMilkdownEditorProperties<TFormValues>,
+) => (
+  <MilkdownProvider>
+    <Editor {...properties} />
+  </MilkdownProvider>
+)
+
+const Editor = <TFormValues extends Record<string, unknown>>(
   properties: TMilkdownEditorProperties<TFormValues>,
 ) => {
   const {
     name,
+    label,
     placeholder: placeholderText,
     previousName,
     readOnly = false,
@@ -26,6 +37,7 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
     useFormContext<TFormValues>()
   const { ref } = register(name)
   const crepeReference = useRef<Crepe>(undefined)
+  const editorElement = useRef<HTMLElement | null>(null)
   const readOnlyReference = useRef(readOnly)
   // Markdown this component put into the editor itself, so the change
   // listener does not report it back as an edit.
@@ -54,30 +66,33 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
           shouldDirty: true,
         })
       })
-      if (previousName) {
-        listener.mounted((context) => {
-          const view = context.get(editorViewCtx)
-          const dom = (root as HTMLElement).querySelector<HTMLElement>(
-            '.ProseMirror',
-          )
-          if (!dom) return
-          const handler = (event: KeyboardEvent) => {
-            const isBackspace = event.key === 'Backspace'
-            const isArrowUp = event.key === 'ArrowUp'
-            const isEmpty = view.state.doc.textContent.length === 0
-            const isAtStart = view.state.selection.from === 1
-            const isLeaving =
-              (isBackspace && isEmpty) || (isArrowUp && isAtStart)
-            if (!isLeaving) return
-            event.preventDefault()
-            setFocus(previousName)
-          }
-          dom.addEventListener('keydown', handler as EventListener)
-          listener.destroy(() => {
-            dom.removeEventListener('keydown', handler as EventListener)
-          })
+      listener.mounted((context) => {
+        const view = context.get(editorViewCtx)
+        const dom = view.dom
+        editorElement.current = dom
+        listener.destroy(() => {
+          editorElement.current = null
         })
-      }
+        dom.setAttribute('role', 'textbox')
+        dom.setAttribute('aria-multiline', 'true')
+        dom.setAttribute('aria-label', label || placeholderText || name)
+        dom.setAttribute('aria-readonly', String(readOnlyReference.current))
+        if (!previousName) return
+        const handler = (event: KeyboardEvent) => {
+          const isBackspace = event.key === 'Backspace'
+          const isArrowUp = event.key === 'ArrowUp'
+          const isEmpty = view.state.doc.textContent.length === 0
+          const isAtStart = view.state.selection.from === 1
+          const isLeaving = (isBackspace && isEmpty) || (isArrowUp && isAtStart)
+          if (!isLeaving) return
+          event.preventDefault()
+          setFocus(previousName)
+        }
+        dom.addEventListener('keydown', handler as EventListener)
+        listener.destroy(() => {
+          dom.removeEventListener('keydown', handler as EventListener)
+        })
+      })
     })
     crepeReference.current = crepe
     return crepe
@@ -86,7 +101,15 @@ export const MilkdownEditor = <TFormValues extends Record<string, unknown>>(
   useEffect(() => {
     readOnlyReference.current = readOnly
     crepeReference.current?.setReadonly(readOnly)
+    editorElement.current?.setAttribute('aria-readonly', String(readOnly))
   }, [readOnly])
+
+  useEffect(() => {
+    editorElement.current?.setAttribute(
+      'aria-label',
+      label || placeholderText || name,
+    )
+  }, [label, placeholderText, name])
 
   // Copy the editor's text into the form now; its own change listener waits
   // 200 ms, which loses the last words when saving or leaving right away.

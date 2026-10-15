@@ -81,14 +81,16 @@ export const Card = (properties: TCardProperties) => {
               : t('form.permissions.readOnly')}
           </span>
         </CardDescription>
-        <CardTitle className="text-xl">
+        <CardTitle className="text-xl wrap-break-word">
           {/* Covers the whole card; the action buttons sit above it. */}
           <Link
             to={`/notes/${note.id}`}
             className="outline-hidden after:absolute after:inset-0 after:z-10"
           >
-            {note.title || (
-              <span className="sr-only">{t('notes.untitled')}</span>
+            {note.title.trim() || (
+              <span className="font-normal text-muted-foreground">
+                {t('notes.untitled')}
+              </span>
             )}
           </Link>
         </CardTitle>

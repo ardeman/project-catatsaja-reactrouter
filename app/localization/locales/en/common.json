@@ -145,8 +145,11 @@
         "label": "Title"
       },
       "content": {
-        "label": "Content"
-      }
+        "label": "Content",
+        "placeholder": "Start writing here…",
+        "hint": "Select text to format it, or use Markdown shortcuts for headings and lists."
+      },
+      "saveShortcut": "⌘S / Ctrl+S to save"
     },
     "toast": {
       "deleted": "Note deleted",

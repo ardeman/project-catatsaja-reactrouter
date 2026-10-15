@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Notes have a more comfortable writing area, tips for getting started, and keyboard saving with ⌘S or Ctrl+S. Notes without a title are easier to spot in the list.',
+          id: 'Catatan kini memiliki area menulis yang lebih nyaman, petunjuk untuk mulai menulis, dan pintasan simpan ⌘S atau Ctrl+S. Catatan tanpa judul lebih mudah ditemukan di daftar.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Public pages now make fewer script requests when opening.',
           id: 'Halaman publik kini memuat lebih sedikit berkas skrip saat dibuka.',
         },

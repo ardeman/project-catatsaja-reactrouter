@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+import { useEventListener } from 'usehooks-ts'
 
 import { Action } from '~/components/base/action'
 import { MilkdownEditor } from '~/components/base/milkdown-editor'
@@ -26,17 +27,14 @@ import { noteSchema } from '~/lib/validations/note'
 import { AiHelpers } from './ai-helpers'
 import { TFormProperties } from './type'
 
-const isSameNote = (
-  a: { title: string; content: string },
-  b: { title: string; content: string },
-) => a.title === b.title && a.content === b.content
+const isSameNote = (a: TNoteForm, b: TNoteForm) =>
+  a.title === b.title && a.content === b.content
 
 export const Form = (properties: TFormProperties) => {
   const { note } = properties
   const { t, i18n } = useTranslation()
   const { mutate: archive } = useUpdateArchive()
   const {
-    selectedNote,
     handleDeleteNote,
     handlePinNote,
     handleShareNote,
@@ -67,10 +65,10 @@ export const Form = (properties: TFormProperties) => {
     useCreateNote()
   const navigate = useNavigate()
   const { mutate: mutateUpdateNote } = useUpdateNote()
-  const storedValues: TNoteForm = {
-    title: selectedNote?.title || '',
-    content: selectedNote?.content || '',
-  }
+  const storedValues = useMemo<TNoteForm>(
+    () => ({ title: note?.title || '', content: note?.content || '' }),
+    [note?.title, note?.content],
+  )
   const formMethods = useForm<TNoteForm>({
     resolver: zodResolver(noteSchema),
     defaultValues: storedValues,
@@ -91,6 +89,7 @@ export const Form = (properties: TFormProperties) => {
     syncEditor.current = sync
   }, [])
   const isCreating = useRef(false)
+  const formElement = useRef<HTMLFormElement>(null)
   // Bumped to start the editor again from the form, after an AI helper
   // changed the note (the editor only takes outside changes when idle).
   const [editorVersion, setEditorVersion] = useState(0)
@@ -102,15 +101,14 @@ export const Form = (properties: TFormProperties) => {
     if (isReadOnly) return
     syncEditor.current?.()
     const data = getValues()
-    if (selectedNote) {
+    if (note) {
       const changes: Partial<TNoteForm> = {}
-      if (data.title !== (selectedNote.title || '')) changes.title = data.title
-      if (data.content !== (selectedNote.content || ''))
-        changes.content = data.content
+      if (data.title !== (note.title || '')) changes.title = data.title
+      if (data.content !== (note.content || '')) changes.content = data.content
       if (Object.keys(changes).length === 0) return
       setSaveStatus('saving')
       const isSaved = await mutateUpdateNote({
-        id: selectedNote.id,
+        id: note.id,
         ...changes,
       })
       setSaveStatus(isSaved ? 'saved' : 'error')
@@ -130,6 +128,20 @@ export const Form = (properties: TFormProperties) => {
     const reference = await save()
     if (reference) navigate(`/notes/${reference.id}`, { replace: true })
   }
+
+  useEventListener('keydown', (event) => {
+    if (
+      event.key.toLowerCase() !== 's' ||
+      !(event.metaKey || event.ctrlKey) ||
+      event.altKey ||
+      event.isComposing ||
+      !(event.target instanceof HTMLElement) ||
+      event.target.closest('form') !== formElement.current
+    )
+      return
+    event.preventDefault()
+    if (!isReadOnly && !event.repeat) formElement.current?.requestSubmit()
+  })
 
   // The note as on screen, with the editor's last words.
   const getNote = () => {
@@ -151,17 +163,10 @@ export const Form = (properties: TFormProperties) => {
     () => ({ title: watchTitle, content: watchContent }),
     [watchTitle, watchContent],
   )
-  const stored = useMemo(
-    () => ({
-      title: selectedNote?.title || '',
-      content: selectedNote?.content || '',
-    }),
-    [selectedNote?.title, selectedNote?.content],
-  )
   const history = useUndoHistory({
-    key: selectedNote?.id ?? 'create',
+    key: note?.id ?? 'create',
     value: current,
-    stored,
+    stored: storedValues,
     isEqual: isSameNote,
   })
   const handleUndo = () => {
@@ -202,72 +207,81 @@ export const Form = (properties: TFormProperties) => {
   useAutosave({
     save,
     watch: [watchTitle, watchContent],
-    saveWhenIdle: !!selectedNote,
+    saveWhenIdle: !!note,
   })
 
   return (
     <FormProvider {...formMethods}>
       <form
+        ref={formElement}
         onSubmit={handleCreate}
-        className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
+        className="group/form is-shown mx-auto w-full max-w-3xl space-y-4"
       >
         <div className="sticky top-20 z-40 flex justify-center md:top-24">
-          {note ? (
-            <Action
-              className="w-full"
-              buttonClassName="glass-surface"
-              isOwner={isOwner}
-              isEditable={isEditable}
-              isPinned={isPinned}
-              handleDelete={() => handleDeleteNote({ note })}
-              handlePin={() => handlePinNote({ note, isPinned: !isPinned })}
-              isArchived={note.isArchived}
-              handleArchive={() => archive('notes', note.id, !note.isArchived)}
-              handleShare={() => handleShareNote({ note })}
-              handleUnlink={() => handleUnlinkNote({ note })}
-              sharedCount={sharedCount}
-              handleBack={handleBackNote}
-              {...historyActions}
-              extra={aiMenu}
+          <Action
+            className="w-full"
+            buttonClassName="glass-surface"
+            isLoading={isCreatePending}
+            isCreate={!note}
+            disabled={!note && !isDirty}
+            handleBack={handleBackNote}
+            {...(note && {
+              isOwner,
+              isEditable,
+              isPinned,
+              handleDelete: () => handleDeleteNote({ note }),
+              handlePin: () => handlePinNote({ note, isPinned: !isPinned }),
+              isArchived: note.isArchived,
+              handleArchive: () => archive('notes', note.id, !note.isArchived),
+              handleShare: () => handleShareNote({ note }),
+              handleUnlink: () => handleUnlinkNote({ note }),
+              sharedCount,
+            })}
+            {...historyActions}
+            extra={aiMenu}
+          />
+        </div>
+        <div className="rounded-xl border bg-card p-4 sm:p-6 md:p-8">
+          <Textarea
+            name="title"
+            aria-label={t('notes.form.title.label')}
+            placeholder={t('notes.form.title.label')}
+            inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
+            autoFocus={!note} // eslint-disable-line jsx-a11y/no-autofocus -- new notes only; `note` is set from the first render
+            rows={1}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter' && event.key !== 'ArrowDown') {
+                return
+              }
+
+              event.preventDefault()
+              setFocus('content')
+            }}
+            readOnly={isReadOnly}
+          />
+          <div className="mt-5">
+            <MilkdownEditor
+              key={`${note?.id ?? 'create'}-${editorVersion}`}
+              name="content"
+              label={t('notes.form.content.label')}
+              placeholder={t('notes.form.content.placeholder')}
+              previousName="title"
+              readOnly={isReadOnly}
+              value={note?.content}
+              registerSync={registerSync}
             />
-          ) : (
-            <Action
-              className="w-full"
-              buttonClassName="glass-surface"
-              isLoading={isCreatePending}
-              isCreate={true}
-              handleBack={handleBackNote}
-              disabled={!isDirty}
-              {...historyActions}
-              extra={aiMenu}
-            />
+          </div>
+          {!isReadOnly && !watchContent.trim() && (
+            <p className="mt-4 text-xs text-muted-foreground">
+              {t('notes.form.content.hint')}
+            </p>
           )}
         </div>
-        <Textarea
-          name="title"
-          placeholder={t('notes.form.title.label')}
-          inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
-          autoFocus={!note} // eslint-disable-line jsx-a11y/no-autofocus -- new notes only; `note` is set from the first render
-          rows={1}
-          onKeyDown={(event) => {
-            if (event.key !== 'Enter' && event.key !== 'ArrowDown') {
-              return
-            }
-
-            event.preventDefault()
-            setFocus('content')
-          }}
-          readOnly={isReadOnly}
-        />
-        <MilkdownEditor
-          key={`${selectedNote?.id ?? 'create'}-${editorVersion}`}
-          name="content"
-          placeholder={t('notes.form.content.label')}
-          previousName="title"
-          readOnly={isReadOnly}
-          value={selectedNote?.content}
-          registerSync={registerSync}
-        />
+        {!isReadOnly && (
+          <p className="text-center text-xs text-muted-foreground">
+            {t('notes.form.saveShortcut')}
+          </p>
+        )}
       </form>
       <span className="flex justify-center gap-2 text-xs text-muted-foreground">
         <span>

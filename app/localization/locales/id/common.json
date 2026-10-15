@@ -145,8 +145,11 @@
         "label": "Judul"
       },
       "content": {
-        "label": "Konten"
-      }
+        "label": "Konten",
+        "placeholder": "Mulai menulis di sini…",
+        "hint": "Pilih teks untuk memformatnya, atau gunakan pintasan Markdown untuk judul dan daftar."
+      },
+      "saveShortcut": "⌘S / Ctrl+S untuk menyimpan"
     },
     "toast": {
       "deleted": "Catatan dihapus",

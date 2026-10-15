@@ -163,7 +163,7 @@ pnpm validate   # lint + typecheck + knip + unit tests
 **End-to-end tests** — `pnpm test:e2e` runs four suites sequentially against the Auth and Firestore emulators, using Playwright and the installed Google Chrome (needs Java 21 and port 5199 free):
 
 - `tests/e2e/encryption.test.mjs`: the dependent encryption lifecycle with Ana, Budi and Cici.
-- `tests/e2e/sharing.test.mjs`: independent accounts, sharing suggestions and invitations, archiving, blocking, and encrypted finance month storage.
+- `tests/e2e/sharing.test.mjs`: independent accounts, note keyboard saving with and without encryption, sharing suggestions and invitations, read-only note editing, archiving, blocking, and encrypted finance month storage.
 - `tests/e2e/ai.test.mjs`: receipt scanning, quick add, note helpers and taking back consent, with Gemini replaced by fixed answers, plus health reminders.
 - `tests/e2e/tasks.test.mjs`: adding, editing, reordering, keeping unfinished task input, and touch cursor placement on mobile.
 

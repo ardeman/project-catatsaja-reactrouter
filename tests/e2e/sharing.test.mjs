@@ -93,6 +93,83 @@ describe('sharing and finance storage', () => {
     await page.context().close()
   })
 
+  for (const encrypted of [false, true]) {
+    test(`note keyboard saving keeps the last words (${encrypted ? 'encrypted' : 'plain'})`, async () => {
+      const { page, context } = await newDevice(browser)
+      try {
+        const email = `note-keyboard-${encrypted}-${Date.now()}@example.com`
+        await signUp(page, 'Note writer', email)
+        if (encrypted) await setUpEncryption(page, 'note writing passphrase')
+        else await skipEncryptionSetup(page)
+        const uid = await uidOf(email)
+        await page.goto(`${APP}/notes/create`)
+        const title = page.getByRole('textbox', { name: 'Title', exact: true })
+        const editor = page.getByRole('textbox', {
+          name: 'Content',
+          exact: true,
+        })
+        await editor.waitFor()
+
+        // An empty shortcut never creates a note. Enter moves from the
+        // title into the real editor, which has an accessible name.
+        await title.press('Control+s')
+        assert.equal(new URL(page.url()).pathname, '/notes/create')
+        await title.press('Enter')
+        assert.equal(
+          await editor.evaluate(
+            (element) => element === document.activeElement,
+          ),
+          true,
+        )
+        await page.keyboard.insertText('Remember the milk')
+        // Save before Milkdown's debounced form update can run.
+        await page.keyboard.press('Control+s')
+        await page.waitForURL(/\/notes\/(?!create)/, { timeout: 30_000 })
+        const id = new URL(page.url()).pathname.split('/').pop()
+        const url = page.url()
+        const initial = await dbGetWhen(`notes/${id}`, (fields) =>
+          encrypted
+            ? !!fields?.encrypted
+            : fields?.content?.stringValue?.includes('Remember the milk'),
+        )
+        assert.ok(initial)
+        if (encrypted)
+          assert.ok(
+            !initial.title && !initial.content,
+            'content stays encrypted',
+          )
+        else assert.equal(initial.title?.stringValue, '')
+
+        await editor.waitFor()
+        assert.equal(await editor.count(), 1, 'only one editor is mounted')
+
+        // The other shortcut updates the same note, with the last words
+        // still present after a reload (including encrypted notes).
+        await editor.click()
+        await page.keyboard.press('ControlOrMeta+End')
+        await page.keyboard.insertText(' and bread')
+        await page.keyboard.press('Meta+s')
+        await page.getByText('Saved', { exact: true }).waitFor()
+        await page.reload()
+        await editor.waitFor()
+        assert.match(await editor.textContent(), /Remember the milk and bread/)
+        const ownNotes = (await dbList('notes')).filter(
+          (item) => item.fields.owner?.stringValue === uid,
+        )
+        assert.equal(ownNotes.length, 1, 'saving does not duplicate the note')
+
+        await page.goto(`${APP}/notes`)
+        await page
+          .getByRole('link', { name: 'Untitled note', exact: true })
+          .click()
+        await page.waitForURL(url)
+        assert.match(await editor.textContent(), /Remember the milk and bread/)
+      } finally {
+        await context.close()
+      }
+    })
+  }
+
   test('the share dialog suggests people already shared with', async () => {
     const eko = await newDevice(browser)
     await signUp(eko.page, 'Eko', 'eko@example.com')
@@ -182,6 +259,24 @@ describe('sharing and finance storage', () => {
       accepted.permissions.mapValue.fields.write.arrayValue.values ?? []
     ).map((value) => value.stringValue)
     assert.ok(!writers.includes(ganiUid), 'read only, as offered')
+    const readOnlyEditor = gani.page.getByRole('textbox', {
+      name: 'Content',
+      exact: true,
+    })
+    await readOnlyEditor.waitFor()
+    assert.equal(await readOnlyEditor.getAttribute('contenteditable'), 'false')
+    assert.equal(await readOnlyEditor.getAttribute('aria-readonly'), 'true')
+    const readOnlyTitle = gani.page.getByRole('textbox', {
+      name: 'Title',
+      exact: true,
+    })
+    assert.equal(await readOnlyTitle.getAttribute('readonly'), '')
+    await readOnlyTitle.press('Control+s')
+    assert.deepEqual(
+      await dbGet(`notes/${plan}`),
+      accepted,
+      'reader shortcut changes nothing',
+    )
     assert.ok(await sees(gani.page, 'Fina plan'))
     assert.ok(!(await sees(gani.page, 'Fina diary')))
     await gani.context.close()

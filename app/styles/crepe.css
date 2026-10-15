@@ -32,7 +32,11 @@
 }
 
 .milkdown .ProseMirror {
+  min-height: 16rem;
   padding: 0;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  scroll-margin-top: 9rem;
 }
 
 /* Code block syntax colours (code-theme.ts), GitHub light and dark. */
