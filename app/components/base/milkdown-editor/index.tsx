@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { PathValue, useFormContext } from 'react-hook-form'
 
 import { codeTheme } from './code-theme'
+import { FormattingMenu } from './formatting-menu.client'
 import { TMilkdownEditorProperties } from './type'
 
 import '@milkdown/crepe/theme/common/style.css'
@@ -49,6 +50,7 @@ const Editor = <TFormValues extends Record<string, unknown>>(
       defaultValue: (getValues(name) as string) || '',
       features: {
         [Crepe.Feature.BlockEdit]: false,
+        [Crepe.Feature.Toolbar]: false,
       },
       featureConfigs: {
         [Crepe.Feature.CodeMirror]: { theme: codeTheme },
@@ -180,7 +182,9 @@ const Editor = <TFormValues extends Record<string, unknown>>(
         className="sr-only"
         onFocus={handleFocus}
       />
-      <Milkdown />
+      <FormattingMenu readOnly={readOnly}>
+        <Milkdown />
+      </FormattingMenu>
     </>
   )
 }

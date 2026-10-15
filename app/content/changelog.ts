@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'Format notes with labeled buttons: choose Format, right-click, or touch and hold for bold, italic, headings and lists.',
+          id: 'Format catatan dengan tombol berlabel: pilih Format, klik kanan, atau sentuh dan tahan untuk teks tebal, miring, judul dan daftar.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Inline code in note previews no longer shows extra backticks.',

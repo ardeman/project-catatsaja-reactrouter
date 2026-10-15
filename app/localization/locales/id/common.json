@@ -147,7 +147,7 @@
       "content": {
         "label": "Konten",
         "placeholder": "Mulai menulis di sini…",
-        "hint": "Pilih teks untuk memformatnya, atau gunakan pintasan Markdown untuk judul dan daftar."
+        "hint": "Pilih Format, klik kanan, atau sentuh dan tahan untuk memformat catatan."
       },
       "saveShortcut": "⌘S / Ctrl+S untuk menyimpan"
     },
@@ -156,6 +156,21 @@
       "created": "Catatan dibuat",
       "unlinked": "Catatan dihapus dari daftarmu",
       "notFound": "Catatan ini tidak ada atau tidak dibagikan denganmu"
+    },
+    "formatting": {
+      "toggle": "Format",
+      "title": "Format teks",
+      "bold": "Tebal",
+      "italic": "Miring",
+      "heading": "Judul",
+      "subheading": "Subjudul",
+      "bullets": "Daftar poin",
+      "numbers": "Daftar bernomor",
+      "text": "Teks biasa",
+      "code": "Kode",
+      "link": "Tautan",
+      "strikethrough": "Coret",
+      "formula": "Rumus"
     },
     "untitled": "Catatan tanpa judul",
     "empty": {
@@ -602,7 +617,7 @@
       "title": "Catatan",
       "description": "Tulis apa saja: ide, rencana, resep, notulen.",
       "steps": [
-        "Di halaman Catatan, pilih Catatan baru dan mulai mengetik. Markdown seperti # untuk judul atau - untuk daftar langsung diformat saat kamu mengetik.",
+        "Di halaman Catatan, pilih Catatan baru dan mulai mengetik. Pilih Format, klik kanan, atau sentuh dan tahan untuk teks tebal, judul dan daftar.",
         "Catatan tetap tersimpan saat kamu meninggalkannya, meskipun tidak menekan Simpan.",
         "Gunakan bilah ikon di atas untuk menyematkan catatan di atas daftar, mengarsipkannya agar daftarmu rapi (pindah ke Arsip di bawah, hanya untukmu), membagikannya, mengurungkan atau mengulangi perubahan, atau menghapusnya.",
         "Menu Gemini (ikon kilau) bisa meringkas catatan, merapikannya, menerjemahkannya antara bahasa Inggris dan Indonesia, atau mengubahnya menjadi daftar tugas baru."

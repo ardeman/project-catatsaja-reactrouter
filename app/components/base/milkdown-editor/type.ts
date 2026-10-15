@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { FieldValues, Path } from 'react-hook-form'
 
 export type TMilkdownEditorProperties<TFormValues extends FieldValues> = {
@@ -10,4 +11,22 @@ export type TMilkdownEditorProperties<TFormValues extends FieldValues> = {
   value?: string
   // Receives a function that copies the editor's current text into the form.
   registerSync?: (sync: (() => void) | null) => void
+}
+
+export type TEditorFormat =
+  | 'bold'
+  | 'italic'
+  | 'code'
+  | 'strikethrough'
+  | 'link'
+  | 'formula'
+  | 'heading'
+  | 'subheading'
+  | 'bullets'
+  | 'numbers'
+  | 'text'
+
+export type TFormattingMenuProperties = {
+  children: ReactNode
+  readOnly: boolean
 }

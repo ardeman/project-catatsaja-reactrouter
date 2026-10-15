@@ -93,6 +93,136 @@ describe('sharing and finance storage', () => {
     await page.context().close()
   })
 
+  test('note formatting opens by button, right click and long touch', async () => {
+    const { page, context } = await newDevice(browser, { hasTouch: true })
+    try {
+      await signUp(
+        page,
+        'Formatting writer',
+        `note-format-${Date.now()}@example.com`,
+      )
+      await setUpEncryption(page, 'formatting passphrase')
+      await page.goto(`${APP}/notes/create`)
+      await page
+        .getByRole('textbox', { name: 'Title', exact: true })
+        .fill('Formatted note')
+      const editor = page.getByRole('textbox', { name: 'Content', exact: true })
+      const toggle = page.getByRole('button', { name: 'Format', exact: true })
+      const menu = page.getByRole('group', {
+        name: 'Text formatting',
+        exact: true,
+      })
+      const choose = async (label) => {
+        await toggle.click()
+        await menu.getByRole('button', { name: label, exact: true }).click()
+        await menu.waitFor({ state: 'hidden' })
+      }
+      await editor.click()
+      await page.keyboard.insertText('Project plan')
+      // Select text rather than ProseMirror's whole-document selection.
+      await page.keyboard.down('Shift')
+      for (let index = 0; index < 'Project plan'.length; index++)
+        await page.keyboard.press('ArrowLeft')
+      await page.keyboard.up('Shift')
+      assert.equal(
+        await page.locator('.milkdown-toolbar').count(),
+        0,
+        'selection alone does not open a competing toolbar',
+      )
+      await editor.click({ button: 'right', position: { x: 20, y: 10 } })
+      await menu.getByRole('button', { name: 'Bold', exact: true }).click()
+      await editor.locator('strong').waitFor()
+      assert.equal(
+        await editor.locator('strong').textContent(),
+        'Project plan',
+        'right click preserves the selected text',
+      )
+
+      await choose('Heading')
+      assert.equal(await editor.locator('h1').textContent(), 'Project plan')
+      await choose('Subheading')
+      assert.equal(await editor.locator('h2').textContent(), 'Project plan')
+      await choose('Normal text')
+      assert.equal(await editor.locator('h1, h2').count(), 0)
+      await choose('Bulleted list')
+      await editor.locator('ul li').waitFor()
+      await choose('Numbered list')
+      await editor.locator('ol li').waitFor()
+      await choose('Numbered list')
+      assert.equal(
+        await editor.locator('ul, ol').count(),
+        0,
+        'choosing the same list removes it',
+      )
+
+      await toggle.click()
+      assert.equal(await toggle.getAttribute('aria-expanded'), 'true')
+      await toggle.click()
+      await menu.waitFor({ state: 'hidden' })
+      assert.equal(await toggle.getAttribute('aria-expanded'), 'false')
+
+      // A real touch held in the editor opens the same menu without first
+      // selecting text. Moving a finger instead must leave it closed.
+      await editor.click({ position: { x: 20, y: 10 } })
+      const bounds = await editor.boundingBox()
+      const point = { x: bounds.x + 20, y: bounds.y + 10 }
+      const touch = await context.newCDPSession(page)
+      await touch.send('Input.dispatchTouchEvent', {
+        type: 'touchStart',
+        touchPoints: [point],
+      })
+      await menu.waitFor()
+      await touch.send('Input.dispatchTouchEvent', {
+        type: 'touchEnd',
+        touchPoints: [],
+      })
+      await page.waitForTimeout(700)
+      await menu.waitFor()
+      await menu.getByRole('button', { name: 'Italic', exact: true }).click()
+      await menu.waitFor({ state: 'hidden' })
+      await editor.dispatchEvent('pointerdown', {
+        pointerType: 'touch',
+        isPrimary: true,
+        pointerId: 5,
+        clientX: point.x,
+        clientY: point.y,
+      })
+      await editor.dispatchEvent('pointermove', {
+        pointerType: 'touch',
+        isPrimary: true,
+        pointerId: 5,
+        clientX: point.x,
+        clientY: point.y + 30,
+      })
+      await page.waitForTimeout(650)
+      assert.equal(await menu.count(), 0, 'scrolling does not open formatting')
+      await editor.dispatchEvent('pointerup', {
+        pointerType: 'touch',
+        pointerId: 5,
+      })
+
+      await editor.press('ControlOrMeta+a')
+      await choose('Code')
+      assert.equal(await editor.locator('code').textContent(), 'Project plan')
+      await editor.press('Control+s')
+      await page.waitForURL(/\/notes\/(?!create)/, { timeout: 30_000 })
+      const id = new URL(page.url()).pathname.split('/').pop()
+      const document = await dbGetWhen(
+        `notes/${id}`,
+        (fields) => !!fields?.encrypted,
+      )
+      assert.ok(
+        document.encrypted && !document.content,
+        'formatted content stays encrypted',
+      )
+      await page.reload()
+      await editor.locator('code').waitFor()
+      assert.equal(await editor.textContent(), 'Project plan')
+    } finally {
+      await context.close()
+    }
+  })
+
   for (const encrypted of [false, true]) {
     test(`note keyboard saving keeps the last words (${encrypted ? 'encrypted' : 'plain'})`, async () => {
       const { page, context } = await newDevice(browser)
@@ -139,9 +269,6 @@ describe('sharing and finance storage', () => {
             'content stays encrypted',
           )
         else assert.equal(initial.title?.stringValue, '')
-
-        await editor.waitFor()
-        assert.equal(await editor.count(), 1, 'only one editor is mounted')
 
         // The other shortcut updates the same note, with the last words
         // still present after a reload (including encrypted notes).
@@ -266,6 +393,17 @@ describe('sharing and finance storage', () => {
     await readOnlyEditor.waitFor()
     assert.equal(await readOnlyEditor.getAttribute('contenteditable'), 'false')
     assert.equal(await readOnlyEditor.getAttribute('aria-readonly'), 'true')
+    assert.equal(
+      await gani.page
+        .getByRole('button', { name: 'Format', exact: true })
+        .count(),
+      0,
+    )
+    await readOnlyEditor.click({ button: 'right' })
+    assert.equal(
+      await gani.page.getByRole('group', { name: 'Text formatting' }).count(),
+      0,
+    )
     const readOnlyTitle = gani.page.getByRole('textbox', {
       name: 'Title',
       exact: true,

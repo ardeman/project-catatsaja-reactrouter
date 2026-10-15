@@ -147,7 +147,7 @@
       "content": {
         "label": "Content",
         "placeholder": "Start writing here…",
-        "hint": "Select text to format it, or use Markdown shortcuts for headings and lists."
+        "hint": "Choose Format, right-click, or touch and hold to format your note."
       },
       "saveShortcut": "⌘S / Ctrl+S to save"
     },
@@ -156,6 +156,21 @@
       "created": "Note created",
       "unlinked": "Note removed from your list",
       "notFound": "This note doesn't exist or isn't shared with you"
+    },
+    "formatting": {
+      "toggle": "Format",
+      "title": "Text formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "heading": "Heading",
+      "subheading": "Subheading",
+      "bullets": "Bulleted list",
+      "numbers": "Numbered list",
+      "text": "Normal text",
+      "code": "Code",
+      "link": "Link",
+      "strikethrough": "Strikethrough",
+      "formula": "Formula"
     },
     "untitled": "Untitled note",
     "empty": {
@@ -602,7 +617,7 @@
       "title": "Notes",
       "description": "Write anything down: ideas, plans, recipes, minutes.",
       "steps": [
-        "On the Notes page, choose New note and start typing. Markdown such as # for a heading or - for a list formats itself as you type.",
+        "On the Notes page, choose New note and start typing. Choose Format, right-click, or touch and hold for bold text, headings and lists.",
         "Leaving a note keeps it, even if you never pressed Save.",
         "Use the icon bar at the top to pin a note to the top of the list, archive it to tidy your list (it moves to Archived at the bottom, only for you), share it, undo or redo changes, or delete it.",
         "The Gemini menu (the sparkles icon) can summarise a note, tidy it up, translate it between English and Indonesian, or turn it into a new task list."
