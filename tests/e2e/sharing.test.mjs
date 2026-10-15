@@ -108,15 +108,16 @@ describe('sharing and finance storage', () => {
         .fill('Formatted note')
       const editor = page.getByRole('textbox', { name: 'Content', exact: true })
       const toggle = page.getByRole('button', { name: 'Format', exact: true })
-      const menu = page.getByRole('group', {
-        name: 'Text formatting',
-        exact: true,
-      })
-      const choose = async (label) => {
-        await toggle.click()
-        await menu.getByRole('button', { name: label, exact: true }).click()
-        await menu.waitFor({ state: 'hidden' })
-      }
+      // The right-click menu is a popup; the Format button shows a row in the
+      // page's toolbar that stays open. Both are named "Text formatting".
+      const menu = page
+        .getByRole('dialog', { name: 'Text formatting', exact: true })
+        .getByRole('group', { name: 'Text formatting', exact: true })
+      const bar = page.locator(
+        '[role="group"][aria-label="Text formatting"]:not([role="dialog"] *)',
+      )
+      const choose = (label) =>
+        bar.getByRole('button', { name: label, exact: true }).click()
       await editor.click()
       await page.keyboard.insertText('Project plan')
       // Select text rather than ProseMirror's whole-document selection.
@@ -138,6 +139,10 @@ describe('sharing and finance storage', () => {
         'right click preserves the selected text',
       )
 
+      await menu.waitFor({ state: 'hidden' })
+      await toggle.click()
+      await bar.waitFor()
+      assert.equal(await toggle.getAttribute('aria-pressed'), 'true')
       await choose('Heading')
       assert.equal(await editor.locator('h1').textContent(), 'Project plan')
       await choose('Subheading')
@@ -156,10 +161,8 @@ describe('sharing and finance storage', () => {
       )
 
       await toggle.click()
-      assert.equal(await toggle.getAttribute('aria-expanded'), 'true')
-      await toggle.click()
-      await menu.waitFor({ state: 'hidden' })
-      assert.equal(await toggle.getAttribute('aria-expanded'), 'false')
+      await bar.waitFor({ state: 'hidden' })
+      assert.equal(await toggle.getAttribute('aria-pressed'), 'false')
 
       // A real touch held in the editor opens the same menu without first
       // selecting text. Moving a finger instead must leave it closed.
@@ -202,6 +205,7 @@ describe('sharing and finance storage', () => {
       })
 
       await editor.press('ControlOrMeta+a')
+      await toggle.click()
       await choose('Code')
       assert.equal(await editor.locator('code').textContent(), 'Project plan')
       await editor.press('Control+s')
