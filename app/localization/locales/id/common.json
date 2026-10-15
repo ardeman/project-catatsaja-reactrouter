@@ -185,25 +185,29 @@
         "action": "Ringkas",
         "title": "Ringkasan",
         "hint": "Ditambahkan di awal catatan. Bisa diurungkan dari bilah di atas.",
-        "apply": "Tambahkan ke catatan"
+        "apply": "Tambahkan ke catatan",
+        "working": "Gemini sedang meringkas catatanmu…"
       },
       "tidy": {
         "action": "Rapikan",
         "title": "Catatan yang dirapikan",
         "hint": "Mengganti catatan dengan versi ini. Bisa diurungkan dari bilah di atas.",
-        "apply": "Ganti catatan"
+        "apply": "Ganti catatan",
+        "working": "Gemini sedang merapikan catatanmu…"
       },
       "translate": {
         "action": "Terjemahkan (Inggris ↔ Indonesia)",
         "title": "Catatan terjemahan",
         "hint": "Mengganti catatan dengan terjemahannya. Bisa diurungkan dari bilah di atas.",
-        "apply": "Ganti catatan"
+        "apply": "Ganti catatan",
+        "working": "Gemini sedang menerjemahkan catatanmu…"
       },
       "checklist": {
         "action": "Jadikan daftar tugas",
         "title": "Daftar tugas baru",
         "hint": "Membuat daftar tugas baru; catatan tetap seperti semula.",
-        "apply": "Buat daftar tugas"
+        "apply": "Buat daftar tugas",
+        "working": "Gemini sedang membuat daftar tugas dari catatanmu…"
       },
       "empty": "Tulis sesuatu dulu untuk diproses Gemini"
     }

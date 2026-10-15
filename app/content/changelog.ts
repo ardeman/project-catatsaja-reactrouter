@@ -28,6 +28,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'While Gemini works on a note, a message at the bottom says what it is doing.',
+          id: 'Saat Gemini memproses catatan, pesan di bagian bawah menunjukkan apa yang sedang dikerjakan.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Inline code in note previews no longer shows extra backticks.',

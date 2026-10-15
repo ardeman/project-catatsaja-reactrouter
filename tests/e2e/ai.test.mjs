@@ -101,26 +101,33 @@ const answers = [
 // Answers Gemini's requests for a device; counts them.
 const fakeGemini = async (context) => {
   const calls = []
-  await context.route('**/firebasevertexai.googleapis.com/**', (route) => {
-    const body = route.request().postData() ?? ''
-    const [prompt, answer] = answers.find(([key]) => body.includes(key)) ?? []
-    calls.push(prompt ?? 'unknown')
-    return route.fulfill({
-      contentType: 'application/json',
-      body: JSON.stringify({
-        candidates: [
-          {
-            index: 0,
-            finishReason: 'STOP',
-            content: {
-              role: 'model',
-              parts: [{ text: JSON.stringify(answer ?? {}) }],
+  await context.route(
+    '**/firebasevertexai.googleapis.com/**',
+    async (route) => {
+      const body = route.request().postData() ?? ''
+      const [prompt, answer] = answers.find(([key]) => body.includes(key)) ?? []
+      calls.push(prompt ?? 'unknown')
+      // Tidying answers after a moment, so the test can see the waiting
+      // message the note helpers show.
+      if (prompt === 'Tidy up this note')
+        await new Promise((resolve) => setTimeout(resolve, 500))
+      return route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({
+          candidates: [
+            {
+              index: 0,
+              finishReason: 'STOP',
+              content: {
+                role: 'model',
+                parts: [{ text: JSON.stringify(answer ?? {}) }],
+              },
             },
-          },
-        ],
-      }),
-    })
-  })
+          ],
+        }),
+      })
+    },
+  )
   return calls
 }
 
@@ -273,6 +280,7 @@ describe('AI features and reminders', () => {
     )
     await page.getByRole('button', { name: 'Gemini' }).click()
     await page.getByRole('menuitem', { name: 'Tidy up' }).click()
+    await shows(page, 'Gemini is tidying up your note…')
     await shows(page, 'Tidied note')
     await page.getByRole('button', { name: 'Replace note' }).click()
     await shows(page, 'Buy milk and bread.')

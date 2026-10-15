@@ -185,25 +185,29 @@
         "action": "Summarise",
         "title": "Summary",
         "hint": "Added to the top of the note. You can undo it from the bar.",
-        "apply": "Add to note"
+        "apply": "Add to note",
+        "working": "Gemini is summarising your note…"
       },
       "tidy": {
         "action": "Tidy up",
         "title": "Tidied note",
         "hint": "Replaces the note with this version. You can undo it from the bar.",
-        "apply": "Replace note"
+        "apply": "Replace note",
+        "working": "Gemini is tidying up your note…"
       },
       "translate": {
         "action": "Translate (English ↔ Indonesian)",
         "title": "Translated note",
         "hint": "Replaces the note with the translation. You can undo it from the bar.",
-        "apply": "Replace note"
+        "apply": "Replace note",
+        "working": "Gemini is translating your note…"
       },
       "checklist": {
         "action": "Turn into a checklist",
         "title": "New task list",
         "hint": "Creates a new task list; the note stays as it is.",
-        "apply": "Create task list"
+        "apply": "Create task list",
+        "working": "Gemini is making a checklist from your note…"
       },
       "empty": "Write something for Gemini to work on"
     }

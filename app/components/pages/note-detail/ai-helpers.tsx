@@ -2,6 +2,7 @@ import {
   Languages,
   ListChecks,
   ListCollapse,
+  LoaderCircle,
   Sparkles,
   SpellCheck,
 } from 'lucide-react'
@@ -104,7 +105,7 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
             title={t(hasContent ? 'notes.ai.menu' : 'notes.ai.empty')}
             aria-busy={!!pending}
           >
-            <Sparkles className={pending ? 'animate-pulse' : undefined} />
+            {pending ? <LoaderCircle className="animate-spin" /> : <Sparkles />}
           </UIButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -119,6 +120,19 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+      {/* Kept mounted so screen readers announce the change. */}
+      <div
+        role="status"
+        aria-live="polite"
+        className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+var(--nav-bottom))] z-40 flex justify-center px-4 md:bottom-6"
+      >
+        {pending && (
+          <p className="flex items-center gap-2 rounded-full border bg-background px-4 py-2 text-sm shadow-md">
+            <LoaderCircle className="size-4 shrink-0 animate-spin text-muted-foreground" />
+            {t(`notes.ai.${pending}.working`)}
+          </p>
+        )}
+      </div>
       <Modal
         open={!!result}
         setOpen={(open) => {
