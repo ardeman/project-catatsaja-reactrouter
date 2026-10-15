@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'fixed',
+        text: {
+          en: 'Inline code in note previews no longer shows extra backticks.',
+          id: 'Kode sebaris pada pratinjau catatan tidak lagi menampilkan tanda backtick tambahan.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Notes have a more comfortable writing area, tips for getting started, and keyboard saving with ⌘S or Ctrl+S. Notes without a title are easier to spot in the list.',
