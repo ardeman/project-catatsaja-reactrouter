@@ -25,7 +25,6 @@ describe('cycleWindows', () => {
     const windows = cycleWindows(cycle, cycle.nextStart)
     assert.deepEqual(windows.predicted, ['2026-11-01', '2026-11-05'])
     assert.deepEqual(windows.ovulation, ['2026-10-18', '2026-10-18'])
-    assert.deepEqual(windows.ovulationWindow, ['2026-10-17', '2026-10-19'])
     assert.deepEqual(windows.fertile, ['2026-10-13', '2026-10-19'])
   })
 
@@ -47,7 +46,7 @@ describe('cycleCalendar', () => {
     // Before today: no predictions.
     assert.equal(days.get('2026-10-14'), undefined)
     assert.equal(days.get('2026-10-16'), 'fertile')
-    assert.equal(days.get('2026-10-17'), 'ovulationWindow')
+    assert.equal(days.get('2026-10-17'), 'fertile')
     assert.equal(days.get('2026-10-18'), 'ovulation')
     assert.equal(days.get('2026-10-31'), 'possible')
     assert.equal(days.get('2026-11-01'), 'predicted')

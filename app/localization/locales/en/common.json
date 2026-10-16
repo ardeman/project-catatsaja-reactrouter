@@ -1297,6 +1297,10 @@
     "form": {
       "name": "Name",
       "birthDate": "Birth date",
+      "birthDateConfirm": "Change the birth date from {{from}} to {{to}}? Ages, growth charts and ranges follow it.",
+      "birthDateClear": "Remove the birth date ({{from}})? Ages, growth charts and ranges follow it.",
+      "birthDateChange": "Change",
+      "birthDateKeep": "Keep",
       "sex": {
         "label": "Sex",
         "female": "Female",
@@ -1409,7 +1413,6 @@
       "predicted": "Expected period",
       "possible": "Possible period days",
       "ovulation": "Ovulation day",
-      "ovulationWindow": "Ovulation window",
       "averageCycle": "Average cycle",
       "averagePeriod": "Average period",
       "days_one": "{{count}} day",
@@ -1426,7 +1429,6 @@
         "predicted": "Expected period",
         "possible": "Possible period",
         "fertile": "Fertile window",
-        "ovulationWindow": "Ovulation window",
         "ovulation": "Ovulation day"
       },
       "dayNumber": "Day {{day}}",

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { enUS, id as indonesian } from 'react-day-picker/locale'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '~/components/base/button'
 import { Calendar } from '~/components/ui/calendar'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
@@ -30,7 +31,6 @@ const dayClassName: Record<TCycleDay, string> = {
   predicted: 'border-2 border-dashed border-(--cat-5)',
   possible: 'bg-(--cat-5)/10',
   fertile: 'bg-(--cat-3)/15',
-  ovulationWindow: 'bg-(--cat-3)/35',
   ovulation: 'bg-(--cat-3)/35 font-semibold ring-2 ring-(--cat-3) ring-inset',
 }
 
@@ -39,7 +39,6 @@ const legend: TCycleDay[] = [
   'predicted',
   'possible',
   'fertile',
-  'ovulationWindow',
   'ovulation',
 ]
 
@@ -86,6 +85,10 @@ export const PeriodCalendar = ({
   const modifiers = Object.fromEntries(
     legend.map((kind) => [kind, (date: Date) => kindOf(date) === kind]),
   )
+  const now = new Date()
+  const isThisMonth =
+    month.getFullYear() === now.getFullYear() &&
+    month.getMonth() === now.getMonth()
   const dateFormat = new Intl.DateTimeFormat(i18n.language, {
     dateStyle: 'full',
   })
@@ -133,6 +136,15 @@ export const PeriodCalendar = ({
           {t('health.period.tapHint')}
         </p>
       )}
+      <Button
+        type="button"
+        variant="secondary"
+        className="h-8"
+        disabled={isThisMonth}
+        onClick={() => setMonth(new Date())}
+      >
+        {t('datePicker.today')}
+      </Button>
       {isReadOnly ? (
         <Calendar {...calendarProperties} />
       ) : (

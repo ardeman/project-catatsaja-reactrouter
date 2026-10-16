@@ -4,12 +4,7 @@
 // so it can be tested on its own (tests/cycle-calendar.test.mjs).
 
 export type TCycleDay =
-  | 'period'
-  | 'predicted'
-  | 'possible'
-  | 'fertile'
-  | 'ovulationWindow'
-  | 'ovulation'
+  'period' | 'predicted' | 'possible' | 'fertile' | 'ovulation'
 
 type TPeriod = { date: string; end?: string }
 
@@ -25,10 +20,9 @@ type TCycle = {
 const rank: Record<TCycleDay, number> = {
   possible: 1,
   fertile: 2,
-  ovulationWindow: 3,
-  ovulation: 4,
-  predicted: 5,
-  period: 6,
+  ovulation: 3,
+  predicted: 4,
+  period: 5,
 }
 
 const DAY = 86_400_000
@@ -59,7 +53,6 @@ export const cycleWindows = (cycle: TCycle, start: string) => {
     predicted: [start, end],
     possible: [addDays(start, -before), addDays(end, after)],
     fertile: [addDays(ovulation, -5), addDays(ovulation, 1)],
-    ovulationWindow: [addDays(ovulation, -1), addDays(ovulation, 1)],
     ovulation: [ovulation, ovulation],
   } satisfies Record<Exclude<TCycleDay, 'period'>, [string, string]>
 }
@@ -179,7 +172,7 @@ export const cycleToday = (
     } as const
   }
   if (kind === 'ovulation') return { kind, fertileEnd: fertile[1] } as const
-  if (kind === 'fertile' || kind === 'ovulationWindow')
+  if (kind === 'fertile')
     return {
       kind: 'fertile',
       fertileEnd: fertile[1],

@@ -1297,6 +1297,10 @@
     "form": {
       "name": "Nama",
       "birthDate": "Tanggal lahir",
+      "birthDateConfirm": "Ubah tanggal lahir dari {{from}} menjadi {{to}}? Usia, grafik pertumbuhan, dan rentang nilai mengikutinya.",
+      "birthDateClear": "Hapus tanggal lahir ({{from}})? Usia, grafik pertumbuhan, dan rentang nilai mengikutinya.",
+      "birthDateChange": "Ubah",
+      "birthDateKeep": "Batal",
       "sex": {
         "label": "Jenis kelamin",
         "female": "Perempuan",
@@ -1409,7 +1413,6 @@
       "predicted": "Perkiraan menstruasi",
       "possible": "Kemungkinan hari menstruasi",
       "ovulation": "Hari ovulasi",
-      "ovulationWindow": "Masa ovulasi",
       "averageCycle": "Rata-rata siklus",
       "averagePeriod": "Rata-rata menstruasi",
       "days_one": "{{count}} hari",
@@ -1426,7 +1429,6 @@
         "predicted": "Perkiraan menstruasi",
         "possible": "Kemungkinan menstruasi",
         "fertile": "Masa subur",
-        "ovulationWindow": "Masa ovulasi",
         "ovulation": "Hari ovulasi"
       },
       "dayNumber": "Hari ke-{{day}}",

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { Action } from '~/components/base/action'
+import { Button } from '~/components/base/button'
 import { DatePicker } from '~/components/base/date-picker'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Segmented } from '~/components/base/segmented'
@@ -109,6 +110,16 @@ export const Form = (properties: TFormProperties) => {
   useDocumentTitle(values.name || t('navigation.health'))
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
+  // Changing a birth date already set waits for a confirmation, so a stray
+  // tap or typing can't move ages, growth charts and ranges by accident.
+  // A ref for `save`, which may run from an older render; state to re-render.
+  const confirmedBirthDateReference = useRef<string>(undefined)
+  const [confirmedBirthDate, setConfirmedBirthDate] = useState<string>()
+  const storedBirthDate = selectedHealthLog?.birthDate ?? ''
+  const isBirthDatePending =
+    !!storedBirthDate &&
+    values.birthDate !== storedBirthDate &&
+    values.birthDate !== confirmedBirthDate
   const units = userData?.labUnits ?? 'conventional'
   const bmiStandard = userData?.bmiStandard ?? 'kemenkes'
 
@@ -123,7 +134,11 @@ export const Form = (properties: TFormProperties) => {
     if (selectedHealthLog) {
       const changes: Partial<THealthLogForm> = {}
       if (data.name !== (selectedHealthLog.name ?? '')) changes.name = data.name
-      if (data.birthDate !== (selectedHealthLog.birthDate ?? ''))
+      if (
+        data.birthDate !== (selectedHealthLog.birthDate ?? '') &&
+        (!selectedHealthLog.birthDate ||
+          data.birthDate === confirmedBirthDateReference.current)
+      )
         changes.birthDate = data.birthDate
       if (data.sex !== selectedHealthLog.sex) changes.sex = data.sex
       if (data.calorieTarget !== (selectedHealthLog.calorieTarget ?? null))
@@ -168,6 +183,12 @@ export const Form = (properties: TFormProperties) => {
     ],
     saveWhenIdle: !!selectedHealthLog,
   })
+
+  const birthDateFormat = new Intl.DateTimeFormat(i18n.language, {
+    dateStyle: 'medium',
+  })
+  const formatBirthDate = (date: string) =>
+    birthDateFormat.format(new Date(`${date}T00:00:00`))
 
   // Undo and redo over the whole log (details, entries, reminders), in
   // steps (a pause in changes, or each entry saved).
@@ -361,6 +382,48 @@ export const Form = (properties: TFormProperties) => {
               />
             </div>
           </fieldset>
+          {isBirthDatePending && (
+            <div
+              role="alert"
+              className="flex flex-wrap items-center gap-2 rounded-lg border p-3 text-sm"
+            >
+              <p className="min-w-0 flex-1">
+                {values.birthDate
+                  ? t('health.form.birthDateConfirm', {
+                      from: formatBirthDate(storedBirthDate),
+                      to: formatBirthDate(values.birthDate),
+                    })
+                  : t('health.form.birthDateClear', {
+                      from: formatBirthDate(storedBirthDate),
+                    })}
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="h-8"
+                  onClick={() =>
+                    setValue('birthDate', storedBirthDate, {
+                      shouldDirty: true,
+                    })
+                  }
+                >
+                  {t('health.form.birthDateKeep')}
+                </Button>
+                <Button
+                  type="button"
+                  className="h-8"
+                  onClick={() => {
+                    confirmedBirthDateReference.current = values.birthDate
+                    setConfirmedBirthDate(values.birthDate)
+                    void save()
+                  }}
+                >
+                  {t('health.form.birthDateChange')}
+                </Button>
+              </div>
+            </div>
+          )}
         </form>
 
         <Reminders

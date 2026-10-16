@@ -105,12 +105,6 @@ export const PeriodSection = (properties: TSectionProperties) => {
             </div>
             <div>
               <dt className="text-xs text-muted-foreground">
-                {t('health.period.ovulationWindow')}
-              </dt>
-              <dd className="font-medium">{range(windows.ovulationWindow)}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
                 {t('health.period.averageCycle')}
               </dt>
               <dd className="font-medium">

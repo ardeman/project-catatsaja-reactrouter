@@ -16,6 +16,29 @@ export const releases: TRelease[] = [
   {
     date: '2026-10-16',
     title: {
+      en: 'A simpler period calendar',
+      id: 'Kalender menstruasi yang lebih sederhana',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'The period calendar has a Today button that brings you back to this month, and no longer marks a separate ovulation window: the fertile window and the likely ovulation day are shown as before.',
+          id: 'Kalender menstruasi kini punya tombol Hari ini untuk kembali ke bulan ini, dan tidak lagi menandai masa ovulasi tersendiri: masa subur dan perkiraan hari ovulasi tetap ditampilkan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Changing a birth date already set in a health log now asks you to confirm first, so it can’t change by accident.',
+          id: 'Mengubah tanggal lahir yang sudah diisi di catatan kesehatan kini meminta konfirmasi dulu, supaya tidak berubah tanpa sengaja.',
+        },
+      },
+    ],
+  },
+  {
+    date: '2026-10-16',
+    title: {
       en: 'Task lists from pasted text',
       id: 'Daftar tugas dari teks tempelan',
     },
