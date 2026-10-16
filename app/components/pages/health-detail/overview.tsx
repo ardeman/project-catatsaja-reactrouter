@@ -11,6 +11,7 @@ import {
 } from '~/lib/constants/health'
 import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
 import { THealthKind } from '~/lib/types/health'
+import { cycleToday } from '~/lib/utils/cycle-calendar'
 import { today } from '~/lib/utils/finance'
 import {
   ageInYears,
@@ -25,6 +26,8 @@ import { TSectionProperties } from './type'
 
 type TTile = {
   kind: THealthKind
+  // The tile's heading, when not the kind's name.
+  label?: string
   value: string
   detail?: string
   status?: TStatus
@@ -131,15 +134,62 @@ export const Overview = (
     })
   const period =
     log.sex === 'female' ? periodStats(log.content, now) : undefined
-  if (period)
-    tiles.push({
-      kind: 'period',
-      value: dayFormat.format(new Date(`${period.nextStart}T00:00:00Z`)),
-      detail:
-        period.daysUntilNext >= 0
-          ? t('health.period.inDays', { count: period.daysUntilNext })
-          : t('health.period.late', { count: -period.daysUntilNext }),
-    })
+  if (period) {
+    const date = (value: string) =>
+      dayFormat.format(new Date(`${value}T00:00:00Z`))
+    const cycle = cycleToday(entriesOf(log.content, 'period'), period, now)
+    // Where today falls: a period day, ovulation, the fertile window, or
+    // else when the next period is due.
+    switch (cycle.kind) {
+      case 'period': {
+        tiles.push({
+          kind: 'period',
+          label: t('health.period.calendar.period'),
+          value: t('health.period.dayNumber', { day: cycle.day }),
+          detail: t(
+            cycle.isEndLogged
+              ? 'health.period.until'
+              : 'health.period.expectedUntil',
+            { date: date(cycle.end) },
+          ),
+        })
+        break
+      }
+      case 'ovulation': {
+        tiles.push({
+          kind: 'period',
+          label: t('health.period.ovulation'),
+          value: t('health.period.ovulationToday'),
+          detail: t('health.period.fertileUntil', {
+            date: date(cycle.fertileEnd),
+          }),
+        })
+        break
+      }
+      case 'fertile': {
+        tiles.push({
+          kind: 'period',
+          label: t('health.period.fertile'),
+          value: t('health.period.until', { date: date(cycle.fertileEnd) }),
+          detail: t('health.period.ovulationOn', {
+            date: date(cycle.ovulation),
+          }),
+        })
+        break
+      }
+      default: {
+        tiles.push({
+          kind: 'period',
+          label: t('health.period.next'),
+          value: date(period.nextStart),
+          detail:
+            period.daysUntilNext >= 0
+              ? t('health.period.inDays', { count: period.daysUntilNext })
+              : t('health.period.late', { count: -period.daysUntilNext }),
+        })
+      }
+    }
+  }
 
   if (tiles.length === 0)
     return (
@@ -159,11 +209,7 @@ export const Overview = (
               className="glass-surface motion-enter grid h-full w-full content-start gap-0.5 rounded-xl border p-3 text-left hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
             >
               <span className="text-xs text-muted-foreground">
-                {t(
-                  tile.kind === 'period'
-                    ? 'health.period.next'
-                    : `health.kinds.${tile.kind}`,
-                )}
+                {tile.label ?? t(`health.kinds.${tile.kind}`)}
               </span>
               <span className="truncate font-semibold">{tile.value}</span>
               {tile.detail && (

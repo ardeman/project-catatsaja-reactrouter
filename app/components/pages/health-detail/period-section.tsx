@@ -1,8 +1,14 @@
 import { useTranslation } from 'react-i18next'
 
-import { cycleWindows } from '~/lib/utils/cycle-calendar'
+import { THealthEntryOf } from '~/lib/types/health'
+import { cycleWindows, TPeriodAction } from '~/lib/utils/cycle-calendar'
 import { today } from '~/lib/utils/finance'
-import { daysBetween, entriesOf, periodStats } from '~/lib/utils/health'
+import {
+  daysBetween,
+  entriesOf,
+  newHealthEntryId,
+  periodStats,
+} from '~/lib/utils/health'
 
 import { EntryList } from './entry-list'
 import { PeriodCalendar } from './period-calendar'
@@ -10,9 +16,10 @@ import { TSectionProperties } from './type'
 
 // Logged periods and what they suggest: the next period and the days it
 // could fall on, the fertile window, ovulation and the average cycle, also
-// on a calendar. Estimates, said as such.
+// on a calendar, where a period is logged by tapping its first and last
+// days. Estimates, said as such.
 export const PeriodSection = (properties: TSectionProperties) => {
-  const { log } = properties
+  const { log, isReadOnly, onSaveEntry, onDeleteEntry } = properties
   const { t, i18n } = useTranslation()
   const now = today()
   const entries = entriesOf(log.content, 'period')
@@ -28,13 +35,43 @@ export const PeriodSection = (properties: TSectionProperties) => {
   const range = ([from, to]: [string, string]) =>
     from === to ? date(from) : `${date(from)} – ${date(to)}`
   const windows = stats && cycleWindows(stats, stats.nextStart)
+  const byId = (id: string) => entries.find((entry) => entry.id === id)
+
+  // Without a logged last day, a period follows the expected length.
+  const handleAction = (action: TPeriodAction, day: string) => {
+    if (action.type === 'remove') return onDeleteEntry(action.id)
+    if (action.type === 'start' && !action.id)
+      return onSaveEntry({ id: newHealthEntryId(), kind: 'period', date: day })
+    const period = action.id ? byId(action.id) : undefined
+    if (!period) return
+    const { end: _end, ...open }: THealthEntryOf<'period'> = period
+    switch (action.type) {
+      case 'start': {
+        return onSaveEntry({ ...period, date: day })
+      }
+      case 'end': {
+        return onSaveEntry({ ...period, end: day })
+      }
+      case 'clearEnd': {
+        return onSaveEntry(open)
+      }
+    }
+  }
+  const calendar = (
+    <PeriodCalendar
+      periods={entries}
+      stats={stats}
+      today={now}
+      isReadOnly={isReadOnly}
+      onAction={handleAction}
+    />
+  )
 
   return (
     <EntryList
       {...properties}
       kind="period"
       entries={entries}
-      addLabel={t('health.add.period')}
       emptyLabel={t('health.empty.period')}
       renderRow={(entry) => ({
         primary: entry.end
@@ -45,7 +82,7 @@ export const PeriodSection = (properties: TSectionProperties) => {
         secondary: entry.flow ? t(`health.flow.${entry.flow}`) : undefined,
       })}
     >
-      {stats && windows && (
+      {stats && windows ? (
         <section className="glass-surface grid gap-3 rounded-xl border p-4">
           <dl className="grid grid-cols-2 gap-x-2 gap-y-3">
             <div className="col-span-2">
@@ -120,12 +157,10 @@ export const PeriodSection = (properties: TSectionProperties) => {
               : t('health.period.basedOn', { count: stats.cycleCount })}{' '}
             {t('health.period.disclaimer')}
           </p>
-          <PeriodCalendar
-            periods={entries}
-            stats={stats}
-            today={now}
-          />
+          {calendar}
         </section>
+      ) : (
+        !isReadOnly && calendar
       )}
     </EntryList>
   )

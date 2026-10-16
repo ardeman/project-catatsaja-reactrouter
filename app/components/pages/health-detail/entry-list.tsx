@@ -17,7 +17,8 @@ type TProperties<TEntry extends THealthEntry> = Pick<
   // Newest first.
   entries: TEntry[]
   renderRow: (entry: TEntry) => TEntryRow
-  addLabel: string
+  // No add button without one (periods are added on their calendar).
+  addLabel?: string
   emptyLabel: string
   // Shown between the add button and the list (charts, summaries).
   children?: ReactNode
@@ -64,6 +65,7 @@ export const EntryList = <TEntry extends THealthEntry>({
   return (
     <div className="grid gap-4">
       {!isReadOnly &&
+        addLabel &&
         (isAdding ? (
           form()
         ) : (

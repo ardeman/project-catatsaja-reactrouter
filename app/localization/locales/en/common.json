@@ -1292,8 +1292,7 @@
       "glucose": "Add blood sugar",
       "uricAcid": "Add uric acid",
       "cholesterol": "Add cholesterol",
-      "calories": "Add meal",
-      "period": "Log a period"
+      "calories": "Add meal"
     },
     "form": {
       "name": "Name",
@@ -1429,6 +1428,20 @@
         "fertile": "Fertile window",
         "ovulationWindow": "Ovulation window",
         "ovulation": "Ovulation day"
+      },
+      "dayNumber": "Day {{day}}",
+      "until": "Until {{date}}",
+      "expectedUntil": "Expected until {{date}}",
+      "ovulationToday": "Expected today",
+      "ovulationOn": "Ovulation {{date}}",
+      "fertileUntil": "Fertile until {{date}}",
+      "tapHint": "Tap a day to log when a period started or ended. Until you log the last day, it follows the expected length.",
+      "ahead": "Days ahead can’t be logged yet.",
+      "action": {
+        "start": "Period started",
+        "end": "Last day",
+        "clearEnd": "Not the last day",
+        "remove": "Remove period"
       }
     },
     "status": {

@@ -5,7 +5,12 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 
-import { cycleCalendar, cycleWindows } from '../app/lib/utils/cycle-calendar.ts'
+import {
+  cycleCalendar,
+  cycleToday,
+  cycleWindows,
+  periodActions,
+} from '../app/lib/utils/cycle-calendar.ts'
 
 const cycle = {
   nextStart: '2026-11-01',
@@ -60,5 +65,60 @@ describe('cycleCalendar', () => {
     assert.equal(days.get('2026-10-17'), 'predicted')
     assert.equal(days.get('2026-10-18'), 'predicted')
     assert.equal(days.get('2026-10-19'), undefined)
+  })
+})
+
+describe('periodActions', () => {
+  const today = '2026-10-16'
+  const types = (periods, day) =>
+    periodActions(periods, day, today, 5).map((action) =>
+      action.id ? `${action.type}:${action.id}` : action.type,
+    )
+
+  test('starts a period on an empty day, never ahead of today', () => {
+    assert.deepEqual(types([], '2026-10-10'), ['start'])
+    assert.deepEqual(types([], '2026-10-17'), [])
+  })
+
+  test('ends or removes a period from its days', () => {
+    const periods = [{ id: 'a', date: '2026-10-10' }]
+    assert.deepEqual(types(periods, '2026-10-10'), ['end:a', 'remove:a'])
+    assert.deepEqual(types(periods, '2026-10-12'), ['end:a'])
+    // Past the predicted days: still its last day, or a new start.
+    assert.deepEqual(types(periods, '2026-10-15'), ['start', 'end:a'])
+  })
+
+  test('undoes a logged last day', () => {
+    const periods = [{ id: 'a', date: '2026-10-01', end: '2026-10-04' }]
+    assert.deepEqual(types(periods, '2026-10-04'), ['clearEnd:a'])
+    assert.deepEqual(types(periods, '2026-10-03'), ['end:a'])
+  })
+
+  test('moves a start back instead of adding one just before it', () => {
+    const periods = [{ id: 'a', date: '2026-10-10' }]
+    assert.deepEqual(types(periods, '2026-10-08'), ['start:a'])
+    assert.deepEqual(types(periods, '2026-09-20'), ['start'])
+  })
+})
+
+describe('cycleToday', () => {
+  test('counts the day of a period and its expected last day', () => {
+    const periods = [{ date: '2026-10-15' }]
+    assert.deepEqual(cycleToday(periods, cycle, '2026-10-16'), {
+      kind: 'period',
+      day: 2,
+      end: '2026-10-19',
+      isEndLogged: false,
+    })
+  })
+
+  test('tells ovulation and the fertile window', () => {
+    assert.equal(cycleToday([], cycle, '2026-10-18').kind, 'ovulation')
+    assert.deepEqual(cycleToday([], cycle, '2026-10-14'), {
+      kind: 'fertile',
+      fertileEnd: '2026-10-19',
+      ovulation: '2026-10-18',
+    })
+    assert.equal(cycleToday([], cycle, '2026-10-25').kind, 'next')
   })
 })

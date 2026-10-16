@@ -43,6 +43,20 @@ export const releases: TRelease[] = [
           id: 'Menstruasi di catatan kesehatan kini tampil di kalender: hari-hari yang kamu catat, dan setelah hari ini perkiraan menstruasi, hari lain yang mungkin menjadi awalnya, masa subur, masa ovulasi dan perkiraan hari ovulasi. Ringkasan di atasnya mencantumkan tanggal yang sama untuk siklus berikutnya.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Log a period by tapping its first and last day on the calendar. Until you log the last day, the period follows its expected length.',
+          id: 'Catat menstruasi dengan mengetuk hari pertama dan terakhirnya di kalender. Selama hari terakhir belum dicatat, lamanya mengikuti perkiraan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The overview shows where you are in your cycle today: which day of your period, ovulation or the fertile window, or when the next period is due.',
+          id: 'Ringkasan kini menunjukkan posisimu dalam siklus hari ini: hari ke berapa menstruasi, ovulasi atau masa subur, atau kapan menstruasi berikutnya.',
+        },
+      },
     ],
   },
   {

@@ -109,3 +109,84 @@ export const cycleCalendar = (
   }
   return days
 }
+
+// A period is taken to last at most this long: a day further from a start
+// can't be its last day.
+const MAX_PERIOD_DAYS = 14
+
+// A start this close before a logged period moves that period's start
+// instead of adding another.
+const MOVE_START_DAYS = 7
+
+const daysFrom = (from: string, to: string) =>
+  Math.round((toTime(to) - toTime(from)) / DAY)
+
+// What tapping a day on the calendar can do: start a period (or move the
+// next one's start back to it), make it the last day of the period before,
+// undo a logged last day (the end then follows the prediction again), or
+// remove the period that starts on it. Nothing for days ahead.
+export type TPeriodAction =
+  | { type: 'start'; id?: string }
+  | { type: 'end'; id: string }
+  | { type: 'clearEnd'; id: string }
+  | { type: 'remove'; id: string }
+
+export const periodActions = (
+  periods: (TPeriod & { id: string })[],
+  day: string,
+  today: string,
+  periodLength: number,
+) => {
+  const actions: TPeriodAction[] = []
+  if (day > today) return actions
+  const sorted = periods.toSorted((a, b) => a.date.localeCompare(b.date))
+  const before = sorted.findLast((period) => period.date <= day)
+  const after = sorted.find((period) => period.date > day)
+
+  const isInside =
+    !!before && day <= (before.end ?? addDays(before.date, periodLength - 1))
+  if (!isInside)
+    actions.push(
+      after && daysFrom(day, after.date) <= MOVE_START_DAYS
+        ? { type: 'start', id: after.id }
+        : { type: 'start' },
+    )
+  if (before) {
+    if (before.end === day) actions.push({ type: 'clearEnd', id: before.id })
+    else if (daysFrom(before.date, day) < MAX_PERIOD_DAYS)
+      actions.push({ type: 'end', id: before.id })
+    if (before.date === day) actions.push({ type: 'remove', id: before.id })
+  }
+  return actions
+}
+
+// Where today falls in the cycle, for the overview: a period day (which
+// one, and its logged or expected last day), ovulation, the fertile window,
+// or nothing to say but the next period.
+export const cycleToday = (
+  periods: TPeriod[],
+  cycle: TCycle,
+  today: string,
+) => {
+  const kind = cycleCalendar(periods, cycle, today, today).get(today)
+  const fertile = cycleWindows(cycle, cycle.nextStart).fertile
+  if (kind === 'period') {
+    const period = periods
+      .filter((item) => item.date <= today)
+      .toSorted((a, b) => b.date.localeCompare(a.date))[0]
+    return {
+      kind,
+      day: daysFrom(period.date, today) + 1,
+      end: period.end ?? addDays(period.date, cycle.periodLength - 1),
+      isEndLogged: !!period.end,
+    } as const
+  }
+  if (kind === 'ovulation') return { kind, fertileEnd: fertile[1] } as const
+  if (kind === 'fertile' || kind === 'ovulationWindow')
+    return {
+      kind: 'fertile',
+      fertileEnd: fertile[1],
+      ovulation: addDays(cycle.nextStart, -LUTEAL_DAYS),
+    } as const
+  return { kind: 'next' } as const
+}
