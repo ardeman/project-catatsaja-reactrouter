@@ -11,7 +11,7 @@ import { TSectionProperties } from './type'
 // Logged periods and what they suggest: the next period and the days it
 // could fall on, the fertile window, ovulation and the average cycle, also
 // on a calendar, where a period is logged by tapping its days, with the
-// logged periods beside it and the summary below. Estimates, said as such.
+// summary and the logged periods in one card beside it. Estimates, said as such.
 export const PeriodSection = (properties: TSectionProperties) => {
   const { log, isReadOnly, onSaveEntry, onDeleteEntry } = properties
   const { t, i18n } = useTranslation()
@@ -58,7 +58,7 @@ export const PeriodSection = (properties: TSectionProperties) => {
       })}
     >
       {stats && windows && (
-        <section className="glass-surface grid gap-3 rounded-xl border p-4">
+        <section className="grid gap-3 p-4">
           <dl className="grid grid-cols-2 gap-x-2 gap-y-3">
             <div className="col-span-2">
               <dt className="text-xs text-muted-foreground">

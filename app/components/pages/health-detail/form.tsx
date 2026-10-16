@@ -37,6 +37,12 @@ import { TFormProperties } from './type'
 
 type TTab = 'overview' | THealthKind
 
+// Logged periods or a period reminder: the log's sex can't change while
+// it has any.
+const hasSexData = (log: Pick<THealthLogForm, 'content' | 'reminders'>) =>
+  log.content.some((entry) => entry.kind === 'period') ||
+  (log.reminders ?? []).some((reminder) => reminder.kind === 'period')
+
 // The target as stored: a whole number, or null when cleared.
 const toTarget = (value: unknown) => {
   const target = Math.round(Number(value))
@@ -116,6 +122,8 @@ export const Form = (properties: TFormProperties) => {
   const confirmedBirthDateReference = useRef<string>(undefined)
   const [confirmedBirthDate, setConfirmedBirthDate] = useState<string>()
   const storedBirthDate = selectedHealthLog?.birthDate ?? ''
+  // Fixed while the log holds data that depends on it (periods).
+  const lockedSex = hasSexData(values) ? selectedHealthLog?.sex : undefined
   const isBirthDatePending =
     !!storedBirthDate &&
     values.birthDate !== storedBirthDate &&
@@ -140,7 +148,8 @@ export const Form = (properties: TFormProperties) => {
           data.birthDate === confirmedBirthDateReference.current)
       )
         changes.birthDate = data.birthDate
-      if (data.sex !== selectedHealthLog.sex) changes.sex = data.sex
+      if (!hasSexData(data) && data.sex !== selectedHealthLog.sex)
+        changes.sex = data.sex
       if (data.calorieTarget !== (selectedHealthLog.calorieTarget ?? null))
         changes.calorieTarget = data.calorieTarget
       if (!isSameJson(data.content, selectedHealthLog.content ?? []))
@@ -360,25 +369,26 @@ export const Form = (properties: TFormProperties) => {
             </div>
             {/* A label like the date's, and the same 32px height, so the two
                 line up. ♀ and ♂ in their colours (as on the card). */}
-            <div className="grid gap-1">
+            <div
+              className="grid gap-1"
+              title={lockedSex ? t('health.form.sex.locked') : undefined}
+            >
               <Label>{t('health.form.sex.label')}</Label>
+              {/* Only its own while periods are logged. */}
               <Segmented
                 label={t('health.form.sex.label')}
-                value={values.sex}
+                value={lockedSex ?? values.sex}
                 className="h-8"
-                options={[
-                  {
-                    value: 'female',
-                    label: t('health.form.sex.female'),
-                    icon: <SexIcon sex="female" />,
-                  },
-                  {
-                    value: 'male',
-                    label: t('health.form.sex.male'),
-                    icon: <SexIcon sex="male" />,
-                  },
-                ]}
-                onChange={(sex) => setValue('sex', sex, { shouldDirty: true })}
+                options={(['female', 'male'] as const)
+                  .filter((sex) => !lockedSex || sex === lockedSex)
+                  .map((sex) => ({
+                    value: sex,
+                    label: t(`health.form.sex.${sex}`),
+                    icon: <SexIcon sex={sex} />,
+                  }))}
+                onChange={(sex) => {
+                  if (!lockedSex) setValue('sex', sex, { shouldDirty: true })
+                }}
               />
             </div>
           </fieldset>

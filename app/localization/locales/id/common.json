@@ -1304,7 +1304,8 @@
       "sex": {
         "label": "Jenis kelamin",
         "female": "Perempuan",
-        "male": "Laki-laki"
+        "male": "Laki-laki",
+        "locked": "Tidak bisa diubah selama ada catatan menstruasi atau pengingat menstruasi."
       },
       "date": "Tanggal",
       "time": "Jam",

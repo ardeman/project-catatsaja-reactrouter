@@ -123,7 +123,8 @@ const daysFrom = (from: string, to: string) =>
 // What tapping a day opens. `start`: the period the day is part of (`id`),
 // or one starting on it (`date`), which is a period starting just after
 // moved back to it (`id` and `date`) or a new one. `end`: the period the
-// day could be the last day of (`isEnd` when it already is), longer or
+// day could be the last day of (`isEnd` when it already is, `isNext` when
+// it is the day after its last day, so the tap continues it), longer or
 // shorter than logged. Nothing for days ahead.
 export const periodTap = (
   periods: (TPeriod & { id: string })[],
@@ -135,8 +136,9 @@ export const periodTap = (
   const sorted = periods.toSorted((a, b) => a.date.localeCompare(b.date))
   const before = sorted.findLast((period) => period.date <= day)
   const after = sorted.find((period) => period.date > day)
-  const isInside =
-    !!before && day <= (before.end ?? addDays(before.date, periodLength - 1))
+  const lastDay =
+    before && (before.end ?? addDays(before.date, periodLength - 1))
+  const isInside = !!lastDay && day <= lastDay
   const start: { id?: string; date?: string } =
     before && isInside
       ? { id: before.id }
@@ -145,7 +147,11 @@ export const periodTap = (
         : { date: day }
   const end =
     before && daysFrom(before.date, day) < MAX_PERIOD_DAYS
-      ? { id: before.id, isEnd: before.end === day }
+      ? {
+          id: before.id,
+          isEnd: before.end === day,
+          isNext: day === addDays(lastDay ?? '', 1),
+        }
       : undefined
   return { start, end }
 }

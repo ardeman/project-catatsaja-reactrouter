@@ -34,6 +34,27 @@ export const releases: TRelease[] = [
           id: 'Mengubah tanggal lahir yang sudah diisi di catatan kesehatan kini meminta konfirmasi dulu, supaya tidak berubah tanpa sengaja.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'A health log’s sex can’t be changed while it has logged periods or a period reminder, so they aren’t hidden by accident.',
+          id: 'Jenis kelamin di catatan kesehatan tidak bisa diubah selama ada catatan atau pengingat menstruasi, supaya tidak tersembunyi tanpa sengaja.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Tapping the day right after a period now continues that period instead of starting a new one.',
+          id: 'Mengetuk hari tepat setelah menstruasi kini melanjutkan menstruasi itu, bukan memulai yang baru.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The period summary and your logged periods now share one card beside the calendar: the summary on top, and the history below it scrolling on its own.',
+          id: 'Ringkasan menstruasi dan daftar menstruasi yang kamu catat kini ada dalam satu kartu di samping kalender: ringkasan di atas, dan riwayat di bawahnya bisa digulir sendiri.',
+        },
+      },
     ],
   },
   {

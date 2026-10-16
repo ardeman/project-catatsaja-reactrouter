@@ -1304,7 +1304,8 @@
       "sex": {
         "label": "Sex",
         "female": "Female",
-        "male": "Male"
+        "male": "Male",
+        "locked": "Can't be changed while periods or a period reminder are logged."
       },
       "date": "Date",
       "time": "Time",

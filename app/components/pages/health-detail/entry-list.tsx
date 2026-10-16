@@ -21,11 +21,11 @@ type TProperties<TEntry extends THealthEntry> = Pick<
   // No add button without one (periods are added on their calendar).
   addLabel?: string
   emptyLabel: string
-  // Shown between the add button and the list (charts, summaries), or below
-  // the list when there is `beside`.
+  // Shown between the add button and the list (charts, summaries), or at
+  // the top of the list's card when there is `beside`.
   children?: ReactNode
-  // Shown next to the list on wider screens (a calendar), with the list
-  // scrolling within its height.
+  // Shown next to the list's card on wider screens (a calendar), with the
+  // list scrolling within its height.
   beside?: ReactNode
 }
 
@@ -179,20 +179,22 @@ export const EntryList = <TEntry extends THealthEntry>({
           </Button>
         ))}
       {beside ? (
-        <>
-          <div className="grid gap-4 md:grid-cols-2">
-            {beside}
-            <div className="relative min-h-48">
+        <div className="grid gap-4 md:grid-cols-2">
+          {beside}
+          {/* The summary on top, then the list, which takes what is left of
+              the calendar's height (at least 8rem) and scrolls. */}
+          <div className="glass-surface flex flex-col overflow-hidden rounded-xl border">
+            {children && <div className="border-b">{children}</div>}
+            <div className="md:relative md:min-h-32 md:flex-1">
               <div
                 ref={scrollReference}
-                className="glass-surface max-h-96 overflow-y-auto overscroll-contain rounded-xl border md:absolute md:inset-0 md:max-h-none"
+                className="max-h-96 overflow-y-auto overscroll-contain md:absolute md:inset-0 md:max-h-none"
               >
                 {list}
               </div>
             </div>
           </div>
-          {children}
-        </>
+        </div>
       ) : (
         <>
           {children}

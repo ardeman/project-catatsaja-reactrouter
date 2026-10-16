@@ -73,7 +73,9 @@ export const PeriodCalendar = ({
   const byId = (id?: string) => periods.find((period) => period.id === id)
   const handleSelect = (date?: Date) => {
     setSelected(date)
-    setIsEnd(!!date && !!tapOf(date)?.end?.isEnd)
+    // The day after a period continues it unless unticked.
+    const end = date && tapOf(date)?.end
+    setIsEnd(!!end && (end.isEnd || end.isNext))
   }
   const close = () => setSelected(undefined)
   // From the week before the month to the end of the week after it, for

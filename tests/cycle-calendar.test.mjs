@@ -83,18 +83,32 @@ describe('periodTap', () => {
     const periods = [{ id: 'a', date: '2026-10-10' }]
     assert.deepEqual(tap(periods, '2026-10-12'), {
       start: { id: 'a' },
-      end: { id: 'a', isEnd: false },
+      end: { id: 'a', isEnd: false, isNext: false },
     })
   })
 
   test('can end a period later than expected or logged', () => {
     assert.deepEqual(tap([{ id: 'a', date: '2026-10-10' }], '2026-10-15'), {
       start: { date: '2026-10-15' },
-      end: { id: 'a', isEnd: false },
+      end: { id: 'a', isEnd: false, isNext: true },
     })
     const ended = [{ id: 'a', date: '2026-10-01', end: '2026-10-04' }]
-    assert.deepEqual(tap(ended, '2026-10-04').end, { id: 'a', isEnd: true })
-    assert.deepEqual(tap(ended, '2026-10-06').end, { id: 'a', isEnd: false })
+    assert.deepEqual(tap(ended, '2026-10-04').end, {
+      id: 'a',
+      isEnd: true,
+      isNext: false,
+    })
+    // The day after its last day continues it.
+    assert.deepEqual(tap(ended, '2026-10-05').end, {
+      id: 'a',
+      isEnd: false,
+      isNext: true,
+    })
+    assert.deepEqual(tap(ended, '2026-10-06').end, {
+      id: 'a',
+      isEnd: false,
+      isNext: false,
+    })
     assert.equal(tap(ended, '2026-10-15').end, undefined)
   })
 
