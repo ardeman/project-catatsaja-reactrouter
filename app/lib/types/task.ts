@@ -40,6 +40,6 @@ export type TTaskPermissionRequest = THandleSetPermission & {
   task: TTaskResponse
 }
 
-export type TTaskHelper = 'breakDown' | 'suggest' | 'translate'
+export type TTaskHelper = 'breakDown' | 'suggest' | 'translate' | 'fromText'
 
 export type TTaskHelperResult = z.infer<typeof taskHelperSchema>

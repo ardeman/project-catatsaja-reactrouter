@@ -103,6 +103,10 @@ const answers = [
     { title: '', items: ['Pick a date', 'Book the venue'] },
   ],
   [
+    'Turn this pasted text into a task list',
+    { title: 'Moving house', items: ['Pack the books', 'Book a van'] },
+  ],
+  [
     'Translate this task list',
     {
       title: 'Persiapan pesta',
@@ -374,9 +378,29 @@ describe('AI features and reminders', () => {
     assert.equal(stored, undefined, 'the note stays encrypted')
   })
 
-  test('task list helpers break items into steps, translate, and dictate items', async () => {
+  test('task list helpers make items from pasted text, break items into steps, translate, and dictate items', async () => {
     const { page } = device
     const item = (text) => page.getByRole('button', { name: text, exact: true })
+    // Pasted text fills an empty list, title included.
+    await page.goto(`${APP}/tasks/create`)
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    await page
+      .getByRole('menuitem', { name: 'Make items from pasted text' })
+      .click()
+    await page
+      .getByLabel('Text to turn into items')
+      .fill('Moving house\n- [ ] pack the books\n- [ ] book a van\nThanks!')
+    await page.getByRole('button', { name: 'Make items' }).click()
+    const add = page.getByRole('button', { name: 'Add to list' })
+    await add.waitFor({ timeout: 30_000 })
+    assert.equal(calls.at(-1), 'Turn this pasted text into a task list')
+    await add.click()
+    await item('Book a van').waitFor({ timeout: 30_000 })
+    assert.equal(
+      await page.locator('textarea[name=title]').inputValue(),
+      'Moving house',
+    )
+
     await page.goto(`${APP}/tasks/create`)
     await page.locator('textarea[name=title]').fill('Party prep')
     await page.locator('textarea[name=item]').fill('Plan the party')

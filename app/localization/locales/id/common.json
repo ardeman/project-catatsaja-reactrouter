@@ -274,6 +274,17 @@
         "hint": "Mengganti judul dan item dengan terjemahannya; yang sudah selesai tetap selesai. Bisa diurungkan dari bilah di atas.",
         "apply": "Ganti daftar",
         "working": "Gemini sedang menerjemahkan daftarmu…"
+      },
+      "fromText": {
+        "action": "Buat item dari teks tempelan",
+        "pasteTitle": "Buat item dari teks",
+        "label": "Teks yang diubah jadi item",
+        "pasteHint": "Tempel teks dari catatan atau aplikasi lain. Gemini memilih hal yang perlu dikerjakan dan judul daftarnya.",
+        "convert": "Buat item",
+        "title": "Item dari teksmu",
+        "hint": "Ditambahkan di akhir daftar, beserta judulnya jika daftar belum punya judul. Bisa diurungkan dari bilah di atas.",
+        "apply": "Tambahkan ke daftar",
+        "working": "Gemini sedang membuat item dari teksmu…"
       }
     }
   },
@@ -749,7 +760,7 @@
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
     "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, kapan item berubah, dan berapa bulan yang dicakup entri sebuah buku keuangan (tanpa bulan apa saja). Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
-    "ai": "Pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik, rekaman suara yang kamu buat, atau judul dan isi catatan atau daftar tugas, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
+    "ai": "Pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik atau tempel, rekaman suara yang kamu buat, atau judul dan isi catatan atau daftar tugas, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu undang bisa melihat isinya (undangan mereka menampilkan judulnya), dan item baru masuk ke daftar mereka jika mereka menerimanya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna. Jika kamu memblokir seseorang, mereka tidak bisa mengundangmu lagi; daftar orang yang kamu blokir bersifat pribadi dan mereka tidak diberi tahu.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
@@ -1591,7 +1602,7 @@
   "ai": {
     "notice": {
       "title": "Pakai Gemini?",
-      "send": "Yang kamu proses (foto struk, teks yang kamu ketik, rekaman suara, catatan, atau daftar tugas) dikirim ke Gemini milik Google untuk dibaca, dituliskan, atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
+      "send": "Yang kamu proses (foto struk, teks yang kamu ketik atau tempel, rekaman suara, catatan, atau daftar tugas) dikirim ke Gemini milik Google untuk dibaca, dituliskan, atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
       "encryption": "Ini berlaku juga untuk item yang terenkripsi end-to-end: isinya keluar dari perangkatmu, sedangkan yang kamu simpan tetap dienkripsi seperti biasa. Catat Saja tidak menyimpan apa yang dikirim.",
       "check": "Tidak ada yang dikirim sampai kamu memakai salah satu fitur ini, dan kamu memeriksa hasilnya sebelum ada yang ditambahkan atau diubah. Persetujuan ini bisa dibatalkan di Pengaturan → Akun.",
       "confirm": "Lanjutkan"

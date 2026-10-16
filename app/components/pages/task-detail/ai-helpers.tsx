@@ -1,4 +1,5 @@
 import {
+  ClipboardPaste,
   Languages,
   ListPlus,
   ListTree,
@@ -6,7 +7,7 @@ import {
   Mic,
   Sparkles,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { AiNotice } from '~/components/base/ai-notice'
@@ -20,6 +21,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
+import { Label } from '~/components/ui/label'
+import { Textarea } from '~/components/ui/textarea'
 import { useAiConsent } from '~/lib/hooks/use-ai-consent'
 import { useTaskHelper } from '~/lib/hooks/use-task-helper'
 import { TTaskHelper } from '~/lib/types/task'
@@ -35,11 +38,12 @@ const helpers: { key: TTaskHelper; icon: typeof Sparkles }[] = [
 const toItems = (items: string[]) =>
   items.map((item) => ({ checked: false, item }))
 
-// Gemini helpers for a task list: dictate items, break the open items into
-// steps, suggest what is missing and translate. The list goes to Google only
+// Gemini helpers for a task list: dictate items, turn pasted text into items
+// (and a title), break the open items into steps, suggest what is missing and
+// translate. The list goes to Google only
 // when a helper is picked, after agreeing once to `AiNotice`, and the new
 // list is previewed before it replaces the one on screen. Dictating sends
-// only the recording. Only people who can edit the list get the menu.
+// only the recording, and pasting only the pasted text. Only people who can edit the list get the menu.
 export const AiHelpers = (properties: TAiHelpersProperties) => {
   const { getList, hasOpenItems, hasItems, onApply, triggerClassName } =
     properties
@@ -47,6 +51,8 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
   const { run, notice } = useAiConsent()
   const { mutate: runHelper, pending } = useTaskHelper()
   const [isDictating, setIsDictating] = useState(false)
+  const [pasted, setPasted] = useState<string>()
+  const pastedId = useId()
   const [result, setResult] = useState<{
     helper: TTaskHelper
     // What the preview shows: new or rewritten items.
@@ -54,28 +60,34 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
     list: TTaskList
   }>()
 
-  const handlePick = (helper: TTaskHelper) =>
+  const handlePick = (helper: TTaskHelper, text?: string) =>
     run(async () => {
       const { title, content } = getList()
-      const answer = await runHelper({ helper, title, content })
+      const answer = await runHelper({ helper, title, content, text })
       if (!answer) return
       const done = content.filter((item) => item.checked)
       const list: TTaskList =
-        helper === 'translate'
+        helper === 'fromText'
           ? {
-              title: answer.title || title,
-              content: content.map((item, index) => ({
-                ...item,
-                item: answer.items[index],
-              })),
+              // A title the person wrote stays.
+              title: title.trim() ? title : answer.title,
+              content: [...content, ...toItems(answer.items)],
             }
-          : {
-              title,
-              content:
-                helper === 'breakDown'
-                  ? [...toItems(answer.items), ...done]
-                  : [...content, ...toItems(answer.items)],
-            }
+          : helper === 'translate'
+            ? {
+                title: answer.title || title,
+                content: content.map((item, index) => ({
+                  ...item,
+                  item: answer.items[index],
+                })),
+              }
+            : {
+                title,
+                content:
+                  helper === 'breakDown'
+                    ? [...toItems(answer.items), ...done]
+                    : [...content, ...toItems(answer.items)],
+              }
       setResult({ helper, items: answer.items, list })
     })
 
@@ -86,6 +98,15 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
   }
 
   const handleDictate = () => run(() => setIsDictating(true))
+
+  const handlePaste = () => run(() => setPasted(''))
+
+  const handleConvert = () => {
+    if (!pasted?.trim()) return
+    const text = pasted
+    setPasted(undefined)
+    handlePick('fromText', text)
+  }
 
   const handleInsert = (text: string) => {
     const { title, content } = getList()
@@ -120,6 +141,10 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
             <Mic className="size-4" />
             {t('tasks.ai.dictate')}
           </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handlePaste}>
+            <ClipboardPaste className="size-4" />
+            {t('tasks.ai.fromText.action')}
+          </DropdownMenuItem>
           {helpers.map(({ key, icon: Icon }) => (
             <DropdownMenuItem
               key={key}
@@ -146,6 +171,43 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
         )}
       </div>
       <Modal
+        open={pasted !== undefined}
+        setOpen={(open) => {
+          if (!open) setPasted(undefined)
+        }}
+        title={t('tasks.ai.fromText.pasteTitle')}
+      >
+        <div className="grid gap-3">
+          <div className="grid gap-2">
+            <Label htmlFor={pastedId}>{t('tasks.ai.fromText.label')}</Label>
+            <Textarea
+              id={pastedId}
+              value={pasted ?? ''}
+              onChange={(event) => setPasted(event.target.value)}
+              maxLength={20_000}
+              className="max-h-[50dvh] min-h-40"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {t('tasks.ai.fromText.pasteHint')}
+          </p>
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setPasted(undefined)}
+            >
+              {t('form.cancel')}
+            </Button>
+            <Button
+              onClick={handleConvert}
+              disabled={!pasted?.trim()}
+            >
+              {t('tasks.ai.fromText.convert')}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
         open={!!result}
         setOpen={(open) => {
           if (!open) setResult(undefined)
@@ -155,9 +217,11 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
         {result && (
           <div className="grid gap-3">
             <div className="grid max-h-[50dvh] gap-2 overflow-y-auto rounded-lg border p-3">
-              {result.helper === 'translate' && result.list.title && (
-                <p className="font-semibold">{result.list.title}</p>
-              )}
+              {(result.helper === 'translate' ||
+                result.helper === 'fromText') &&
+                result.list.title && (
+                  <p className="font-semibold">{result.list.title}</p>
+                )}
               <ul className="grid list-disc gap-1 pl-5 text-sm wrap-break-word">
                 {result.items.map((item, index) => (
                   <li key={index}>{item}</li>

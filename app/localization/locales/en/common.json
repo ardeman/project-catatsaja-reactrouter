@@ -274,6 +274,17 @@
         "hint": "Replaces the title and items with the translation; what is done stays done. You can undo it from the bar.",
         "apply": "Replace list",
         "working": "Gemini is translating your list…"
+      },
+      "fromText": {
+        "action": "Make items from pasted text",
+        "pasteTitle": "Make items from text",
+        "label": "Text to turn into items",
+        "pasteHint": "Paste text from another note or app. Gemini picks out the things to do and the list's title.",
+        "convert": "Make items",
+        "title": "Items from your text",
+        "hint": "Added to the end of the list, with the title if the list has none. You can undo it from the bar.",
+        "apply": "Add to list",
+        "working": "Gemini is making items from your text…"
       }
     }
   },
@@ -749,7 +760,7 @@
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices. So the app works offline, each browser you use also keeps a copy of your items (encrypted items stay encrypted) and of an entry you were typing and hadn't saved; for an encrypted book, that draft is kept only until the tab closes. Signing out deletes them from that browser.",
     "encryption": "With end-to-end encryption (offered when you sign up, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, when it changed, and how many months a finance book's entries span (never which months). If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
-    "ai": "Receipt scanning, quick add, dictation, note helpers and task list helpers are optional. Only when you use one is what you chose sent to Google’s Gemini (through Firebase AI Logic): a receipt photo, the text you typed, a voice recording you made, or the note’s or task list’s title and text, even for end-to-end encrypted items. Google may keep it and use it to improve its services. We don’t store what is sent; what you add or change is stored like anything else. You agree to this once, before the first use, and can take it back in Settings → Account.",
+    "ai": "Receipt scanning, quick add, dictation, note helpers and task list helpers are optional. Only when you use one is what you chose sent to Google’s Gemini (through Firebase AI Logic): a receipt photo, the text you typed or pasted, a voice recording you made, or the note’s or task list’s title and text, even for end-to-end encrypted items. Google may keep it and use it to improve its services. We don’t store what is sent; what you add or change is stored like anything else. You agree to this once, before the first use, and can take it back in Settings → Account.",
     "sharing": "When you share a note, task, book or health log, the people you invite can see its content (their invitation shows its title), and it is added to their lists only if they accept. Others can find you by your exact email address to share with you; they then see your name and photo. Nobody can browse a list of users. If you block someone, they can't invite you any more; your list of blocked people is private and they aren't told.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
     "security": "To keep out abuse, the app uses Firebase App Check with Google reCAPTCHA, which checks that requests come from this app using signals from your browser.",
@@ -1591,7 +1602,7 @@
   "ai": {
     "notice": {
       "title": "Use Gemini?",
-      "send": "What you use it on (a receipt photo, text you type, a voice recording, a note or a task list) is sent to Google’s Gemini to read, write down or rewrite it. Google may keep it and use it to improve its services, so leave out anything you don’t want to share.",
+      "send": "What you use it on (a receipt photo, text you type or paste, a voice recording, a note or a task list) is sent to Google’s Gemini to read, write down or rewrite it. Google may keep it and use it to improve its services, so leave out anything you don’t want to share.",
       "encryption": "This happens even for end-to-end encrypted items: that content leaves your device, while what you save is encrypted as usual. Catat Saja doesn’t keep what is sent.",
       "check": "Nothing is sent until you use one of these features, and you check the result before anything is added or changed. You can take this back in Settings → Account.",
       "confirm": "Continue"

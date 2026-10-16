@@ -13,6 +13,7 @@ export const useTaskHelper = () => {
     helper: TTaskHelper
     title: string
     content: { checked: boolean; item: string }[]
+    text?: string
   }): Promise<TTaskHelperResult | undefined> => {
     setPending(data.helper)
     try {

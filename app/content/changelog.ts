@@ -16,6 +16,22 @@ export const releases: TRelease[] = [
   {
     date: '2026-10-16',
     title: {
+      en: 'Task lists from pasted text',
+      id: 'Daftar tugas dari teks tempelan',
+    },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'In a task list, the Gemini menu can now make items from text you paste, such as a list copied from another note. It picks out the things to do and the title, and shows them for you to check before they are added.',
+          id: 'Di daftar tugas, menu Gemini kini bisa membuat item dari teks yang kamu tempel, misalnya daftar yang disalin dari catatan lain. Gemini memilih hal yang perlu dikerjakan dan judulnya, lalu menampilkannya untuk kamu periksa sebelum ditambahkan.',
+        },
+      },
+    ],
+  },
+  {
+    date: '2026-10-16',
+    title: {
       en: 'A calendar for periods',
       id: 'Kalender menstruasi',
     },
