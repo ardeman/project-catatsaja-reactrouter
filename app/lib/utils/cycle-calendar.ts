@@ -69,6 +69,8 @@ export const cycleCalendar = (
   cycle: TCycle | undefined,
   today: string,
   until: string,
+  // Days before this are left out, so a long history costs nothing.
+  since = '',
 ) => {
   const days = new Map<string, TCycleDay>()
   const mark = (
@@ -76,7 +78,11 @@ export const cycleCalendar = (
     kind: TCycleDay,
     canBePast = false,
   ) => {
-    for (let date = from; date <= to; date = addDays(date, 1)) {
+    for (
+      let date = from < since ? since : from;
+      date <= to;
+      date = addDays(date, 1)
+    ) {
       if (!canBePast && date < today) continue
       const current = days.get(date)
       if (!current || rank[kind] > rank[current]) days.set(date, kind)
@@ -159,7 +165,7 @@ export const cycleToday = (
   cycle: TCycle,
   today: string,
 ) => {
-  const kind = cycleCalendar(periods, cycle, today, today).get(today)
+  const kind = cycleCalendar(periods, cycle, today, today, today).get(today)
   const fertile = cycleWindows(cycle, cycle.nextStart).fertile
   if (kind === 'period') {
     const period = periods

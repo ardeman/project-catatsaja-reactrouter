@@ -39,8 +39,8 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: 'Periods in a health log now show on a calendar: the days you logged, and ahead of today the expected period, the other days it could start on, the fertile window, the ovulation window and the likely ovulation day. The summary above it lists the same dates for the next cycle.',
-          id: 'Menstruasi di catatan kesehatan kini tampil di kalender: hari-hari yang kamu catat, dan setelah hari ini perkiraan menstruasi, hari lain yang mungkin menjadi awalnya, masa subur, masa ovulasi dan perkiraan hari ovulasi. Ringkasan di atasnya mencantumkan tanggal yang sama untuk siklus berikutnya.',
+          en: 'Periods in a health log now show on a calendar: the days you logged, and ahead of today the expected period, the other days it could start on, the fertile window, the ovulation window and the likely ovulation day. The summary below it lists the same dates for the next cycle, and on wider screens your logged periods sit beside it, scrolling within its height.',
+          id: 'Menstruasi di catatan kesehatan kini tampil di kalender: hari-hari yang kamu catat, dan setelah hari ini perkiraan menstruasi, hari lain yang mungkin menjadi awalnya, masa subur, masa ovulasi dan perkiraan hari ovulasi. Ringkasan di bawahnya mencantumkan tanggal yang sama untuk siklus berikutnya, dan di layar yang lebih lebar daftar menstruasi yang kamu catat ada di sampingnya, bisa digulir setinggi kalender.',
         },
       },
       {

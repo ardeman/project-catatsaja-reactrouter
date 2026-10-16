@@ -77,9 +77,11 @@ export const PeriodCalendar = ({
     setIsEnd(!!date && !!tapOf(date)?.end?.isEnd)
   }
   const close = () => setSelected(undefined)
-  // To the end of the week after the month, for the days shown around it.
+  // From the week before the month to the end of the week after it, for
+  // the days shown around it.
+  const since = toValue(new Date(month.getFullYear(), month.getMonth(), -6))
   const until = toValue(new Date(month.getFullYear(), month.getMonth() + 1, 7))
-  const days = cycleCalendar(periods, stats, today, until)
+  const days = cycleCalendar(periods, stats, today, until, since)
   const kindOf = (date: Date) => days.get(toValue(date))
   const modifiers = Object.fromEntries(
     legend.map((kind) => [kind, (date: Date) => kindOf(date) === kind]),
