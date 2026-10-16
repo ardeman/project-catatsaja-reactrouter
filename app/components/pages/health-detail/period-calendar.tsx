@@ -2,25 +2,25 @@ import { useState } from 'react'
 import { enUS, id as indonesian } from 'react-day-picker/locale'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Label } from '~/components/ui/label'
 import { THealthEntryOf } from '~/lib/types/health'
-import {
-  cycleCalendar,
-  periodActions,
-  TCycleDay,
-  TPeriodAction,
-} from '~/lib/utils/cycle-calendar'
+import { cycleCalendar, periodTap, TCycleDay } from '~/lib/utils/cycle-calendar'
 import { periodStats } from '~/lib/utils/health'
 import { cn } from '~/lib/utils/shadcn'
 
-type TProperties = {
+import { HealthEntryForm } from './entry-form'
+import { TSectionProperties } from './type'
+
+type TProperties = Pick<
+  TSectionProperties,
+  'isReadOnly' | 'units' | 'onSaveEntry' | 'onDeleteEntry'
+> & {
   periods: THealthEntryOf<'period'>[]
   // None before the first period: only logged days, no predictions.
   stats: ReturnType<typeof periodStats>
   today: string
-  isReadOnly: boolean
-  onAction: (action: TPeriodAction, day: string) => void
 }
 
 // Period days in the colour of the period, fertile days and ovulation in
@@ -51,21 +51,32 @@ const toValue = (date: Date) =>
   ].join('-')
 
 // A month at a time: logged periods behind, predictions ahead. Tapping a
-// day offers what can be logged on it: a period starting or ending.
+// day opens the period it is part of, or a new one starting on it, and can
+// make it the last day of the period before (longer or shorter). Without a
+// logged last day, a period follows the expected length.
 export const PeriodCalendar = ({
   periods,
   stats,
   today,
   isReadOnly,
-  onAction,
+  units,
+  onSaveEntry,
+  onDeleteEntry,
 }: TProperties) => {
   const { t, i18n } = useTranslation()
   const [month, setMonth] = useState(() => new Date())
   const [selected, setSelected] = useState<Date>()
-  const selectedDay = selected && toValue(selected)
-  const actions = selectedDay
-    ? periodActions(periods, selectedDay, today, stats?.periodLength ?? 5)
-    : []
+  const [isEnd, setIsEnd] = useState(false)
+  const periodLength = stats?.periodLength ?? 5
+  const tapOf = (date: Date) =>
+    periodTap(periods, toValue(date), today, periodLength)
+  const tap = selected && tapOf(selected)
+  const byId = (id?: string) => periods.find((period) => period.id === id)
+  const handleSelect = (date?: Date) => {
+    setSelected(date)
+    setIsEnd(!!date && !!tapOf(date)?.end?.isEnd)
+  }
+  const close = () => setSelected(undefined)
   // To the end of the week after the month, for the days shown around it.
   const until = toValue(new Date(month.getFullYear(), month.getMonth() + 1, 7))
   const days = cycleCalendar(periods, stats, today, until)
@@ -96,6 +107,22 @@ export const PeriodCalendar = ({
     },
     className: 'p-0',
   }
+  const form = (
+    key: string,
+    entry: THealthEntryOf<'period'> | undefined,
+    defaults: { date?: string; end?: string },
+  ) => (
+    <HealthEntryForm
+      key={key}
+      kind="period"
+      entry={entry}
+      defaults={defaults}
+      units={units}
+      onSave={onSaveEntry}
+      onDelete={onDeleteEntry}
+      onClose={close}
+    />
+  )
 
   return (
     <section className="glass-surface grid justify-items-center gap-3 rounded-xl border p-4">
@@ -111,36 +138,43 @@ export const PeriodCalendar = ({
           {...calendarProperties}
           mode="single"
           selected={selected}
-          onSelect={setSelected}
+          onSelect={handleSelect}
         />
       )}
-      {selected && selectedDay && (
-        <div
-          aria-live="polite"
-          className="grid w-full justify-items-center gap-2 border-t pt-3"
-        >
-          <p className="text-sm font-medium">{dateFormat.format(selected)}</p>
-          {actions.length === 0 ? (
-            <p className="text-xs text-muted-foreground">
+      {selected && (
+        <div className="grid w-full gap-2 border-t pt-3">
+          <p className="text-center text-sm font-medium">
+            {dateFormat.format(selected)}
+          </p>
+          {tap ? (
+            <>
+              {tap.end && (
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="period-ended"
+                    checked={isEnd}
+                    onCheckedChange={(checked) => setIsEnd(checked === true)}
+                  />
+                  <Label htmlFor="period-ended">
+                    {t('health.period.endedThisDay')}
+                  </Label>
+                </div>
+              )}
+              {isEnd && tap.end
+                ? form(`${toValue(selected)}-end`, byId(tap.end.id), {
+                    end: toValue(selected),
+                  })
+                : form(`${toValue(selected)}-start`, byId(tap.start.id), {
+                    ...(tap.start.date && { date: tap.start.date }),
+                    // Not the last day after all: back to the expected
+                    // length.
+                    ...(tap.end?.isEnd && { end: '' }),
+                  })}
+            </>
+          ) : (
+            <p className="text-center text-xs text-muted-foreground">
               {t('health.period.ahead')}
             </p>
-          ) : (
-            <div className="flex flex-wrap justify-center gap-2">
-              {actions.map((action) => (
-                <Button
-                  key={action.type}
-                  type="button"
-                  size="sm"
-                  variant={action.type === 'remove' ? 'outline' : 'default'}
-                  onClick={() => {
-                    onAction(action, selectedDay)
-                    setSelected(undefined)
-                  }}
-                >
-                  {t(`health.period.action.${action.type}`)}
-                </Button>
-              ))}
-            </div>
           )}
         </div>
       )}

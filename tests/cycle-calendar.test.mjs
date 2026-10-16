@@ -9,7 +9,7 @@ import {
   cycleCalendar,
   cycleToday,
   cycleWindows,
-  periodActions,
+  periodTap,
 } from '../app/lib/utils/cycle-calendar.ts'
 
 const cycle = {
@@ -68,36 +68,44 @@ describe('cycleCalendar', () => {
   })
 })
 
-describe('periodActions', () => {
+describe('periodTap', () => {
   const today = '2026-10-16'
-  const types = (periods, day) =>
-    periodActions(periods, day, today, 5).map((action) =>
-      action.id ? `${action.type}:${action.id}` : action.type,
-    )
+  const tap = (periods, day) => periodTap(periods, day, today, 5)
 
   test('starts a period on an empty day, never ahead of today', () => {
-    assert.deepEqual(types([], '2026-10-10'), ['start'])
-    assert.deepEqual(types([], '2026-10-17'), [])
+    assert.deepEqual(tap([], '2026-10-10'), {
+      start: { date: '2026-10-10' },
+      end: undefined,
+    })
+    assert.equal(tap([], '2026-10-17'), undefined)
   })
 
-  test('ends or removes a period from its days', () => {
+  test('opens the period a day is part of, which can end on it', () => {
     const periods = [{ id: 'a', date: '2026-10-10' }]
-    assert.deepEqual(types(periods, '2026-10-10'), ['end:a', 'remove:a'])
-    assert.deepEqual(types(periods, '2026-10-12'), ['end:a'])
-    // Past the predicted days: still its last day, or a new start.
-    assert.deepEqual(types(periods, '2026-10-15'), ['start', 'end:a'])
+    assert.deepEqual(tap(periods, '2026-10-12'), {
+      start: { id: 'a' },
+      end: { id: 'a', isEnd: false },
+    })
   })
 
-  test('undoes a logged last day', () => {
-    const periods = [{ id: 'a', date: '2026-10-01', end: '2026-10-04' }]
-    assert.deepEqual(types(periods, '2026-10-04'), ['clearEnd:a'])
-    assert.deepEqual(types(periods, '2026-10-03'), ['end:a'])
+  test('can end a period later than expected or logged', () => {
+    assert.deepEqual(tap([{ id: 'a', date: '2026-10-10' }], '2026-10-15'), {
+      start: { date: '2026-10-15' },
+      end: { id: 'a', isEnd: false },
+    })
+    const ended = [{ id: 'a', date: '2026-10-01', end: '2026-10-04' }]
+    assert.deepEqual(tap(ended, '2026-10-04').end, { id: 'a', isEnd: true })
+    assert.deepEqual(tap(ended, '2026-10-06').end, { id: 'a', isEnd: false })
+    assert.equal(tap(ended, '2026-10-15').end, undefined)
   })
 
   test('moves a start back instead of adding one just before it', () => {
     const periods = [{ id: 'a', date: '2026-10-10' }]
-    assert.deepEqual(types(periods, '2026-10-08'), ['start:a'])
-    assert.deepEqual(types(periods, '2026-09-20'), ['start'])
+    assert.deepEqual(tap(periods, '2026-10-08').start, {
+      id: 'a',
+      date: '2026-10-08',
+    })
+    assert.deepEqual(tap(periods, '2026-09-20').start, { date: '2026-09-20' })
   })
 })
 

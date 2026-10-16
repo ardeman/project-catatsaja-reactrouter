@@ -46,8 +46,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'Log a period by tapping its first and last day on the calendar. Until you log the last day, the period follows its expected length.',
-          id: 'Catat menstruasi dengan mengetuk hari pertama dan terakhirnya di kalender. Selama hari terakhir belum dicatat, lamanya mengikuti perkiraan.',
+          en: 'Log a period by tapping a day on the calendar: when it started, its flow and notes, and the day it ended, which can make it longer or shorter. Until you log the last day, the period follows its expected length.',
+          id: 'Catat menstruasi dengan mengetuk tanggal di kalender: kapan mulainya, banyaknya darah dan catatan, serta hari berakhirnya, yang bisa membuatnya lebih panjang atau pendek. Selama hari terakhir belum dicatat, lamanya mengikuti perkiraan.',
         },
       },
       {

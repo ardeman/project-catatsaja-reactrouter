@@ -37,6 +37,9 @@ type TProperties = {
   kind: THealthKind
   // The entry being edited; a new one when undefined.
   entry?: THealthEntry
+  // Values to start from instead of the entry's (a day tapped on a
+  // calendar).
+  defaults?: Partial<Pick<THealthEntryFormValues, 'date' | 'end'>>
   units: TLabUnits
   onSave: (entry: THealthEntry) => void
   onDelete: (id: string) => void
@@ -205,6 +208,7 @@ const toEntry = (
 export const HealthEntryForm = ({
   kind,
   entry,
+  defaults,
   units,
   onSave,
   onDelete,
@@ -213,7 +217,7 @@ export const HealthEntryForm = ({
   const { t } = useTranslation(['common', 'zod'])
   const formMethods = useForm<THealthEntryFormValues>({
     resolver: zodResolver(healthEntrySchema(t, kind)),
-    defaultValues: toValues(kind, entry, units),
+    defaultValues: { ...toValues(kind, entry, units), ...defaults },
   })
   const { handleSubmit, setValue, control } = formMethods
   const [context, meal, flow] = useWatch({

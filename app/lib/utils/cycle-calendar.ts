@@ -121,43 +121,34 @@ const MOVE_START_DAYS = 7
 const daysFrom = (from: string, to: string) =>
   Math.round((toTime(to) - toTime(from)) / DAY)
 
-// What tapping a day on the calendar can do: start a period (or move the
-// next one's start back to it), make it the last day of the period before,
-// undo a logged last day (the end then follows the prediction again), or
-// remove the period that starts on it. Nothing for days ahead.
-export type TPeriodAction =
-  | { type: 'start'; id?: string }
-  | { type: 'end'; id: string }
-  | { type: 'clearEnd'; id: string }
-  | { type: 'remove'; id: string }
-
-export const periodActions = (
+// What tapping a day opens. `start`: the period the day is part of (`id`),
+// or one starting on it (`date`), which is a period starting just after
+// moved back to it (`id` and `date`) or a new one. `end`: the period the
+// day could be the last day of (`isEnd` when it already is), longer or
+// shorter than logged. Nothing for days ahead.
+export const periodTap = (
   periods: (TPeriod & { id: string })[],
   day: string,
   today: string,
   periodLength: number,
 ) => {
-  const actions: TPeriodAction[] = []
-  if (day > today) return actions
+  if (day > today) return
   const sorted = periods.toSorted((a, b) => a.date.localeCompare(b.date))
   const before = sorted.findLast((period) => period.date <= day)
   const after = sorted.find((period) => period.date > day)
-
   const isInside =
     !!before && day <= (before.end ?? addDays(before.date, periodLength - 1))
-  if (!isInside)
-    actions.push(
-      after && daysFrom(day, after.date) <= MOVE_START_DAYS
-        ? { type: 'start', id: after.id }
-        : { type: 'start' },
-    )
-  if (before) {
-    if (before.end === day) actions.push({ type: 'clearEnd', id: before.id })
-    else if (daysFrom(before.date, day) < MAX_PERIOD_DAYS)
-      actions.push({ type: 'end', id: before.id })
-    if (before.date === day) actions.push({ type: 'remove', id: before.id })
-  }
-  return actions
+  const start: { id?: string; date?: string } =
+    before && isInside
+      ? { id: before.id }
+      : after && daysFrom(day, after.date) <= MOVE_START_DAYS
+        ? { id: after.id, date: day }
+        : { date: day }
+  const end =
+    before && daysFrom(before.date, day) < MAX_PERIOD_DAYS
+      ? { id: before.id, isEnd: before.end === day }
+      : undefined
+  return { start, end }
 }
 
 // Where today falls in the cycle, for the overview: a period day (which

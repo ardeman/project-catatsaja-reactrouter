@@ -1435,14 +1435,9 @@
       "ovulationToday": "Expected today",
       "ovulationOn": "Ovulation {{date}}",
       "fertileUntil": "Fertile until {{date}}",
-      "tapHint": "Tap a day to log when a period started or ended. Until you log the last day, it follows the expected length.",
+      "tapHint": "Tap a day to log a period starting on it, its flow and notes, or the day it ended. Until you log the last day, it follows the expected length.",
       "ahead": "Days ahead can’t be logged yet.",
-      "action": {
-        "start": "Period started",
-        "end": "Last day",
-        "clearEnd": "Not the last day",
-        "remove": "Remove period"
-      }
+      "endedThisDay": "The period ended on this day"
     },
     "status": {
       "normal": "Normal",
