@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-17',
+    title: {
+      en: 'A tidier period summary',
+      id: 'Ringkasan menstruasi yang lebih rapi',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'The period summary says each thing once: the next period shows its expected days, the averages sit under the cycle bar, and the colours are explained only under the calendar. A period without a logged last day reads “About 6 days” once that time has passed, not “Ongoing”.',
+          id: 'Ringkasan menstruasi kini menyebut tiap hal sekali: menstruasi berikutnya menampilkan perkiraan harinya, rata-rata ada di bawah bilah siklus, dan warna hanya dijelaskan di bawah kalender. Menstruasi tanpa hari terakhir kini tertulis “Sekitar 6 hari” setelah waktunya lewat, bukan “Sedang berlangsung”.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-16',
     title: {
       en: 'A simpler period calendar',

@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { cycleWindows } from '~/lib/utils/cycle-calendar'
 import { today } from '~/lib/utils/finance'
 import { daysBetween, entriesOf, periodStats } from '~/lib/utils/health'
-import { cn } from '~/lib/utils/shadcn'
 
 import { EntryList } from './entry-list'
-import { cycleDayClassName, PeriodCalendar } from './period-calendar'
+import { PeriodCalendar } from './period-calendar'
 import { TSectionProperties } from './type'
 
 // Logged periods and what they suggest: the next period and the days it
 // could fall on, the fertile window, ovulation and the average cycle, also
-// on a calendar, where a period is logged by tapping its days, with the
-// summary and the logged periods in one card beside it. Estimates, said as such.
+// on a calendar (whose legend explains the colours), where a period is
+// logged by tapping its days, with the summary and the logged periods in one
+// card beside it. Estimates, said as such.
 export const PeriodSection = (properties: TSectionProperties) => {
   const { log, isReadOnly, onSaveEntry, onDeleteEntry } = properties
   const { t, i18n } = useTranslation()
@@ -76,11 +76,15 @@ export const PeriodSection = (properties: TSectionProperties) => {
       beside={(!!stats || !isReadOnly) && calendar}
       emptyLabel={t('health.empty.period')}
       renderRow={(entry) => ({
+        // Without a logged last day, a period follows the average length,
+        // as on the calendar: ongoing only until that length has passed.
         primary: entry.end
           ? t('health.period.lasted', {
               count: daysBetween(entry.date, entry.end) + 1,
             })
-          : t('health.period.ongoing'),
+          : stats && daysBetween(entry.date, now) >= stats.periodLength
+            ? t('health.period.aboutDays', { count: stats.periodLength })
+            : t('health.period.ongoing'),
         secondary: entry.flow ? t(`health.flow.${entry.flow}`) : undefined,
       })}
     >
@@ -91,7 +95,9 @@ export const PeriodSection = (properties: TSectionProperties) => {
               <p className="text-xs text-muted-foreground">
                 {t('health.period.next')}
               </p>
-              <p className="text-lg font-semibold">{date(stats.nextStart)}</p>
+              <p className="text-lg font-semibold">
+                {range(windows.predicted)}
+              </p>
             </div>
             <p className="text-right text-sm text-muted-foreground">
               {stats.daysUntilNext >= 0
@@ -121,13 +127,13 @@ export const PeriodSection = (properties: TSectionProperties) => {
               {t('health.period.cycleDayOf', {
                 day: stats.cycleDay,
                 count: stats.cycleLength,
+                period: stats.periodLength,
               })}
             </p>
           </div>
           <dl className="grid gap-1.5 border-t pt-3 text-sm">
             {(
               [
-                ['predicted', windows.predicted],
                 ['possible', windows.possible],
                 ['fertile', windows.fertile],
                 ['ovulation', windows.ovulation],
@@ -137,13 +143,6 @@ export const PeriodSection = (properties: TSectionProperties) => {
                 key={kind}
                 className="flex items-center gap-2"
               >
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    'size-3 shrink-0 rounded',
-                    cycleDayClassName[kind],
-                  )}
-                />
                 <dt className="min-w-0 flex-1 text-muted-foreground">
                   {t(`health.period.${kind}`)}
                 </dt>
@@ -154,10 +153,6 @@ export const PeriodSection = (properties: TSectionProperties) => {
             ))}
           </dl>
           <p className="text-xs text-muted-foreground">
-            {t('health.period.averageCycle')}:{' '}
-            {t('health.period.days', { count: stats.cycleLength })} ·{' '}
-            {t('health.period.averagePeriod')}:{' '}
-            {t('health.period.days', { count: stats.periodLength })}.{' '}
             {stats.cycleCount === 0
               ? t('health.period.notEnough')
               : t('health.period.basedOn', { count: stats.cycleCount })}{' '}

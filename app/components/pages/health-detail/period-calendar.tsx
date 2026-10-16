@@ -26,7 +26,7 @@ type TProperties = Pick<
 
 // Period days in the colour of the period, fertile days and ovulation in
 // another; predictions outlined or lighter than what was logged.
-export const cycleDayClassName: Record<TCycleDay, string> = {
+const cycleDayClassName: Record<TCycleDay, string> = {
   period: 'bg-(--cat-5)/35 font-semibold',
   predicted: 'border-2 border-dashed border-(--cat-5)',
   possible: 'bg-(--cat-5)/10',
@@ -141,7 +141,8 @@ export const PeriodCalendar = ({
       <Button
         type="button"
         variant="secondary"
-        className="h-8"
+        // Kept in place on this month, so the calendar doesn't move.
+        className={cn('h-8', isThisMonth && 'invisible')}
         disabled={isThisMonth}
         onClick={() => setMonth(new Date())}
       >
