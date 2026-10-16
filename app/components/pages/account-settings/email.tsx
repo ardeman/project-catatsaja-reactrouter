@@ -20,7 +20,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '~/components/ui/tooltip'
+} from '~/components/base/tooltip'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { useEmailVerification } from '~/lib/hooks/use-email-verification'
 import { useResetPassword } from '~/lib/hooks/use-reset-password'

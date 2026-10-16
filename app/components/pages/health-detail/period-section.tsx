@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { cycleWindows } from '~/lib/utils/cycle-calendar'
 import { today } from '~/lib/utils/finance'
 import { daysBetween, entriesOf, periodStats } from '~/lib/utils/health'
+import { cn } from '~/lib/utils/shadcn'
 
 import { EntryList } from './entry-list'
-import { PeriodCalendar } from './period-calendar'
+import { cycleDayClassName, PeriodCalendar } from './period-calendar'
 import { TSectionProperties } from './type'
 
 // Logged periods and what they suggest: the next period and the days it
@@ -26,9 +27,34 @@ export const PeriodSection = (properties: TSectionProperties) => {
   })
   const date = (value: string) =>
     dayFormat.format(new Date(`${value}T00:00:00Z`))
-  const range = ([from, to]: [string, string]) =>
-    from === to ? date(from) : `${date(from)} – ${date(to)}`
+  // Ranges without weekdays, and the month once when it doesn't change
+  // ("Nov 7 – 12"), so each fits on one line.
+  const rangeFormat = new Intl.DateTimeFormat(i18n.language, {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'UTC',
+  })
+  const range = ([from, to]: readonly [string, string]) =>
+    from === to
+      ? date(from)
+      : rangeFormat.formatRange(
+          new Date(`${from}T00:00:00Z`),
+          new Date(`${to}T00:00:00Z`),
+        )
   const windows = stats && cycleWindows(stats, stats.nextStart)
+  // The cycle bar spans the average cycle, or longer when it runs late.
+  const barDays = stats ? Math.max(stats.cycleLength, stats.cycleDay) : 1
+  const percent = (days: number) =>
+    Math.min(100, Math.max(0, (days / barDays) * 100))
+  // Fertile days as days of the current cycle (today is stats.cycleDay).
+  const fertileFrom =
+    stats && windows
+      ? stats.cycleDay + daysBetween(now, windows.fertile[0]) - 1
+      : 0
+  const fertileTo =
+    stats && windows
+      ? stats.cycleDay + daysBetween(now, windows.fertile[1]) - 1
+      : 0
   const calendar = (
     <PeriodCalendar
       periods={entries}
@@ -46,6 +72,7 @@ export const PeriodSection = (properties: TSectionProperties) => {
       {...properties}
       kind="period"
       entries={entries}
+      addLabel={t('health.add.period')}
       beside={(!!stats || !isReadOnly) && calendar}
       emptyLabel={t('health.empty.period')}
       renderRow={(entry) => ({
@@ -59,68 +86,78 @@ export const PeriodSection = (properties: TSectionProperties) => {
     >
       {stats && windows && (
         <section className="grid gap-3 p-4">
-          <dl className="grid grid-cols-2 gap-x-2 gap-y-3">
-            <div className="col-span-2">
-              <dt className="text-xs text-muted-foreground">
+          <div className="flex items-baseline justify-between gap-2">
+            <div>
+              <p className="text-xs text-muted-foreground">
                 {t('health.period.next')}
-              </dt>
-              <dd className="text-lg font-semibold">
-                {date(stats.nextStart)}
-                <span className="ml-2 text-sm font-normal text-muted-foreground">
-                  {stats.daysUntilNext >= 0
-                    ? t('health.period.inDays', { count: stats.daysUntilNext })
-                    : t('health.period.late', { count: -stats.daysUntilNext })}
-                </span>
-              </dd>
+              </p>
+              <p className="text-lg font-semibold">{date(stats.nextStart)}</p>
             </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('health.period.cycleDay')}
-              </dt>
-              <dd className="font-medium">{stats.cycleDay}</dd>
+            <p className="text-right text-sm text-muted-foreground">
+              {stats.daysUntilNext >= 0
+                ? t('health.period.inDays', { count: stats.daysUntilNext })
+                : t('health.period.late', { count: -stats.daysUntilNext })}
+            </p>
+          </div>
+          {/* Today in the cycle, with the fertile window marked. */}
+          <div className="grid gap-1">
+            <div
+              aria-hidden="true"
+              className="relative h-2 overflow-hidden rounded-full bg-muted"
+            >
+              <div
+                className="absolute inset-y-0 bg-(--cat-3)/35"
+                style={{
+                  left: `${percent(fertileFrom)}%`,
+                  width: `${percent(fertileTo - fertileFrom + 1)}%`,
+                }}
+              />
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-(--cat-5)/70"
+                style={{ width: `${percent(stats.cycleDay)}%` }}
+              />
             </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('health.period.predicted')}
-              </dt>
-              <dd className="font-medium">{range(windows.predicted)}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('health.period.possible')}
-              </dt>
-              <dd className="font-medium">{range(windows.possible)}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('health.period.fertile')}
-              </dt>
-              <dd className="font-medium">{range(windows.fertile)}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('health.period.ovulation')}
-              </dt>
-              <dd className="font-medium">{range(windows.ovulation)}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('health.period.averageCycle')}
-              </dt>
-              <dd className="font-medium">
-                {t('health.period.days', { count: stats.cycleLength })}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">
-                {t('health.period.averagePeriod')}
-              </dt>
-              <dd className="font-medium">
-                {t('health.period.days', { count: stats.periodLength })}
-              </dd>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              {t('health.period.cycleDayOf', {
+                day: stats.cycleDay,
+                count: stats.cycleLength,
+              })}
+            </p>
+          </div>
+          <dl className="grid gap-1.5 border-t pt-3 text-sm">
+            {(
+              [
+                ['predicted', windows.predicted],
+                ['possible', windows.possible],
+                ['fertile', windows.fertile],
+                ['ovulation', windows.ovulation],
+              ] as const
+            ).map(([kind, window]) => (
+              <div
+                key={kind}
+                className="flex items-center gap-2"
+              >
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    'size-3 shrink-0 rounded',
+                    cycleDayClassName[kind],
+                  )}
+                />
+                <dt className="min-w-0 flex-1 text-muted-foreground">
+                  {t(`health.period.${kind}`)}
+                </dt>
+                <dd className="text-right font-medium tabular-nums">
+                  {range(window)}
+                </dd>
+              </div>
+            ))}
           </dl>
           <p className="text-xs text-muted-foreground">
+            {t('health.period.averageCycle')}:{' '}
+            {t('health.period.days', { count: stats.cycleLength })} ·{' '}
+            {t('health.period.averagePeriod')}:{' '}
+            {t('health.period.days', { count: stats.periodLength })}.{' '}
             {stats.cycleCount === 0
               ? t('health.period.notEnough')
               : t('health.period.basedOn', { count: stats.cycleCount })}{' '}

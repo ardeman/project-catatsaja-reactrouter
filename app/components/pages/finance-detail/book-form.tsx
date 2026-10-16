@@ -23,14 +23,14 @@ import {
   SelectValue,
 } from '~/components/base/select'
 import { Textarea } from '~/components/base/textarea'
-import { useFinance } from '~/components/pages/finances'
-import { Button } from '~/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '~/components/ui/tooltip'
+} from '~/components/base/tooltip'
+import { useFinance } from '~/components/pages/finances'
+import { Button } from '~/components/ui/button'
 import { auth } from '~/lib/configs/firebase'
 import { fallbackCurrency } from '~/lib/constants/finance'
 import { useAutosave } from '~/lib/hooks/use-autosave'

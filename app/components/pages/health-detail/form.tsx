@@ -10,6 +10,12 @@ import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Segmented } from '~/components/base/segmented'
 import { SexIcon } from '~/components/base/sex-icon'
 import { Textarea } from '~/components/base/textarea'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '~/components/base/tooltip'
 import { useHealthLog } from '~/components/pages/health'
 import { Label } from '~/components/ui/label'
 import { auth } from '~/lib/configs/firebase'
@@ -124,6 +130,7 @@ export const Form = (properties: TFormProperties) => {
   const storedBirthDate = selectedHealthLog?.birthDate ?? ''
   // Fixed while the log holds data that depends on it (periods).
   const lockedSex = hasSexData(values) ? selectedHealthLog?.sex : undefined
+  const [isSexHintOpen, setIsSexHintOpen] = useState(false)
   const isBirthDatePending =
     !!storedBirthDate &&
     values.birthDate !== storedBirthDate &&
@@ -305,6 +312,24 @@ export const Form = (properties: TFormProperties) => {
     onDeleteEntry: handleDeleteEntry,
   }
 
+  const sexOptions = (
+    <Segmented
+      label={t('health.form.sex.label')}
+      value={lockedSex ?? values.sex}
+      className="h-8"
+      options={(['female', 'male'] as const)
+        .filter((sex) => !lockedSex || sex === lockedSex)
+        .map((sex) => ({
+          value: sex,
+          label: t(`health.form.sex.${sex}`),
+          icon: <SexIcon sex={sex} />,
+        }))}
+      onChange={(sex) => {
+        if (!lockedSex) setValue('sex', sex, { shouldDirty: true })
+      }}
+    />
+  )
+
   return (
     <FormProvider {...formMethods}>
       <div className="group/form is-shown mx-auto w-full max-w-3xl space-y-6">
@@ -369,27 +394,32 @@ export const Form = (properties: TFormProperties) => {
             </div>
             {/* A label like the date's, and the same 32px height, so the two
                 line up. ♀ and ♂ in their colours (as on the card). */}
-            <div
-              className="grid gap-1"
-              title={lockedSex ? t('health.form.sex.locked') : undefined}
-            >
+            <div className="grid gap-1">
               <Label>{t('health.form.sex.label')}</Label>
               {/* Only its own while periods are logged. */}
-              <Segmented
-                label={t('health.form.sex.label')}
-                value={lockedSex ?? values.sex}
-                className="h-8"
-                options={(['female', 'male'] as const)
-                  .filter((sex) => !lockedSex || sex === lockedSex)
-                  .map((sex) => ({
-                    value: sex,
-                    label: t(`health.form.sex.${sex}`),
-                    icon: <SexIcon sex={sex} />,
-                  }))}
-                onChange={(sex) => {
-                  if (!lockedSex) setValue('sex', sex, { shouldDirty: true })
-                }}
-              />
+              {lockedSex ? (
+                <TooltipProvider>
+                  <Tooltip
+                    open={isSexHintOpen}
+                    onOpenChange={setIsSexHintOpen}
+                  >
+                    <TooltipTrigger asChild>
+                      {/* Opens on tap as well as on hover and focus. */}
+                      <div
+                        className="cursor-help"
+                        onClickCapture={() => setIsSexHintOpen(true)}
+                      >
+                        {sexOptions}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {t('health.form.sex.locked')}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                sexOptions
+              )}
             </div>
           </fieldset>
           {isBirthDatePending && (

@@ -55,6 +55,27 @@ export const releases: TRelease[] = [
           id: 'Ringkasan menstruasi dan daftar menstruasi yang kamu catat kini ada dalam satu kartu di samping kalender: ringkasan di atas, dan riwayat di bawahnya bisa digulir sendiri.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The period summary is more compact: a bar shows where you are in your cycle and when the fertile window falls, and each date has the colour it has on the calendar.',
+          id: 'Ringkasan menstruasi kini lebih ringkas: sebuah bar menunjukkan posisimu dalam siklus dan kapan masa subur, dan setiap tanggal memakai warna yang sama dengan di kalender.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'An Add period button logs a period without finding its day on the calendar.',
+          id: 'Tombol Tambah menstruasi mencatat menstruasi tanpa perlu mencari tanggalnya di kalender.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'All hints and chart readouts now share one look, and the hint on a locked sex shows on tap too.',
+          id: 'Semua petunjuk dan keterangan grafik kini tampil seragam, dan petunjuk jenis kelamin yang terkunci juga muncul saat diketuk.',
+        },
+      },
     ],
   },
   {

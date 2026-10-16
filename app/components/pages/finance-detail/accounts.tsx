@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next'
 
 import { Input } from '~/components/base/input'
 import { NumberInput } from '~/components/base/number-input'
-import { Button } from '~/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '~/components/ui/tooltip'
+} from '~/components/base/tooltip'
+import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceCurrency, TFinanceForm } from '~/lib/types/finance'
 import { accountsDifference, sumAccounts } from '~/lib/utils/finance'
@@ -89,9 +89,7 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
                   {t('finances.accounts.add')}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent className="max-w-64">
-                {t('finances.accounts.hint')}
-              </TooltipContent>
+              <TooltipContent>{t('finances.accounts.hint')}</TooltipContent>
             </Tooltip>
           )}
         </div>
@@ -186,7 +184,7 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
                       />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-64">
+                  <TooltipContent>
                     {difference === 0
                       ? t('finances.accounts.match')
                       : t(

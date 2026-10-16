@@ -26,7 +26,7 @@ type TProperties = Pick<
 
 // Period days in the colour of the period, fertile days and ovulation in
 // another; predictions outlined or lighter than what was logged.
-const dayClassName: Record<TCycleDay, string> = {
+export const cycleDayClassName: Record<TCycleDay, string> = {
   period: 'bg-(--cat-5)/35 font-semibold',
   predicted: 'border-2 border-dashed border-(--cat-5)',
   possible: 'bg-(--cat-5)/10',
@@ -100,7 +100,7 @@ export const PeriodCalendar = ({
     onMonthChange: setMonth,
     locale: i18n.language === 'id' ? indonesian : enUS,
     modifiers,
-    modifiersClassNames: dayClassName,
+    modifiersClassNames: cycleDayClassName,
     labels: {
       labelGridcell: (date: Date) => {
         const kind = kindOf(date)
@@ -202,7 +202,7 @@ export const PeriodCalendar = ({
           >
             <span
               aria-hidden
-              className={cn('size-4 rounded', dayClassName[kind])}
+              className={cn('size-4 rounded', cycleDayClassName[kind])}
             />
             {t(`health.period.calendar.${kind}`)}
           </li>

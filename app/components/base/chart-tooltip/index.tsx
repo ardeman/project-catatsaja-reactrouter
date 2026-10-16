@@ -1,3 +1,4 @@
+import { tooltipSurface } from '~/components/base/tooltip'
 import { cn } from '~/lib/utils/shadcn'
 
 export type TChartTooltipRow = {
@@ -29,7 +30,10 @@ export const ChartTooltip = ({ title, rows, x, width }: TProperties) => {
     <div
       role="status"
       aria-live="polite"
-      className="pointer-events-none absolute top-0 z-10 grid gap-2 rounded-lg border bg-popover px-3 py-2.5 text-xs text-popover-foreground shadow-md"
+      className={cn(
+        tooltipSurface,
+        'pointer-events-none absolute top-0 z-10 grid gap-2',
+      )}
       style={{ left, width: tooltipWidth }}
     >
       <p className="text-muted-foreground">{title}</p>

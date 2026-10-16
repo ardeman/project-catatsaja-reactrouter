@@ -1292,7 +1292,8 @@
       "glucose": "Tambah gula darah",
       "uricAcid": "Tambah asam urat",
       "cholesterol": "Tambah kolesterol",
-      "calories": "Tambah makanan"
+      "calories": "Tambah makanan",
+      "period": "Tambah menstruasi"
     },
     "form": {
       "name": "Nama",
@@ -1410,6 +1411,7 @@
       "late_one": "terlambat {{count}} hari",
       "late_other": "terlambat {{count}} hari",
       "cycleDay": "Hari siklus",
+      "cycleDayOf": "Hari ke-{{day}} dari siklus {{count}} hari",
       "fertile": "Masa subur",
       "predicted": "Perkiraan menstruasi",
       "possible": "Kemungkinan hari menstruasi",
@@ -1438,7 +1440,7 @@
       "ovulationToday": "Perkiraan hari ini",
       "ovulationOn": "Ovulasi {{date}}",
       "fertileUntil": "Subur sampai {{date}}",
-      "tapHint": "Ketuk tanggal untuk mencatat menstruasi yang mulai di hari itu, banyaknya darah dan catatan, atau hari berakhirnya. Selama hari terakhir belum dicatat, lamanya mengikuti perkiraan.",
+      "tapHint": "Ketuk tanggal untuk mencatat atau mengubah menstruasi.",
       "ahead": "Tanggal yang belum tiba belum bisa dicatat.",
       "endedThisDay": "Menstruasi berakhir di hari ini"
     },
