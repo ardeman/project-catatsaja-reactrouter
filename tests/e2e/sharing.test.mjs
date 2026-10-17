@@ -93,7 +93,7 @@ describe('sharing and finance storage', () => {
     await page.context().close()
   })
 
-  test('note formatting opens by button, right click and long touch', async () => {
+  test('note formatting opens by button and right click, not long touch', async () => {
     const { page, context } = await newDevice(browser, { hasTouch: true })
     try {
       await signUp(
@@ -167,8 +167,8 @@ describe('sharing and finance storage', () => {
       await bar.waitFor({ state: 'hidden' })
       assert.equal(await toggle.getAttribute('aria-pressed'), 'false')
 
-      // A real touch held in the editor opens the same menu without first
-      // selecting text. Moving a finger instead must leave it closed.
+      // Touch and hold is left to the phone, which selects text with it
+      // and shows its own menu: the formatting menu must stay closed.
       await editor.click({ position: { x: 20, y: 10 } })
       const bounds = await editor.boundingBox()
       const point = { x: bounds.x + 20, y: bounds.y + 10 }
@@ -177,35 +177,16 @@ describe('sharing and finance storage', () => {
         type: 'touchStart',
         touchPoints: [point],
       })
-      await menu.waitFor()
+      await page.waitForTimeout(900)
       await touch.send('Input.dispatchTouchEvent', {
         type: 'touchEnd',
         touchPoints: [],
       })
-      await page.waitForTimeout(700)
-      await menu.waitFor()
-      await menu.getByRole('button', { name: 'Italic', exact: true }).click()
-      await menu.waitFor({ state: 'hidden' })
-      await editor.dispatchEvent('pointerdown', {
-        pointerType: 'touch',
-        isPrimary: true,
-        pointerId: 5,
-        clientX: point.x,
-        clientY: point.y,
-      })
-      await editor.dispatchEvent('pointermove', {
-        pointerType: 'touch',
-        isPrimary: true,
-        pointerId: 5,
-        clientX: point.x,
-        clientY: point.y + 30,
-      })
-      await page.waitForTimeout(650)
-      assert.equal(await menu.count(), 0, 'scrolling does not open formatting')
-      await editor.dispatchEvent('pointerup', {
-        pointerType: 'touch',
-        pointerId: 5,
-      })
+      assert.equal(
+        await menu.count(),
+        0,
+        'touch and hold leaves text selection to the phone',
+      )
 
       await editor.press('ControlOrMeta+a')
       await toggle.click()

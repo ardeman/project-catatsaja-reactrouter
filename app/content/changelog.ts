@@ -27,6 +27,13 @@ export const releases: TRelease[] = [
           id: 'Ringkasan menstruasi kini menyebut tiap hal sekali: menstruasi berikutnya menampilkan perkiraan harinya, rata-rata ada di bawah bilah siklus, dan warna hanya dijelaskan di bawah kalender. Menstruasi tanpa hari terakhir kini tertulis “Sekitar 6 hari” setelah waktunya lewat, bukan “Sedang berlangsung”.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'On a phone, touching and holding in a note selects text again, with your phone’s own copy and paste menu. The formatting menu no longer covers it; format from the Format button at the top instead.',
+          id: 'Di ponsel, sentuh dan tahan di catatan kembali memilih teks, dengan menu salin dan tempel bawaan ponsel. Menu format tidak lagi menutupinya; gunakan tombol Format di atas untuk memformat.',
+        },
+      },
     ],
   },
   {

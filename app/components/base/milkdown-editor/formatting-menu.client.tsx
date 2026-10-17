@@ -42,12 +42,10 @@ export const FormattingMenu = ({
   useEffect(() => {
     const root = container.current
     if (!root || readOnly) return
-    let timer: ReturnType<typeof setTimeout> | undefined
-    let start: { x: number; y: number; pointerId: number } | undefined
-    const cancel = () => {
-      clearTimeout(timer)
-      start = undefined
-    }
+    // Touch and hold belongs to the phone: it selects text and shows the
+    // system's own copy and paste menu. Touch screens format from the
+    // Format button in the page's toolbar instead.
+    let wasTouch = false
     const show = (x: number, y: number) => {
       const editor = getEditor()
       if (!editor || editor.status !== EditorStatus.Created) return
@@ -57,7 +55,7 @@ export const FormattingMenu = ({
         const position = view.posAtCoords({ left: x, top: y })
         const { from, to } = view.state.selection
         // Keep a selection when the person opens the menu over it;
-        // otherwise format at the clicked or touched cursor position.
+        // otherwise format at the clicked cursor position.
         if (position && (position.pos < from || position.pos > to)) {
           const resolved = view.state.doc.resolve(position.pos)
           const selection = TextSelection.near(resolved)
@@ -79,8 +77,11 @@ export const FormattingMenu = ({
     }
     const contextMenu = (event: MouseEvent) => {
       if (!isEditor(event.target)) return
+      const pointerType =
+        event instanceof PointerEvent ? event.pointerType : undefined
+      if (pointerType === 'touch' || (wasTouch && pointerType !== 'mouse'))
+        return
       event.preventDefault()
-      cancel()
       if (event.clientX === 0 && event.clientY === 0) {
         const editor = getEditor()
         if (!editor) return
@@ -90,39 +91,18 @@ export const FormattingMenu = ({
       } else show(event.clientX, event.clientY)
     }
     const pointerDown = (event: PointerEvent) => {
-      cancel()
-      if (
-        event.pointerType !== 'touch' ||
-        !event.isPrimary ||
-        !isEditor(event.target)
-      )
-        return
-      start = { x: event.clientX, y: event.clientY, pointerId: event.pointerId }
-      timer = setTimeout(() => {
-        show(event.clientX, event.clientY)
-        cancel()
-      }, 550)
+      wasTouch = event.pointerType === 'touch'
     }
-    const pointerMove = (event: PointerEvent) => {
-      if (
-        start &&
-        (event.pointerId !== start.pointerId ||
-          Math.hypot(event.clientX - start.x, event.clientY - start.y) > 10)
-      )
-        cancel()
+    const keyDown = () => {
+      wasTouch = false
     }
     root.addEventListener('contextmenu', contextMenu)
     root.addEventListener('pointerdown', pointerDown)
-    root.addEventListener('pointermove', pointerMove)
-    root.addEventListener('pointerup', cancel)
-    root.addEventListener('pointercancel', cancel)
+    root.addEventListener('keydown', keyDown)
     return () => {
-      cancel()
       root.removeEventListener('contextmenu', contextMenu)
       root.removeEventListener('pointerdown', pointerDown)
-      root.removeEventListener('pointermove', pointerMove)
-      root.removeEventListener('pointerup', cancel)
-      root.removeEventListener('pointercancel', cancel)
+      root.removeEventListener('keydown', keyDown)
     }
   }, [getEditor, readOnly])
 
