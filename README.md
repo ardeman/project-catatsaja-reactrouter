@@ -70,7 +70,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 An optional Catat Saja Plus subscription pays for what costs money to run; the core stays free (AGENTS.md → Decisions). In order:
 
-- [ ] Measure: a tracked link per promo video (`utm_campaign` per story: `rina`, `couple`, `adit`, `maya`) and sign-ups by source in Analytics.
+- [ ] Measure: a tracked link per promo video (`utm_campaign` per story: `rina`, `couple`, `adit`, `maya`, `nadia`, `wulan`, `hendra`) and sign-ups by source in Analytics.
 - [ ] Find who pays: post the per-person stories videos, then a small paid test per person for a week; the cheapest active sign-ups pick which Plus features come first.
 - [ ] A donation link (Trakteer or Saweria) and a Plus waitlist with an early-bird price, to check that people will pay.
 - [ ] Plus: Gemini on the paid tier with higher limits (photos not used to improve Google's services; a few uses a month stay free), health reports as PDF for the doctor or posyandu, budgets, exports and yearly finance reports, and a family plan.
