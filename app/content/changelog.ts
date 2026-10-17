@@ -41,6 +41,13 @@ export const releases: TRelease[] = [
           id: 'Di iPhone dan iPad, teks yang dipilih di catatan kembali menampilkan penanda awal dan akhirnya, jadi Anda bisa menggeser pilihan. Teks yang dipilih juga lebih mudah terlihat, di mode terang maupun gelap.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'On iPhones with iOS 17, the New note, New task, New book and New health log buttons show again above the bottom bar.',
+          id: 'Di iPhone dengan iOS 17, tombol Catatan baru, Tugas baru, Buku baru, dan Catatan kesehatan baru kembali tampil di atas bilah bawah.',
+        },
+      },
     ],
   },
   {
