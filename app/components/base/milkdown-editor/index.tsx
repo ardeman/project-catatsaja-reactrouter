@@ -65,6 +65,10 @@ const Editor = <TFormValues extends Record<string, unknown>>(
       },
       featureConfigs: {
         [Crepe.Feature.CodeMirror]: { theme: codeTheme },
+        // The virtual cursor hides the native caret (caret-color:
+        // transparent), and iOS draws the selection handles in the caret's
+        // colour, so they disappeared.
+        [Crepe.Feature.Cursor]: { virtual: false },
         [Crepe.Feature.Placeholder]: {
           text: placeholderText,
           mode: 'doc',

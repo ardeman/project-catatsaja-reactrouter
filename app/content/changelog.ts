@@ -34,6 +34,13 @@ export const releases: TRelease[] = [
           id: 'Di ponsel, sentuh dan tahan di catatan kembali memilih teks, dengan menu salin dan tempel bawaan ponsel. Menu format tidak lagi menutupinya; gunakan tombol Format di atas untuk memformat.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'On iPhone and iPad, selected text in a note shows its handles again, so you can drag the start and end of what you selected. Selected text is also easier to see, in both light and dark mode.',
+          id: 'Di iPhone dan iPad, teks yang dipilih di catatan kembali menampilkan penanda awal dan akhirnya, jadi Anda bisa menggeser pilihan. Teks yang dipilih juga lebih mudah terlihat, di mode terang maupun gelap.',
+        },
+      },
     ],
   },
   {

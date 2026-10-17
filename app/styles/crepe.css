@@ -39,6 +39,13 @@
   scroll-margin-top: 9rem;
 }
 
+/* Crepe paints selected text with --crepe-color-selected (the input grey),
+   which barely shows in either theme, least of all on a phone. Use the
+   primary colour, like code blocks (code-theme.ts). */
+.milkdown .ProseMirror *::selection {
+  background: --theme(--color-primary / 30%);
+}
+
 /* Code block syntax colours (code-theme.ts), GitHub light and dark. */
 :root {
   --code-keyword: #cf222e;
