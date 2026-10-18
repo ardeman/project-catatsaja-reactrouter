@@ -136,6 +136,9 @@ self.addEventListener('push', (event) => {
         body: body ?? data.body,
         icon: '/android-chrome-192x192.png',
         tag: data.tag,
+        // Without it, a push replacing one with the same tag (the next
+        // dose of a medicine) arrives silently in the drawer.
+        renotify: Boolean(data.tag),
         data: { link: data.link },
       }),
     ),

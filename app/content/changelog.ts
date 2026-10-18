@@ -34,6 +34,13 @@ export const releases: TRelease[] = [
           id: 'Menutup tab tepat setelah mengubah item terenkripsi bisa membuat perubahan itu hilang selagi masih dienkripsi. Sekarang browser bertanya dulu sebelum ditutup sampai perubahan tersimpan dengan aman.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'A notification for the next dose of the same medicine, or the same invitation again, now alerts you instead of quietly replacing the earlier one.',
+          id: 'Notifikasi untuk dosis berikutnya dari obat yang sama, atau undangan yang sama lagi, sekarang memberi tanda alih-alih diam-diam menggantikan notifikasi sebelumnya.',
+        },
+      },
     ],
   },
   {
