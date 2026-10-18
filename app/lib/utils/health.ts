@@ -36,17 +36,18 @@ export const ageInYears = (birthDate: string, on: string) => {
   return year - birthYear - (hasHadBirthday ? 0 : 1)
 }
 
-// Entries of one kind, newest first (by date, then time, then the order
-// they were added).
+// Entries of one kind (or of a few), newest first (by date, then time,
+// then the order they were added).
 export const entriesOf = <TKind extends THealthKind>(
   entries: THealthEntry[],
-  kind: TKind,
+  kind: TKind | TKind[],
 ) =>
   entries
     .map((entry, index) => ({ entry, index }))
-    .filter(
-      (item): item is { entry: THealthEntryOf<TKind>; index: number } =>
-        item.entry.kind === kind,
+    .filter((item): item is { entry: THealthEntryOf<TKind>; index: number } =>
+      Array.isArray(kind)
+        ? kind.includes(item.entry.kind as TKind)
+        : item.entry.kind === kind,
     )
     .toSorted(
       (a, b) =>

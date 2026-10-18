@@ -4,12 +4,18 @@
 // own (tests/health-reminders.test.mjs).
 
 type TKind =
-  'body' | 'glucose' | 'uricAcid' | 'cholesterol' | 'calories' | 'period'
+  | 'body'
+  | 'glucose'
+  | 'uricAcid'
+  | 'cholesterol'
+  | 'calories'
+  | 'period'
+  | 'intimacy'
 
 type TReminder =
   | {
       id: string
-      kind: Exclude<TKind, 'period'>
+      kind: Exclude<TKind, 'period' | 'intimacy'>
       everyDays: number
       // HH:MM, or none for any time that day.
       time?: string

@@ -186,3 +186,17 @@ export const cycleToday = (
     } as const
   return { kind: 'next' } as const
 }
+
+export type TIntimacyDay = 'protected' | 'unprotected'
+
+// The days sex was logged, for the calendar's dot: unprotected when any
+// time that day was, so it is never hidden behind a protected one.
+export const intimacyDays = (
+  entries: { date: string; protected: boolean }[],
+) => {
+  const days = new Map<string, TIntimacyDay>()
+  for (const entry of entries)
+    if (!entry.protected) days.set(entry.date, 'unprotected')
+    else if (!days.has(entry.date)) days.set(entry.date, 'protected')
+  return days
+}

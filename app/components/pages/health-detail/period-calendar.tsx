@@ -3,11 +3,18 @@ import { enUS, id as indonesian } from 'react-day-picker/locale'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
+import { Segmented } from '~/components/base/segmented'
 import { Calendar } from '~/components/ui/calendar'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
 import { THealthEntryOf } from '~/lib/types/health'
-import { cycleCalendar, periodTap, TCycleDay } from '~/lib/utils/cycle-calendar'
+import {
+  cycleCalendar,
+  intimacyDays,
+  periodTap,
+  TCycleDay,
+  TIntimacyDay,
+} from '~/lib/utils/cycle-calendar'
 import { periodStats } from '~/lib/utils/health'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -19,6 +26,8 @@ type TProperties = Pick<
   'isReadOnly' | 'units' | 'onSaveEntry' | 'onDeleteEntry'
 > & {
   periods: THealthEntryOf<'period'>[]
+  // Sex logged on the calendar, shown as a dot on its day.
+  intimacy: THealthEntryOf<'intimacy'>[]
   // None before the first period: only logged days, no predictions.
   stats: ReturnType<typeof periodStats>
   today: string
@@ -42,6 +51,19 @@ const legend: TCycleDay[] = [
   'ovulation',
 ]
 
+// A dot under the day: hollow when protected, filled when not, so the two
+// differ by shape as well as colour.
+const dot =
+  "after:absolute after:bottom-0.5 after:left-1/2 after:size-1.5 after:-translate-x-1/2 after:rounded-full after:border after:border-(--cat-7) after:content-['']"
+const intimacyDayClassName: Record<TIntimacyDay, string> = {
+  protected: dot,
+  unprotected: cn(dot, 'after:bg-(--cat-7)'),
+}
+
+const intimacyLegend: TIntimacyDay[] = ['protected', 'unprotected']
+
+type TMode = 'period' | 'intimacy'
+
 const toValue = (date: Date) =>
   [
     date.getFullYear(),
@@ -52,9 +74,11 @@ const toValue = (date: Date) =>
 // A month at a time: logged periods behind, predictions ahead. Tapping a
 // day opens the period it is part of, or a new one starting on it, and can
 // make it the last day of the period before (longer or shorter). Without a
-// logged last day, a period follows the expected length.
+// logged last day, a period follows the expected length. A day up to today
+// can log sex instead, protected or not.
 export const PeriodCalendar = ({
   periods,
+  intimacy,
   stats,
   today,
   isReadOnly,
@@ -66,6 +90,9 @@ export const PeriodCalendar = ({
   const [month, setMonth] = useState(() => new Date())
   const [selected, setSelected] = useState<Date>()
   const [isEnd, setIsEnd] = useState(false)
+  const [mode, setMode] = useState<TMode>('period')
+  // The day's logged sex being edited; a new one when undefined.
+  const [intimacyId, setIntimacyId] = useState<string>()
   const periodLength = stats?.periodLength ?? 5
   const tapOf = (date: Date) =>
     periodTap(periods, toValue(date), today, periodLength)
@@ -73,6 +100,8 @@ export const PeriodCalendar = ({
   const byId = (id?: string) => periods.find((period) => period.id === id)
   const handleSelect = (date?: Date) => {
     setSelected(date)
+    setMode('period')
+    setIntimacyId(undefined)
     // The day after a period continues it unless unticked.
     const end = date && tapOf(date)?.end
     setIsEnd(!!end && (end.isEnd || end.isNext))
@@ -84,9 +113,21 @@ export const PeriodCalendar = ({
   const until = toValue(new Date(month.getFullYear(), month.getMonth() + 1, 7))
   const days = cycleCalendar(periods, stats, today, until, since)
   const kindOf = (date: Date) => days.get(toValue(date))
-  const modifiers = Object.fromEntries(
-    legend.map((kind) => [kind, (date: Date) => kindOf(date) === kind]),
-  )
+  const sexDays = intimacyDays(intimacy)
+  const sexOf = (date: Date) => sexDays.get(toValue(date))
+  const modifiers = {
+    ...Object.fromEntries(
+      legend.map((kind) => [kind, (date: Date) => kindOf(date) === kind]),
+    ),
+    ...Object.fromEntries(
+      intimacyLegend.map((kind) => [
+        kind,
+        (date: Date) => sexOf(date) === kind,
+      ]),
+    ),
+  }
+  const selectedDay = selected && toValue(selected)
+  const sexThatDay = intimacy.filter((entry) => entry.date === selectedDay)
   const now = new Date()
   const isThisMonth =
     month.getFullYear() === now.getFullYear() &&
@@ -100,12 +141,20 @@ export const PeriodCalendar = ({
     onMonthChange: setMonth,
     locale: i18n.language === 'id' ? indonesian : enUS,
     modifiers,
-    modifiersClassNames: cycleDayClassName,
+    modifiersClassNames: { ...cycleDayClassName, ...intimacyDayClassName },
     labels: {
       labelGridcell: (date: Date) => {
-        const kind = kindOf(date)
+        const marks = [kindOf(date), sexOf(date)]
+          .filter(Boolean)
+          .map((kind) =>
+            t(
+              kind === 'protected' || kind === 'unprotected'
+                ? `health.intimacy.${kind}Sex`
+                : `health.period.calendar.${kind}`,
+            ),
+          )
         const label = dateFormat.format(date)
-        return kind ? `${label}: ${t(`health.period.calendar.${kind}`)}` : label
+        return marks.length > 0 ? `${label}: ${marks.join(', ')}` : label
       },
     },
     classNames: {
@@ -163,7 +212,64 @@ export const PeriodCalendar = ({
           <p className="text-center text-sm font-medium">
             {dateFormat.format(selected)}
           </p>
-          {tap ? (
+          {tap && (
+            <Segmented
+              label={t('health.intimacy.logWhat')}
+              value={mode}
+              options={[
+                { value: 'period', label: t('health.kinds.period') },
+                { value: 'intimacy', label: t('health.kinds.intimacy') },
+              ]}
+              onChange={setMode}
+              className="justify-self-center"
+            />
+          )}
+          {tap && mode === 'intimacy' ? (
+            <>
+              {sexThatDay.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {sexThatDay.map((entry) => (
+                    <Button
+                      key={entry.id}
+                      type="button"
+                      variant={
+                        intimacyId === entry.id ? 'secondary' : 'outline'
+                      }
+                      className="h-7 px-2.5 text-xs"
+                      onClick={() => setIntimacyId(entry.id)}
+                    >
+                      {t(
+                        entry.protected
+                          ? 'health.intimacy.protectedSex'
+                          : 'health.intimacy.unprotectedSex',
+                      )}
+                      {entry.time && ` · ${entry.time}`}
+                    </Button>
+                  ))}
+                  {intimacyId && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="h-7 px-2.5 text-xs"
+                      onClick={() => setIntimacyId(undefined)}
+                    >
+                      {t('health.intimacy.addAnother')}
+                    </Button>
+                  )}
+                </div>
+              )}
+              <HealthEntryForm
+                key={`${selectedDay}-intimacy-${intimacyId ?? 'new'}`}
+                kind="intimacy"
+                entry={sexThatDay.find((entry) => entry.id === intimacyId)}
+                defaults={{ date: selectedDay }}
+                units={units}
+                onSave={onSaveEntry}
+                onDelete={onDeleteEntry}
+                onClose={close}
+              />
+            </>
+          ) : tap ? (
             <>
               {tap.end && (
                 <div className="flex items-center gap-2">
@@ -208,6 +314,20 @@ export const PeriodCalendar = ({
             {t(`health.period.calendar.${kind}`)}
           </li>
         ))}
+        {/* Only once sex is logged, so the legend stays short otherwise. */}
+        {intimacy.length > 0 &&
+          intimacyLegend.map((kind) => (
+            <li
+              key={kind}
+              className="flex items-center gap-1.5"
+            >
+              <span
+                aria-hidden
+                className={cn('relative size-4', intimacyDayClassName[kind])}
+              />
+              {t(`health.intimacy.${kind}Sex`)}
+            </li>
+          ))}
       </ul>
     </section>
   )

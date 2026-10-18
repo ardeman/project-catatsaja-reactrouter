@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { DatePicker } from '~/components/base/date-picker'
 import { Input } from '~/components/base/input'
 import { NumberInput } from '~/components/base/number-input'
+import { Segmented } from '~/components/base/segmented'
 import {
   Select,
   SelectContent,
@@ -55,6 +56,7 @@ const glucoseContexts: TGlucoseContext[] = [
 ]
 const meals = ['breakfast', 'lunch', 'dinner', 'snack'] as const
 const flows = ['light', 'medium', 'heavy'] as const
+const protections = ['protected', 'unprotected'] as const
 
 const nowTime = () => new Date().toTimeString().slice(0, 5)
 
@@ -91,6 +93,8 @@ const toValues = (
     meal: 'breakfast',
     end: '',
     flow: '',
+    // Chosen each time, never assumed.
+    protection: '',
   }
   if (!entry) return base
   switch (entry.kind) {
@@ -126,6 +130,12 @@ const toValues = (
     }
     case 'period': {
       return { ...base, end: entry.end ?? '', flow: entry.flow ?? '' }
+    }
+    case 'intimacy': {
+      return {
+        ...base,
+        protection: entry.protected ? 'protected' : 'unprotected',
+      }
     }
   }
 }
@@ -200,6 +210,13 @@ const toEntry = (
         flow: (values.flow || undefined) as (typeof flows)[number] | undefined,
       })
     }
+    case 'intimacy': {
+      return compactEntry({
+        ...base,
+        kind,
+        protected: values.protection === 'protected',
+      })
+    }
   }
 }
 
@@ -219,10 +236,15 @@ export const HealthEntryForm = ({
     resolver: zodResolver(healthEntrySchema(t, kind)),
     defaultValues: { ...toValues(kind, entry, units), ...defaults },
   })
-  const { handleSubmit, setValue, control } = formMethods
-  const [context, meal, flow] = useWatch({
+  const {
+    handleSubmit,
+    setValue,
     control,
-    name: ['context', 'meal', 'flow'],
+    formState: { errors },
+  } = formMethods
+  const [context, meal, flow, protection] = useWatch({
+    control,
+    name: ['context', 'meal', 'flow', 'protection'],
   })
   const unit = (measure: TLabMeasure) => labUnitLabel(measure, units)
   const field = (name: string, label: string, digits?: number) => (
@@ -360,6 +382,33 @@ export const HealthEntryForm = ({
           )}
           {kind === 'period' &&
             choice('flow', flow, flows, 'health.flow', true)}
+          {kind === 'intimacy' && (
+            <div className="grid gap-1">
+              <Segmented
+                label={t('health.intimacy.protection')}
+                value={protection}
+                options={protections.map((value) => ({
+                  value,
+                  label: t(`health.intimacy.${value}`),
+                }))}
+                onChange={(next) =>
+                  setValue('protection', next, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  })
+                }
+                className="w-fit"
+              />
+              {errors.protection && (
+                <p className="text-xs text-destructive-text">
+                  {t('health.intimacy.chooseProtection')}
+                </p>
+              )}
+              <p className="text-xs text-muted-foreground">
+                {t('health.intimacy.sharedHint')}
+              </p>
+            </div>
+          )}
 
           <Input
             name="note"

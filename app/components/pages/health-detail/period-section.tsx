@@ -18,6 +18,9 @@ export const PeriodSection = (properties: TSectionProperties) => {
   const { t, i18n } = useTranslation()
   const now = today()
   const entries = entriesOf(log.content, 'period')
+  const intimacy = entriesOf(log.content, 'intimacy')
+  // Periods and sex together in the history.
+  const history = entriesOf(log.content, ['period', 'intimacy'])
   const stats = periodStats(log.content, now)
   const dayFormat = new Intl.DateTimeFormat(i18n.language, {
     weekday: 'short',
@@ -58,6 +61,7 @@ export const PeriodSection = (properties: TSectionProperties) => {
   const calendar = (
     <PeriodCalendar
       periods={entries}
+      intimacy={intimacy}
       stats={stats}
       today={now}
       isReadOnly={isReadOnly}
@@ -71,22 +75,34 @@ export const PeriodSection = (properties: TSectionProperties) => {
     <EntryList
       {...properties}
       kind="period"
-      entries={entries}
+      entries={history}
       addLabel={t('health.add.period')}
       beside={(!!stats || !isReadOnly) && calendar}
       emptyLabel={t('health.empty.period')}
-      renderRow={(entry) => ({
-        // Without a logged last day, a period follows the average length,
-        // as on the calendar: ongoing only until that length has passed.
-        primary: entry.end
-          ? t('health.period.lasted', {
-              count: daysBetween(entry.date, entry.end) + 1,
-            })
-          : stats && daysBetween(entry.date, now) >= stats.periodLength
-            ? t('health.period.aboutDays', { count: stats.periodLength })
-            : t('health.period.ongoing'),
-        secondary: entry.flow ? t(`health.flow.${entry.flow}`) : undefined,
-      })}
+      renderRow={(entry) =>
+        entry.kind === 'intimacy'
+          ? {
+              primary: t(
+                entry.protected
+                  ? 'health.intimacy.protectedSex'
+                  : 'health.intimacy.unprotectedSex',
+              ),
+            }
+          : {
+              // Without a logged last day, a period follows the average length,
+              // as on the calendar: ongoing only until that length has passed.
+              primary: entry.end
+                ? t('health.period.lasted', {
+                    count: daysBetween(entry.date, entry.end) + 1,
+                  })
+                : stats && daysBetween(entry.date, now) >= stats.periodLength
+                  ? t('health.period.aboutDays', { count: stats.periodLength })
+                  : t('health.period.ongoing'),
+              secondary: entry.flow
+                ? t(`health.flow.${entry.flow}`)
+                : undefined,
+            }
+      }
     >
       {stats && windows && (
         <section className="grid gap-3 p-4">

@@ -51,6 +51,8 @@ export type THealthEntry =
       end?: string
       flow?: TFlow
     })
+  // Sex on that day, with protection or not. Logged on the period calendar.
+  | (TEntryBase & { kind: 'intimacy'; protected: boolean })
 
 export type THealthKind = THealthEntry['kind']
 
@@ -65,7 +67,7 @@ export type THealthEntryOf<TKind extends THealthKind> = Extract<
 export type THealthReminder =
   | {
       id: string
-      kind: Exclude<THealthKind, 'period'>
+      kind: Exclude<THealthKind, 'period' | 'intimacy'>
       everyDays: number
       time?: string
     }

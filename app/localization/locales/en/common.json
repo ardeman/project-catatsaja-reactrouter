@@ -756,7 +756,7 @@
   },
   "privacyPolicy": {
     "updated": "Last updated: 18 October 2026",
-    "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books, health logs and settings you create.",
+    "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books, health logs and settings you create. A health log can hold sensitive details, such as periods, sex (and whether it was protected) and medicines; turn on end-to-end encryption to keep them unreadable to us.",
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices. So the app works offline, each browser you use also keeps a copy of your items (encrypted items stay encrypted) and of an entry you were typing and hadn't saved; for an encrypted book, that draft is kept only until the tab closes. Signing out deletes them from that browser.",
     "encryption": "With end-to-end encryption (offered when you sign up, and available to everyone in Settings), the content of your notes, tasks, finance books and health logs is encrypted on your device before it is saved, with keys only you and the people you share with hold. We and Google can't read it. What the app needs to work stays readable: who an item belongs to, who it is shared with, when it changed, and how many months a finance book's entries span (never which months). If you lose both your passphrase and your recovery code, nobody can recover your encrypted data.",
@@ -1305,7 +1305,8 @@
       "uricAcid": "Uric acid",
       "cholesterol": "Cholesterol",
       "calories": "Calories",
-      "period": "Period"
+      "period": "Period",
+      "intimacy": "Sex"
     },
     "add": {
       "body": "Add measurement",
@@ -1326,7 +1327,7 @@
         "label": "Sex",
         "female": "Female",
         "male": "Male",
-        "locked": "Can't be changed while periods or a period reminder are logged."
+        "locked": "Can't be changed while periods, sex or a period reminder are logged."
       },
       "date": "Date",
       "time": "Time",
@@ -1457,9 +1458,20 @@
       "ovulationToday": "Expected today",
       "ovulationOn": "Ovulation {{date}}",
       "fertileUntil": "Fertile until {{date}}",
-      "tapHint": "Tap a day to log or change a period.",
+      "tapHint": "Tap a day to log or change a period, or to log sex.",
       "ahead": "Days ahead can’t be logged yet.",
       "endedThisDay": "The period ended on this day"
+    },
+    "intimacy": {
+      "logWhat": "What to log",
+      "protection": "Protection",
+      "protected": "Protected",
+      "unprotected": "Unprotected",
+      "protectedSex": "Protected sex",
+      "unprotectedSex": "Unprotected sex",
+      "chooseProtection": "Choose protected or unprotected.",
+      "addAnother": "Add another",
+      "sharedHint": "Anyone this log is shared with can see it."
     },
     "status": {
       "normal": "Normal",

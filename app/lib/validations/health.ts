@@ -27,6 +27,7 @@ const required: Record<THealthKind, TNumberField[]> = {
   cholesterol: ['total', 'ldl', 'hdl', 'triglycerides'],
   calories: ['kcal'],
   period: [],
+  intimacy: [],
 }
 
 export const healthEntrySchema = (t: TFunction, kind: THealthKind) =>
@@ -41,6 +42,7 @@ export const healthEntrySchema = (t: TFunction, kind: THealthKind) =>
       meal: z.string(),
       end: z.string(),
       flow: z.string(),
+      protection: z.string(),
       weight: z.string(),
       height: z.string(),
       head: z.string(),
@@ -81,6 +83,12 @@ export const healthEntrySchema = (t: TFunction, kind: THealthKind) =>
           code: 'custom',
           path: ['end'],
           message: t('health.form.endBeforeStart'),
+        })
+      if (kind === 'intimacy' && !values.protection)
+        context.addIssue({
+          code: 'custom',
+          path: ['protection'],
+          message: t('zod:errors.invalid_type_received_null'),
         })
     })
 

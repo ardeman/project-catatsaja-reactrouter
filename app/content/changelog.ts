@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-20',
+    title: {
+      en: 'Log sex on the period calendar',
+      id: 'Catat hubungan seks di kalender menstruasi',
+    },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Tap a day on the period calendar and choose Sex to log it, protected or unprotected, with a note if you like. The day gets a dot (hollow for protected, filled for unprotected), and it shows in the history next to your periods. People the log is shared with see it too.',
+          id: 'Ketuk tanggal di kalender menstruasi lalu pilih Hubungan seks untuk mencatatnya, pakai pengaman atau tanpa pengaman, dengan catatan jika mau. Tanggal itu diberi titik (berlubang untuk pakai pengaman, penuh untuk tanpa pengaman), dan muncul di riwayat di samping menstruasimu. Orang yang diajak berbagi catatan itu juga bisa melihatnya.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-19',
     title: {
       en: 'Medicine reminders and push notifications',

@@ -756,7 +756,7 @@
   },
   "privacyPolicy": {
     "updated": "Terakhir diperbarui: 18 Oktober 2026",
-    "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat.",
+    "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat. Catatan kesehatan bisa berisi hal yang sensitif, seperti menstruasi, hubungan seks (dan apakah memakai pengaman), serta obat; nyalakan enkripsi end-to-end agar kami tidak bisa membacanya.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
     "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, kapan item berubah, dan berapa bulan yang dicakup entri sebuah buku keuangan (tanpa bulan apa saja). Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
@@ -1305,7 +1305,8 @@
       "uricAcid": "Asam urat",
       "cholesterol": "Kolesterol",
       "calories": "Kalori",
-      "period": "Menstruasi"
+      "period": "Menstruasi",
+      "intimacy": "Hubungan seks"
     },
     "add": {
       "body": "Tambah pengukuran",
@@ -1326,7 +1327,7 @@
         "label": "Jenis kelamin",
         "female": "Perempuan",
         "male": "Laki-laki",
-        "locked": "Tidak bisa diubah selama ada catatan menstruasi atau pengingat menstruasi."
+        "locked": "Tidak bisa diubah selama ada catatan menstruasi, hubungan seks, atau pengingat menstruasi."
       },
       "date": "Tanggal",
       "time": "Jam",
@@ -1457,9 +1458,20 @@
       "ovulationToday": "Perkiraan hari ini",
       "ovulationOn": "Ovulasi {{date}}",
       "fertileUntil": "Subur sampai {{date}}",
-      "tapHint": "Ketuk tanggal untuk mencatat atau mengubah menstruasi.",
+      "tapHint": "Ketuk tanggal untuk mencatat atau mengubah menstruasi, atau mencatat hubungan seks.",
       "ahead": "Tanggal yang belum tiba belum bisa dicatat.",
       "endedThisDay": "Menstruasi berakhir di hari ini"
+    },
+    "intimacy": {
+      "logWhat": "Yang dicatat",
+      "protection": "Pengaman",
+      "protected": "Pakai pengaman",
+      "unprotected": "Tanpa pengaman",
+      "protectedSex": "Seks dengan pengaman",
+      "unprotectedSex": "Seks tanpa pengaman",
+      "chooseProtection": "Pilih pakai pengaman atau tanpa pengaman.",
+      "addAnother": "Tambah lagi",
+      "sharedHint": "Semua orang yang diajak berbagi catatan ini bisa melihatnya."
     },
     "status": {
       "normal": "Normal",

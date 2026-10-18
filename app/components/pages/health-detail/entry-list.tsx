@@ -14,6 +14,8 @@ type TProperties<TEntry extends THealthEntry> = Pick<
   TSectionProperties,
   'isReadOnly' | 'units' | 'onSaveEntry' | 'onDeleteEntry'
 > & {
+  // The kind added; an entry opens in the form of its own kind (the period
+  // list also holds sex logged on the calendar).
   kind: THealthKind
   // Newest first.
   entries: TEntry[]
@@ -80,7 +82,7 @@ export const EntryList = <TEntry extends THealthEntry>({
   })
   const form = (entry?: TEntry) => (
     <HealthEntryForm
-      kind={kind}
+      kind={entry?.kind ?? kind}
       entry={entry}
       units={units}
       onSave={onSaveEntry}

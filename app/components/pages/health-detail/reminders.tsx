@@ -13,7 +13,7 @@ import {
 import { Button as UIButton } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import { THealthKind, THealthReminder } from '~/lib/types/health'
+import { THealthReminder } from '~/lib/types/health'
 import { today } from '~/lib/utils/finance'
 import { newHealthEntryId, periodStats } from '~/lib/utils/health'
 import {
@@ -24,6 +24,8 @@ import {
 } from '~/lib/utils/health-reminders'
 
 import { TRemindersProperties } from './type'
+
+type TReminderKind = THealthReminder['kind']
 
 const measurementKinds = [
   'body',
@@ -61,7 +63,7 @@ export const Reminders = (properties: TRemindersProperties) => {
     nextPeriodStart,
   })
   const [isAdding, setIsAdding] = useState(false)
-  const [kind, setKind] = useState<THealthKind>('body')
+  const [kind, setKind] = useState<TReminderKind>('body')
   const [days, setDays] = useState('7')
   const [time, setTime] = useState('')
 
@@ -73,7 +75,7 @@ export const Reminders = (properties: TRemindersProperties) => {
       timeZone: 'UTC',
     }).format(new Date(`${date}T00:00:00Z`))
 
-  const kindLabel = (value: THealthKind) => t(`health.kinds.${value}`)
+  const kindLabel = (value: TReminderKind) => t(`health.kinds.${value}`)
 
   const describe = (reminder: THealthReminder) =>
     reminder.kind === 'period'
@@ -140,7 +142,7 @@ export const Reminders = (properties: TRemindersProperties) => {
     )
   }
 
-  const kinds: THealthKind[] = [
+  const kinds: TReminderKind[] = [
     ...measurementKinds,
     ...(showPeriod ? (['period'] as const) : []),
   ]
@@ -295,7 +297,7 @@ export const Reminders = (properties: TRemindersProperties) => {
                 value={kind}
                 onValueChange={(next) => {
                   if (!next) return
-                  setKind(next as THealthKind)
+                  setKind(next as TReminderKind)
                   setDays(next === 'period' ? '2' : '7')
                 }}
               >

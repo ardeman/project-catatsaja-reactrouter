@@ -9,6 +9,7 @@ import {
   cycleCalendar,
   cycleToday,
   cycleWindows,
+  intimacyDays,
   periodTap,
 } from '../app/lib/utils/cycle-calendar.ts'
 
@@ -141,5 +142,26 @@ describe('cycleToday', () => {
       ovulation: '2026-10-18',
     })
     assert.equal(cycleToday([], cycle, '2026-10-25').kind, 'next')
+  })
+})
+
+describe('intimacyDays', () => {
+  test('marks each logged day, unprotected over protected', () => {
+    const days = intimacyDays([
+      { date: '2026-10-02', protected: true },
+      { date: '2026-10-05', protected: true },
+      { date: '2026-10-05', protected: false },
+      { date: '2026-10-07', protected: false },
+      { date: '2026-10-07', protected: true },
+    ])
+    assert.deepEqual(Object.fromEntries(days), {
+      '2026-10-02': 'protected',
+      '2026-10-05': 'unprotected',
+      '2026-10-07': 'unprotected',
+    })
+  })
+
+  test('marks nothing without entries', () => {
+    assert.equal(intimacyDays([]).size, 0)
   })
 })

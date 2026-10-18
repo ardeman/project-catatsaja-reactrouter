@@ -44,11 +44,12 @@ import { TFormProperties } from './type'
 
 type TTab = 'overview' | THealthKind
 
-// Logged periods or a period reminder: the log's sex can't change while
-// it has any.
+// Logged periods or sex, or a period reminder: the log's sex can't change
+// while it has any.
 const hasSexData = (log: Pick<THealthLogForm, 'content' | 'reminders'>) =>
-  log.content.some((entry) => entry.kind === 'period') ||
-  (log.reminders ?? []).some((reminder) => reminder.kind === 'period')
+  log.content.some(
+    (entry) => entry.kind === 'period' || entry.kind === 'intimacy',
+  ) || (log.reminders ?? []).some((reminder) => reminder.kind === 'period')
 
 // The target as stored: a whole number, or null when cleared.
 const toTarget = (value: unknown) => {
