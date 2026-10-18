@@ -533,6 +533,9 @@ describe('AI features and reminders', () => {
       .getByText('Time to weigh and measure.')
       .waitFor({ state: 'hidden' })
     await shows(page, /next /)
+    // Stored before the next test reloads, or the entry is lost on a slow
+    // runner and the reminder looks due today.
+    await page.getByText('Saved', { exact: true }).waitFor()
   })
 
   test('a medicine dose waits until it is marked, and stays encrypted', async () => {
