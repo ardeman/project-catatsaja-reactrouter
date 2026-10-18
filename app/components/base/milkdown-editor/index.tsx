@@ -110,6 +110,14 @@ const Editor = <TFormValues extends Record<string, unknown>>(
           if (!isLeaving) return
           event.preventDefault()
           setFocus(previousName)
+          // Backspace continues from the end of the previous field, as if the two were one text.
+          const previous = document.activeElement
+          const isTextField =
+            previous instanceof HTMLInputElement ||
+            previous instanceof HTMLTextAreaElement
+          if (!isBackspace || !isTextField) return
+          const end = previous.value.length
+          previous.setSelectionRange(end, end)
         }
         dom.addEventListener('keydown', handler as EventListener)
         listener.destroy(() => {

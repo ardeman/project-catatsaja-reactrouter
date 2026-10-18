@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-18',
+    title: {
+      en: 'Smoother note editing',
+      id: 'Menyunting catatan lebih lancar',
+    },
+    changes: [
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Pressing Backspace in an empty note now moves you to the end of the title, so you can keep typing where you left off.',
+          id: 'Menekan Backspace di catatan yang kosong kini membawa Anda ke akhir judul, sehingga Anda bisa lanjut mengetik dari sana.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-17',
     title: {
       en: 'A tidier period summary',
