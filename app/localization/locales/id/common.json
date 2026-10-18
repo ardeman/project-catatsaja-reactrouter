@@ -1685,6 +1685,13 @@
     "encryption": {
       "title": "Enkripsi",
       "review": "Tinjau di Pengaturan"
+    },
+    "releases": {
+      "title": "Yang baru",
+      "more_one": "dan {{count}} rilis lainnya",
+      "more_other": "dan {{count}} rilis lainnya",
+      "open": "Lihat yang baru",
+      "dismiss": "Tutup"
     }
   }
 }

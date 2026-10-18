@@ -1,4 +1,4 @@
-import { Bell, BellRing, LockKeyhole, RefreshCw } from 'lucide-react'
+import { Bell, BellRing, LockKeyhole, RefreshCw, Sparkles } from 'lucide-react'
 import { ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -11,9 +11,11 @@ import {
   PopoverTrigger,
 } from '~/components/ui/popover'
 import { useGetDueReminders } from '~/lib/hooks/use-get-due-reminders'
+import { useGetNewReleases } from '~/lib/hooks/use-get-new-releases'
 import { useGetNewVersion } from '~/lib/hooks/use-get-new-version'
 import { useGetPendingInvitations } from '~/lib/hooks/use-get-pending-invitations'
 import { useGetUnreadableCount } from '~/lib/hooks/use-get-unreadable-count'
+import { useUpdateSeenRelease } from '~/lib/hooks/use-update-seen-release'
 import { cn } from '~/lib/utils/shadcn'
 
 const Section = ({
@@ -32,13 +34,20 @@ const Section = ({
 const rowClassName = 'flex flex-wrap items-center gap-3 rounded-lg border p-3'
 
 // What waits for the person, in one place: invitations to answer, health
-// reminders due, encrypted items someone they share with can't read, and a
-// newer version of the app. Everything is worked out on the device from what
-// the app already has, and leaves the list once it's dealt with, so there is
-// nothing to mark as read.
+// reminders due, encrypted items someone they share with can't read, a
+// newer version of the app and what's new in it. Everything is worked out on
+// the device from what the app already has, and leaves the list once it's
+// dealt with; only the newest release seen is saved, on the profile.
 export const Notifications = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const language = i18n.language === 'id' ? 'id' : 'en'
   const [open, setOpen] = useState(false)
+  const newReleases = useGetNewReleases()
+  const { mutate: markSeen } = useUpdateSeenRelease()
+  // Hidden at once: offline, the save only finishes once back online.
+  const [seen, setSeen] = useState<string>()
+  const latestRelease =
+    newReleases.latest === seen ? undefined : newReleases.latest
   const { invitations, owners } = useGetPendingInvitations()
   const reminders = useGetDueReminders()
   const unreadableCount = useGetUnreadableCount()
@@ -47,12 +56,18 @@ export const Notifications = () => {
     invitations.length +
     reminders.count +
     (unreadableCount > 0 ? 1 : 0) +
-    (hasNewVersion ? 1 : 0)
+    (hasNewVersion ? 1 : 0) +
+    (latestRelease ? 1 : 0)
   const label =
     count > 0
       ? `${t('notifications.title')}: ${t('notifications.count', { count })}`
       : t('notifications.title')
   const close = () => setOpen(false)
+  const dismissReleases = () => {
+    if (!latestRelease) return
+    setSeen(latestRelease)
+    void markSeen(latestRelease)
+  }
 
   return (
     <Popover
@@ -103,6 +118,54 @@ export const Notifications = () => {
                 <RefreshCw aria-hidden="true" />
                 {t('update.reload')}
               </Button>
+            </li>
+          </Section>
+        )}
+        {latestRelease && (
+          <Section title={t('notifications.releases.title')}>
+            <li className={rowClassName}>
+              <Sparkles
+                aria-hidden="true"
+                className="size-4 shrink-0"
+              />
+              <div className="grid min-w-0 flex-1 basis-48 gap-0.5 text-sm">
+                {newReleases.releases.map((release) => (
+                  <p key={`${release.date}/${release.title.en}`}>
+                    {release.title[language]}
+                  </p>
+                ))}
+                {newReleases.more > 0 && (
+                  <p className="text-muted-foreground">
+                    {t('notifications.releases.more', {
+                      count: newReleases.more,
+                    })}
+                  </p>
+                )}
+              </div>
+              <div className="ml-auto flex gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={dismissReleases}
+                >
+                  {t('notifications.releases.dismiss')}
+                </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                >
+                  <Link
+                    to={`/changelog#release-${latestRelease}`}
+                    onClick={() => {
+                      dismissReleases()
+                      close()
+                    }}
+                  >
+                    {t('notifications.releases.open')}
+                  </Link>
+                </Button>
+              </div>
             </li>
           </Section>
         )}

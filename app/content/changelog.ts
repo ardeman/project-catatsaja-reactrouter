@@ -35,6 +35,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'new',
+        text: {
+          en: 'After an update, the bell tells you what’s new, once, on all your devices.',
+          id: 'Setelah pembaruan, lonceng memberi tahu apa yang baru, sekali saja, di semua perangkat Anda.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Pressing Backspace in an empty note now moves you to the end of the title, so you can keep typing where you left off.',

@@ -1685,6 +1685,13 @@
     "encryption": {
       "title": "Encryption",
       "review": "Review in Settings"
+    },
+    "releases": {
+      "title": "What’s new",
+      "more_one": "and {{count}} more release",
+      "more_other": "and {{count}} more releases",
+      "open": "See what’s new",
+      "dismiss": "Dismiss"
     }
   }
 }

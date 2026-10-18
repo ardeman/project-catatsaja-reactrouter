@@ -39,6 +39,9 @@ export type TUserResponse = {
   lookupEmail?: string
   // Agreed that AI features send what they work on to Google (Gemini).
   aiConsent?: boolean
+  // The newest release (changelog date) the person has seen in the
+  // notifications.
+  seenRelease?: string
   bmiStandard?: TBmiStandard
   labUnits?: TLabUnits
 }

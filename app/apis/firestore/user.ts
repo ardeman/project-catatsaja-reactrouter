@@ -311,3 +311,19 @@ export const updateAiConsent = async (hasConsented: boolean) => {
     updatedAt: new Date(),
   })
 }
+
+// The newest release the person has seen: saved on the profile, so "What's
+// new" leaves the notifications on every device.
+export const updateSeenRelease = async (date: string) => {
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const reference = doc(firestore, 'users', auth.currentUser.uid)
+  return await updateDoc(reference, {
+    seenRelease: date,
+    updatedAt: new Date(),
+  })
+}
