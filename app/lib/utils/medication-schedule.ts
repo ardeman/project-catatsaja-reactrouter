@@ -241,3 +241,36 @@ export const expectedEnd = (
   const days = Math.ceil((left + markedToday) / perDay)
   return addDays(first, (days - 1) * step)
 }
+
+// Doses still to come in the next `days` days (after now), at most `limit`
+// and no more than a course of doses has left: what push notifications are
+// scheduled for (`use-sync-reminder-push.ts`).
+export const upcomingDoses = ({
+  medication,
+  doses,
+  today,
+  now,
+  days = 14,
+  limit = 64,
+}: {
+  medication: TMedication
+  doses: TDose[]
+  today: string
+  now: string
+  days?: number
+  limit?: number
+}) => {
+  if (isComplete(medication, doses)) return []
+  const left =
+    medication.course.kind === 'doses'
+      ? Math.max(0, medication.course.doses - takenCount(medication.id, doses))
+      : limit
+  const upcoming: { date: string; time: string }[] = []
+  for (let index = 0; index < days; index++) {
+    const date = addDays(today, index)
+    for (const dose of dosesOn(medication, doses, date))
+      if (!dose.status && (date > today || dose.time > now))
+        upcoming.push({ date, time: dose.time })
+  }
+  return upcoming.slice(0, Math.min(limit, left))
+}

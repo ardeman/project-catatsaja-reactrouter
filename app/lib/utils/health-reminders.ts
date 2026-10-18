@@ -1,6 +1,6 @@
-// Health reminders: when each is due, and a calendar file (.ics) so the
-// phone's own calendar can alert on time (the app has no server to send
-// notifications). Pure logic, no app imports, so it can be tested on its
+// Health reminders: when each is due, when its push notification goes out,
+// and a calendar file (.ics) so the phone's own calendar can alert on time
+// too. Pure logic, no app imports, so it can be tested on its
 // own (tests/health-reminders.test.mjs).
 
 type TKind =
@@ -65,6 +65,28 @@ export const reminderStatus = ({
     ? addDays(lastDate, Math.max(1, reminder.everyDays))
     : today
   return { dueDate, isDue: dueDate <= today, lastDate }
+}
+
+// When a reminder's push notification goes out: on its due day at its
+// time (09:00 without one), if that is still to come. One that is already
+// due shows only in the app.
+export const reminderPushAt = ({
+  reminder,
+  status,
+  today,
+  now,
+}: {
+  reminder: TReminder
+  status: TReminderStatus
+  today: string
+  // HH:MM
+  now: string
+}) => {
+  if (!status.dueDate) return
+  const time = (reminder.kind !== 'period' && reminder.time) || '09:00'
+  if (status.dueDate < today || (status.dueDate === today && time <= now))
+    return
+  return { date: status.dueDate, time }
 }
 
 // The reminders due today or earlier, most overdue first.

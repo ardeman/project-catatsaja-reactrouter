@@ -16,6 +16,7 @@ import { useGetNewVersion } from '~/lib/hooks/use-get-new-version'
 import { useGetPendingInvitations } from '~/lib/hooks/use-get-pending-invitations'
 import { useGetUnreadableCount } from '~/lib/hooks/use-get-unreadable-count'
 import { useSyncPushToken } from '~/lib/hooks/use-sync-push-token'
+import { useSyncReminderPush } from '~/lib/hooks/use-sync-reminder-push'
 import { useUpdateSeenRelease } from '~/lib/hooks/use-update-seen-release'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -44,6 +45,7 @@ export const Notifications = () => {
   const language = i18n.language === 'id' ? 'id' : 'en'
   const [open, setOpen] = useState(false)
   useSyncPushToken()
+  useSyncReminderPush()
   const newReleases = useGetNewReleases()
   const { mutate: markSeen } = useUpdateSeenRelease()
   // Hidden at once: offline, the save only finishes once back online.

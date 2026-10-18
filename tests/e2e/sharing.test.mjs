@@ -14,8 +14,10 @@ import {
   dbList,
   dbListWhen,
   dbPatch,
+  filePushKey,
   launch,
   newDevice,
+  openSealed,
   readersOf,
   sees,
   setUpEncryption,
@@ -492,21 +494,7 @@ describe('sharing and finance storage', () => {
     const hanaUid = await uidOf('hana@example.com')
     const indraUid = await uidOf('indra@example.com')
 
-    // Indra's phone files its push key (the emulators have no Cloud
-    // Messaging, so the app can't turn push on there).
-    const publicKey = await indra.page.evaluate(async () => {
-      const pair = await crypto.subtle.generateKey(
-        { name: 'ECDH', namedCurve: 'P-256' },
-        false,
-        ['deriveBits'],
-      )
-      globalThis.pushKey = pair.privateKey
-      const raw = await crypto.subtle.exportKey('raw', pair.publicKey)
-      return btoa(String.fromCodePoint(...new Uint8Array(raw)))
-    })
-    await dbPatch(`users/${indraUid}/pushKeys/phone`, {
-      publicKey: { stringValue: publicKey },
-    })
+    const indraKey = await filePushKey(indra.page, indraUid)
 
     await createNote(hana.page, 'Hana weekend plans')
     await shareWith(hana.page, 'indra@example.com', 'Read only')
@@ -521,44 +509,11 @@ describe('sharing and finance storage', () => {
     assert.equal(message.collection.stringValue, 'notes')
     assert.ok(!JSON.stringify(message).includes('Hana weekend plans'))
 
-    // Opened as public/sw.js opens it.
-    const sealed = message.sealed.mapValue.fields.phone.stringValue
-    const title = await indra.page.evaluate(async (text) => {
-      const subtle = crypto.subtle
-      const ECDH = { name: 'ECDH', namedCurve: 'P-256' }
-      const [senderKey, iv, ciphertext] = text
-        .split('.')
-        .map((part) =>
-          Uint8Array.from(atob(part), (character) => character.codePointAt(0)),
-        )
-      const sender = await subtle.importKey('raw', senderKey, ECDH, false, [])
-      const secret = await subtle.deriveBits(
-        { name: 'ECDH', public: sender },
-        globalThis.pushKey,
-        256,
-      )
-      const material = await subtle.importKey('raw', secret, 'HKDF', false, [
-        'deriveKey',
-      ])
-      const key = await subtle.deriveKey(
-        {
-          name: 'HKDF',
-          hash: 'SHA-256',
-          salt: new Uint8Array(),
-          info: new TextEncoder().encode('catatsaja push v1'),
-        },
-        material,
-        { name: 'AES-GCM', length: 256 },
-        false,
-        ['decrypt'],
-      )
-      const plain = await subtle.decrypt(
-        { name: 'AES-GCM', iv },
-        key,
-        ciphertext,
-      )
-      return new TextDecoder().decode(plain)
-    }, sealed)
+    const title = await openSealed(
+      indra.page,
+      message.sealed.mapValue.fields.phone.stringValue,
+      indraKey,
+    )
     assert.equal(title, 'Hana weekend plans')
     await hana.context.close()
     await indra.context.close()

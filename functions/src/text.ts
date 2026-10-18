@@ -56,3 +56,25 @@ export const invitationText = (lang: TLang, kind: TKind, name?: string) => {
     detailed: message.replace('{item}', () => kinds[lang][kind].titled),
   }
 }
+
+const reminder = {
+  en: {
+    medicine: { title: 'Medicine', body: 'It’s time for a medicine dose.' },
+    reminder: { title: 'Health reminder', body: 'A health reminder is due.' },
+  },
+  id: {
+    medicine: { title: 'Obat', body: 'Waktunya minum obat.' },
+    reminder: {
+      title: 'Pengingat kesehatan',
+      body: 'Ada pengingat kesehatan.',
+    },
+  },
+}
+
+// A reminder says only whether it is a medicine; the device fills in the
+// whole sentence (which log, which medicine) from the sealed text, unless
+// it hides details.
+export const reminderText = (lang: TLang, kind: 'medicine' | 'reminder') => ({
+  ...reminder[lang][kind],
+  detailed: '{title}',
+})

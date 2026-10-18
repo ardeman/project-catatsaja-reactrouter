@@ -1009,7 +1009,7 @@
     },
     "push": {
       "title": "Notifications",
-      "description": "Get a notification on this device when someone invites you or a health reminder is due. An item’s title is sealed for your devices only: not even we can read it.",
+      "description": "Get a notification on this device when someone invites you, a medicine dose is due or a health reminder is due. Titles and medicine names are sealed for your devices only: not even we can read them.",
       "off": "Notifications are off on this device.",
       "on": "Notifications are on for this device.",
       "blocked": "Notifications are blocked for this site in your browser’s settings. Allow them there, then come back.",
@@ -1017,7 +1017,11 @@
       "needsInstall": "On iPhone and iPad, notifications work only in the installed app. Install Catat Saja, open it from the Home Screen and turn them on there.",
       "turnOn": "Turn on",
       "turnOff": "Turn off",
-      "hideDetails": "Hide titles in notifications on this device, so they don’t show on the lock screen",
+      "hideDetails": "Hide titles and medicine names in notifications on this device, so they don’t show on the lock screen",
+      "sealed": {
+        "medicine": "{{name}}: time for {{medicine}}.",
+        "reminder": "{{name}}: {{reminder}}"
+      },
       "toast": {
         "on": "Notifications are on for this device."
       }

@@ -1,6 +1,6 @@
 // End-to-end tests of the AI features (receipt scanning, quick add, note
-// and task list helpers, dictation, taking back consent), health reminders
-// and medicines, on the local emulators:
+// and task list helpers, dictation, taking back consent), health reminders,
+// medicines and their push schedules, on the local emulators:
 //   pnpm test:e2e
 // Gemini is replaced by fixed answers (nothing reaches Google, and runs cost
 // nothing); what is tested is everything around it: the notice, checking
@@ -18,9 +18,12 @@ import {
   createNote,
   dbGet,
   dbList,
+  dbListWhen,
   dbPatch,
+  filePushKey,
   launch,
   newDevice,
+  openSealed,
   resetEmulators,
   setUpEncryption,
   signInAndUnlock,
@@ -556,6 +559,49 @@ describe('AI features and reminders', () => {
     assert.ok(
       log.encrypted && !log.medications && !log.doseLog,
       'medicines and doses are encrypted',
+    )
+  })
+
+  test('reminders and doses are scheduled for push, sealed for each device', async () => {
+    const { page } = device
+    const logId = healthUrl.split('/').pop()
+    const privateKey = await filePushKey(page, await uidOf(RINA))
+    // Opening the app brings the schedules up to date.
+    await page.goto(healthUrl)
+
+    const schedules = await dbListWhen(
+      `healthLogs/${logId}/pushSchedule`,
+      (documents) =>
+        documents.filter((schedule) => schedule.fields.sealed?.mapValue.fields)
+          .length >= 2,
+      30_000,
+    )
+    assert.ok(
+      !JSON.stringify(schedules).includes('Amoxicillin') &&
+        !JSON.stringify(schedules).includes('Rara'),
+      'only sealed text reaches the server',
+    )
+    const texts = await Promise.all(
+      schedules.map(async ({ fields }) => ({
+        kind: fields.kind.stringValue,
+        times: fields.times.arrayValue.values?.length ?? 0,
+        text: await openSealed(
+          page,
+          fields.sealed.mapValue.fields.phone.stringValue,
+          privateKey,
+        ),
+      })),
+    )
+    const medicine = texts.find((item) => item.kind === 'medicine')
+    assert.equal(medicine?.text, 'Rara: time for Amoxicillin 500 mg.')
+    // Today's dose is taken; one at midnight on each of the 4 days left.
+    assert.equal(medicine.times, 4)
+    assert.ok(
+      texts.some(
+        (item) =>
+          item.kind === 'reminder' &&
+          item.text === 'Rara: Time to weigh and measure.',
+      ),
     )
   })
 

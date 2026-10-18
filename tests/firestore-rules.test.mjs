@@ -155,6 +155,16 @@ describe('users', () => {
     const key = { publicKey: 'BAbc', updatedAt: new Date() }
     await assertSucceeds(as(OWNER).doc(path).set(key))
     await assertSucceeds(
+      as(OWNER)
+        .doc(path)
+        .set({ ...key, lang: 'id' }),
+    )
+    await assertFails(
+      as(OWNER)
+        .doc(path)
+        .set({ ...key, lang: 'fr' }),
+    )
+    await assertSucceeds(
       as(STRANGER).collection(`users/${OWNER}/pushKeys`).get(),
     )
     await assertFails(as().doc(path).get())
@@ -905,5 +915,72 @@ describe('finance months', () => {
     batch.delete(database.doc(`${book}/months/2026-10`))
     batch.delete(database.doc(book))
     await assertSucceeds(batch.commit())
+  })
+})
+
+describe('health reminder push schedules', () => {
+  const log = 'healthLogs/log'
+  const path = `${log}/pushSchedule/reminder`
+  const people = {
+    name: 'Ana',
+    owner: OWNER,
+    permissions: { read: [OWNER, WRITER, READER], write: [OWNER, WRITER] },
+    invites: { read: [STRANGER], write: [] },
+    pinnedBy: [],
+  }
+  const at = new Date(2030, 0, 1, 8)
+  const schedule = (overrides = {}) => ({
+    kind: 'medicine',
+    times: [at, new Date(2030, 0, 1, 20)],
+    next: at,
+    sealed: { device: 'sealed' },
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    ...overrides,
+  })
+
+  test('the people who can edit the log keep them', async () => {
+    await seed(log, people)
+    await assertSucceeds(as(OWNER).doc(path).set(schedule()))
+    await assertSucceeds(
+      as(WRITER)
+        .doc(path)
+        .set(schedule({ kind: 'reminder' })),
+    )
+    await assertSucceeds(as(WRITER).collection(`${log}/pushSchedule`).get())
+    await assertSucceeds(as(OWNER).doc(path).delete())
+  })
+
+  test("readers, people invited and strangers can't see or change them", async () => {
+    await seed(log, people)
+    await seed(path, schedule({ updatedAt: new Date() }))
+    for (const uid of [READER, STRANGER, undefined]) {
+      await assertFails(as(uid).doc(path).get())
+      await assertFails(as(uid).doc(path).set(schedule()))
+      await assertFails(as(uid).doc(path).delete())
+    }
+  })
+
+  test('are refused for a log that is gone', async () => {
+    await assertFails(as(OWNER).doc(path).set(schedule()))
+  })
+
+  test('keep their shape', async () => {
+    await seed(log, people)
+    const refused = [
+      { kind: 'invitation' },
+      { times: [] },
+      { times: Array.from({ length: 65 }, () => at) },
+      { next: new Date(2030, 0, 2) },
+      { sealed: 'sealed' },
+      {
+        sealed: Object.fromEntries(
+          Array.from({ length: 51 }, (_, index) => [`d${index}`, 'x']),
+        ),
+      },
+      { updatedAt: new Date(2020, 0, 1) },
+      { medicine: 'Paracetamol' },
+    ]
+    for (const overrides of refused)
+      await assertFails(as(OWNER).doc(path).set(schedule(overrides)))
   })
 })

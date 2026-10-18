@@ -225,7 +225,7 @@ const addInvitationPush = async (
   if (typeof title === 'string' && title.trim())
     try {
       const devices = await fetchPushKeys(to)
-      for (const [device, publicKey] of devices)
+      for (const [device, { publicKey }] of devices)
         sealed[device] = await sealForDevice(title.trim(), publicKey)
     } catch {
       // Offline, or a key that isn't one: the notification says the kind.

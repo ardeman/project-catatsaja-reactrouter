@@ -268,3 +268,73 @@ export const warmUpApp = async (browser) => {
   await page.context().close()
   await resetEmulators()
 }
+
+// Files a push key for a device of this person, as the app does when push
+// is turned on (the emulators have no Cloud Messaging, so the app can't turn
+// it on there). Returns the private key (PKCS #8, base64) for `openSealed`.
+export const filePushKey = async (page, uid, id = 'phone', lang = 'en') => {
+  const { publicKey, privateKey } = await page.evaluate(async () => {
+    const pair = await crypto.subtle.generateKey(
+      { name: 'ECDH', namedCurve: 'P-256' },
+      true,
+      ['deriveBits'],
+    )
+    const base64 = (bytes) =>
+      btoa(String.fromCodePoint(...new Uint8Array(bytes)))
+    return {
+      publicKey: base64(await crypto.subtle.exportKey('raw', pair.publicKey)),
+      privateKey: base64(
+        await crypto.subtle.exportKey('pkcs8', pair.privateKey),
+      ),
+    }
+  })
+  await dbPatch(`users/${uid}/pushKeys/${id}`, {
+    publicKey: { stringValue: publicKey },
+    lang: { stringValue: lang },
+  })
+  return privateKey
+}
+
+// Push text sealed for a device `filePushKey` filed, opened as
+// public/sw.js opens it.
+export const openSealed = (page, sealed, privateKey) =>
+  page.evaluate(
+    async ({ text, pkcs8 }) => {
+      const subtle = crypto.subtle
+      const ECDH = { name: 'ECDH', namedCurve: 'P-256' }
+      const bytes = (part) =>
+        Uint8Array.from(atob(part), (character) => character.codePointAt(0))
+      const [senderKey, iv, ciphertext] = text.split('.').map(bytes)
+      const own = await subtle.importKey('pkcs8', bytes(pkcs8), ECDH, false, [
+        'deriveBits',
+      ])
+      const sender = await subtle.importKey('raw', senderKey, ECDH, false, [])
+      const secret = await subtle.deriveBits(
+        { name: 'ECDH', public: sender },
+        own,
+        256,
+      )
+      const material = await subtle.importKey('raw', secret, 'HKDF', false, [
+        'deriveKey',
+      ])
+      const key = await subtle.deriveKey(
+        {
+          name: 'HKDF',
+          hash: 'SHA-256',
+          salt: new Uint8Array(),
+          info: new TextEncoder().encode('catatsaja push v1'),
+        },
+        material,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt'],
+      )
+      const plain = await subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        ciphertext,
+      )
+      return new TextDecoder().decode(plain)
+    },
+    { text: sealed, pkcs8: privateKey },
+  )

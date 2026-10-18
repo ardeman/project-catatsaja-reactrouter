@@ -8,6 +8,7 @@ import { describe, test } from 'node:test'
 import {
   dueReminders,
   reminderCalendar,
+  reminderPushAt,
   reminderStatus,
 } from '../app/lib/utils/health-reminders.ts'
 
@@ -90,6 +91,35 @@ describe('when a reminder is due', () => {
         ['c', '2026-10-12'],
       ],
     )
+  })
+})
+
+describe('when a reminder is pushed', () => {
+  const at = (reminder, status, now = '08:00') =>
+    reminderPushAt({ reminder, status, today, now })
+
+  test('on its due day at its time, or 09:00 without one', () => {
+    assert.deepEqual(at(weigh, { dueDate: '2026-10-15', isDue: false }), {
+      date: '2026-10-15',
+      time: '07:30',
+    })
+    const sugar = { id: 'g', kind: 'glucose', everyDays: 1 }
+    assert.deepEqual(at(sugar, { dueDate: today, isDue: true }), {
+      date: today,
+      time: '09:00',
+    })
+    const period = { id: 'p', kind: 'period', daysBefore: 2 }
+    assert.deepEqual(at(period, { dueDate: '2026-10-20', isDue: false }), {
+      date: '2026-10-20',
+      time: '09:00',
+    })
+  })
+
+  test('not once it is already due, nor without a due date', () => {
+    assert.equal(at(weigh, { dueDate: today, isDue: true }, '07:30'), undefined)
+    assert.equal(at(weigh, { dueDate: '2026-10-01', isDue: true }), undefined)
+    const period = { id: 'p', kind: 'period', daysBefore: 2 }
+    assert.equal(at(period, { isDue: false }), undefined)
   })
 })
 

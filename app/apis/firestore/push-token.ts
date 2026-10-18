@@ -1,7 +1,7 @@
 import {
   collection,
   doc,
-  getDocs,
+  getDocsFromServer,
   serverTimestamp,
   writeBatch,
 } from 'firebase/firestore'
@@ -14,8 +14,9 @@ import { devicePublicKey } from '~/lib/utils/push-device'
 // (`users/{uid}/pushTokens/{id}`, theirs only): one document per device,
 // named after a hash of its push token, so the same device always replaces
 // its own. Beside it, under the same id, the device's public key
-// (`users/{uid}/pushKeys/{id}`), which anyone signed in can read, to seal
-// what a notification says for that device only (`push-seal.ts`).
+// (`users/{uid}/pushKeys/{id}`) and language, which anyone signed in can
+// read, to seal what a notification says for that device only, in its
+// language (`push-seal.ts`).
 
 const requireUser = () => {
   if (!firestore) throw new Error('Firebase Firestore is not initialized.')
@@ -45,6 +46,7 @@ export const savePushToken = async (token: string, lang: 'en' | 'id') => {
   })
   batch.set(doc(database, 'users', uid, 'pushKeys', id), {
     publicKey: await devicePublicKey(),
+    lang,
     updatedAt: serverTimestamp(),
   })
   await batch.commit()
@@ -59,13 +61,24 @@ export const deletePushToken = async (token: string) => {
   await batch.commit()
 }
 
-// The public keys of someone's devices, by device id.
+export type TPushKey = { publicKey: string; lang: 'en' | 'id' }
+
+// The public keys of someone's devices and their languages, by device id.
+// From the server only (offline it throws): an old cached list would leave
+// out new devices, or look like no devices at all.
 export const fetchPushKeys = async (uid: string) => {
   if (!firestore) throw new Error('Firebase Firestore is not initialized.')
-  const snapshot = await getDocs(
+  const snapshot = await getDocsFromServer(
     collection(firestore, 'users', uid, 'pushKeys'),
   )
-  return new Map(
-    snapshot.docs.map((key) => [key.id, String(key.data().publicKey)]),
+  return new Map<string, TPushKey>(
+    snapshot.docs.map((key) => [
+      key.id,
+      {
+        publicKey: String(key.data().publicKey),
+        // Keys filed before the language was: English.
+        lang: key.data().lang === 'id' ? 'id' : 'en',
+      },
+    ]),
   )
 }

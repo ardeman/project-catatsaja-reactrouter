@@ -204,10 +204,11 @@ service cloud.firestore {
         allow read: if isAuthenticated();
         allow delete: if isOwner(userId);
         allow create, update: if isOwner(userId)
-          && request.resource.data.keys().hasOnly(['publicKey', 'updatedAt'])
+          && request.resource.data.keys().hasOnly(['publicKey', 'lang', 'updatedAt'])
           && request.resource.data.publicKey is string
           && request.resource.data.publicKey.size() > 0
           && request.resource.data.publicKey.size() <= 200
+          && request.resource.data.get('lang', 'en') in ['en', 'id']
           && request.resource.data.updatedAt is timestamp;
       }
     }
@@ -333,6 +334,33 @@ service cloud.firestore {
       allow create: if isValidNewShared();
       allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content', 'reminders', 'medications', 'doseLog', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
+
+      // When a reminder's or a medicine's push notifications go out, one
+      // document per reminder: its upcoming times (`next` is the first, for
+      // the Cloud Function that sends them) and its text sealed for each
+      // device of the people with access. Kept by the people who can edit
+      // the log, as their app works out the times from its content.
+      match /pushSchedule/{reminderId} {
+        function canSchedule() {
+          let log = get(/databases/$(database)/documents/healthLogs/$(healthLogId)).data;
+          return isAuthenticated()
+            && (log.owner == request.auth.uid
+              || canWrite(log.get('permissions', {}).get('write', [])));
+        }
+
+        allow read, delete: if canSchedule();
+        allow create, update: if canSchedule()
+          && request.resource.data.keys().hasOnly(['kind', 'times', 'next', 'sealed', 'updatedAt'])
+          && request.resource.data.kind in ['medicine', 'reminder']
+          && request.resource.data.times is list
+          && request.resource.data.times.size() > 0
+          && request.resource.data.times.size() <= 64
+          && request.resource.data.next is timestamp
+          && request.resource.data.next == request.resource.data.times[0]
+          && request.resource.data.sealed is map
+          && request.resource.data.sealed.size() <= 50
+          && request.resource.data.updatedAt == request.time;
+      }
     }
   }
 }

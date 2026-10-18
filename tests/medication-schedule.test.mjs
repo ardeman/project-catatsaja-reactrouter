@@ -14,6 +14,7 @@ import {
   isFinished,
   lastDay,
   nextDose,
+  upcomingDoses,
   waitingDoses,
 } from '../app/lib/utils/medication-schedule.ts'
 
@@ -212,6 +213,52 @@ describe('doses left in a dated course', () => {
     assert.equal(
       dosesLeft({ ...antibiotic, course: { kind: 'ongoing' } }, [], today),
       undefined,
+    )
+  })
+})
+
+describe('doses to push', () => {
+  test('those still to come, from now on, unmarked', () => {
+    const doses = [mark('a', '2026-10-18', '20:00')]
+    assert.deepEqual(
+      upcomingDoses({ medication: antibiotic, doses, today, now: '07:00' }),
+      [
+        { date: '2026-10-18', time: '08:00' },
+        { date: '2026-10-19', time: '08:00' },
+        { date: '2026-10-19', time: '20:00' },
+        { date: '2026-10-20', time: '08:00' },
+        { date: '2026-10-20', time: '20:00' },
+        { date: '2026-10-21', time: '08:00' },
+        { date: '2026-10-21', time: '20:00' },
+      ],
+    )
+  })
+
+  test('no more than a course of doses has left, nor than the limit', () => {
+    const course = { ...antibiotic, course: { kind: 'doses', doses: 3 } }
+    const doses = [mark('a', '2026-10-17', '08:00')]
+    assert.deepEqual(
+      upcomingDoses({ medication: course, doses, today, now: '12:00' }),
+      [
+        { date: '2026-10-18', time: '20:00' },
+        { date: '2026-10-19', time: '08:00' },
+      ],
+    )
+    const ongoing = { ...antibiotic, course: { kind: 'ongoing' } }
+    assert.equal(
+      upcomingDoses({ medication: ongoing, doses: [], today, now: '12:00' })
+        .length,
+      27,
+    )
+    assert.equal(
+      upcomingDoses({
+        medication: ongoing,
+        doses: [],
+        today,
+        now: '12:00',
+        limit: 5,
+      }).length,
+      5,
     )
   })
 })

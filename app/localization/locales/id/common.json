@@ -1009,7 +1009,7 @@
     },
     "push": {
       "title": "Notifikasi",
-      "description": "Dapatkan notifikasi di perangkat ini saat seseorang mengundangmu atau pengingat kesehatan jatuh tempo. Judul item dikunci khusus untuk perangkatmu: kami pun tidak bisa membacanya.",
+      "description": "Dapatkan notifikasi di perangkat ini saat seseorang mengundangmu, waktunya minum obat, atau pengingat kesehatan jatuh tempo. Judul dan nama obat dikunci khusus untuk perangkatmu: kami pun tidak bisa membacanya.",
       "off": "Notifikasi mati di perangkat ini.",
       "on": "Notifikasi menyala di perangkat ini.",
       "blocked": "Notifikasi untuk situs ini diblokir di pengaturan browsermu. Izinkan di sana, lalu kembali ke sini.",
@@ -1017,7 +1017,11 @@
       "needsInstall": "Di iPhone dan iPad, notifikasi hanya ada di aplikasi yang terpasang. Pasang Catat Saja, buka dari Layar Utama, lalu nyalakan di sana.",
       "turnOn": "Nyalakan",
       "turnOff": "Matikan",
-      "hideDetails": "Sembunyikan judul di notifikasi perangkat ini, agar tidak tampil di layar kunci",
+      "hideDetails": "Sembunyikan judul dan nama obat di notifikasi perangkat ini, agar tidak tampil di layar kunci",
+      "sealed": {
+        "medicine": "{{name}}: waktunya {{medicine}}.",
+        "reminder": "{{name}}: {{reminder}}"
+      },
       "toast": {
         "on": "Notifikasi menyala di perangkat ini."
       }
