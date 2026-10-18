@@ -58,6 +58,8 @@ export const useSyncReminderPush = () => {
             nextPeriodStart,
           })
           const at = reminderPushAt({ reminder, status, today, now })
+          // eslint-disable-next-line no-console -- temporary CI debugging
+          console.info('[push-debug]', JSON.stringify({ reminder, status, today, now, at, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, entries: (log.content ?? []).map((entry) => ({ kind: entry.kind, date: entry.date })) }))
           return {
             id: reminder.id,
             kind: 'reminder' as const,

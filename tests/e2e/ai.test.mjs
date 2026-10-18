@@ -565,6 +565,9 @@ describe('AI features and reminders', () => {
   test('reminders and doses are scheduled for push, sealed for each device', async () => {
     const { page } = device
     const logId = healthUrl.split('/').pop()
+    page.on('console', (message) => {
+      if (message.text().includes('[push-debug]')) console.log(message.text())
+    })
     const privateKey = await filePushKey(page, await uidOf(RINA))
     // Opening the app brings the schedules up to date.
     await page.goto(healthUrl)
