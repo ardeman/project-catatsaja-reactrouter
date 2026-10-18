@@ -40,6 +40,7 @@ import {
 } from '~/lib/utils/encrypted-document'
 import { decodeMonth, encodeMonth } from '~/lib/utils/finance-months'
 import { sealForDevice } from '~/lib/utils/push-seal'
+import { whilePreparingWrite } from '~/lib/utils/write-guard'
 
 import { fetchPublicKeys } from './keyring'
 import { fetchPushKeys } from './push-token'
@@ -152,17 +153,21 @@ export const createShared = async (
     invites: _invites,
     ...stored
   } = data
-  const { document, contentKey } = await encodeNew(name, {
-    ...stored,
-    owner: uid,
-    permissions: { read: [uid], write: [uid] },
-    createdAt: new Date(),
-  })
   const reference = doc(collection(database, name))
-  const batch = writeBatch(database)
-  batch.set(reference, document)
-  await children?.(batch, reference, contentKey)
-  await batch.commit()
+  const { commit } = await whilePreparingWrite(async () => {
+    const { document, contentKey } = await encodeNew(name, {
+      ...stored,
+      owner: uid,
+      permissions: { read: [uid], write: [uid] },
+      createdAt: new Date(),
+    })
+    const batch = writeBatch(database)
+    batch.set(reference, document)
+    await children?.(batch, reference, contentKey)
+    // Wrapped, so the guard ends once committed, not once the server answers.
+    return { commit: batch.commit() }
+  })
+  await commit
   return reference
 }
 
@@ -173,12 +178,15 @@ export const updateShared = async (
   children?: TChildren,
 ) => {
   const { database } = requireUser()
-  const encoded = await encodeChanges(name, id, changes)
   const reference = doc(database, name, id)
-  const batch = writeBatch(database)
-  batch.update(reference, { ...encoded, updatedAt: new Date() })
-  await children?.(batch, reference, contentKeyOf(name, id))
-  return batch.commit()
+  const { commit } = await whilePreparingWrite(async () => {
+    const encoded = await encodeChanges(name, id, changes)
+    const batch = writeBatch(database)
+    batch.update(reference, { ...encoded, updatedAt: new Date() })
+    await children?.(batch, reference, contentKeyOf(name, id))
+    return { commit: batch.commit() }
+  })
+  return commit
 }
 
 // Leaving an item shared with you: off its lists, and your sealed key gone.

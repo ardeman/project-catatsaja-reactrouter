@@ -12,7 +12,8 @@ type TProperties = {
 // Calls `save` once `watch` has stopped changing for `delay` ms, and always
 // once more when the component unmounts (Back, a link, another route), so
 // `save` must only write what differs from the stored copy. The browser asks
-// before the tab closes while a change is waiting.
+// before the tab closes while a change is waiting, and `whilePreparingWrite`
+// (`~/lib/utils/write-guard`) while it is still being encrypted.
 export const useAutosave = (properties: TProperties) => {
   const { save, watch, delay = 500, saveWhenIdle = true } = properties
   const saveReference = useRef(save)

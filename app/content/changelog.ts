@@ -27,6 +27,13 @@ export const releases: TRelease[] = [
           id: 'Saat pertama kali membuka Catat Saja di sebuah perangkat, aplikasi menanyakan apakah notifikasi untuk undangan, pengingat kesehatan, dan dosis obat boleh dikirim ke sana. Pilih Nanti saja dan aplikasi tidak akan bertanya lagi di perangkat itu; kamu tetap bisa menyalakannya di Pengaturan → Umum. Di iPhone dan iPad, aplikasi menjelaskan bahwa notifikasi butuh aplikasi yang terpasang.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Closing the tab right after a change to an encrypted item could lose that change while it was still being encrypted. Your browser now asks before closing until the change is safely stored.',
+          id: 'Menutup tab tepat setelah mengubah item terenkripsi bisa membuat perubahan itu hilang selagi masih dienkripsi. Sekarang browser bertanya dulu sebelum ditutup sampai perubahan tersimpan dengan aman.',
+        },
+      },
     ],
   },
   {
