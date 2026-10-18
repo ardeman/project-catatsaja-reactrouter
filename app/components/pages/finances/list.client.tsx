@@ -46,6 +46,7 @@ export const List = () => {
   return (
     <>
       <Collection
+        collection="finances"
         items={financesData}
         isLoading={isLoading}
         layout="masonry"

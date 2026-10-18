@@ -1,7 +1,7 @@
 import { LucideIcon } from 'lucide-react'
 import { ReactNode } from 'react'
 
-import { TTime } from '~/lib/types/common'
+import { TInvitation, TTime } from '~/lib/types/common'
 
 export type TCollectionItem = {
   id: string
@@ -12,6 +12,8 @@ export type TCollectionItem = {
 }
 
 export type TCollectionProperties<T extends TCollectionItem> = {
+  // The collection listed, whose invitations show above the items.
+  collection: TInvitation['name']
   items?: T[]
   isLoading: boolean
   // Text searched by the navbar search (`?q=`), e.g. title and content.

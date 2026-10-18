@@ -100,15 +100,20 @@ export const InvitationItem = (properties: TItemProperties) => {
 }
 
 // Items shared with the person that wait for them to accept, at the top of
-// every list page and in the notifications: nothing shared appears in their
-// lists until they do. Accepting opens the item; declining removes the
+// the list page of their kind (all of them are in the notifications):
+// nothing shared appears in their lists until they do. Accepting opens the item; declining removes the
 // invitation for good; blocking also stops that person inviting them again
 // (until unblocked in Settings → Account).
-export const Invitations = () => {
+export const Invitations = (properties: {
+  collection: TInvitation['name']
+}) => {
   const { t } = useTranslation()
   const { invitations, owners } = useGetPendingInvitations()
+  const shown = invitations.filter(
+    (invitation) => invitation.name === properties.collection,
+  )
 
-  if (invitations.length === 0) return null
+  if (shown.length === 0) return null
 
   return (
     <section
@@ -122,7 +127,7 @@ export const Invitations = () => {
         {t('invitations.title')}
       </h2>
       <ul className="grid gap-2">
-        {invitations.map((invitation) => (
+        {shown.map((invitation) => (
           <li
             key={`${invitation.name}/${invitation.id}`}
             className="glass-surface motion-enter flex flex-wrap items-center gap-3 rounded-xl border p-3"

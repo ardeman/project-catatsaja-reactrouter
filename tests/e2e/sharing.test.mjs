@@ -579,7 +579,7 @@ describe('sharing and finance storage', () => {
     await lina.page.getByText('Lina lunch').waitFor({ timeout: 30_000 })
     await shareWith(lina.page, 'mira@example.com', 'Read and write')
     await lina.page.keyboard.press('Escape')
-    await acceptInvitation(mira.page, 'Lina book')
+    await acceptInvitation(mira.page, 'Lina book', 'finances')
     await opensWith(mira.page, bookId, 'Lina lunch')
     await addEntry(mira.page, 'Mira dinner')
     await opensWith(lina.page, bookId, 'Mira dinner')

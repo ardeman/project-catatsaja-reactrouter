@@ -43,6 +43,7 @@ export const List = () => {
   return (
     <>
       <Collection
+        collection="tasks"
         items={tasksData}
         isLoading={isLoading}
         layout="masonry"

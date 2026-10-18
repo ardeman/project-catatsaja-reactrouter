@@ -223,9 +223,9 @@ export const shareWith = async (page, email, access) => {
 }
 
 // Accepting an invitation to the item with this title (it only appears in
-// the person's lists once they do).
-export const acceptInvitation = async (page, title) => {
-  await page.goto(`${APP}/notes`)
+// the person's lists once they do), on the list page of its kind.
+export const acceptInvitation = async (page, title, list = 'notes') => {
+  await page.goto(`${APP}/${list}`)
   await page
     .getByRole('listitem')
     .filter({ hasText: title })

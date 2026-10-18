@@ -32,6 +32,7 @@ export const Collection = <T extends TCollectionItem>(
   properties: TCollectionProperties<T>,
 ) => {
   const {
+    collection,
     items,
     isLoading,
     getSearchText,
@@ -173,7 +174,7 @@ export const Collection = <T extends TCollectionItem>(
       </Button>
       <div className={cn('flex flex-1 flex-col gap-6 md:mt-16')}>
         {/* Below the floating create button, so it never covers them. */}
-        <Invitations />
+        <Invitations collection={collection} />
         {renderContent()}
       </div>
     </div>

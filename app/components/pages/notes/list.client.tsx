@@ -44,6 +44,7 @@ export const List = () => {
   return (
     <>
       <Collection
+        collection="notes"
         items={notesData}
         isLoading={isLoading}
         layout="masonry"

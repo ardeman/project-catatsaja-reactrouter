@@ -28,6 +28,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'Each list now shows only its own invitations: notes on Notes, books on Finances, and so on. All of them are still under the bell.',
+          id: 'Setiap daftar kini hanya menampilkan undangannya sendiri: catatan di Catatan, buku di Keuangan, dan seterusnya. Semuanya tetap ada di lonceng.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Pressing Backspace in an empty note now moves you to the end of the title, so you can keep typing where you left off.',
