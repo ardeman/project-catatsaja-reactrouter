@@ -8,6 +8,7 @@ import { auth } from '~/lib/configs/firebase'
 import { clearAllDrafts } from '~/lib/utils/drafts'
 import { endSession } from '~/lib/utils/encryption-session'
 import { getErrorMessage } from '~/lib/utils/firebase-error'
+import { forgetDeviceKey } from '~/lib/utils/push-device'
 
 import { toast } from './use-toast'
 
@@ -15,6 +16,11 @@ import { toast } from './use-toast'
 const PUSH_TOKEN_WAIT = 3000
 
 const stopPush = async () => {
+  try {
+    await forgetDeviceKey()
+  } catch {
+    // No IndexedDB: there was no key either.
+  }
   const token = readSavedPushToken()
   if (!token) return
   await Promise.race([

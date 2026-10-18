@@ -11,6 +11,8 @@ import {
   assertSucceeds,
   initializeTestEnvironment,
 } from '@firebase/rules-unit-testing'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/firestore'
 
 const OWNER = 'owner'
 const WRITER = 'writer'
@@ -144,6 +146,29 @@ describe('users', () => {
     await assertFails(
       as(STRANGER).doc(`users/${OWNER}/pushTokens/other`).set(token),
     )
+    await assertFails(as(STRANGER).doc(path).delete())
+    await assertSucceeds(as(OWNER).doc(path).delete())
+  })
+
+  test("anyone signed in reads a device's push key; only its owner writes it", async () => {
+    const path = `users/${OWNER}/pushKeys/device`
+    const key = { publicKey: 'BAbc', updatedAt: new Date() }
+    await assertSucceeds(as(OWNER).doc(path).set(key))
+    await assertSucceeds(
+      as(STRANGER).collection(`users/${OWNER}/pushKeys`).get(),
+    )
+    await assertFails(as().doc(path).get())
+    await assertFails(
+      as(OWNER)
+        .doc(path)
+        .set({ ...key, publicKey: '' }),
+    )
+    await assertFails(
+      as(OWNER)
+        .doc(path)
+        .set({ ...key, token: 'abc' }),
+    )
+    await assertFails(as(STRANGER).doc(path).set(key))
     await assertFails(as(STRANGER).doc(path).delete())
     await assertSucceeds(as(OWNER).doc(path).delete())
   })
@@ -524,6 +549,65 @@ for (const [collection, fields] of Object.entries(collections)) {
         },
       })
       const members = [OWNER, WRITER, READER]
+
+      describe('push notifications', () => {
+        const message = (overrides = {}) => ({
+          kind: 'invitation',
+          to: STRANGER,
+          from: OWNER,
+          collection,
+          item: path.split('/')[1],
+          sealed: { device: 'sealed' },
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          ...overrides,
+        })
+        const invite = (uid, data, invites = [STRANGER]) => {
+          const database = as(uid)
+          const batch = database.batch()
+          batch.update(database.doc(path), {
+            invites: { read: invites, write: [] },
+          })
+          batch.set(database.collection('pushMessages').doc(), data)
+          return batch.commit()
+        }
+
+        test('go with the invitation, to the person invited', async () => {
+          await seed(path, shared)
+          await assertSucceeds(invite(OWNER, message()))
+        })
+
+        test('are refused without a new invitation', async () => {
+          await seed(path, shared)
+          await assertFails(as(OWNER).collection('pushMessages').add(message()))
+          await assertFails(invite(OWNER, message({ to: READER })))
+          await seed(path, invitedAs('read'))
+          await assertFails(invite(OWNER, message()))
+        })
+
+        test('are refused when someone else sends them or the shape is wrong', async () => {
+          await seed(path, shared)
+          await assertFails(invite(OWNER, message({ from: WRITER })))
+          await assertFails(invite(OWNER, message({ kind: 'reminder' })))
+          await assertFails(invite(OWNER, message({ title: 'Groceries' })))
+          await assertFails(
+            invite(OWNER, message({ collection: 'users', item: OWNER })),
+          )
+          await assertFails(
+            invite(OWNER, message({ createdAt: new Date(2020, 0, 1) })),
+          )
+          await assertFails(
+            invite(WRITER, message({ from: WRITER }), [STRANGER]),
+          )
+        })
+
+        test('nobody reads or deletes them', async () => {
+          await seed('pushMessages/one', message({ createdAt: new Date() }))
+          for (const uid of [OWNER, STRANGER]) {
+            await assertFails(as(uid).doc('pushMessages/one').get())
+            await assertFails(as(uid).doc('pushMessages/one').delete())
+          }
+        })
+      })
 
       test('the owner invites, and cannot give access directly', async () => {
         await seed(path, shared)

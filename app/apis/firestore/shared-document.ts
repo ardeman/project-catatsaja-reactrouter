@@ -13,6 +13,7 @@ import {
   onSnapshot,
   query,
   QueryDocumentSnapshot,
+  serverTimestamp,
   updateDoc,
   where,
   writeBatch,
@@ -38,8 +39,10 @@ import {
   TCollection,
 } from '~/lib/utils/encrypted-document'
 import { decodeMonth, encodeMonth } from '~/lib/utils/finance-months'
+import { sealForDevice } from '~/lib/utils/push-seal'
 
 import { fetchPublicKeys } from './keyring'
+import { fetchPushKeys } from './push-token'
 
 // Reading and writing shared items (notes, tasks, finances, health logs),
 // encrypted or not: one place, so every collection behaves the same.
@@ -51,6 +54,9 @@ type TShared = {
   permissions?: { read: string[]; write: string[] }
   // Invited and not accepted yet.
   invites?: { read: string[]; write: string[] }
+  // The title (a health log's name), for the invitation's notification.
+  title?: unknown
+  name?: unknown
 }
 
 // Everyone who holds (or is to hold) an item's key: the people with access
@@ -201,6 +207,40 @@ export class InviteRefused extends Error {
   }
 }
 
+// Inviting someone also asks for a push notification to them
+// (`pushMessages`, sent and deleted by a Cloud Function), in the same batch
+// so the rules can check it goes with a real invitation. The title is
+// sealed for each of their devices (`push-seal.ts`): the server sees only
+// who invited whom to what kind of item. Without a title or their devices'
+// keys, the notification says only the kind.
+const addInvitationPush = async (
+  batch: WriteBatch,
+  name: TCollection,
+  item: TShared,
+  to: string,
+) => {
+  const { database, uid } = requireUser()
+  const title = item.title ?? item.name
+  const sealed: Record<string, string> = {}
+  if (typeof title === 'string' && title.trim())
+    try {
+      const devices = await fetchPushKeys(to)
+      for (const [device, publicKey] of devices)
+        sealed[device] = await sealForDevice(title.trim(), publicKey)
+    } catch {
+      // Offline, or a key that isn't one: the notification says the kind.
+    }
+  batch.set(doc(collection(database, 'pushMessages')), {
+    kind: 'invitation',
+    to,
+    from: uid,
+    collection: name,
+    item: item.id,
+    sealed,
+    createdAt: serverTimestamp(),
+  })
+}
+
 const isPermissionDenied = (error: unknown) =>
   (error as { code?: string } | undefined)?.code === 'permission-denied'
 
@@ -240,8 +280,15 @@ const writeSharedPermission = async (
     invites: { read: [...invitedRead], write: [...invitedWrite] },
   }
   const reference = doc(database, name, item.id)
+  const isInvite = isNew && permission !== 'delete'
 
-  if (!item.isEncrypted) return updateDoc(reference, access)
+  if (!item.isEncrypted) {
+    if (!isInvite) return updateDoc(reference, access)
+    const batch = writeBatch(database)
+    batch.update(reference, access)
+    await addInvitationPush(batch, name, item, uid)
+    return batch.commit()
+  }
 
   if (permission === 'delete') {
     const publicKeys = await fetchPublicKeys(audienceOf(access))
@@ -269,11 +316,15 @@ const writeSharedPermission = async (
 
   const recipientKeys = await fetchPublicKeys([uid])
   const publicKey = recipientKeys.get(uid)
-  if (publicKey)
-    return updateDoc(reference, {
+  if (publicKey) {
+    const batch = writeBatch(database)
+    batch.update(reference, {
       ...access,
       [`keys.${uid}`]: await sealFor(name, item.id, publicKey),
     })
+    await addInvitationPush(batch, name, item, uid)
+    return batch.commit()
+  }
 
   if (!options.allowPlain) throw new RecipientWithoutEncryption()
   // Shared without encryption: stored plain for everyone from now on.
@@ -293,6 +344,7 @@ const writeSharedPermission = async (
     contentKeyOf(name, item.id),
     undefined,
   )
+  await addInvitationPush(batch, name, item, uid)
   forget(name, item.id)
   return batch.commit()
 }

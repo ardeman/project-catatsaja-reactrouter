@@ -12,6 +12,8 @@ import {
   dbGet,
   dbGetWhen,
   dbList,
+  dbListWhen,
+  dbPatch,
   launch,
   newDevice,
   readersOf,
@@ -478,6 +480,88 @@ describe('sharing and finance storage', () => {
     await hana.page.getByText('Archived (1)').waitFor({ state: 'hidden' })
     await indra.context.close()
     await hana.context.close()
+  })
+
+  test("an invitation's notification has the title sealed for the invited person's devices", async () => {
+    const hana = await newDevice(browser)
+    const indra = await newDevice(browser)
+    await signUp(hana.page, 'Hana', 'hana@example.com')
+    await skipEncryptionSetup(hana.page)
+    await signUp(indra.page, 'Indra', 'indra@example.com')
+    await skipEncryptionSetup(indra.page)
+    const hanaUid = await uidOf('hana@example.com')
+    const indraUid = await uidOf('indra@example.com')
+
+    // Indra's phone files its push key (the emulators have no Cloud
+    // Messaging, so the app can't turn push on there).
+    const publicKey = await indra.page.evaluate(async () => {
+      const pair = await crypto.subtle.generateKey(
+        { name: 'ECDH', namedCurve: 'P-256' },
+        false,
+        ['deriveBits'],
+      )
+      globalThis.pushKey = pair.privateKey
+      const raw = await crypto.subtle.exportKey('raw', pair.publicKey)
+      return btoa(String.fromCodePoint(...new Uint8Array(raw)))
+    })
+    await dbPatch(`users/${indraUid}/pushKeys/phone`, {
+      publicKey: { stringValue: publicKey },
+    })
+
+    await createNote(hana.page, 'Hana weekend plans')
+    await shareWith(hana.page, 'indra@example.com', 'Read only')
+    const messages = await dbListWhen('pushMessages', (documents) =>
+      documents.some((message) => message.fields.to?.stringValue === indraUid),
+    )
+    const message = messages.find(
+      (item) => item.fields.to?.stringValue === indraUid,
+    ).fields
+    assert.equal(message.kind.stringValue, 'invitation')
+    assert.equal(message.from.stringValue, hanaUid)
+    assert.equal(message.collection.stringValue, 'notes')
+    assert.ok(!JSON.stringify(message).includes('Hana weekend plans'))
+
+    // Opened as public/sw.js opens it.
+    const sealed = message.sealed.mapValue.fields.phone.stringValue
+    const title = await indra.page.evaluate(async (text) => {
+      const subtle = crypto.subtle
+      const ECDH = { name: 'ECDH', namedCurve: 'P-256' }
+      const [senderKey, iv, ciphertext] = text
+        .split('.')
+        .map((part) =>
+          Uint8Array.from(atob(part), (character) => character.codePointAt(0)),
+        )
+      const sender = await subtle.importKey('raw', senderKey, ECDH, false, [])
+      const secret = await subtle.deriveBits(
+        { name: 'ECDH', public: sender },
+        globalThis.pushKey,
+        256,
+      )
+      const material = await subtle.importKey('raw', secret, 'HKDF', false, [
+        'deriveKey',
+      ])
+      const key = await subtle.deriveKey(
+        {
+          name: 'HKDF',
+          hash: 'SHA-256',
+          salt: new Uint8Array(),
+          info: new TextEncoder().encode('catatsaja push v1'),
+        },
+        material,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt'],
+      )
+      const plain = await subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        ciphertext,
+      )
+      return new TextDecoder().decode(plain)
+    }, sealed)
+    assert.equal(title, 'Hana weekend plans')
+    await hana.context.close()
+    await indra.context.close()
   })
 
   test('blocking stops invitations until unblocked', async () => {

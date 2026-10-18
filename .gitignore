@@ -1,4 +1,4 @@
-/node_modules/
+node_modules/
 .env
 # Where the promo videos are made on this machine (see video-marketing.example.json)
 video-marketing.json

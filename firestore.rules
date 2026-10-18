@@ -196,6 +196,49 @@ service cloud.firestore {
           && request.resource.data.lang in ['en', 'id']
           && request.resource.data.updatedAt is timestamp;
       }
+
+      // Each device's public key for sealed push text, under the same id as
+      // its token. Anyone signed in may read them, to seal a notification
+      // for that person; only the owner writes them.
+      match /pushKeys/{tokenId} {
+        allow read: if isAuthenticated();
+        allow delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && request.resource.data.keys().hasOnly(['publicKey', 'updatedAt'])
+          && request.resource.data.publicKey is string
+          && request.resource.data.publicKey.size() > 0
+          && request.resource.data.publicKey.size() <= 200
+          && request.resource.data.updatedAt is timestamp;
+      }
+    }
+
+    // Push notifications waiting to be sent, read and deleted only by the
+    // Cloud Function that sends them. An invitation's goes in the same
+    // batch as the invitation: the item's owner adds `to` to its invites
+    // there, so nobody can push to someone they aren't inviting.
+    // `sealed` holds text sealed for each of the recipient's devices.
+    function isNewInvite(message) {
+      let path = /databases/$(database)/documents/$(message.collection)/$(message.item);
+      let before = get(path).data;
+      let after = getAfter(path).data;
+      return isOwner(after.owner)
+        && invitedReaders(after).hasAny([message.to])
+        && !invitedReaders(before).hasAny([message.to])
+        && !before.permissions.read.hasAny([message.to]);
+    }
+
+    match /pushMessages/{messageId} {
+      allow create: if isRegistered()
+        && request.resource.data.keys().hasOnly(['kind', 'to', 'from', 'collection', 'item', 'sealed', 'createdAt'])
+        && request.resource.data.kind == 'invitation'
+        && request.resource.data.from == request.auth.uid
+        && request.resource.data.to is string
+        && request.resource.data.collection in ['notes', 'tasks', 'finances', 'healthLogs']
+        && request.resource.data.item is string
+        && request.resource.data.sealed is map
+        && request.resource.data.sealed.size() <= 20
+        && request.resource.data.createdAt == request.time
+        && isNewInvite(request.resource.data);
     }
 
     // Finding someone by email to share with: `userLookup/{email}` holds

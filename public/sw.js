@@ -131,14 +131,96 @@ self.addEventListener('push', (event) => {
   const data = payload.data ?? payload.notification ?? {}
   if (!data.title) return
   event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: '/android-chrome-192x192.png',
-      tag: data.tag,
-      data: { link: data.link },
-    }),
+    detailedBody(data).then((body) =>
+      self.registration.showNotification(data.title, {
+        body: body ?? data.body,
+        icon: '/android-chrome-192x192.png',
+        tag: data.tag,
+        data: { link: data.link },
+      }),
+    ),
   )
 })
+
+// This device's push settings, saved by the app
+// (`app/lib/utils/push-device.ts`): keep the names in step.
+const readPushDevice = (key) =>
+  new Promise((resolve) => {
+    const request = indexedDB.open('push', 1)
+    request.addEventListener('upgradeneeded', () =>
+      request.result.createObjectStore('device'),
+    )
+    request.addEventListener('error', () => resolve())
+    request.addEventListener('success', () => {
+      const database = request.result
+      const get = database
+        .transaction('device', 'readonly')
+        .objectStore('device')
+        .get(key)
+      get.addEventListener('success', () => resolve(get.result))
+      get.addEventListener('error', () => resolve())
+      get.transaction.addEventListener('complete', () => database.close())
+    })
+  })
+
+const fromBase64 = (text) =>
+  Uint8Array.from(atob(text), (character) => character.codePointAt(0) ?? 0)
+
+// Opens text sealed for this device, as `app/lib/utils/push-seal.ts` seals
+// it: keep both in step.
+const openSealed = async (sealed, privateKey) => {
+  const ECDH = { name: 'ECDH', namedCurve: 'P-256' }
+  const [senderKey, iv, ciphertext] = sealed.split('.').map(fromBase64)
+  const sender = await crypto.subtle.importKey(
+    'raw',
+    senderKey,
+    ECDH,
+    false,
+    [],
+  )
+  const secret = await crypto.subtle.deriveBits(
+    { name: 'ECDH', public: sender },
+    privateKey,
+    256,
+  )
+  const material = await crypto.subtle.importKey('raw', secret, 'HKDF', false, [
+    'deriveKey',
+  ])
+  const key = await crypto.subtle.deriveKey(
+    {
+      name: 'HKDF',
+      hash: 'SHA-256',
+      salt: new Uint8Array(),
+      info: new TextEncoder().encode('catatsaja push v1'),
+    },
+    material,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['decrypt'],
+  )
+  const plain = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv },
+    key,
+    ciphertext,
+  )
+  return new TextDecoder().decode(plain)
+}
+
+// The text with the item's title, opened on this device, unless the person
+// hides details here; undefined to show the plain text instead.
+const detailedBody = async (data) => {
+  if (!data.sealed || !data.detailed) return
+  try {
+    if ((await readPushDevice('hideDetails')) === true) return
+    const pair = await readPushDevice('key')
+    if (!pair?.privateKey) return
+    const title = await openSealed(data.sealed, pair.privateKey)
+    return data.detailed.replace('{title}', () => title)
+  } catch {
+    // Sealed for a key this device no longer has.
+    return
+  }
+}
 
 // Only the app's own pages open: a link to another site is ignored.
 const linkOf = (notification) => {
