@@ -1015,7 +1015,7 @@
       "on": "Notifications are on for this device.",
       "blocked": "Notifications are blocked for Catat Saja.",
       "blockedHelp": {
-        "iosApp": "On your iPhone or iPad, open Settings → Apps → Catat Saja → Notifications, turn on Allow Notifications, then come back.",
+        "iosApp": "On your iPhone or iPad, open Settings → Notifications → Catat Saja, turn on Allow Notifications, then come back.",
         "androidApp": "Touch and hold the Catat Saja icon on your Home screen, tap App info → Notifications, allow them, then come back.",
         "androidTab": "In {{browser}}, tap the icon to the left of the address, then Permissions → Notifications, allow them, then come back.",
         "samsung": "In Samsung Internet, tap the icon to the left of the address, then Notifications, allow them, then come back.",

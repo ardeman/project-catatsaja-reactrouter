@@ -1015,7 +1015,7 @@
       "on": "Notifikasi menyala di perangkat ini.",
       "blocked": "Notifikasi untuk Catat Saja diblokir.",
       "blockedHelp": {
-        "iosApp": "Di iPhone atau iPad, buka Pengaturan → App → Catat Saja → Notifikasi, nyalakan Izinkan Notifikasi, lalu kembali ke sini.",
+        "iosApp": "Di iPhone atau iPad, buka Pengaturan → Notifikasi → Catat Saja, nyalakan Izinkan Notifikasi, lalu kembali ke sini.",
         "androidApp": "Sentuh lama ikon Catat Saja di Layar utama, ketuk Info aplikasi → Notifikasi, izinkan, lalu kembali ke sini.",
         "androidTab": "Di {{browser}}, ketuk ikon di sebelah kiri alamat, lalu Izin → Notifikasi, izinkan, lalu kembali ke sini.",
         "samsung": "Di Samsung Internet, ketuk ikon di sebelah kiri alamat, lalu Notifikasi, izinkan, lalu kembali ke sini.",
