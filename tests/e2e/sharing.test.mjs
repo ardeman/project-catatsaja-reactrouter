@@ -125,6 +125,18 @@ describe('sharing and finance storage', () => {
       for (let index = 0; index < 'Project plan'.length; index++)
         await page.keyboard.press('ArrowLeft')
       await page.keyboard.up('Shift')
+      // The editor takes the selection from the browser's selectionchange
+      // event, which comes later; right-clicking before it collapsed the
+      // selection on slow runners.
+      await page.waitForFunction(
+        () => globalThis.getSelection()?.toString() === 'Project plan',
+      )
+      await page.evaluate(
+        () =>
+          new Promise((resolve) =>
+            requestAnimationFrame(() => setTimeout(resolve)),
+          ),
+      )
       assert.equal(
         await page.locator('.milkdown-toolbar').count(),
         0,
