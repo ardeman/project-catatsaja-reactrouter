@@ -5,6 +5,8 @@
     "**/.client/**/*",
     ".react-router/types/**/*"
   ],
+  // The Cloud Functions build with their own settings (`functions/tsconfig.json`).
+  "exclude": ["functions"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2023"],
     "types": ["@react-router/node", "vite/client"],

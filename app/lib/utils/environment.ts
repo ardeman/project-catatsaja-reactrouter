@@ -13,6 +13,10 @@ export const environment = {
 
   VITE_GRAVATAR_API_KEY: import.meta.env.VITE_GRAVATAR_API_KEY as string,
 
+  // The public key of the web push key pair (Cloud Messaging); push
+  // notifications are off without it.
+  VITE_FCM_VAPID_KEY: import.meta.env.VITE_FCM_VAPID_KEY as string | undefined,
+
   // Development only: 'true' connects to the local Firebase emulators
   // (`pnpm emulators`) instead of the real project.
   VITE_USE_EMULATORS: import.meta.env.VITE_USE_EMULATORS as string | undefined,

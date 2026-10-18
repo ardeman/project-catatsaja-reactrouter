@@ -1,3 +1,8 @@
+# The Cloud Functions (`functions/`) are their own package, deployed apart
+# from the app.
+packages:
+  - functions
+
 allowBuilds:
   '@firebase/util': false
   protobufjs: false

@@ -3,6 +3,15 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs24",
+      "ignore": ["node_modules", "src", "tsconfig.json"],
+      "predeploy": ["pnpm build:functions"]
+    }
+  ],
   "hosting": {
     "public": "build/client",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
@@ -52,6 +61,9 @@
     },
     "ui": {
       "enabled": true
+    },
+    "functions": {
+      "port": 5001
     }
   }
 }

@@ -182,6 +182,20 @@ service cloud.firestore {
       match /blocked/{blockedId} {
         allow read, write: if isOwner(userId);
       }
+
+      // The devices that get push notifications: one push token each, in
+      // the language its notifications are written in. Only its owner (and
+      // the functions that send the notifications) read them.
+      match /pushTokens/{tokenId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && request.resource.data.keys().hasOnly(['token', 'lang', 'updatedAt'])
+          && request.resource.data.token is string
+          && request.resource.data.token.size() > 0
+          && request.resource.data.token.size() <= 4096
+          && request.resource.data.lang in ['en', 'id']
+          && request.resource.data.updatedAt is timestamp;
+      }
     }
 
     // Finding someone by email to share with: `userLookup/{email}` holds

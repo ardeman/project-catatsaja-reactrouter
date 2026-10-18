@@ -1007,6 +1007,20 @@
       "notAgreed": "You’ll be asked before an AI feature first sends anything.",
       "withdraw": "Take back my agreement"
     },
+    "push": {
+      "title": "Notifications",
+      "description": "Get a notification on this device when someone invites you or a health reminder is due. It never shows what the item says.",
+      "off": "Notifications are off on this device.",
+      "on": "Notifications are on for this device.",
+      "blocked": "Notifications are blocked for this site in your browser’s settings. Allow them there, then come back.",
+      "unsupported": "This browser can’t get notifications from Catat Saja.",
+      "needsInstall": "On iPhone and iPad, notifications work only in the installed app. Install Catat Saja, open it from the Home Screen and turn them on there.",
+      "turnOn": "Turn on",
+      "turnOff": "Turn off",
+      "toast": {
+        "on": "Notifications are on for this device."
+      }
+    },
     "dateFormat": {
       "title": "Date format",
       "description": "Choose how dates are displayed and typed. Separators are added automatically. English and Indonesian month names are accepted.",

@@ -121,13 +121,14 @@ pnpm refuses package versions published less than a day ago (its `minimumRelease
 
 `.env` is git-ignored. In CI the same names come from repository secrets.
 
-| Variable                     | Used for                                                                                                                                            |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_FIREBASE_*`            | Firebase web app config (Project settings → Your apps)                                                                                              |
-| `VITE_GRAVATAR_API_KEY`      | Profile avatars from Gravatar                                                                                                                       |
-| `VITE_APP_CHECK_SITE_KEY`    | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it                                                         |
-| `VITE_APP_CHECK_DEBUG_TOKEN` | Development only. A registered App Check debug token, kept in the ignored `.env`; ignored in production                                             |
-| `VITE_USE_EMULATORS`         | Development only (not set in the workflow): `true` runs `pnpm dev` against the local Auth and Firestore emulators (`pnpm emulators`, needs Java 21) |
+| Variable                     | Used for                                                                                                                                                       |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_FIREBASE_*`            | Firebase web app config (Project settings → Your apps)                                                                                                         |
+| `VITE_GRAVATAR_API_KEY`      | Profile avatars from Gravatar                                                                                                                                  |
+| `VITE_FCM_VAPID_KEY`         | Optional. Public key of the web push key pair (Project settings → Cloud Messaging → Web Push certificates); push notifications are off without it              |
+| `VITE_APP_CHECK_SITE_KEY`    | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it                                                                    |
+| `VITE_APP_CHECK_DEBUG_TOKEN` | Development only. A registered App Check debug token, kept in the ignored `.env`; ignored in production                                                        |
+| `VITE_USE_EMULATORS`         | Development only (not set in the workflow): `true` runs `pnpm dev` against the local Auth, Firestore and Functions emulators (`pnpm emulators`, needs Java 21) |
 
 Variables are read in one place, `app/lib/utils/environment.ts`.
 
@@ -140,14 +141,15 @@ When developing against Firebase with App Check enabled, create a debug token in
 | Install dependencies                                                                                                          | `pnpm install`                                            |
 | Dev server                                                                                                                    | `pnpm dev`                                                |
 | Lint                                                                                                                          | `pnpm lint`                                               |
-| Typecheck (generates route types first)                                                                                       | `pnpm typecheck`                                          |
+| Typecheck the app and the Cloud Functions (generates route types first)                                                       | `pnpm typecheck`                                          |
 | Unused files, exports and dependencies                                                                                        | `pnpm knip`                                               |
 | Format                                                                                                                        | `pnpm format`                                             |
 | Regenerate `public/site.webmanifest` from `scripts/generate-manifest.mjs` and `app/lib/constants/metadata.ts`                 | `pnpm generate:manifest`                                  |
 | Redraw every icon in `public/` (PNGs, `favicon.ico`, `logo.svg`) from `scripts/icon/logo.svg`, with Chrome through Playwright | `pnpm generate:icons`                                     |
 | Production build (includes the manifest)                                                                                      | `pnpm build`                                              |
 | Preview the production build                                                                                                  | `pnpm preview`                                            |
-| Run the Auth and Firestore emulators (with `VITE_USE_EMULATORS=true`; Java 21)                                                | `pnpm emulators`                                          |
+| Build the Cloud Functions (`functions/src` to `functions/lib`)                                                                | `pnpm build:functions`                                    |
+| Run the Auth, Firestore and Functions emulators (with `VITE_USE_EMULATORS=true`; Java 21; builds the functions first)         | `pnpm emulators`                                          |
 | Deploy Firestore rules and indexes (when pnpm asks which packages may build, choose none: firebase-tools doesn't need them)   | `pnpm dlx firebase-tools@15.33.0 deploy --only firestore` |
 | Maintenance mode and the oldest app allowed, with your gcloud sign-in (README → Maintenance mode)                             | `pnpm maintenance status\|on\|off`                        |
 | Reinstall Git hooks                                                                                                           | `pnpm prepare`                                            |
@@ -235,6 +237,7 @@ app/
                         _layout._main.*   signed-in app (notes, tasks, finances, health, settings)
   apis/firestore/     Firestore reads and writes per collection (note, task, finance, health-log, user, currency)
   apis/ai/            Gemini calls through Firebase AI Logic (receipt, typed entries, note and task list helpers, dictation)
+  apis/push.ts        This device's push subscription (Firebase Cloud Messaging)
   components/
     ui/               shadcn/ui primitives (generated)
     base/             Shared app components built on ui/
@@ -251,7 +254,8 @@ app/
   content/            changelog.ts: release notes for /changelog, in both languages
   localization/       i18next setup; locales/<en|id>/common.json and zod.json
   styles/             tailwind.css (Tailwind 4 config: theme, plugins, colours), Milkdown editor theme
-public/               Icons (generated), site.webmanifest (generated), sw.js, robots.txt, sitemap.xml
+public/               Icons (generated), site.webmanifest (generated), sw.js (offline start, push notifications), robots.txt, sitemap.xml
+functions/            Cloud Functions (own pnpm workspace package, Node 24, asia-southeast2 beside Firestore) that send push notifications
 scripts/              generate-manifest.mjs, generate-icons.mjs and the logo's vector master (icon/logo.svg)
 firestore.rules       Security rules (owner and read/write permission lists)
 firestore.indexes.json

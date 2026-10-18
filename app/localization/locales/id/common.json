@@ -1007,6 +1007,20 @@
       "notAgreed": "Kamu akan ditanya sebelum fitur AI pertama kali mengirim sesuatu.",
       "withdraw": "Batalkan persetujuan"
     },
+    "push": {
+      "title": "Notifikasi",
+      "description": "Dapatkan notifikasi di perangkat ini saat seseorang mengundangmu atau pengingat kesehatan jatuh tempo. Isinya tidak pernah ditampilkan.",
+      "off": "Notifikasi mati di perangkat ini.",
+      "on": "Notifikasi menyala di perangkat ini.",
+      "blocked": "Notifikasi untuk situs ini diblokir di pengaturan browsermu. Izinkan di sana, lalu kembali ke sini.",
+      "unsupported": "Browser ini tidak bisa menerima notifikasi dari Catat Saja.",
+      "needsInstall": "Di iPhone dan iPad, notifikasi hanya ada di aplikasi yang terpasang. Pasang Catat Saja, buka dari Layar Utama, lalu nyalakan di sana.",
+      "turnOn": "Nyalakan",
+      "turnOff": "Matikan",
+      "toast": {
+        "on": "Notifikasi menyala di perangkat ini."
+      }
+    },
     "dateFormat": {
       "title": "Format tanggal",
       "description": "Pilih cara tanggal ditampilkan dan diketik. Pemisah ditambahkan otomatis. Nama bulan dalam bahasa Inggris dan Indonesia diterima.",

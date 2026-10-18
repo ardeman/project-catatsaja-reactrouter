@@ -13,3 +13,4 @@ video-marketing.json
 # Firebase CLI / emulator logs
 firebase-debug.log
 *-debug.log
+functions/lib

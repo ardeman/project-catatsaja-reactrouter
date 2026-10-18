@@ -4,6 +4,8 @@
 // - /assets/*: hashed file names that never change, so cache first.
 // - Everything else (Firebase, Firestore, fonts, other sites) is not
 //   touched and goes to the network as usual.
+// - Push: shows the notifications sent through Firebase Cloud Messaging
+//   (invitations, health reminders) and opens their page when tapped.
 
 const PAGES = 'pages-v2'
 const ASSETS = 'assets-v1'
@@ -114,4 +116,56 @@ self.addEventListener('fetch', (event) => {
   } else if (url.pathname.startsWith('/assets/')) {
     event.respondWith(handleAsset(request))
   }
+})
+
+// Cloud Messaging sends `{ data: { title, body, link } }`. The text is
+// written by the server in the device's language and never holds what an
+// item says.
+self.addEventListener('push', (event) => {
+  let payload = {}
+  try {
+    payload = event.data ? event.data.json() : {}
+  } catch {
+    // Not from the app: nothing to show.
+  }
+  const data = payload.data ?? payload.notification ?? {}
+  if (!data.title) return
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: '/android-chrome-192x192.png',
+      tag: data.tag,
+      data: { link: data.link },
+    }),
+  )
+})
+
+// Only the app's own pages open: a link to another site is ignored.
+const linkOf = (notification) => {
+  try {
+    const url = new URL(notification.data?.link ?? '/', self.location.origin)
+    return url.origin === self.location.origin ? url.href : self.location.origin
+  } catch {
+    return self.location.origin
+  }
+}
+
+// Tapping a notification goes to its page in an open window of the app, or
+// opens one.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const link = linkOf(event.notification)
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((windows) => {
+        const open = windows.find((client) => 'navigate' in client)
+        if (!open) return self.clients.openWindow(link)
+        // A window this worker doesn't control can't be navigated.
+        return open
+          .focus()
+          .then(() => open.navigate(link))
+          .catch(() => self.clients.openWindow(link))
+      }),
+  )
 })

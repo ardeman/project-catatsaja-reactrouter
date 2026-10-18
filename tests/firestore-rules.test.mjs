@@ -110,6 +110,44 @@ describe('users', () => {
     )
   })
 
+  test('push tokens are private to their owner and keep their shape', async () => {
+    const path = `users/${OWNER}/pushTokens/device`
+    const token = { token: 'abc', lang: 'en', updatedAt: new Date() }
+    await assertSucceeds(as(OWNER).doc(path).set(token))
+    await assertSucceeds(as(OWNER).doc(path).get())
+    await assertSucceeds(
+      as(OWNER)
+        .doc(path)
+        .set({ ...token, lang: 'id' }),
+    )
+    await assertFails(
+      as(OWNER)
+        .doc(path)
+        .set({ ...token, lang: 'fr' }),
+    )
+    await assertFails(
+      as(OWNER)
+        .doc(path)
+        .set({ ...token, token: '' }),
+    )
+    await assertFails(
+      as(OWNER)
+        .doc(path)
+        .set({ ...token, title: 'x' }),
+    )
+    await assertFails(as(OWNER).doc(path).set({ token: 'abc', lang: 'en' }))
+    await assertFails(as(STRANGER).doc(path).get())
+    await assertFails(
+      as(STRANGER).collection(`users/${OWNER}/pushTokens`).get(),
+    )
+    await assertFails(as(STRANGER).doc(path).set(token))
+    await assertFails(
+      as(STRANGER).doc(`users/${OWNER}/pushTokens/other`).set(token),
+    )
+    await assertFails(as(STRANGER).doc(path).delete())
+    await assertSucceeds(as(OWNER).doc(path).delete())
+  })
+
   test('currencies are private to their owner', async () => {
     const path = `users/${OWNER}/currencies/usd`
     await assertSucceeds(as(OWNER).doc(path).set({ code: 'USD' }))
@@ -731,24 +769,12 @@ describe('finance months', () => {
 
   test('a book never holds its entries itself', async () => {
     await seed(book, movedPlain)
-    await assertFails(
-      as(WRITER)
-        .doc(book)
-        .update({ content: [] }),
-    )
-    await assertFails(
-      as(OWNER)
-        .doc(book)
-        .update({ content: [] }),
-    )
+    await assertFails(as(WRITER).doc(book).update({ content: [] }))
+    await assertFails(as(OWNER).doc(book).update({ content: [] }))
     await assertFails(as(OWNER).doc(book).set(plainBook))
     await seed(book, { ...plainBook, content: [] })
     await assertFails(as(OWNER).doc(`${book}/months/2026-10`).set(month))
-    await assertFails(
-      as(OWNER)
-        .doc(book)
-        .update({ title: 'Renamed' }),
-    )
+    await assertFails(as(OWNER).doc(book).update({ title: 'Renamed' }))
   })
 
   test('a new book starts with its months, never with content or unmarked', async () => {
