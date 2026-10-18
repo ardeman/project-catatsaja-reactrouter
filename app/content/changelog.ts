@@ -27,6 +27,13 @@ export const releases: TRelease[] = [
           id: 'Ketuk tanggal di kalender menstruasi lalu pilih Hubungan seks untuk mencatatnya, pakai pengaman atau tanpa pengaman, dengan catatan jika mau. Tanggal itu diberi titik (berlubang untuk pakai pengaman, penuh untuk tanpa pengaman), dan muncul di riwayat di samping menstruasimu. Orang yang diajak berbagi catatan itu juga bisa melihatnya.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'If you refused notifications, Settings → General now says how to allow them again in the browser you’re using, or in your phone’s or computer’s settings when you use the installed app.',
+          id: 'Jika kamu menolak notifikasi, Pengaturan → Umum kini menjelaskan cara mengizinkannya lagi di browser yang kamu pakai, atau di pengaturan ponsel atau komputermu saat kamu memakai aplikasi yang terpasang.',
+        },
+      },
     ],
   },
   {

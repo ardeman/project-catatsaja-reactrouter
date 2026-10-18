@@ -10,8 +10,9 @@ import {
 } from '~/components/base/card'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
-import { useInstallApp } from '~/lib/hooks/use-install-app'
+import { useInstallApp, useIsStandalone } from '~/lib/hooks/use-install-app'
 import { useUpdatePush } from '~/lib/hooks/use-update-push'
+import { blockedHelp } from '~/lib/utils/notification-help'
 
 // Push notifications on this device, for invitations and health reminders.
 // The browser asks for the permission only when the person turns them on.
@@ -22,6 +23,7 @@ export const Push = () => {
   const { status, isPending, enable, disable, hideDetails, changeHideDetails } =
     useUpdatePush()
   const { canInstall, steps } = useInstallApp()
+  const isStandalone = useIsStandalone()
 
   if (status === 'loading') return
 
@@ -31,6 +33,9 @@ export const Push = () => {
   const message = needsInstall
     ? 'settings.push.needsInstall'
     : (`settings.push.${status}` as const)
+  // Refused: how to allow them again in this browser, or in the installed
+  // app's settings.
+  const help = status === 'blocked' ? blockedHelp(isStandalone) : undefined
 
   return (
     <Card className="min-w-0">
@@ -45,6 +50,13 @@ export const Push = () => {
         >
           {t(message)}
         </p>
+        {help && (
+          <p className="text-sm text-muted-foreground">
+            {t(`settings.push.blockedHelp.${help.kind}`, {
+              browser: help.browser,
+            })}
+          </p>
+        )}
         {(status === 'on' || status === 'off') && (
           <Button
             containerClassName="w-full sm:w-fit"
