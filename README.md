@@ -62,6 +62,11 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - [ ] Finances: recurring entries (salary, rent, bills) confirmed with one tap when due, instead of typed again.
 - [ ] Finances: filter a book's entries by category, type and date range.
 - [ ] Finances: transfers between a book's accounts, counted as neither income nor expense.
+- [ ] Finances analysis, one release each, in order:
+  1. A date range at the top of Analysis (this month, last 3 months, this year, all, custom) that every chart and table follows, and a "Group by" control (category, item, day, week, month, day of week) replacing the automatic period size. Computed in the browser; nothing stored.
+  2. Compare two periods (by default the chosen range and the one before it): income, expense, net and each category, with the change in amount and %. Computed only.
+  3. Your own groups of categories (such as Needs = food + bills) with totals and shares. Decide first where they live: on the book (shared with its people; a new content field, so the rules, `contentFields` and an end-to-end test) or on the profile (personal, and usable across books in step 4).
+  4. Compare books: a screen to pick several books and see income, expense and net per month for each. Books in other currencies are converted with the person's currency settings, so unlike a book's own totals these can change when a rate does.
 - [ ] Tasks: due dates with reminders, through a calendar file (.ics) like health reminders, so no server is needed.
 - [ ] Export all your data as a file, decrypted on the device: a backup in case the passphrase is lost. Free, apart from Plus's finance exports and reports.
 - [ ] Trash: deleted items kept for 30 days, beyond the Undo toast.
