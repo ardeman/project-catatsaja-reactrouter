@@ -10,6 +10,7 @@ const paragraphs = [
   'encryption',
   'ai',
   'sharing',
+  'push',
   'analytics',
   'security',
   'video',

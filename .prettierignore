@@ -7,3 +7,5 @@ pnpm-lock.yaml
 # Generated WHO growth tables (one data line; see the file header).
 app/lib/constants/who-growth-standards.ts
 app/lib/constants/who-growth-reference.ts
+# Written by npm (`pnpm lock:functions`), for Cloud Build.
+functions/package-lock.json

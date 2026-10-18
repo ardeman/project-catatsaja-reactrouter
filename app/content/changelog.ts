@@ -14,6 +14,29 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-19',
+    title: {
+      en: 'Medicine reminders and push notifications',
+      id: 'Pengingat obat dan notifikasi push',
+    },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Add medicines to a health log: the dose, one or more times a day, how often and for how long (until a date, a number of days or doses, or ongoing). Mark each dose taken or skipped, and see the history and how many doses are left.',
+          id: 'Tambahkan obat ke catatan kesehatan: dosisnya, satu kali atau lebih dalam sehari, seberapa sering, dan berapa lama (sampai tanggal tertentu, sejumlah hari atau dosis, atau terus-menerus). Tandai setiap dosis sudah diminum atau dilewati, dan lihat riwayatnya serta sisa dosisnya.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Turn on notifications for a device in Settings → General to hear about invitations, health reminders and every medicine dose, even with the app closed. Everyone a health log is shared with gets its reminders. The text is encrypted for each of your devices, so not even we can read it, and you can hide titles from the lock screen.',
+          id: 'Nyalakan notifikasi untuk sebuah perangkat di Pengaturan → Umum untuk mendapat kabar tentang undangan, pengingat kesehatan, dan setiap dosis obat, bahkan saat aplikasi ditutup. Semua orang yang diajak berbagi sebuah catatan kesehatan mendapat pengingatnya. Teksnya dienkripsi untuk setiap perangkat Anda, sehingga kami pun tidak bisa membacanya, dan Anda bisa menyembunyikan judul dari layar kunci.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-18',
     title: {
       en: 'Notifications in one place',

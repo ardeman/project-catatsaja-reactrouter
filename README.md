@@ -44,6 +44,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - **Finance analysis:** per book, insight tiles, cash flow and balance charts and spending by colour-coded category, with a table view; accounts to check the balance against; calculations in amount fields.
 - **Date entry:** type dates with automatic separators, including English or Indonesian month names or choose from a calendar; the format defaults to DD-MM-YYYY and can be changed in Settings → General.
 - **Health:** a log per person (yourself, a child, a parent), shared like notes: weight, height and BMI (Kemenkes, WHO or WHO Asia-Pacific categories), child growth from birth to 19 years against the WHO Child Growth Standards (to 5 years) and the WHO Growth Reference for school-age children and adolescents (5 to 19 years; weight for age to 10), with percentiles and Kemenkes PMK 2/2020 status, blood sugar, uric acid and cholesterol with adult reference ranges (mg/dL or SI units), calories against a daily target, and period cycle estimates; reminders to measure every few days or before an expected period, shown when due (on the log, its card and the Health menu) and exportable to the phone's calendar (.ics).
+- **Notifications:** a bell lists invitations, due health reminders and medicine doses, encrypted items others can't read, and a newer version of the app. Push notifications per device (Settings → General) for invitations, health reminders and every medicine dose, sent by Cloud Functions; their text is sealed on the sender's device for each receiving device, so the server sees only times and recipients, and each device can hide titles on its lock screen.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
 - **Landing page:** what the app does, with previews of a note and a checklist, four people's stories and a tour video (YouTube, loaded only on play), in both languages and themes; signed-in visitors go straight to their notes.
 - **App:** installable as a standalone app ("Install app" on the landing page and in the account menu: the browser's install prompt, or the right steps for Safari, Firefox on Android and Chrome before it offers the prompt), opens offline, a how-to-use guide, a changelog, about, privacy policy and terms pages, a 404 page, and a loading screen while signing in.
@@ -64,7 +65,6 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 - [ ] Export all your data as a file, decrypted on the device: a backup in case the passphrase is lost. Free, apart from Plus's finance exports and reports.
 - [ ] Trash: deleted items kept for 30 days, beyond the Undo toast.
 - [ ] Labels shared across notes, tasks and books (such as "Holiday 2026").
-- [ ] Push notifications for health reminders (needs Cloud Functions and the Blaze plan; today reminders show in the app and go to the phone's calendar).
 
 **Revenue**
 
@@ -110,6 +110,7 @@ pnpm install           # also installs the Husky Git hooks
 cp .env.example .env   # then fill in the values below
 pnpm dlx firebase-tools@15.33.0 login
 pnpm dlx firebase-tools@15.33.0 deploy --only firestore   # rules and indexes
+pnpm dlx firebase-tools@15.33.0 deploy --only functions   # push notifications (Blaze plan)
 pnpm dev               # http://localhost:5173
 ```
 
@@ -149,8 +150,10 @@ When developing against Firebase with App Check enabled, create a debug token in
 | Production build (includes the manifest)                                                                                      | `pnpm build`                                              |
 | Preview the production build                                                                                                  | `pnpm preview`                                            |
 | Build the Cloud Functions (`functions/src` to `functions/lib`)                                                                | `pnpm build:functions`                                    |
+| Rewrite `functions/package-lock.json` after changing `functions/package.json` (npm, releases at least a day old)              | `pnpm lock:functions`                                     |
 | Run the Auth, Firestore and Functions emulators (with `VITE_USE_EMULATORS=true`; Java 21; builds the functions first)         | `pnpm emulators`                                          |
 | Deploy Firestore rules and indexes (when pnpm asks which packages may build, choose none: firebase-tools doesn't need them)   | `pnpm dlx firebase-tools@15.33.0 deploy --only firestore` |
+| Deploy the Cloud Functions (checks the lockfile and builds them first)                                                        | `pnpm dlx firebase-tools@15.33.0 deploy --only functions` |
 | Maintenance mode and the oldest app allowed, with your gcloud sign-in (README → Maintenance mode)                             | `pnpm maintenance status\|on\|off`                        |
 | Reinstall Git hooks                                                                                                           | `pnpm prepare`                                            |
 
@@ -191,6 +194,8 @@ Commit subjects use `type(scope)!: description`, with optional scope and `!` for
 ## Deployment
 
 `.github/workflows/firebase-remix.yml` runs checks on every push to `main`, pull request, every Monday (to catch a runner, Chrome or emulator change before it blocks a deploy) and by hand. **validation** installs dependencies, runs `pnpm validate` and the Firestore rules tests (`pnpm test:rules`, with Java). In parallel, the **e2e** matrix runs each end-to-end test file on its own runner, with its own app, Auth and Firestore emulators, and Chrome installed by Playwright. All four suites finish even if one fails. This shortens the wait at the cost of more runner minutes. **checks** keeps the existing status name for branch protection and fails unless validation and every E2E suite succeed. **deploy** runs after it, only for a push to `main` or a run by hand on `main`: build with the secrets above and deploy `build/client` to the live channel of Firebase Hosting, one deploy at a time. Nothing comes from the runner image (Node from `.nvmrc`, pnpm from `packageManager`, Java, Chrome and the Firebase CLI pinned or installed), so moving `ubuntu-latest` to a new Ubuntu doesn't change the build; Dependabot (`.github/dependabot.yml`) proposes action updates monthly. Firestore rules and indexes are **not** deployed by the workflow; deploy them with the command above when `firestore.rules` or `firestore.indexes.json` change.
+
+The Cloud Functions (`functions/`, push notifications) aren't deployed by the workflow either, so its service account keeps only its Hosting roles: deploy them with `deploy --only functions` when `functions/` changes, after the rules they rely on and before the app that writes for them. Cloud Build installs them with npm, outside the pnpm workspace, from `functions/package-lock.json`: run `pnpm lock:functions` after changing `functions/package.json` (it resolves only releases at least a day old, like pnpm), and `pnpm validate` and the deploy refuse a lockfile that no longer matches. Each deploy leaves a container image in Artifact Registry; keep them from adding up with `pnpm dlx firebase-tools@15.33.0 functions:artifacts:setpolicy --location asia-southeast2 --days 1` (once per project). The functions run on the Blaze plan; a budget alert in Google Cloud Billing warns before costs grow.
 
 Hosting (`firebase.json`) serves the prerendered pages as files and every other path `__spa-fallback.html`, without trailing slashes. Pages are sent with `Cache-Control: no-cache` and the hashed files in `/assets/` are cached for a year, so a deploy never leaves browsers with pages that point at deleted files.
 
