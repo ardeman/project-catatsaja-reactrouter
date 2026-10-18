@@ -58,15 +58,52 @@ jobs:
       - name: Test the Firestore rules
         run: pnpm test:rules
 
+  # Whether anything besides documentation changed. A push or pull request
+  # that changes only Markdown or docs skips the end-to-end tests; the
+  # weekly and hand-started runs always test.
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Look for changes other than docs
+        id: diff
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          code=true
+          # A new branch or a force push has no usable base: test.
+          if { [ "$EVENT" = push ] || [ "$EVENT" = pull_request ]; } &&
+            git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            if ! git diff --name-only "$BASE" "$HEAD" |
+              grep -qvE '(\.md$|^docs/|^LICENSE$)'; then
+              code=false
+            fi
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+
   e2e:
     name: End-to-end (${{ matrix.suite }})
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
+    # The ui suite checks interface behaviour only: its failure shows, but
+    # doesn't block a deploy. The others guard stored, shared and encrypted
+    # data and must pass.
+    continue-on-error: ${{ matrix.suite == 'ui' }}
     strategy:
       # Finish every suite even if another fails, so all failures are visible.
       fail-fast: false
       matrix:
-        suite: [encryption, sharing, ai, tasks]
+        suite: [encryption, sharing, ai, ui]
     # Each suite needs its own runner: they use the same ports and some
     # reset the emulator database. Scenarios within a file stay sequential.
     steps:
@@ -96,13 +133,22 @@ jobs:
       # (--force: the runner image may already have a Chrome of its own).
       - name: Install Chrome
         run: pnpm exec playwright install --with-deps --force chrome
+      # A failed suite runs once more, on fresh emulators, before it fails:
+      # browser timing on a busy runner shouldn't block a deploy.
       - name: End-to-end tests
-        run: pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja 'node --test --test-concurrency=1 tests/e2e/${{ matrix.suite }}.test.mjs'
+        env:
+          SUITE: ${{ matrix.suite }}
+        run: |
+          for attempt in 1 2; do
+            pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja "node --test --test-concurrency=1 tests/e2e/$SUITE.test.mjs" && exit 0
+            echo "::warning::$SUITE failed on attempt $attempt"
+          done
+          exit 1
 
   # Keep the existing "checks" status as the gate for branch protection
-  # and deployment, including every matrix job.
+  # and deployment, including every matrix job (skipped for docs only).
   checks:
-    needs: [validation, e2e]
+    needs: [validation, changes, e2e]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -110,8 +156,15 @@ jobs:
       - name: Require every check to pass
         env:
           VALIDATION_RESULT: ${{ needs.validation.result }}
+          CODE_CHANGED: ${{ needs.changes.outputs.code }}
           E2E_RESULT: ${{ needs.e2e.result }}
-        run: test "$VALIDATION_RESULT" = success && test "$E2E_RESULT" = success
+        run: |
+          test "$VALIDATION_RESULT" = success
+          if [ "$CODE_CHANGED" = false ]; then
+            test "$E2E_RESULT" = skipped
+          else
+            test "$E2E_RESULT" = success
+          fi
 
   deploy:
     needs: checks

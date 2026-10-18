@@ -608,58 +608,6 @@ describe('AI features and reminders', () => {
     )
   })
 
-  test('undo and redo in task lists, finance books and health logs', async () => {
-    const { page } = device
-    const undo = () =>
-      page.getByRole('button', { name: 'Undo', exact: true }).click()
-    const redo = () =>
-      page.getByRole('button', { name: 'Redo', exact: true }).click()
-    const pause = () => page.waitForTimeout(1500)
-
-    // A task list: adding an item is a step.
-    await page.goto(`${APP}/tasks/create`)
-    await page.locator('textarea[name=title]').fill('Groceries')
-    await page.getByRole('button', { name: 'Save' }).click()
-    await page.waitForURL(/\/tasks\/(?!create)/, { timeout: 30_000 })
-    await page.waitForTimeout(2000)
-    await page.locator('textarea[name=item]').fill('Eggs')
-    await page.locator('textarea[name=item]').press('Enter')
-    await shows(page, 'Eggs')
-    await pause()
-    await undo()
-    await page.getByText('Eggs').waitFor({ state: 'hidden' })
-    await redo()
-    await shows(page, 'Eggs')
-
-    // A finance book: its title, opened fresh (nothing to undo yet).
-    await page.goto(bookUrl)
-    await page.waitForTimeout(3000)
-    assert.equal(
-      await page.getByRole('button', { name: 'Undo', exact: true }).isEnabled(),
-      false,
-    )
-    const bookTitle = page.locator('textarea[name=title]')
-    await bookTitle.fill('Belanja Oktober')
-    await pause()
-    await undo()
-    assert.equal(await bookTitle.inputValue(), 'Belanja')
-    await redo()
-    assert.equal(await bookTitle.inputValue(), 'Belanja Oktober')
-
-    // A health log: its name, and a removed reminder brought back.
-    await page.goto(healthUrl)
-    await page.waitForTimeout(3000)
-    const name = page.locator('textarea[name=name]')
-    await name.fill('Rara Ayu')
-    await pause()
-    await undo()
-    assert.equal(await name.inputValue(), 'Rara')
-    await page.getByRole('button', { name: 'Remove reminder' }).click()
-    await pause()
-    await undo()
-    await shows(page, 'Every 7 days')
-  })
-
   test('an unsaved entry comes back after a reload, until it is cancelled', async () => {
     const { page } = device
     await page.goto(bookUrl)

@@ -1,5 +1,8 @@
-// Task input must survive Save and in-app navigation, with and without
-// encryption. Run against the Auth and Firestore emulators.
+// Interface behaviour that doesn't decide what is stored, shared or
+// encrypted: editing tasks and notes, mobile taps, undo and redo. Run on its
+// own CI runner and doesn't block a deploy (the other suites do). Each
+// scenario creates its own accounts. Run against the Auth and Firestore
+// emulators.
 import assert from 'node:assert/strict'
 import { mkdir } from 'node:fs/promises'
 import { after, before, test } from 'node:test'
@@ -7,6 +10,7 @@ import { after, before, test } from 'node:test'
 import {
   APP,
   dbGetWhen,
+  dbList,
   dbListWhen,
   dbPatch,
   launch,
@@ -17,6 +21,7 @@ import {
   startApp,
   stopApp,
   uidOf,
+  warmUpApp,
 } from './helpers.mjs'
 
 let server
@@ -24,11 +29,15 @@ let browser
 before(async () => {
   server = await startApp()
   browser = await launch()
+  await warmUpApp(browser)
 })
 after(async () => {
   await browser?.close()
   stopApp(server)
 })
+
+const shows = (page, text) =>
+  page.getByText(text).first().waitFor({ timeout: 30_000 })
 
 for (const encrypted of [false, true]) {
   test(`task input survives adding, saving and leaving (${encrypted ? 'encrypted' : 'plain'})`, async () => {
@@ -476,6 +485,277 @@ test('mobile taps preserve the caret and focus within the tap event', async () =
         `${text.slice(0, caret)}|${text.slice(caret)}`,
       )
     }
+  } finally {
+    await context.close()
+  }
+})
+
+test('note formatting opens by button and right click, not long touch', async () => {
+  const { page, context } = await newDevice(browser, { hasTouch: true })
+  try {
+    await signUp(
+      page,
+      'Formatting writer',
+      `note-format-${Date.now()}@example.com`,
+    )
+    await setUpEncryption(page, 'formatting passphrase')
+    await page.goto(`${APP}/notes/create`)
+    await page
+      .getByRole('textbox', { name: 'Title', exact: true })
+      .fill('Formatted note')
+    const editor = page.getByRole('textbox', { name: 'Content', exact: true })
+    const toggle = page.getByRole('button', { name: 'Format', exact: true })
+    // The right-click menu is a popup; the Format button shows a row in the
+    // page's toolbar that stays open. Both are named "Text formatting".
+    const menu = page
+      .getByRole('dialog', { name: 'Text formatting', exact: true })
+      .getByRole('group', { name: 'Text formatting', exact: true })
+    const bar = page.locator(
+      '[role="group"][aria-label="Text formatting"]:not([role="dialog"] *)',
+    )
+    const choose = (label) =>
+      bar.getByRole('button', { name: label, exact: true }).click()
+    await editor.click()
+    await page.keyboard.insertText('Project plan')
+    // Select text rather than ProseMirror's whole-document selection.
+    await page.keyboard.down('Shift')
+    for (let index = 0; index < 'Project plan'.length; index++)
+      await page.keyboard.press('ArrowLeft')
+    await page.keyboard.up('Shift')
+    // The editor takes the selection from the browser's selectionchange
+    // event, which comes later; right-clicking before it collapsed the
+    // selection on slow runners.
+    await page.waitForFunction(
+      () => globalThis.getSelection()?.toString() === 'Project plan',
+    )
+    await page.evaluate(
+      () =>
+        new Promise((resolve) =>
+          requestAnimationFrame(() => setTimeout(resolve)),
+        ),
+    )
+    assert.equal(
+      await page.locator('.milkdown-toolbar').count(),
+      0,
+      'selection alone does not open a competing toolbar',
+    )
+    // Right click over the selected words, so the menu keeps the selection.
+    await editor
+      .getByText('Project plan', { exact: true })
+      .click({ button: 'right', position: { x: 10, y: 8 } })
+    await menu.getByRole('button', { name: 'Bold', exact: true }).click()
+    await editor.locator('strong').waitFor()
+    assert.equal(
+      await editor.locator('strong').textContent(),
+      'Project plan',
+      'right click preserves the selected text',
+    )
+
+    await menu.waitFor({ state: 'hidden' })
+    await toggle.click()
+    await bar.waitFor()
+    assert.equal(await toggle.getAttribute('aria-pressed'), 'true')
+    await choose('Heading')
+    assert.equal(await editor.locator('h1').textContent(), 'Project plan')
+    await choose('Subheading')
+    assert.equal(await editor.locator('h2').textContent(), 'Project plan')
+    await choose('Normal text')
+    assert.equal(await editor.locator('h1, h2').count(), 0)
+    await choose('Bulleted list')
+    await editor.locator('ul li').waitFor()
+    await choose('Numbered list')
+    await editor.locator('ol li').waitFor()
+    await choose('Numbered list')
+    assert.equal(
+      await editor.locator('ul, ol').count(),
+      0,
+      'choosing the same list removes it',
+    )
+
+    await toggle.click()
+    await bar.waitFor({ state: 'hidden' })
+    assert.equal(await toggle.getAttribute('aria-pressed'), 'false')
+
+    // Touch and hold is left to the phone, which selects text with it
+    // and shows its own menu: the formatting menu must stay closed.
+    await editor.click({ position: { x: 20, y: 10 } })
+    const bounds = await editor.boundingBox()
+    const point = { x: bounds.x + 20, y: bounds.y + 10 }
+    const touch = await context.newCDPSession(page)
+    await touch.send('Input.dispatchTouchEvent', {
+      type: 'touchStart',
+      touchPoints: [point],
+    })
+    await page.waitForTimeout(900)
+    await touch.send('Input.dispatchTouchEvent', {
+      type: 'touchEnd',
+      touchPoints: [],
+    })
+    assert.equal(
+      await menu.count(),
+      0,
+      'touch and hold leaves text selection to the phone',
+    )
+
+    await editor.press('ControlOrMeta+a')
+    await toggle.click()
+    await choose('Code')
+    assert.equal(await editor.locator('code').textContent(), 'Project plan')
+    await editor.press('Control+s')
+    await page.waitForURL(/\/notes\/(?!create)/, { timeout: 30_000 })
+    const id = new URL(page.url()).pathname.split('/').pop()
+    const document = await dbGetWhen(
+      `notes/${id}`,
+      (fields) => !!fields?.encrypted,
+    )
+    assert.ok(
+      document.encrypted && !document.content,
+      'formatted content stays encrypted',
+    )
+    await page.reload()
+    await editor.locator('code').waitFor()
+    assert.equal(await editor.textContent(), 'Project plan')
+  } finally {
+    await context.close()
+  }
+})
+
+for (const encrypted of [false, true]) {
+  test(`note keyboard saving keeps the last words (${encrypted ? 'encrypted' : 'plain'})`, async () => {
+    const { page, context } = await newDevice(browser)
+    try {
+      const email = `note-keyboard-${encrypted}-${Date.now()}@example.com`
+      await signUp(page, 'Note writer', email)
+      if (encrypted) await setUpEncryption(page, 'note writing passphrase')
+      else await skipEncryptionSetup(page)
+      const uid = await uidOf(email)
+      await page.goto(`${APP}/notes/create`)
+      const title = page.getByRole('textbox', { name: 'Title', exact: true })
+      const editor = page.getByRole('textbox', {
+        name: 'Content',
+        exact: true,
+      })
+      await editor.waitFor()
+
+      // An empty shortcut never creates a note. Enter moves from the
+      // title into the real editor, which has an accessible name.
+      await title.press('Control+s')
+      assert.equal(new URL(page.url()).pathname, '/notes/create')
+      await title.press('Enter')
+      assert.equal(
+        await editor.evaluate((element) => element === document.activeElement),
+        true,
+      )
+      await page.keyboard.insertText('Remember the milk')
+      // Save before Milkdown's debounced form update can run.
+      await page.keyboard.press('Control+s')
+      await page.waitForURL(/\/notes\/(?!create)/, { timeout: 30_000 })
+      const id = new URL(page.url()).pathname.split('/').pop()
+      const url = page.url()
+      const initial = await dbGetWhen(`notes/${id}`, (fields) =>
+        encrypted
+          ? !!fields?.encrypted
+          : fields?.content?.stringValue?.includes('Remember the milk'),
+      )
+      assert.ok(initial)
+      if (encrypted)
+        assert.ok(!initial.title && !initial.content, 'content stays encrypted')
+      else assert.equal(initial.title?.stringValue, '')
+
+      // The other shortcut updates the same note, with the last words
+      // still present after a reload (including encrypted notes).
+      await editor.click()
+      await page.keyboard.press('ControlOrMeta+End')
+      await page.keyboard.insertText(' and bread')
+      await page.keyboard.press('Meta+s')
+      await page.getByText('Saved', { exact: true }).waitFor()
+      await page.reload()
+      await editor.waitFor()
+      assert.match(await editor.textContent(), /Remember the milk and bread/)
+      const ownNotes = (await dbList('notes')).filter(
+        (item) => item.fields.owner?.stringValue === uid,
+      )
+      assert.equal(ownNotes.length, 1, 'saving does not duplicate the note')
+
+      await page.goto(`${APP}/notes`)
+      await page
+        .getByRole('link', { name: 'Untitled note', exact: true })
+        .click()
+      await page.waitForURL(url)
+      assert.match(await editor.textContent(), /Remember the milk and bread/)
+    } finally {
+      await context.close()
+    }
+  })
+}
+
+test('undo and redo in task lists, finance books and health logs', async () => {
+  const { page, context } = await newDevice(browser)
+  try {
+    await signUp(page, 'Undo writer', `undo-${Date.now()}@example.com`)
+    await setUpEncryption(page, 'undo passphrase')
+    await page.waitForURL(/\/notes/, { timeout: 30_000 })
+    const undo = () =>
+      page.getByRole('button', { name: 'Undo', exact: true }).click()
+    const redo = () =>
+      page.getByRole('button', { name: 'Redo', exact: true }).click()
+    const pause = () => page.waitForTimeout(1500)
+
+    // A task list: adding an item is a step.
+    await page.goto(`${APP}/tasks/create`)
+    await page.locator('textarea[name=title]').fill('Groceries')
+    await page.getByRole('button', { name: 'Save' }).click()
+    await page.waitForURL(/\/tasks\/(?!create)/, { timeout: 30_000 })
+    await page.waitForTimeout(2000)
+    await page.locator('textarea[name=item]').fill('Eggs')
+    await page.locator('textarea[name=item]').press('Enter')
+    await shows(page, 'Eggs')
+    await pause()
+    await undo()
+    await page.getByText('Eggs').waitFor({ state: 'hidden' })
+    await redo()
+    await shows(page, 'Eggs')
+
+    // A finance book: its title, opened fresh (nothing to undo yet).
+    await page.goto(`${APP}/finances/create`)
+    await page.locator('textarea[name=title]').fill('Belanja')
+    await page.getByRole('button', { name: 'Save' }).click()
+    await page.waitForURL(/\/finances\/(?!create)/, { timeout: 30_000 })
+    await page.waitForTimeout(2000)
+    await page.reload()
+    await page.waitForTimeout(3000)
+    assert.equal(
+      await page.getByRole('button', { name: 'Undo', exact: true }).isEnabled(),
+      false,
+    )
+    const bookTitle = page.locator('textarea[name=title]')
+    await bookTitle.fill('Belanja Oktober')
+    await pause()
+    await undo()
+    assert.equal(await bookTitle.inputValue(), 'Belanja')
+    await redo()
+    assert.equal(await bookTitle.inputValue(), 'Belanja Oktober')
+
+    // A health log: its name, and a removed reminder brought back.
+    await page.goto(`${APP}/health/create`)
+    await page.locator('textarea[name=name]').fill('Rara')
+    await page.getByRole('button', { name: 'Save' }).click()
+    await page.waitForURL(/\/health\/(?!create)/, { timeout: 30_000 })
+    await page.getByRole('button', { name: 'Add reminder' }).click()
+    await page.getByRole('button', { name: 'Add', exact: true }).click()
+    await shows(page, 'Every 7 days')
+    await page.getByText('Saved', { exact: true }).waitFor()
+    await page.reload()
+    await page.waitForTimeout(3000)
+    const name = page.locator('textarea[name=name]')
+    await name.fill('Rara Ayu')
+    await pause()
+    await undo()
+    assert.equal(await name.inputValue(), 'Rara')
+    await page.getByRole('button', { name: 'Remove reminder' }).click()
+    await pause()
+    await undo()
+    await shows(page, 'Every 7 days')
   } finally {
     await context.close()
   }
