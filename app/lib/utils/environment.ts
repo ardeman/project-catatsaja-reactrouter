@@ -25,4 +25,8 @@ export const environment = {
   VITE_APP_CHECK_DEBUG_TOKEN: import.meta.env.DEV
     ? (import.meta.env.VITE_APP_CHECK_DEBUG_TOKEN as string | undefined)
     : undefined,
+
+  // Set by `vite.config.ts` for each build (not in `.env`): compared with
+  // `/version.json` to tell when a newer version is deployed.
+  VITE_BUILD_ID: import.meta.env.VITE_BUILD_ID as string,
 }

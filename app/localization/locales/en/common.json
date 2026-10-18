@@ -714,7 +714,7 @@
       "description": "Share any note, task list, finance book or health log with other people who use Catat Saja.",
       "steps": [
         "Choose Share in the icon bar, find someone by their email, and give them read-only or edit access. They get an invitation, and the item is added to their list once they accept.",
-        "Something shared with you shows as an invitation at the top of your lists: Accept to add it to your list, Decline, or Block to also stop that person inviting you (unblock them in Settings → Account).",
+        "Something shared with you shows as an invitation at the top of your lists and under the bell next to search: Accept to add it to your list, Decline, or Block to also stop that person inviting you (unblock them in Settings → Account).",
         "Changes show up for everyone straight away. People with read-only access can't change anything.",
         "You can copy a link to the item, and undo removing someone.",
         "Something shared with you can be taken off your own list with Remove from my list; it stays for everyone else."
@@ -1484,7 +1484,7 @@
       "title": "Reminders",
       "add": "Add reminder",
       "empty": "No reminders yet. Add one to be reminded to measure, and put it in your phone’s calendar.",
-      "hint": "Due reminders show here, on the Health menu and on this log’s card. For an alert on time, add a reminder to your phone’s calendar.",
+      "hint": "Due reminders show here, under the bell, on the Health menu and on this log’s card. For an alert on time, add a reminder to your phone’s calendar.",
       "kind": "What",
       "everyDays": "Every (days)",
       "daysBefore": "Days before",
@@ -1671,6 +1671,20 @@
       "description": "People you blocked can’t invite you to anything. They aren’t told that you blocked them.",
       "empty": "You haven’t blocked anyone.",
       "unblock": "Unblock"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "count_one": "{{count}} new",
+    "count_other": "{{count}} new",
+    "empty": "You’re all caught up.",
+    "update": {
+      "title": "New version",
+      "description": "A newer version of Catat Saja is available. Reload to use it; what you saved is safe."
+    },
+    "encryption": {
+      "title": "Encryption",
+      "review": "Review in Settings"
     }
   }
 }

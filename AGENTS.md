@@ -64,6 +64,7 @@ Record architectural choices here as one line each: date, decision, reason.
 
 - 2026-10-15: Group shared icons, UI libraries and public UI components in the production bundle to reduce small script requests; keep feature modules dynamically split so public pages do not load the editor, AI or private data APIs early. README → Google Search Console owns the build details.
 
+- 2026-10-18: Notifications (the bell, `app/components/layouts/notifications`) are worked out on the device from what the app already has (invitations, due reminders, the once-a-day count of encrypted items others can't read, and `/version.json`, written by `vite.config.ts`, for a newer deploy), never stored: an item leaves the list once it's dealt with, so there is nothing to mark read and nothing new for the rules or end-to-end encryption.
 - 2026-10-09: Single-page app (`ssr: false`) on Firebase Hosting, with every path rewritten to `index.html`, so no server is needed.
 - 2026-10-09: Firestore data is read with live `onSnapshot` listeners inside hooks, not a query cache library, so shared notes and tasks update in real time.
 - 2026-10-09: Node 24 LTS and pnpm 12 (through Corepack). React Router 8 and lint-staged 17 need Node 22.22 or later; pnpm 12 refuses releases younger than a day and runs no dependency install scripts unless allowed. The three that ask (`@firebase/util`, `protobufjs`, `unrs-resolver`) are denied: none is needed for this app.

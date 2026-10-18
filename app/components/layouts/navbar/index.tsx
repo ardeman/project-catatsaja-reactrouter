@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 
 import { InstallApp } from '~/components/base/install-app'
+import { Notifications } from '~/components/layouts/notifications'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import {
@@ -81,6 +82,7 @@ export const Navbar = (properties: TProperties) => {
         <Navigation className="hidden shrink-0 flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <Search />
+          <Notifications />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

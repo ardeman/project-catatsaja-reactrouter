@@ -16,10 +16,17 @@ export const releases: TRelease[] = [
   {
     date: '2026-10-18',
     title: {
-      en: 'Smoother note editing',
-      id: 'Menyunting catatan lebih lancar',
+      en: 'Notifications in one place',
+      id: 'Semua notifikasi di satu tempat',
     },
     changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'A bell next to search shows what needs you: invitations to accept or decline, health reminders that are due, encrypted items someone you share with can’t read, and when a newer version of the app is ready. Each one leaves the list once it’s dealt with.',
+          id: 'Lonceng di samping pencarian menampilkan yang perlu Anda tindak lanjuti: undangan untuk diterima atau ditolak, pengingat kesehatan yang jatuh tempo, item terenkripsi yang tidak bisa dibaca orang yang Anda bagikan, dan saat versi aplikasi yang lebih baru tersedia. Masing-masing hilang dari daftar setelah ditangani.',
+        },
+      },
       {
         kind: 'fixed',
         text: {

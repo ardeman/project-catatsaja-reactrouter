@@ -31,7 +31,7 @@ export const Navigation = (properties: TProperties) => {
   const { data: userData } = useUserData()
   const isBottom = variant === 'bottom'
   const items = navs(t, userData?.navOrder)
-  const dueCount = useGetDueReminders()
+  const { count: dueCount } = useGetDueReminders()
   const activeIndex = items.findIndex(
     (nav) => pathname.split('/', 2)[1] === nav.href.split('/', 2)[1],
   )

@@ -1,11 +1,31 @@
+import { writeFileSync } from 'node:fs'
+import path from 'node:path'
+
 import { reactRouter } from '@react-router/dev/vite'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
+
+// Identifies this build. The app compares it with `/version.json` from the
+// server to tell people a newer version has been deployed.
+const buildId = process.env.GITHUB_SHA ?? String(Date.now())
+
+const versionFile = (): Plugin => ({
+  name: 'version-file',
+  apply: 'build',
+  applyToEnvironment: (environment) => environment.name === 'client',
+  writeBundle({ dir: directory = 'build/client' }) {
+    writeFileSync(
+      path.join(directory, 'version.json'),
+      JSON.stringify({ buildId }),
+    )
+  },
+})
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter()],
-  // Milkdown uses Vue internally; keep Vue's default feature flags explicit.
+  plugins: [tailwindcss(), reactRouter(), versionFile()],
   define: {
+    'import.meta.env.VITE_BUILD_ID': JSON.stringify(buildId),
+    // Milkdown uses Vue internally; keep Vue's default feature flags explicit.
     __VUE_OPTIONS_API__: 'true',
     __VUE_PROD_DEVTOOLS__: 'false',
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',

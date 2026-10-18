@@ -714,7 +714,7 @@
       "description": "Bagikan catatan, daftar tugas, buku keuangan, atau catatan kesehatan dengan orang lain yang memakai Catat Saja.",
       "steps": [
         "Pilih Bagikan di bilah ikon, cari seseorang dengan emailnya, lalu beri akses hanya baca atau bisa mengubah. Mereka mendapat undangan, dan item masuk ke daftar mereka setelah diterima.",
-        "Item yang dibagikan kepadamu muncul sebagai undangan di bagian atas daftarmu: Terima untuk menambahkannya ke daftarmu, Tolak, atau Blokir agar orang itu juga tidak bisa mengundangmu lagi (buka blokir di Pengaturan → Akun).",
+        "Item yang dibagikan kepadamu muncul sebagai undangan di bagian atas daftarmu dan di lonceng di samping pencarian: Terima untuk menambahkannya ke daftarmu, Tolak, atau Blokir agar orang itu juga tidak bisa mengundangmu lagi (buka blokir di Pengaturan → Akun).",
         "Perubahan langsung terlihat oleh semua orang. Orang dengan akses hanya baca tidak bisa mengubah apa pun.",
         "Kamu bisa menyalin tautan ke item, dan mengurungkan saat menghapus seseorang.",
         "Item yang dibagikan kepadamu bisa dihapus dari daftarmu sendiri dengan Hapus dari daftar saya; item tetap ada untuk yang lain."
@@ -1484,7 +1484,7 @@
       "title": "Pengingat",
       "add": "Tambah pengingat",
       "empty": "Belum ada pengingat. Tambahkan agar diingatkan untuk mengukur, dan masukkan ke kalender HP-mu.",
-      "hint": "Pengingat yang jatuh tempo muncul di sini, di menu Kesehatan, dan di kartu catatan ini. Agar ada notifikasi tepat waktu, tambahkan pengingat ke kalender HP-mu.",
+      "hint": "Pengingat yang jatuh tempo muncul di sini, di lonceng, di menu Kesehatan, dan di kartu catatan ini. Agar ada notifikasi tepat waktu, tambahkan pengingat ke kalender HP-mu.",
       "kind": "Apa",
       "everyDays": "Setiap (hari)",
       "daysBefore": "Hari sebelumnya",
@@ -1671,6 +1671,20 @@
       "description": "Orang yang kamu blokir tidak bisa mengundangmu ke apa pun. Mereka tidak diberi tahu bahwa kamu memblokirnya.",
       "empty": "Kamu belum memblokir siapa pun.",
       "unblock": "Buka blokir"
+    }
+  },
+  "notifications": {
+    "title": "Notifikasi",
+    "count_one": "{{count}} baru",
+    "count_other": "{{count}} baru",
+    "empty": "Tidak ada yang perlu ditindaklanjuti.",
+    "update": {
+      "title": "Versi baru",
+      "description": "Versi Catat Saja yang lebih baru sudah tersedia. Muat ulang untuk memakainya; yang sudah kamu simpan tetap aman."
+    },
+    "encryption": {
+      "title": "Enkripsi",
+      "review": "Tinjau di Pengaturan"
     }
   }
 }
