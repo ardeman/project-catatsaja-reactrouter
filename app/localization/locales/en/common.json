@@ -1536,6 +1536,65 @@
         "period": "Period expected: {{name}}",
         "description": "A reminder from Catat Saja."
       }
+    },
+    "medications": {
+      "title": "Medicines",
+      "add": "Add medicine",
+      "edit": "Edit medicine",
+      "remove": "Remove medicine and its history",
+      "stop": "Stop taking it",
+      "empty": "No medicines yet. Add one to be reminded at each dose and keep track of what was taken.",
+      "hint": "Doses waiting to be marked show here, under the bell and on the Health menu. For an alert on time, add a medicine to your phone’s calendar. Always follow your doctor’s or pharmacist’s directions.",
+      "today": "Today",
+      "waiting": "Doses waiting",
+      "dueAt": "{{day}}, {{time}}",
+      "dueNotice": "Time for {{medicine}} ({{time}}).",
+      "take": "Taken",
+      "skip": "Skip",
+      "unmark": "Clear this mark",
+      "toggle": "Mark taken, or clear the mark",
+      "doseAt": "{{time}}: {{status}}",
+      "todaysDoses": "Today’s doses of {{name}}",
+      "history": "History",
+      "historyEmpty": "No doses marked yet.",
+      "historyCount": "Taken {{taken}}, skipped {{skipped}}.",
+      "status": {
+        "taken": "Taken",
+        "skipped": "Skipped",
+        "none": "not marked"
+      },
+      "dosesLeft_one": "{{count}} dose left",
+      "dosesLeft_other": "{{count}} doses left",
+      "until": "until {{date}}",
+      "stoppedOn": "Stopped {{date}}",
+      "done": "Course finished",
+      "finished_one": "{{count}} finished medicine",
+      "finished_other": "{{count}} finished medicines",
+      "calendar": "{{medicine}}: {{name}}",
+      "courses": {
+        "ongoing": "Ongoing",
+        "days": "For a number of days",
+        "doses": "For a number of doses",
+        "until": "Until a date"
+      },
+      "form": {
+        "name": "Medicine",
+        "dose": "Dose",
+        "dosePlaceholder": "500 mg, 1 tablet",
+        "times": "Times a day",
+        "timeNumber": "Time {{count}}",
+        "removeTime": "Remove this time",
+        "addTime": "Add a time",
+        "timeNeeded": "Add at least one time",
+        "everyDays": "Every (days)",
+        "start": "First day",
+        "course": "How long",
+        "days": "Days",
+        "doses": "Doses",
+        "until": "Last day",
+        "note": "Note",
+        "notePlaceholder": "After meals, with water"
+      }
     }
   },
   "encryption": {

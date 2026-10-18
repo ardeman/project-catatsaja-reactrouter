@@ -156,3 +156,26 @@ describe('calendar files', () => {
     assert.ok(unfolded.includes(`SUMMARY:${title}`))
   })
 })
+
+describe('a medicine in the calendar', () => {
+  test('an event for each time, repeating until the course ends', () => {
+    const lines = reminderCalendar({
+      uid: 'm',
+      title: 'Amoxicillin',
+      description: '',
+      start: '2026-10-18',
+      times: ['08:00', '20:00'],
+      everyDays: 1,
+      until: '2026-10-21',
+      now: '2026-10-18T01:00:00.000Z',
+    })
+      .trimEnd()
+      .split('\r\n')
+    assert.equal(lines.filter((line) => line === 'BEGIN:VEVENT').length, 2)
+    assert.ok(lines.includes('UID:m-0800@catatsaja'))
+    assert.ok(lines.includes('DTSTART:20261018T200000'))
+    assert.ok(
+      lines.includes('RRULE:FREQ=DAILY;INTERVAL=1;UNTIL=20261021T235959'),
+    )
+  })
+})

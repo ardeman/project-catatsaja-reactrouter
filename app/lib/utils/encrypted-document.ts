@@ -32,6 +32,8 @@ export const contentFields = {
     'calorieTarget',
     'content',
     'reminders',
+    'medications',
+    'doseLog',
   ],
 } as const
 

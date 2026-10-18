@@ -1,10 +1,12 @@
 import { TStatus } from '~/lib/constants/health'
 import {
   TBmiStandard,
+  THealthDose,
   THealthEntry,
   THealthKind,
   THealthLogForm,
   THealthLogResponse,
+  THealthMedication,
   THealthReminder,
   TLabUnits,
 } from '~/lib/types/health'
@@ -38,4 +40,18 @@ export type TRemindersProperties = {
   onChange: (reminders: THealthReminder[]) => void
   // Opens the section to log a due measurement in.
   onOpen: (kind: THealthKind) => void
+}
+
+export type TMedicationsProperties = {
+  log: THealthLogForm
+  isReadOnly: boolean
+  onChangeMedications: (medications: THealthMedication[]) => void
+  onChangeDoses: (doses: THealthDose[]) => void
+}
+
+export type TMedicationFormProperties = {
+  // The medicine being edited; a new one when undefined.
+  medication?: THealthMedication
+  onSave: (medication: THealthMedication) => void
+  onClose: () => void
 }

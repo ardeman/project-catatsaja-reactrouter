@@ -35,7 +35,7 @@ const measurementKinds = [
 
 // Saves a reminder as a calendar file; phones open it in their calendar,
 // which then alerts on time (the app can't while it is closed).
-const downloadCalendar = (text: string, name: string) => {
+export const downloadCalendar = (text: string, name: string) => {
   const url = URL.createObjectURL(
     new Blob([text], { type: 'text/calendar;charset=utf-8' }),
   )

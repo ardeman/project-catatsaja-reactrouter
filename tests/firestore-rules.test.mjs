@@ -248,6 +248,8 @@ const collections = {
     calorieTarget: null,
     content: [],
     reminders: [],
+    medications: [],
+    doseLog: [],
   },
 }
 

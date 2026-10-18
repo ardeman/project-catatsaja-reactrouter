@@ -71,6 +71,41 @@ export type THealthReminder =
     }
   | { id: string; kind: 'period'; daysBefore: number }
 
+// How long a medicine is taken: until a date, for a number of days or of
+// doses (skipped ones don't count), or with no end.
+export type TMedicationCourse =
+  | { kind: 'ongoing' }
+  | { kind: 'until'; date: string }
+  | { kind: 'days'; days: number }
+  | { kind: 'doses'; doses: number }
+
+// A medicine taken at one or more times a day, every few days, from
+// `start` for its course.
+export type THealthMedication = {
+  id: string
+  name: string
+  // As the person writes it ("500 mg", "1 tablet").
+  dose?: string
+  note?: string
+  // HH:MM
+  times: string[]
+  everyDays: number
+  start: string
+  course: TMedicationCourse
+  // The last day, when stopped before the course ends.
+  stopped?: string
+}
+
+// A dose marked taken or skipped; its id comes from the medicine, day and
+// time (`doseId`), so there is one per dose.
+export type THealthDose = {
+  id: string
+  medicationId: string
+  date: string
+  time: string
+  status: 'taken' | 'skipped'
+}
+
 // A health log: one person (the owner, a child, a parent) and their
 // measurements.
 export type THealthLogForm = {
@@ -82,6 +117,9 @@ export type THealthLogForm = {
   content: THealthEntry[]
   // Missing on logs made before reminders.
   reminders?: THealthReminder[]
+  // Missing on logs made before medicines.
+  medications?: THealthMedication[]
+  doseLog?: THealthDose[]
 }
 
 export type TCreateHealthLogRequest = THealthLogForm

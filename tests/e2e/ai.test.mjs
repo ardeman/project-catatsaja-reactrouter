@@ -1,6 +1,6 @@
 // End-to-end tests of the AI features (receipt scanning, quick add, note
-// and task list helpers, dictation, taking back consent) and health reminders, on the local
-// emulators:
+// and task list helpers, dictation, taking back consent), health reminders
+// and medicines, on the local emulators:
 //   pnpm test:e2e
 // Gemini is replaced by fixed answers (nothing reaches Google, and runs cost
 // nothing); what is tested is everything around it: the notice, checking
@@ -530,6 +530,33 @@ describe('AI features and reminders', () => {
       .getByText('Time to weigh and measure.')
       .waitFor({ state: 'hidden' })
     await shows(page, /next /)
+  })
+
+  test('a medicine dose waits until it is marked, and stays encrypted', async () => {
+    const { page } = device
+    await page.goto(healthUrl)
+    await page.getByRole('button', { name: 'Add medicine' }).click()
+    await page.locator('input[name=name]').fill('Amoxicillin')
+    await page.locator('input[name=dose]').fill('500 mg')
+    // Midnight, so the dose is due whenever the test runs.
+    await page.locator('input[name="times.0"]').fill('00:00')
+    await page.getByRole('button', { name: 'Save', exact: true }).last().click()
+    const waiting = page.getByRole('list', { name: 'Doses waiting' })
+    await waiting.getByText('Amoxicillin · 500 mg').waitFor()
+    await shows(page, '5 doses left')
+
+    await waiting.getByRole('button', { name: 'Taken' }).click()
+    await waiting.waitFor({ state: 'hidden' })
+    await shows(page, '4 doses left')
+    await page.getByRole('button', { name: 'History', exact: true }).click()
+    await shows(page, 'Taken 1, skipped 0.')
+    await page.waitForTimeout(4000)
+
+    const log = await dbGet(`healthLogs/${healthUrl.split('/').pop()}`)
+    assert.ok(
+      log.encrypted && !log.medications && !log.doseLog,
+      'medicines and doses are encrypted',
+    )
   })
 
   test('undo and redo in task lists, finance books and health logs', async () => {

@@ -214,6 +214,19 @@ export const Notifications = () => {
                         {t(`health.reminders.due.kind.${reminder.kind}`)}
                       </span>
                     ))}
+                    {log.doses.map(({ medication, date, time }) => (
+                      <span
+                        key={`${medication.id}-${date}-${time}`}
+                        className="text-muted-foreground"
+                      >
+                        {t('health.medications.dueNotice', {
+                          medicine: [medication.name, medication.dose]
+                            .filter(Boolean)
+                            .join(' '),
+                          time,
+                        })}
+                      </span>
+                    ))}
                   </span>
                 </Link>
               </li>

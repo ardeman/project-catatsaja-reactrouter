@@ -119,16 +119,19 @@ const fold = (line: string) => {
 }
 
 // A calendar event for a reminder, repeating every `everyDays` days when
-// given (a measurement), or once (a period reminder, whose date moves with
-// each cycle). Timed events alert at their time; all-day ones at 09:00.
-// Times are floating (the phone's own time zone).
+// given (a measurement, a medicine) until `until`, or once (a period
+// reminder, whose date moves with each cycle). A medicine taken at several
+// times gets an event for each. Timed events alert at their time; all-day
+// ones at 09:00. Times are floating (the phone's own time zone).
 export const reminderCalendar = ({
   uid,
   title,
   description,
   start,
   time,
+  times = time ? [time] : [],
   everyDays,
+  until,
   now,
 }: {
   uid: string
@@ -136,37 +139,45 @@ export const reminderCalendar = ({
   description: string
   start: string
   time?: string
+  times?: string[]
   everyDays?: number
+  // The last day it repeats on.
+  until?: string
   // When the file is made, as an ISO timestamp.
   now: string
 }) => {
   const stamp = `${now.slice(0, 19).replaceAll(/[-:]/g, '')}Z`
-  const isTimed = !!time && /^\d{2}:\d{2}$/.test(time)
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Catat Saja//Health reminders//EN',
-    'CALSCALE:GREGORIAN',
+  const timed = times.filter((item) => /^\d{2}:\d{2}$/.test(item))
+  const event = (time?: string) => [
     'BEGIN:VEVENT',
-    `UID:${uid}@catatsaja`,
+    `UID:${uid}${time && timed.length > 1 ? `-${time.replace(':', '')}` : ''}@catatsaja`,
     `DTSTAMP:${stamp}`,
-    isTimed
+    time
       ? `DTSTART:${compact(start)}T${time.replace(':', '')}00`
       : `DTSTART;VALUE=DATE:${compact(start)}`,
-    isTimed
-      ? 'DURATION:PT15M'
-      : `DTEND;VALUE=DATE:${compact(addDays(start, 1))}`,
+    time ? 'DURATION:PT15M' : `DTEND;VALUE=DATE:${compact(addDays(start, 1))}`,
     ...(everyDays && everyDays > 0
-      ? [`RRULE:FREQ=DAILY;INTERVAL=${Math.round(everyDays)}`]
+      ? [
+          `RRULE:FREQ=DAILY;INTERVAL=${Math.round(everyDays)}${
+            until ? `;UNTIL=${compact(until)}${time ? 'T235959' : ''}` : ''
+          }`,
+        ]
       : []),
     `SUMMARY:${escapeText(title)}`,
     `DESCRIPTION:${escapeText(description)}`,
     'BEGIN:VALARM',
     'ACTION:DISPLAY',
     `DESCRIPTION:${escapeText(title)}`,
-    isTimed ? 'TRIGGER:PT0M' : 'TRIGGER;RELATED=START:PT9H',
+    time ? 'TRIGGER:PT0M' : 'TRIGGER;RELATED=START:PT9H',
     'END:VALARM',
     'END:VEVENT',
+  ]
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Catat Saja//Health reminders//EN',
+    'CALSCALE:GREGORIAN',
+    ...(timed.length > 0 ? timed.flatMap((item) => event(item)) : event()),
     'END:VCALENDAR',
   ]
   return `${lines.map((line) => fold(line)).join('\r\n')}\r\n`

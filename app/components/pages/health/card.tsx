@@ -30,6 +30,7 @@ import {
   periodStats,
 } from '~/lib/utils/health'
 import { dueReminders } from '~/lib/utils/health-reminders'
+import { isFinished, waitingDoses } from '~/lib/utils/medication-schedule'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -55,13 +56,23 @@ export const Card = (properties: TCardProperties) => {
   const isEditable = isOwner || canWrite
   const now = today()
   const entries = healthLog.content || []
-  // Reminders due now, for those who can add the measurement.
+  // Reminders due now and doses waiting to be marked, for those who can
+  // add the measurement or mark the dose.
+  const doses = healthLog.doseLog ?? []
   const dueCount = isEditable
     ? dueReminders({
         reminders: healthLog.reminders ?? [],
         entries,
         today: now,
         nextPeriodStart: periodStats(entries, now)?.nextStart,
+      }).length +
+      waitingDoses({
+        medications: (healthLog.medications ?? []).filter(
+          (medication) => !isFinished(medication, doses, now),
+        ),
+        doses,
+        today: now,
+        now: new Date().toTimeString().slice(0, 5),
       }).length
     : 0
   const dateLabel = getDateLabel({

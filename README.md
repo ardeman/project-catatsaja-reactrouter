@@ -80,7 +80,7 @@ An optional Catat Saja Plus subscription pays for what costs money to run; the c
 
 - [ ] Find why copying a book from the list sometimes never saves on the CI runner (rarely locally), then check copy, delete and Undo from the list again in `tests/e2e/sharing.test.mjs` ("month documents"). Known: the months are read, then nothing is written: no write is queued (Firestore's IndexedDB shows one primary tab, network on, no pending writes), no toast, no browser error; it didn't happen with Firestore's debug log on. Next: log each step of `handleDuplicateFinance` → `createFinance` → `createShared` on a draft pull request (checked by CI, not deployed).
 - [ ] The note page loads 1.1 MB of JavaScript for the editor (Milkdown with CodeMirror): load it only when a note opens, and leave out code languages nobody uses.
-- [ ] More end-to-end tests (today they cover encryption, sharing, month documents, the AI features and health reminders; archiving, blocking and offline drafts have none yet; the rules have their own tests).
+- [ ] More end-to-end tests (today they cover encryption, sharing, month documents, the AI features, health reminders and medicines; archiving, blocking and offline drafts have none yet; the rules have their own tests).
 - [ ] Read form values with `useWatch` instead of react-hook-form's `watch()`, then turn on `react-hooks/incompatible-library` (`eslint.config.mjs`).
 - [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
 - [ ] TypeScript 7, once typescript-eslint supports it.
@@ -166,7 +166,7 @@ pnpm validate   # lint + typecheck + knip + unit tests
 
 - `tests/e2e/encryption.test.mjs`: the dependent encryption lifecycle with Ana, Budi and Cici.
 - `tests/e2e/sharing.test.mjs`: independent accounts, note keyboard saving with and without encryption, button and right-click formatting (touch and hold left to the phone), sharing suggestions and invitations (with the title sealed for the invited person's push devices), read-only note editing, archiving, blocking, and encrypted finance month storage.
-- `tests/e2e/ai.test.mjs`: receipt scanning, quick add, note and task list helpers, dictation (with Chrome's fake microphone) and taking back consent, with Gemini replaced by fixed answers, plus health reminders.
+- `tests/e2e/ai.test.mjs`: receipt scanning, quick add, note and task list helpers, dictation (with Chrome's fake microphone) and taking back consent, with Gemini replaced by fixed answers, plus health reminders and medicines.
 - `tests/e2e/tasks.test.mjs`: adding, editing, reordering, keeping unfinished task input, and touch cursor placement on mobile.
 
 The deploy workflow runs the four files in parallel on separate runners, each with its own app and emulators, and requires all of them to pass before every deploy. Scenarios within each file run in order; the local command stays sequential to avoid port and database conflicts. For adding or splitting suites, follow [AGENTS.md](AGENTS.md).

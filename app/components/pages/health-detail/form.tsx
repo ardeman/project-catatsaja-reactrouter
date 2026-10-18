@@ -36,6 +36,7 @@ import { getDateLabel } from '~/lib/utils/parser'
 import { BodySection } from './body-section'
 import { CaloriesSection } from './calories-section'
 import { LabSection } from './lab-section'
+import { Medications } from './medications'
 import { Overview } from './overview'
 import { PeriodSection } from './period-section'
 import { Reminders } from './reminders'
@@ -101,16 +102,23 @@ export const Form = (properties: TFormProperties) => {
     calorieTarget: selectedHealthLog?.calorieTarget ?? null,
     content: selectedHealthLog?.content ?? [],
     reminders: selectedHealthLog?.reminders ?? [],
+    medications: selectedHealthLog?.medications ?? [],
+    doseLog: selectedHealthLog?.doseLog ?? [],
   }
   const formMethods = useForm<THealthLogForm>({
     defaultValues: storedValues,
   })
-  // Measurements and reminders merge one by one, so ones added or deleted
-  // on two devices at once are all kept.
+  // Measurements, reminders, medicines and doses merge one by one, so ones
+  // added or deleted on two devices at once are all kept.
   useStoredValues({
     form: formMethods,
     stored: storedValues,
-    merge: { content: mergeById, reminders: mergeById },
+    merge: {
+      content: mergeById,
+      reminders: mergeById,
+      medications: mergeById,
+      doseLog: mergeById,
+    },
   })
   const {
     watch,
@@ -163,6 +171,12 @@ export const Form = (properties: TFormProperties) => {
         changes.content = data.content
       if (!isSameJson(data.reminders ?? [], selectedHealthLog.reminders ?? []))
         changes.reminders = data.reminders ?? []
+      if (
+        !isSameJson(data.medications ?? [], selectedHealthLog.medications ?? [])
+      )
+        changes.medications = data.medications ?? []
+      if (!isSameJson(data.doseLog ?? [], selectedHealthLog.doseLog ?? []))
+        changes.doseLog = data.doseLog ?? []
       if (Object.keys(changes).length === 0) return
       setSaveStatus('saving')
       const isSaved = await mutateUpdate({
@@ -196,6 +210,8 @@ export const Form = (properties: TFormProperties) => {
       String(values.calorieTarget ?? ''),
       JSON.stringify(values.content),
       JSON.stringify(values.reminders ?? []),
+      JSON.stringify(values.medications ?? []),
+      JSON.stringify(values.doseLog ?? []),
     ],
     saveWhenIdle: !!selectedHealthLog,
   })
@@ -206,8 +222,9 @@ export const Form = (properties: TFormProperties) => {
   const formatBirthDate = (date: string) =>
     birthDateFormat.format(new Date(`${date}T00:00:00`))
 
-  // Undo and redo over the whole log (details, entries, reminders), in
-  // steps (a pause in changes, or each entry saved).
+  // Undo and redo over the whole log (details, entries, reminders,
+  // medicines and doses), in steps (a pause in changes, or each entry
+  // saved).
   const current = {
     name: values.name,
     birthDate: values.birthDate,
@@ -215,6 +232,8 @@ export const Form = (properties: TFormProperties) => {
     calorieTarget: values.calorieTarget,
     content: values.content,
     reminders: values.reminders ?? [],
+    medications: values.medications ?? [],
+    doseLog: values.doseLog ?? [],
   }
   const stored = {
     name: selectedHealthLog?.name ?? '',
@@ -223,6 +242,8 @@ export const Form = (properties: TFormProperties) => {
     calorieTarget: selectedHealthLog?.calorieTarget ?? null,
     content: selectedHealthLog?.content ?? [],
     reminders: selectedHealthLog?.reminders ?? [],
+    medications: selectedHealthLog?.medications ?? [],
+    doseLog: selectedHealthLog?.doseLog ?? [],
   }
   const undoHistory = useUndoHistory({
     key: selectedHealthLog?.id ?? 'create',
@@ -241,6 +262,8 @@ export const Form = (properties: TFormProperties) => {
       'calorieTarget',
       'content',
       'reminders',
+      'medications',
+      'doseLog',
     ] as const)
       setValue(field, log[field], { shouldDirty: true })
   }
@@ -474,6 +497,17 @@ export const Form = (properties: TFormProperties) => {
             setValue('reminders', reminders, { shouldDirty: true })
           }
           onOpen={openTab}
+        />
+
+        <Medications
+          log={values}
+          isReadOnly={isReadOnly}
+          onChangeMedications={(medications) =>
+            setValue('medications', medications, { shouldDirty: true })
+          }
+          onChangeDoses={(doses) =>
+            setValue('doseLog', doses, { shouldDirty: true })
+          }
         />
 
         <div className="-mx-4 overflow-x-auto px-4">

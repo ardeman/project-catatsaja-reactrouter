@@ -1536,6 +1536,65 @@
         "period": "Perkiraan haid: {{name}}",
         "description": "Pengingat dari Catat Saja."
       }
+    },
+    "medications": {
+      "title": "Obat",
+      "add": "Tambah obat",
+      "edit": "Ubah obat",
+      "remove": "Hapus obat dan riwayatnya",
+      "stop": "Berhenti minum",
+      "empty": "Belum ada obat. Tambahkan agar diingatkan di setiap dosis dan tahu mana yang sudah diminum.",
+      "hint": "Dosis yang menunggu ditandai muncul di sini, di lonceng, dan di menu Kesehatan. Agar diingatkan tepat waktu, tambahkan obat ke kalender ponsel. Selalu ikuti petunjuk dokter atau apoteker.",
+      "today": "Hari ini",
+      "waiting": "Dosis menunggu",
+      "dueAt": "{{day}}, {{time}}",
+      "dueNotice": "Waktunya {{medicine}} ({{time}}).",
+      "take": "Sudah diminum",
+      "skip": "Lewati",
+      "unmark": "Hapus tanda ini",
+      "toggle": "Tandai sudah diminum, atau hapus tandanya",
+      "doseAt": "{{time}}: {{status}}",
+      "todaysDoses": "Dosis {{name}} hari ini",
+      "history": "Riwayat",
+      "historyEmpty": "Belum ada dosis yang ditandai.",
+      "historyCount": "Diminum {{taken}}, dilewati {{skipped}}.",
+      "status": {
+        "taken": "Diminum",
+        "skipped": "Dilewati",
+        "none": "belum ditandai"
+      },
+      "dosesLeft_one": "Sisa {{count}} dosis",
+      "dosesLeft_other": "Sisa {{count}} dosis",
+      "until": "sampai {{date}}",
+      "stoppedOn": "Berhenti {{date}}",
+      "done": "Pengobatan selesai",
+      "finished_one": "{{count}} obat selesai",
+      "finished_other": "{{count}} obat selesai",
+      "calendar": "{{medicine}}: {{name}}",
+      "courses": {
+        "ongoing": "Terus-menerus",
+        "days": "Selama beberapa hari",
+        "doses": "Sejumlah dosis",
+        "until": "Sampai tanggal"
+      },
+      "form": {
+        "name": "Obat",
+        "dose": "Dosis",
+        "dosePlaceholder": "500 mg, 1 tablet",
+        "times": "Jam minum",
+        "timeNumber": "Jam {{count}}",
+        "removeTime": "Hapus jam ini",
+        "addTime": "Tambah jam",
+        "timeNeeded": "Isi setidaknya satu jam",
+        "everyDays": "Setiap (hari)",
+        "start": "Hari pertama",
+        "course": "Berapa lama",
+        "days": "Hari",
+        "doses": "Dosis",
+        "until": "Hari terakhir",
+        "note": "Catatan",
+        "notePlaceholder": "Sesudah makan, dengan air"
+      }
     }
   },
   "encryption": {
