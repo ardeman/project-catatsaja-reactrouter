@@ -1629,6 +1629,11 @@
       }
     }
   },
+  "pushPrompt": {
+    "title": "Terima notifikasi di perangkat ini?",
+    "later": "Nanti saja",
+    "hint": "Kamu bisa mengubahnya kapan saja di Pengaturan → Umum."
+  },
   "encryption": {
     "form": {
       "passphrase": "Frasa sandi",

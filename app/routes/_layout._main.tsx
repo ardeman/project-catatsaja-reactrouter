@@ -6,6 +6,7 @@ import { fetchUserData } from '~/apis/firestore/user'
 import { EncryptionGate } from '~/components/layouts/encryption-gate'
 import { MaintenanceGate } from '~/components/layouts/maintenance-gate'
 import { Navbar } from '~/components/layouts/navbar'
+import { PushPrompt } from '~/components/layouts/push-prompt'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { rememberStartPage } from '~/lib/constants/navigation'
 import { useTheme } from '~/lib/contexts/theme'
@@ -55,7 +56,9 @@ const Main = () => {
         <Navbar />
         <MaintenanceGate>
           <EncryptionGate>
-            <Outlet />
+            <PushPrompt>
+              <Outlet />
+            </PushPrompt>
           </EncryptionGate>
         </MaintenanceGate>
       </main>

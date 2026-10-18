@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-21',
+    title: {
+      en: 'Notifications, asked once',
+      id: 'Notifikasi, ditanyakan sekali',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'The first time you open Catat Saja on a device, it asks whether to send notifications there for invitations, health reminders and medicine doses. Choose Not now and it won’t ask again on that device; you can still turn them on in Settings → General. On iPhone and iPad it explains that notifications need the installed app.',
+          id: 'Saat pertama kali membuka Catat Saja di sebuah perangkat, aplikasi menanyakan apakah notifikasi untuk undangan, pengingat kesehatan, dan dosis obat boleh dikirim ke sana. Pilih Nanti saja dan aplikasi tidak akan bertanya lagi di perangkat itu; kamu tetap bisa menyalakannya di Pengaturan → Umum. Di iPhone dan iPad, aplikasi menjelaskan bahwa notifikasi butuh aplikasi yang terpasang.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-20',
     title: {
       en: 'Log sex on the period calendar',

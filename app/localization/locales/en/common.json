@@ -1629,6 +1629,11 @@
       }
     }
   },
+  "pushPrompt": {
+    "title": "Get notifications on this device?",
+    "later": "Not now",
+    "hint": "You can change this any time in Settings → General."
+  },
   "encryption": {
     "form": {
       "passphrase": "Passphrase",

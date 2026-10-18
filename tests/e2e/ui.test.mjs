@@ -760,3 +760,35 @@ test('undo and redo in task lists, finance books and health logs', async () => {
     await context.close()
   }
 })
+
+test('a new device is asked about notifications once, after encryption', async () => {
+  // The emulators have no push service, so only an iPhone outside the
+  // installed app is asked: there it says to install first.
+  const { page, context } = await newDevice(browser, {
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+  })
+  try {
+    await signUp(page, 'Push asker', `push-ask-${Date.now()}@example.com`)
+    await skipEncryptionSetup(page)
+    const step = page.getByText('Get notifications on this device?')
+    await step.waitFor({ timeout: 30_000 })
+    await shows(page, 'notifications work only in the installed app')
+    assert.equal(
+      await page.getByRole('button', { name: 'Turn on' }).count(),
+      0,
+    )
+    await page.getByRole('button', { name: 'Not now' }).click()
+    await step.waitFor({ state: 'hidden' })
+
+    // Not asked again on this device.
+    await page.goto(`${APP}/tasks/create`)
+    await page.locator('textarea[name=title]').waitFor({ timeout: 30_000 })
+    assert.equal(await step.count(), 0)
+  } finally {
+    await context.close()
+  }
+})
