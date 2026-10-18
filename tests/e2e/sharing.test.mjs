@@ -485,38 +485,38 @@ describe('sharing and finance storage', () => {
   })
 
   test("an invitation's notification has the title sealed for the invited person's devices", async () => {
-    const hana = await newDevice(browser)
-    const indra = await newDevice(browser)
-    await signUp(hana.page, 'Hana', 'hana@example.com')
-    await skipEncryptionSetup(hana.page)
-    await signUp(indra.page, 'Indra', 'indra@example.com')
-    await skipEncryptionSetup(indra.page)
-    const hanaUid = await uidOf('hana@example.com')
-    const indraUid = await uidOf('indra@example.com')
+    const nina = await newDevice(browser)
+    const oki = await newDevice(browser)
+    await signUp(nina.page, 'Nina', 'nina@example.com')
+    await skipEncryptionSetup(nina.page)
+    await signUp(oki.page, 'Oki', 'oki@example.com')
+    await skipEncryptionSetup(oki.page)
+    const ninaUid = await uidOf('nina@example.com')
+    const okiUid = await uidOf('oki@example.com')
 
-    const indraKey = await filePushKey(indra.page, indraUid)
+    const okiKey = await filePushKey(oki.page, okiUid)
 
-    await createNote(hana.page, 'Hana weekend plans')
-    await shareWith(hana.page, 'indra@example.com', 'Read only')
+    await createNote(nina.page, 'Nina weekend plans')
+    await shareWith(nina.page, 'oki@example.com', 'Read only')
     const messages = await dbListWhen('pushMessages', (documents) =>
-      documents.some((message) => message.fields.to?.stringValue === indraUid),
+      documents.some((message) => message.fields.to?.stringValue === okiUid),
     )
     const message = messages.find(
-      (item) => item.fields.to?.stringValue === indraUid,
+      (item) => item.fields.to?.stringValue === okiUid,
     ).fields
     assert.equal(message.kind.stringValue, 'invitation')
-    assert.equal(message.from.stringValue, hanaUid)
+    assert.equal(message.from.stringValue, ninaUid)
     assert.equal(message.collection.stringValue, 'notes')
-    assert.ok(!JSON.stringify(message).includes('Hana weekend plans'))
+    assert.ok(!JSON.stringify(message).includes('Nina weekend plans'))
 
     const title = await openSealed(
-      indra.page,
+      oki.page,
       message.sealed.mapValue.fields.phone.stringValue,
-      indraKey,
+      okiKey,
     )
-    assert.equal(title, 'Hana weekend plans')
-    await hana.context.close()
-    await indra.context.close()
+    assert.equal(title, 'Nina weekend plans')
+    await nina.context.close()
+    await oki.context.close()
   })
 
   test('blocking stops invitations until unblocked', async () => {
