@@ -144,11 +144,11 @@ export const Navigation = (properties: TProperties) => {
       aria-label={t('navigation.menu')}
       data-variant={variant}
       className={cn(
-        'gap-6 text-lg font-medium',
+        // Ctrl/Cmd+click (open in a new tab) must not select the links' text.
+        'gap-6 text-lg font-medium select-none',
         // No link menu on a long press (iOS callout, Android context menu):
         // holding the pill starts a swipe.
-        isBottom &&
-          'relative touch-none select-none [-webkit-touch-callout:none]',
+        isBottom && 'relative touch-none [-webkit-touch-callout:none]',
         className,
       )}
       {...(isBottom && {
