@@ -562,7 +562,7 @@ export const Form = (properties: TFormProperties) => {
         data-task-dragging={isDragging || undefined}
         data-task-drop={dropSide}
         className={cn(
-          'relative flex min-h-11 items-center gap-2 rounded-md',
+          'relative flex min-h-10 items-center gap-2 rounded-md sm:min-h-8',
           isEditing && 'items-start sm:items-center',
           isDragging && 'bg-primary/5 opacity-50',
           dropSide && 'bg-primary/5',
@@ -803,7 +803,7 @@ export const Form = (properties: TFormProperties) => {
           {openIndexes.map((index) => renderItem(index))}
         </div>
         {!isReadOnly && (
-          <div className="pl-19 sm:pl-16">
+          <div className="pl-15 sm:pl-16">
             <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
               <Textarea
                 name="item"

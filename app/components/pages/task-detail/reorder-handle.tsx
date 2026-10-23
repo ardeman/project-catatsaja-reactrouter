@@ -51,7 +51,7 @@ export const ReorderHandle = ({
       aria-label={t('tasks.form.arrange')}
       title={t('tasks.form.arrange')}
       className={cn(
-        'size-11 shrink-0 touch-none text-muted-foreground select-none sm:size-8',
+        'h-10 w-7 shrink-0 touch-none text-muted-foreground select-none sm:size-8',
         active ? 'cursor-grabbing ring-2 ring-primary' : 'cursor-grab',
       )}
       onContextMenu={(event) => event.preventDefault()}
