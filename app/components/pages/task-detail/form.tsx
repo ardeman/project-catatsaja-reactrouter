@@ -313,6 +313,7 @@ export const Form = (properties: TFormProperties) => {
     const item = getValues(`content.${index}`)
     setSelectedEdit(undefined)
     remove(index)
+    if (item.item.trim().length === 0) return
     toast({
       description: t('toast.itemDeleted', { item: item.item }),
       action: (
@@ -463,8 +464,22 @@ export const Form = (properties: TFormProperties) => {
         if (item.trim().length === 0) {
           handleRemoveItem(index)
           focusNextOpen(index - 1)
-        } else {
+        } else if (getValues(`content.${index}.checked`)) {
           focusNextOpen(index)
+        } else {
+          // Split at the caret: the text after it becomes a new item below.
+          const { selectionStart, selectionEnd } = event.currentTarget
+          setValue(`content.${index}.item`, item.slice(0, selectionStart), {
+            shouldDirty: true,
+          })
+          flushSync(() =>
+            insert(
+              index + 1,
+              { checked: false, item: item.slice(selectionEnd) },
+              { shouldFocus: false },
+            ),
+          )
+          startEditing(index + 1, 0)
         }
         break
       }

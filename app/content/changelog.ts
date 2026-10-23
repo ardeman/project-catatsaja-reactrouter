@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-23',
+    title: {
+      en: 'Add items anywhere in a list',
+      id: 'Tambah item di mana saja dalam daftar',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'Press Enter while editing a task item to add a new item right below it. Any text after the cursor moves into the new item.',
+          id: 'Tekan Enter saat mengedit item tugas untuk menambah item baru tepat di bawahnya. Teks setelah kursor pindah ke item baru itu.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-21',
     title: {
       en: 'Notifications, asked once',

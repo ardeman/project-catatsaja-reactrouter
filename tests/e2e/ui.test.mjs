@@ -165,10 +165,7 @@ for (const encrypted of [false, true]) {
     await page
       .getByRole('button', { name: 'Done editing', exact: true })
       .click()
-    await page
-      .locator('[data-task-index="1"]')
-      .getByRole('button', { name: 'Edit item', exact: true })
-      .click()
+    await clickItemText(1, 0)
     const vegetables = page.locator('textarea[name="content.1.item"]')
     await vegetables.fill('First line\nBuy vegetables')
     await vegetables.evaluate((element) => element.setSelectionRange(15, 15))
@@ -202,6 +199,25 @@ for (const encrypted of [false, true]) {
       .getByRole('button', { name: 'Done editing', exact: true })
       .click()
     await input.fill('')
+    // Enter splits an item at the caret, adding the rest as a new item below.
+    await clickItemText(1, 4)
+    await vegetables.press('Enter')
+    await page.waitForFunction(() => {
+      const input = document.querySelector('textarea[name="content.2.item"]')
+      return document.activeElement === input && input.selectionStart === 0
+    })
+    assert.equal(
+      await page.locator('textarea[name="content.2.item"]').inputValue(),
+      'vegetables',
+    )
+    await page.locator('textarea[name="content.2.item"]').fill('')
+    await page.locator('textarea[name="content.2.item"]').press('Backspace')
+    await vegetables.waitFor()
+    assert.equal(await vegetables.inputValue(), 'Buy ')
+    await vegetables.fill('Buy vegetables')
+    await page
+      .getByRole('button', { name: 'Done editing', exact: true })
+      .click()
     // Holding the grip reorders only unfinished items; a quick drag cancels.
     const drag = async ({
       shouldHold,
@@ -315,13 +331,7 @@ for (const encrypted of [false, true]) {
                 document.documentElement.classList.contains(theme),
               { language, theme },
             )
-            await page
-              .getByRole('button', {
-                name: 'Edit item',
-                exact: true,
-              })
-              .first()
-              .click()
+            await clickItemText(0, 0)
             await drag({
               shouldHold: true,
               shouldCancel: true,
@@ -357,10 +367,9 @@ for (const encrypted of [false, true]) {
         .getByRole('button', { name: 'Add', exact: true })
         .waitFor({ state: 'hidden' })
       assert.ok(await page.getByRole('checkbox').first().isDisabled())
+      // Read-only items can't be opened for editing.
       assert.equal(
-        await page
-          .getByRole('button', { name: 'Edit item', exact: true })
-          .count(),
+        await page.locator('[data-task-index] button:enabled').count(),
         0,
       )
     }
@@ -777,10 +786,7 @@ test('a new device is asked about notifications once, after encryption', async (
     const step = page.getByText('Get notifications on this device?')
     await step.waitFor({ timeout: 30_000 })
     await shows(page, 'notifications work only in the installed app')
-    assert.equal(
-      await page.getByRole('button', { name: 'Turn on' }).count(),
-      0,
-    )
+    assert.equal(await page.getByRole('button', { name: 'Turn on' }).count(), 0)
     await page.getByRole('button', { name: 'Not now' }).click()
     await step.waitFor({ state: 'hidden' })
 
