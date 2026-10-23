@@ -357,6 +357,20 @@ export const Form = (properties: TFormProperties) => {
     setSelectedEdit(undefined)
   }
 
+  // A checked item goes to the top of the completed ones, an unchecked one
+  // to the bottom of the open ones.
+  const handleToggleItem = (index: number, isChecked: boolean) => {
+    update(index, { ...watchContent[index], checked: isChecked })
+    const others = indexes.filter((other) => other !== index)
+    const target = isChecked
+      ? others.find((other) => watchContent[other].checked)
+      : others.findLast((other) => !watchContent[other].checked)
+    if (selectedEdit !== undefined) setSelectedEdit(undefined)
+    if (target === undefined) return
+    if (isChecked) move(index, target > index ? target - 1 : target)
+    else move(index, target > index ? target : target + 1)
+  }
+
   // Move within its own group (open or completed).
   const handleMove = (index: number, direction: -1 | 1) => {
     const group = watchContent[index].checked ? doneIndexes : openIndexes
@@ -596,10 +610,7 @@ export const Form = (properties: TFormProperties) => {
           inputClassName={isEditing ? 'mt-3.5 sm:mt-0' : undefined}
           aria-label={item.item}
           disabled={isReadOnly}
-          onChange={(checked) => {
-            update(index, { ...item, checked: checked === true })
-            if (isEditing) setSelectedEdit(undefined)
-          }}
+          onChange={(checked) => handleToggleItem(index, checked === true)}
           rightNode={
             <div
               className={cn(
