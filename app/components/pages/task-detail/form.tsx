@@ -1,12 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Check,
-  ChevronDown,
-  ChevronUp,
-  Pencil,
-  Plus,
-  Trash,
-} from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, Plus, Trash } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
@@ -569,7 +562,7 @@ export const Form = (properties: TFormProperties) => {
         data-task-dragging={isDragging || undefined}
         data-task-drop={dropSide}
         className={cn(
-          'group/item relative flex min-h-11 items-center gap-2 rounded-md',
+          'relative flex min-h-11 items-center gap-2 rounded-md',
           isEditing && 'items-start sm:items-center',
           isDragging && 'bg-primary/5 opacity-50',
           dropSide && 'bg-primary/5',
@@ -668,82 +661,58 @@ export const Form = (properties: TFormProperties) => {
                   {item.item}
                 </button>
               )}
-              {!isReadOnly && (
-                <div
-                  className={cn(
-                    'flex items-center gap-1',
-                    !isEditing &&
-                      'sm:opacity-0 sm:group-focus-within/item:opacity-100 sm:group-hover/item:opacity-100',
-                  )}
-                >
-                  {isEditing && (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="size-11 sm:size-8 [&_svg]:size-3.5"
-                        type="button"
-                        aria-label={t('actions.moveUp')}
-                        title={t('actions.moveUp')}
-                        disabled={position <= 0}
-                        onMouseDown={(event) => event.preventDefault()}
-                        onClick={() => handleMove(index, -1)}
-                      >
-                        <ChevronUp />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="size-11 sm:size-8 [&_svg]:size-3.5"
-                        type="button"
-                        aria-label={t('actions.moveDown')}
-                        title={t('actions.moveDown')}
-                        disabled={position === group.length - 1}
-                        onMouseDown={(event) => event.preventDefault()}
-                        onClick={() => handleMove(index, 1)}
-                      >
-                        <ChevronDown />
-                      </Button>
-                    </>
-                  )}
+              {!isReadOnly && isEditing && (
+                <div className="flex items-center gap-1">
                   <Button
                     variant="outline"
                     size="icon"
                     className="size-11 sm:size-8 [&_svg]:size-3.5"
                     type="button"
-                    aria-label={t(
-                      isEditing
-                        ? 'tasks.form.doneEditing'
-                        : 'tasks.form.editItem',
-                    )}
-                    title={t(
-                      isEditing
-                        ? 'tasks.form.doneEditing'
-                        : 'tasks.form.editItem',
-                    )}
+                    aria-label={t('actions.moveUp')}
+                    title={t('actions.moveUp')}
+                    disabled={position <= 0}
                     onMouseDown={(event) => event.preventDefault()}
-                    onClick={() =>
-                      isEditing
-                        ? setSelectedEdit(undefined)
-                        : startEditing(index)
-                    }
+                    onClick={() => handleMove(index, -1)}
                   >
-                    {isEditing ? <Check /> : <Pencil />}
+                    <ChevronUp />
                   </Button>
-                  {isEditing && (
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="size-11 text-destructive sm:size-8 [&_svg]:size-3.5"
-                      type="button"
-                      aria-label={t('actions.deleteItem')}
-                      title={t('actions.deleteItem')}
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={() => handleRemoveItem(index)}
-                    >
-                      <Trash />
-                    </Button>
-                  )}
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="size-11 sm:size-8 [&_svg]:size-3.5"
+                    type="button"
+                    aria-label={t('actions.moveDown')}
+                    title={t('actions.moveDown')}
+                    disabled={position === group.length - 1}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => handleMove(index, 1)}
+                  >
+                    <ChevronDown />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="size-11 sm:size-8 [&_svg]:size-3.5"
+                    type="button"
+                    aria-label={t('tasks.form.doneEditing')}
+                    title={t('tasks.form.doneEditing')}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => setSelectedEdit(undefined)}
+                  >
+                    <Check />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="size-11 text-destructive sm:size-8 [&_svg]:size-3.5"
+                    type="button"
+                    aria-label={t('actions.deleteItem')}
+                    title={t('actions.deleteItem')}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => handleRemoveItem(index)}
+                  >
+                    <Trash />
+                  </Button>
                 </div>
               )}
             </div>
