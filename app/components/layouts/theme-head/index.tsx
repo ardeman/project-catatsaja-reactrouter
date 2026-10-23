@@ -1,11 +1,17 @@
 import { useSyncExternalStore } from 'react'
 
+import { protectedPages } from '~/lib/configs/page'
 import {
   favicons,
   statusBarStyles,
   themeColors,
 } from '~/lib/constants/metadata'
-import { navPages, startPageStorageKey } from '~/lib/constants/navigation'
+import {
+  lastVisitStorageKey,
+  navPages,
+  resumeWindow,
+  startPageStorageKey,
+} from '~/lib/constants/navigation'
 
 // Runs before the first paint: the installed app skips the landing page, and
 // the saved theme and text size are applied so pages rendered at build time
@@ -14,12 +20,18 @@ const themeScript = `(() => {
   try {
     // The installed app has no landing page, and opens on the person's
     // start page: leave before painting. It launches at the manifest's
-    // start_url (/notes), so the first page of a session moves too.
+    // start_url (/notes), so the first page of a session moves too, back to
+    // the last page when the phone unloaded the app in the background.
     const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true
     if (installed) {
       const pages = ${JSON.stringify(navPages)}
       const saved = localStorage.getItem('${startPageStorageKey}')
-      const start = '/' + (pages.includes(saved) ? saved : pages[0])
+      let start = '/' + (pages.includes(saved) ? saved : pages[0])
+      try {
+        const last = JSON.parse(localStorage.getItem('${lastVisitStorageKey}') || 'null')
+        const resumable = ${JSON.stringify([...protectedPages])}
+        if (last && typeof last.path === 'string' && resumable.includes('/' + last.path.split('/')[1]) && Date.now() - last.at < ${resumeWindow}) start = last.path
+      } catch {}
       const launching = !sessionStorage.getItem('launched')
       sessionStorage.setItem('launched', '1')
       const path = location.pathname

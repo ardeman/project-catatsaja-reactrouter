@@ -16,6 +16,7 @@ import { publicPages } from '~/lib/configs/page'
 import { useFirebase } from '~/lib/contexts/firebase'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { useIsStandalone } from '~/lib/hooks/use-install-app'
+import { useRememberLastVisit } from '~/lib/hooks/use-remember-last-visit'
 import { middleware } from '~/lib/utils/middleware'
 
 export const Rootlayout = (properties: PropsWithChildren) => {
@@ -29,6 +30,7 @@ export const Rootlayout = (properties: PropsWithChildren) => {
   const path = location.pathname.replace(/(.)\/+$/, '$1')
   // The installed app never shows the landing page; it redirects from it.
   const isLeavingLanding = isStandalone && path === '/'
+  useRememberLastVisit(isStandalone && !!user)
 
   useEffect(() => {
     if (userIsLoading) return

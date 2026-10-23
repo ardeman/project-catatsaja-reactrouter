@@ -56,3 +56,22 @@ export const navs = (t: TFunction, order?: readonly string[]): TMenu[] =>
     href: `/${page}`,
     icon: navIcons[page],
   }))
+
+// The installed app's last page, kept while it runs in the background. A
+// phone may unload a backgrounded app and relaunch it at the manifest's
+// start_url; if that happens within `resumeWindow`, the inline script in
+// ThemeHead goes back to this page instead of the start page.
+export const lastVisitStorageKey = 'last-visit'
+
+export const resumeWindow = 60 * 60 * 1000
+
+export const rememberLastVisit = (path: string) => {
+  try {
+    localStorage.setItem(
+      lastVisitStorageKey,
+      JSON.stringify({ path, at: Date.now() }),
+    )
+  } catch {
+    // Storage blocked: the app reopens on the start page.
+  }
+}
