@@ -121,7 +121,7 @@ pnpm dlx firebase-tools@15.33.0 deploy --only functions   # push notifications (
 pnpm dev               # http://localhost:5173
 ```
 
-The promo and stories videos are made outside this repository (no media or promo scripts go in it). To work on them, copy `video-marketing.example.json` to `video-marketing.json` and point `folder` at the video project on your machine (`readme` and `rules` at its README and agent rules); like `.env`, the copy is not committed.
+Separate projects (the promo video project) are found through `external-projects.json`: copy `external-projects.example.json` to it and point each section's `folder`, `readme` and `rules` at your checkouts. Like `.env`, the copy is not committed. The promo and stories videos are made in the video project (`video_marketing`); no media or promo scripts go in this repository.
 
 pnpm refuses package versions published less than a day ago (its `minimumReleaseAge` default), so a brand-new release can only be installed the next day. Dependency install scripts run only when allowed in `pnpm-workspace.yaml` (`allowBuilds`).
 
@@ -277,12 +277,13 @@ firestore.indexes.json
 
 Each topic has one home. Update that file instead of copying its content somewhere else.
 
-| File                     | Audience                                         | Owns                                                              |
-| ------------------------ | ------------------------------------------------ | ----------------------------------------------------------------- |
-| `README.md`              | Everyone                                         | Objective, features, roadmap, setup, commands, deployment, layout |
-| `AGENTS.md`              | AI coding agents (and humans who want the rules) | Definition of done, conventions, guardrails, decisions            |
-| `CLAUDE.md`, `GEMINI.md` | Claude Code, Gemini CLI                          | Only an import of `AGENTS.md`                                     |
-| `LICENSE`                | Everyone                                         | Terms for using the code (MIT)                                    |
+| File                                                                 | Audience                                         | Owns                                                              |
+| -------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------- |
+| `README.md`                                                          | Everyone                                         | Objective, features, roadmap, setup, commands, deployment, layout |
+| `AGENTS.md`                                                          | AI coding agents (and humans who want the rules) | Definition of done, conventions, guardrails, decisions            |
+| `CLAUDE.md`, `GEMINI.md`                                             | Claude Code, Gemini CLI                          | Only an import of `AGENTS.md`                                     |
+| `LICENSE`                                                            | Everyone                                         | Terms for using the code (MIT)                                    |
+| `video_marketing.readme` in `external-projects.json` (separate repo) | Whoever makes the promo videos                   | Promo and stories videos, their scripts and uploads               |
 
 Codex, Cursor, GitHub Copilot and other agents that follow the [AGENTS.md](https://agents.md) convention read `AGENTS.md` directly.
 

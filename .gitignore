@@ -1,7 +1,7 @@
 node_modules/
 .env
-# Where the promo videos are made on this machine (see video-marketing.example.json)
-video-marketing.json
+# Where separate projects are on this machine (see external-projects.example.json)
+external-projects.json
 /.cache
 
 # React Router
