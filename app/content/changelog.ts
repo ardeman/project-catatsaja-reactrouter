@@ -14,6 +14,29 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-27',
+    title: {
+      en: 'Your cycle at a glance',
+      id: 'Siklusmu sekilas',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'A health log’s card now shows when you are in your fertile window or ovulating, as the overview does, not only when your next period is due.',
+          id: 'Kartu catatan kesehatan kini menunjukkan saat kamu sedang dalam masa subur atau ovulasi, seperti ringkasannya, tidak hanya kapan haid berikutnya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Reminders and Medicines take less room: their explanations moved behind the ⓘ button next to each heading.',
+          id: 'Pengingat dan Obat kini lebih ringkas: penjelasannya pindah ke tombol ⓘ di samping judulnya.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-26',
     title: {
       en: 'Reminders come as notifications',

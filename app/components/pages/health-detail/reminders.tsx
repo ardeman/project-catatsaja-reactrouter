@@ -25,6 +25,7 @@ import {
   reminderStatus,
 } from '~/lib/utils/health-reminders'
 
+import { SectionInfo } from './section-info'
 import { TRemindersProperties } from './type'
 
 type TReminderKind = THealthReminder['kind']
@@ -129,12 +130,18 @@ export const Reminders = (properties: TRemindersProperties) => {
       className="glass-surface grid gap-3 rounded-xl border p-4"
     >
       <div className="flex items-center justify-between gap-2">
-        <h2
-          id="health-reminders-title"
-          className="text-base font-semibold"
-        >
-          {t('health.reminders.title')}
-        </h2>
+        <div className="flex items-center gap-1">
+          <h2
+            id="health-reminders-title"
+            className="text-base font-semibold"
+          >
+            {t('health.reminders.title')}
+          </h2>
+          <SectionInfo
+            label={t('health.reminders.about')}
+            text={t('health.reminders.hint')}
+          />
+        </div>
         {!isReadOnly && !isAdding && (
           <UIButton
             type="button"
@@ -352,10 +359,6 @@ export const Reminders = (properties: TRemindersProperties) => {
           </div>
         </div>
       )}
-
-      <p className="text-xs text-muted-foreground">
-        {t('health.reminders.hint')}
-      </p>
     </section>
   )
 }

@@ -21,6 +21,7 @@ import {
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
+import { cycleSummary } from '~/lib/utils/cycle-summary'
 import { today } from '~/lib/utils/finance'
 import {
   ageInYears,
@@ -38,7 +39,8 @@ import { useHealthLog } from './context'
 import { TCardProperties } from './type'
 
 // A person's log at a glance: age, the latest weight (with BMI or, for a
-// young child, the WHO percentile), the latest glucose and the next period.
+// young child, the WHO percentile), the latest glucose and where the cycle
+// is (a period day, ovulation, the fertile window or the next period).
 export const Card = (properties: TCardProperties) => {
   const { healthLog, className } = properties
   const { t, i18n } = useTranslation()
@@ -109,8 +111,6 @@ export const Card = (properties: TCardProperties) => {
       tables,
     })
   const glucose = entriesOf(entries, 'glucose')[0]
-  const period =
-    healthLog.sex === 'female' ? periodStats(entries, now) : undefined
   const age = healthLog.birthDate
     ? ageInYears(healthLog.birthDate, now)
     : undefined
@@ -122,6 +122,16 @@ export const Card = (properties: TCardProperties) => {
     month: 'short',
     timeZone: 'UTC',
   })
+  const cycle =
+    healthLog.sex === 'female'
+      ? cycleSummary({
+          entries,
+          today: now,
+          t,
+          formatDate: (value) =>
+            shortDate.format(new Date(`${value}T00:00:00Z`)),
+        })
+      : undefined
 
   return (
     <UICard
@@ -236,17 +246,13 @@ export const Card = (properties: TCardProperties) => {
             />
           </div>
         )}
-        {period && (
+        {cycle && (
           <div className="grid gap-0.5">
-            <p className="text-xs text-muted-foreground">
-              {t('health.period.next')}
-            </p>
+            <p className="text-xs text-muted-foreground">{cycle.label}</p>
             <p className="font-medium">
-              {shortDate.format(new Date(`${period.nextStart}T00:00:00Z`))}
+              {cycle.value}
               <span className="ml-1 text-xs font-normal text-muted-foreground">
-                {period.daysUntilNext >= 0
-                  ? t('health.period.inDays', { count: period.daysUntilNext })
-                  : t('health.period.late', { count: -period.daysUntilNext })}
+                {cycle.detail}
               </span>
             </p>
           </div>

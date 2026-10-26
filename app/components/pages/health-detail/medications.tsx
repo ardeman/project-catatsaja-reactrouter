@@ -17,6 +17,7 @@ import {
 import { cn } from '~/lib/utils/shadcn'
 
 import { MedicationForm } from './medication-form'
+import { SectionInfo } from './section-info'
 import { TMedicationsProperties } from './type'
 
 // The newest marks shown in a medicine's history; the rest stay stored.
@@ -315,12 +316,18 @@ export const Medications = (properties: TMedicationsProperties) => {
       className="glass-surface grid gap-3 rounded-xl border p-4"
     >
       <div className="flex items-center justify-between gap-2">
-        <h2
-          id="health-medications-title"
-          className="text-base font-semibold"
-        >
-          {t('health.medications.title')}
-        </h2>
+        <div className="flex items-center gap-1">
+          <h2
+            id="health-medications-title"
+            className="text-base font-semibold"
+          >
+            {t('health.medications.title')}
+          </h2>
+          <SectionInfo
+            label={t('health.medications.about')}
+            text={t('health.medications.hint')}
+          />
+        </div>
         {!isReadOnly && editing !== 'new' && (
           <UIButton
             type="button"
@@ -411,10 +418,6 @@ export const Medications = (properties: TMedicationsProperties) => {
           </ul>
         </details>
       )}
-
-      <p className="text-xs text-muted-foreground">
-        {t('health.medications.hint')}
-      </p>
     </section>
   )
 }

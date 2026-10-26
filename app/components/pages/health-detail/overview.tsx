@@ -11,7 +11,7 @@ import {
 } from '~/lib/constants/health'
 import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
 import { THealthKind } from '~/lib/types/health'
-import { cycleToday } from '~/lib/utils/cycle-calendar'
+import { cycleSummary } from '~/lib/utils/cycle-summary'
 import { today } from '~/lib/utils/finance'
 import {
   ageInYears,
@@ -19,7 +19,6 @@ import {
   caloriesByDay,
   daysBetween,
   entriesOf,
-  periodStats,
 } from '~/lib/utils/health'
 
 import { TSectionProperties } from './type'
@@ -132,64 +131,17 @@ export const Overview = (
         : undefined,
       date: calories[0],
     })
-  const period =
-    log.sex === 'female' ? periodStats(log.content, now) : undefined
-  if (period) {
-    const date = (value: string) =>
-      dayFormat.format(new Date(`${value}T00:00:00Z`))
-    const cycle = cycleToday(entriesOf(log.content, 'period'), period, now)
-    // Where today falls: a period day, ovulation, the fertile window, or
-    // else when the next period is due.
-    switch (cycle.kind) {
-      case 'period': {
-        tiles.push({
-          kind: 'period',
-          label: t('health.period.calendar.period'),
-          value: t('health.period.dayNumber', { day: cycle.day }),
-          detail: t(
-            cycle.isEndLogged
-              ? 'health.period.until'
-              : 'health.period.expectedUntil',
-            { date: date(cycle.end) },
-          ),
+  const cycle =
+    log.sex === 'female'
+      ? cycleSummary({
+          entries: log.content,
+          today: now,
+          t,
+          formatDate: (value) =>
+            dayFormat.format(new Date(`${value}T00:00:00Z`)),
         })
-        break
-      }
-      case 'ovulation': {
-        tiles.push({
-          kind: 'period',
-          label: t('health.period.ovulation'),
-          value: t('health.period.ovulationToday'),
-          detail: t('health.period.fertileUntil', {
-            date: date(cycle.fertileEnd),
-          }),
-        })
-        break
-      }
-      case 'fertile': {
-        tiles.push({
-          kind: 'period',
-          label: t('health.period.fertile'),
-          value: t('health.period.until', { date: date(cycle.fertileEnd) }),
-          detail: t('health.period.ovulationOn', {
-            date: date(cycle.ovulation),
-          }),
-        })
-        break
-      }
-      default: {
-        tiles.push({
-          kind: 'period',
-          label: t('health.period.next'),
-          value: date(period.nextStart),
-          detail:
-            period.daysUntilNext >= 0
-              ? t('health.period.inDays', { count: period.daysUntilNext })
-              : t('health.period.late', { count: -period.daysUntilNext }),
-        })
-      }
-    }
-  }
+      : undefined
+  if (cycle) tiles.push({ kind: 'period', ...cycle })
 
   if (tiles.length === 0)
     return (
