@@ -28,6 +28,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'fixed',
+        text: {
+          en: 'Opening a book and going back no longer marks it as just edited or moves it to the top of the list.',
+          id: 'Membuka buku lalu kembali tidak lagi menandainya baru diubah atau memindahkannya ke atas daftar.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'A health log’s card now shows when you are in your fertile window or ovulating, as the overview does, not only when your next period is due.',

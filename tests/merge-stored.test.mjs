@@ -5,9 +5,35 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 
-import { mergeById, mergeValue } from '../app/lib/utils/merge-stored.ts'
+import {
+  isSameJson,
+  mergeById,
+  mergeValue,
+} from '../app/lib/utils/merge-stored.ts'
 
 const entry = (id, amount = 1) => ({ id, amount })
+
+describe('comparing', () => {
+  test('ignores the order of keys, as Firestore returns them', () => {
+    assert.ok(
+      isSameJson(
+        { code: 'IDR', symbol: 'Rp', maximumFractionDigits: 0 },
+        { maximumFractionDigits: 0, symbol: 'Rp', code: 'IDR' },
+      ),
+    )
+    assert.ok(
+      isSameJson(
+        [{ id: 'a', n: { x: 1, y: 2 } }],
+        [{ n: { y: 2, x: 1 }, id: 'a' }],
+      ),
+    )
+  })
+
+  test('still sees a changed value or order of items', () => {
+    assert.ok(!isSameJson({ code: 'IDR' }, { code: 'USD' }))
+    assert.ok(!isSameJson([entry('a'), entry('b')], [entry('b'), entry('a')]))
+  })
+})
 
 describe('one value', () => {
   test('takes the stored value when nothing changed here', () => {

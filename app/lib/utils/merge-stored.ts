@@ -3,8 +3,18 @@
 // stored value the form last took in, `local` what is on screen, `remote`
 // the newly stored value. No app imports, so `pnpm test:unit` can run it.
 
+// Objects with their keys sorted, so the same value reads the same however
+// it was put together: Firestore returns a map's keys in its own order, not
+// the order the app wrote them in.
+const sortKeys = (_key: string, value: unknown) =>
+  value && typeof value === 'object' && !Array.isArray(value)
+    ? Object.fromEntries(
+        Object.entries(value).toSorted(([a], [b]) => (a < b ? -1 : 1)),
+      )
+    : value
+
 export const isSameJson = (a: unknown, b: unknown) =>
-  JSON.stringify(a) === JSON.stringify(b)
+  JSON.stringify(a, sortKeys) === JSON.stringify(b, sortKeys)
 
 // One value: a change made here and not saved yet is kept, otherwise the
 // stored value is taken.

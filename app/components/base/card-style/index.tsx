@@ -11,7 +11,8 @@ import { cardColors, cardEmojis } from '~/lib/constants/card-style'
 import { TCardStyle } from '~/lib/types/common'
 import { cn } from '~/lib/utils/shadcn'
 
-// A card's colour and background emoji, behind its content. The card needs
+// A card's colour and background emoji, behind its content: the emoji in the
+// top corner, clear of the action bar at the bottom. The card needs
 // `isolate` so this layer stays above its surface and below its text.
 export const CardStyleLayer = (properties: { cardStyle?: TCardStyle }) => {
   const { color, emoji } = properties.cardStyle ?? {}
@@ -23,7 +24,7 @@ export const CardStyleLayer = (properties: { cardStyle?: TCardStyle }) => {
       style={color && { backgroundColor: `var(--card-${color})` }}
     >
       {emoji && (
-        <span className="absolute -right-4 -bottom-6 rotate-12 text-[7rem] leading-none opacity-20 select-none dark:opacity-25">
+        <span className="absolute -top-3 -right-3 rotate-12 text-[6rem] leading-none opacity-25 select-none dark:opacity-30">
           {emoji}
         </span>
       )}
