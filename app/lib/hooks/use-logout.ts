@@ -9,6 +9,7 @@ import { clearAllDrafts } from '~/lib/utils/drafts'
 import { endSession } from '~/lib/utils/encryption-session'
 import { getErrorMessage } from '~/lib/utils/firebase-error'
 import { forgetDeviceKey } from '~/lib/utils/push-device'
+import { startSigningOut, stopSigningOut } from '~/lib/utils/signing-out'
 
 import { toast } from './use-toast'
 
@@ -53,12 +54,14 @@ export const useLogout = () => {
       // Forget the unlocked encryption key on this device too, and this
       // device's copies of the person's items and unsaved drafts.
       await endSession()
+      startSigningOut()
       await clearOfflineData()
       await signOut(auth)
       clearAllDrafts()
       // The Firestore connection is closed: start the page again.
       location.assign('/auth/sign-in')
     } catch (error: unknown) {
+      stopSigningOut()
       setIsError(true)
       const message = getErrorMessage(error)
       toast({
