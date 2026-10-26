@@ -696,7 +696,7 @@
         "Choose Add measurement to record weight and height (with BMI), blood sugar, uric acid, cholesterol, calories or a period.",
         "For a child, growth is compared with the WHO standards from birth to 19 years, with percentiles and the Kemenkes status.",
         "Results are shown against reference ranges, never as a diagnosis. Ask a doctor about anything that worries you.",
-        "Add reminder to be reminded to measure every few days or before an expected period. Due reminders show in the app, and Add to calendar puts them on your phone's calendar.",
+        "Add reminder to be reminded to measure every few days or before an expected period. Due reminders show in the app, and turn on notifications in Settings to be alerted on time.",
         "Settings → Health chooses the adult BMI categories and the units results are shown in."
       ]
     },
@@ -1529,8 +1529,8 @@
     "reminders": {
       "title": "Reminders",
       "add": "Add reminder",
-      "empty": "No reminders yet. Add one to be reminded to measure, and put it in your phone’s calendar.",
-      "hint": "Due reminders show here, under the bell, on the Health menu and on this log’s card. For an alert on time, add a reminder to your phone’s calendar.",
+      "empty": "No reminders yet. Add one to be reminded to measure.",
+      "hint": "Due reminders show here, under the bell, on the Health menu and on this log’s card. For an alert on time, turn on notifications in Settings → General.",
       "kind": "What",
       "everyDays": "Every (days)",
       "daysBefore": "Days before",
@@ -1560,13 +1560,7 @@
         }
       },
       "logNow": "Log now",
-      "remove": "Remove reminder",
-      "calendar": {
-        "add": "Add to calendar",
-        "measure": "{{kind}}: {{name}}",
-        "period": "Period expected: {{name}}",
-        "description": "A reminder from Catat Saja."
-      }
+      "remove": "Remove reminder"
     },
     "medications": {
       "title": "Medicines",
@@ -1575,7 +1569,7 @@
       "remove": "Remove medicine and its history",
       "stop": "Stop taking it",
       "empty": "No medicines yet. Add one to be reminded at each dose and keep track of what was taken.",
-      "hint": "Doses waiting to be marked show here, under the bell and on the Health menu. For an alert on time, add a medicine to your phone’s calendar. Always follow your doctor’s or pharmacist’s directions.",
+      "hint": "Doses waiting to be marked show here, under the bell and on the Health menu. For an alert on time, turn on notifications in Settings → General. Always follow your doctor’s or pharmacist’s directions.",
       "today": "Today",
       "waiting": "Doses waiting",
       "dueAt": "{{day}}, {{time}}",
@@ -1601,7 +1595,6 @@
       "done": "Course finished",
       "finished_one": "{{count}} finished medicine",
       "finished_other": "{{count}} finished medicines",
-      "calendar": "{{medicine}}: {{name}}",
       "courses": {
         "ongoing": "Ongoing",
         "days": "For a number of days",

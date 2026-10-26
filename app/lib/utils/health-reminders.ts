@@ -1,7 +1,6 @@
-// Health reminders: when each is due, when its push notification goes out,
-// and a calendar file (.ics) so the phone's own calendar can alert on time
-// too. Pure logic, no app imports, so it can be tested on its
-// own (tests/health-reminders.test.mjs).
+// Health reminders: when each is due and when its push notification goes
+// out. Pure logic, no app imports, so it can be tested on its own
+// (tests/health-reminders.test.mjs).
 
 type TKind =
   | 'body'
@@ -119,94 +118,3 @@ export const dueReminders = <TItem extends TReminder>({
 
 // Days from `from` to `to`: positive when `to` is later.
 export const daysFrom = daysBetween
-
-// iCalendar text needs commas, semicolons and backslashes escaped, and
-// newlines written as \n.
-const escapeText = (text: string) =>
-  text
-    .replaceAll('\\', '\\\\')
-    .replaceAll(';', String.raw`\;`)
-    .replaceAll(',', String.raw`\,`)
-    .replaceAll(/\r?\n/g, String.raw`\n`)
-
-const compact = (date: string) => date.replaceAll('-', '')
-
-// Lines may be at most 75 octets; longer ones continue on lines starting
-// with a space (RFC 5545). Folding by characters keeps multi-byte text whole.
-const fold = (line: string) => {
-  const parts: string[] = []
-  let rest = line
-  while (new TextEncoder().encode(rest).length > 75) {
-    let cut = 74
-    while (new TextEncoder().encode(rest.slice(0, cut)).length > 74) cut--
-    parts.push(rest.slice(0, cut))
-    rest = ` ${rest.slice(cut)}`
-  }
-  parts.push(rest)
-  return parts.join('\r\n')
-}
-
-// A calendar event for a reminder, repeating every `everyDays` days when
-// given (a measurement, a medicine) until `until`, or once (a period
-// reminder, whose date moves with each cycle). A medicine taken at several
-// times gets an event for each. Timed events alert at their time; all-day
-// ones at 09:00. Times are floating (the phone's own time zone).
-export const reminderCalendar = ({
-  uid,
-  title,
-  description,
-  start,
-  time,
-  times = time ? [time] : [],
-  everyDays,
-  until,
-  now,
-}: {
-  uid: string
-  title: string
-  description: string
-  start: string
-  time?: string
-  times?: string[]
-  everyDays?: number
-  // The last day it repeats on.
-  until?: string
-  // When the file is made, as an ISO timestamp.
-  now: string
-}) => {
-  const stamp = `${now.slice(0, 19).replaceAll(/[-:]/g, '')}Z`
-  const timed = times.filter((item) => /^\d{2}:\d{2}$/.test(item))
-  const event = (time?: string) => [
-    'BEGIN:VEVENT',
-    `UID:${uid}${time && timed.length > 1 ? `-${time.replace(':', '')}` : ''}@catatsaja`,
-    `DTSTAMP:${stamp}`,
-    time
-      ? `DTSTART:${compact(start)}T${time.replace(':', '')}00`
-      : `DTSTART;VALUE=DATE:${compact(start)}`,
-    time ? 'DURATION:PT15M' : `DTEND;VALUE=DATE:${compact(addDays(start, 1))}`,
-    ...(everyDays && everyDays > 0
-      ? [
-          `RRULE:FREQ=DAILY;INTERVAL=${Math.round(everyDays)}${
-            until ? `;UNTIL=${compact(until)}${time ? 'T235959' : ''}` : ''
-          }`,
-        ]
-      : []),
-    `SUMMARY:${escapeText(title)}`,
-    `DESCRIPTION:${escapeText(description)}`,
-    'BEGIN:VALARM',
-    'ACTION:DISPLAY',
-    `DESCRIPTION:${escapeText(title)}`,
-    time ? 'TRIGGER:PT0M' : 'TRIGGER;RELATED=START:PT9H',
-    'END:VALARM',
-    'END:VEVENT',
-  ]
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Catat Saja//Health reminders//EN',
-    'CALSCALE:GREGORIAN',
-    ...(timed.length > 0 ? timed.flatMap((item) => event(item)) : event()),
-    'END:VCALENDAR',
-  ]
-  return `${lines.map((line) => fold(line)).join('\r\n')}\r\n`
-}

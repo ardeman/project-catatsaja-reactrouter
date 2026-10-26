@@ -43,7 +43,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
   - **Note helpers** (the Sparkles icon in a note's icon bar): summarise, tidy up, translate English ↔ Indonesian (previewed, undoable), or turn a note into a new task list.
 - **Finance analysis:** per book, insight tiles, cash flow and balance charts and spending by colour-coded category, with a table view; accounts to check the balance against; calculations in amount fields.
 - **Date entry:** type dates with automatic separators, including English or Indonesian month names or choose from a calendar; the format defaults to DD-MM-YYYY and can be changed in Settings → General.
-- **Health:** a log per person (yourself, a child, a parent), shared like notes: weight, height and BMI (Kemenkes, WHO or WHO Asia-Pacific categories), child growth from birth to 19 years against the WHO Child Growth Standards (to 5 years) and the WHO Growth Reference for school-age children and adolescents (5 to 19 years; weight for age to 10), with percentiles and Kemenkes PMK 2/2020 status, blood sugar, uric acid and cholesterol with adult reference ranges (mg/dL or SI units), calories against a daily target, and period cycle estimates; reminders to measure every few days or before an expected period, shown when due (on the log, its card and the Health menu) and exportable to the phone's calendar (.ics).
+- **Health:** a log per person (yourself, a child, a parent), shared like notes: weight, height and BMI (Kemenkes, WHO or WHO Asia-Pacific categories), child growth from birth to 19 years against the WHO Child Growth Standards (to 5 years) and the WHO Growth Reference for school-age children and adolescents (5 to 19 years; weight for age to 10), with percentiles and Kemenkes PMK 2/2020 status, blood sugar, uric acid and cholesterol with adult reference ranges (mg/dL or SI units), calories against a daily target, and period cycle estimates; reminders to measure every few days or before an expected period, shown when due (on the log, its card and the Health menu) and sent as push notifications.
 - **Notifications:** a bell lists invitations, due health reminders and medicine doses, encrypted items others can't read, and a newer version of the app. Push notifications per device (offered once on each device after the encryption step, and in Settings → General) for invitations, health reminders and every medicine dose, sent by Cloud Functions; their text is sealed on the sender's device for each receiving device, so the server sees only times and recipients, and each device can hide titles on its lock screen.
 - **Currencies:** manage your own currencies (symbol, code, decimals, rate, a default one) and how amounts are written (separators, decimals, symbol or code, before or after), with a live preview.
 - **Landing page:** what the app does, with previews of a note and a checklist, four people's stories and a tour video (YouTube, loaded only on play), in both languages and themes; signed-in visitors go straight to their notes.
@@ -53,7 +53,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 **Upcoming (dated)**
 
-- [ ] Check push notifications on a real phone (the emulators have no push service): turning them on from the one-time step and from Settings, an invitation, a health reminder and a medicine dose, on Android and on an iPhone with the installed app.
+- [ ] Check push notifications on a real phone (the emulators have no push service): invitations work (checked 2026-10-26); left are turning them on from the one-time step and from Settings, a health reminder and a medicine dose, on Android and on an iPhone with the installed app.
 
 **Planned**
 
@@ -67,7 +67,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
   2. Compare two periods (by default the chosen range and the one before it): income, expense, net and each category, with the change in amount and %. Computed only.
   3. Your own groups of categories (such as Needs = food + bills) with totals and shares. Decide first where they live: on the book (shared with its people; a new content field, so the rules, `contentFields` and an end-to-end test) or on the profile (personal, and usable across books in step 4).
   4. Compare books: a screen to pick several books and see income, expense and net per month for each. Books in other currencies are converted with the person's currency settings, so unlike a book's own totals these can change when a rate does.
-- [ ] Tasks: due dates with reminders, through a calendar file (.ics) like health reminders, so no server is needed.
+- [ ] Tasks: due dates with reminders, sent as push notifications like health reminders.
 - [ ] Export all your data as a file, decrypted on the device: a backup in case the passphrase is lost. Free, apart from Plus's finance exports and reports.
 - [ ] Trash: deleted items kept for 30 days, beyond the Undo toast.
 - [ ] Labels shared across notes, tasks and books (such as "Holiday 2026").

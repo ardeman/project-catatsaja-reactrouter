@@ -1,4 +1,4 @@
-// Tests for health reminders and their calendar files:
+// Tests for health reminders and their push times:
 //   pnpm test:unit
 // Plain Node (it runs the TypeScript directly): no emulators, no browser.
 
@@ -7,7 +7,6 @@ import { describe, test } from 'node:test'
 
 import {
   dueReminders,
-  reminderCalendar,
   reminderPushAt,
   reminderStatus,
 } from '../app/lib/utils/health-reminders.ts'
@@ -120,92 +119,5 @@ describe('when a reminder is pushed', () => {
     assert.equal(at(weigh, { dueDate: '2026-10-01', isDue: true }), undefined)
     const period = { id: 'p', kind: 'period', daysBefore: 2 }
     assert.equal(at(period, { isDue: false }), undefined)
-  })
-})
-
-describe('calendar files', () => {
-  const now = '2026-10-12T03:04:05.000Z'
-
-  test('a timed measurement repeats every few days and alerts on time', () => {
-    const ics = reminderCalendar({
-      uid: 'w',
-      title: 'Weigh Rara',
-      description: 'Catat Saja, Rara',
-      start: '2026-10-15',
-      time: '07:30',
-      everyDays: 7,
-      now,
-    })
-    assert.ok(ics.endsWith('\r\n'))
-    const lines = ics.trimEnd().split('\r\n')
-    for (const line of [
-      'BEGIN:VCALENDAR',
-      'UID:w@catatsaja',
-      'DTSTAMP:20261012T030405Z',
-      'DTSTART:20261015T073000',
-      'DURATION:PT15M',
-      'RRULE:FREQ=DAILY;INTERVAL=7',
-      'SUMMARY:Weigh Rara',
-      String.raw`DESCRIPTION:Catat Saja\, Rara`,
-      'TRIGGER:PT0M',
-      'END:VCALENDAR',
-    ])
-      assert.ok(lines.includes(line), `has ${line}`)
-  })
-
-  test('an all-day reminder alerts at 09:00 and need not repeat', () => {
-    const lines = reminderCalendar({
-      uid: 'p',
-      title: 'Period expected; check',
-      description: '',
-      start: '2026-10-31',
-      now,
-    })
-      .trimEnd()
-      .split('\r\n')
-    assert.ok(lines.includes('DTSTART;VALUE=DATE:20261031'))
-    assert.ok(lines.includes('DTEND;VALUE=DATE:20261101'))
-    assert.ok(lines.includes('TRIGGER;RELATED=START:PT9H'))
-    assert.ok(lines.includes(String.raw`SUMMARY:Period expected\; check`))
-    assert.ok(!lines.some((line) => line.startsWith('RRULE')))
-  })
-
-  test('long lines are folded at 75 bytes without splitting characters', () => {
-    const title =
-      'Timbang berat badan dan ukur tinggi badan Rara — pengingat mingguan ✓✓✓'
-    const ics = reminderCalendar({
-      uid: 'x',
-      title,
-      description: '',
-      start: '2026-10-15',
-      now,
-    })
-    for (const line of ics.trimEnd().split('\r\n'))
-      assert.ok(new TextEncoder().encode(line).length <= 75, line)
-    const unfolded = ics.replaceAll('\r\n ', '')
-    assert.ok(unfolded.includes(`SUMMARY:${title}`))
-  })
-})
-
-describe('a medicine in the calendar', () => {
-  test('an event for each time, repeating until the course ends', () => {
-    const lines = reminderCalendar({
-      uid: 'm',
-      title: 'Amoxicillin',
-      description: '',
-      start: '2026-10-18',
-      times: ['08:00', '20:00'],
-      everyDays: 1,
-      until: '2026-10-21',
-      now: '2026-10-18T01:00:00.000Z',
-    })
-      .trimEnd()
-      .split('\r\n')
-    assert.equal(lines.filter((line) => line === 'BEGIN:VEVENT').length, 2)
-    assert.ok(lines.includes('UID:m-0800@catatsaja'))
-    assert.ok(lines.includes('DTSTART:20261018T200000'))
-    assert.ok(
-      lines.includes('RRULE:FREQ=DAILY;INTERVAL=1;UNTIL=20261021T235959'),
-    )
   })
 })

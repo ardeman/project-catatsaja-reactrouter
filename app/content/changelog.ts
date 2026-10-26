@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-26',
+    title: {
+      en: 'Reminders come as notifications',
+      id: 'Pengingat datang sebagai notifikasi',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'Health reminders and medicines no longer have an Add to calendar button. Turn on notifications in Settings → General to be alerted on time; due reminders and doses still show in the app.',
+          id: 'Pengingat kesehatan dan obat tidak lagi punya tombol Tambah ke kalender. Nyalakan notifikasi di Pengaturan → Umum agar diingatkan tepat waktu; pengingat dan dosis yang jatuh tempo tetap tampil di aplikasi.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-23',
     title: {
       en: 'Add items anywhere in a list',

@@ -1,20 +1,10 @@
-import {
-  CalendarPlus,
-  Check,
-  History,
-  Pencil,
-  Pill,
-  Plus,
-  Trash2,
-  Undo2,
-} from 'lucide-react'
+import { Check, History, Pencil, Pill, Plus, Trash2, Undo2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button as UIButton } from '~/components/ui/button'
 import { useClock } from '~/lib/hooks/use-clock'
 import { THealthDose, THealthMedication } from '~/lib/types/health'
-import { reminderCalendar } from '~/lib/utils/health-reminders'
 import {
   doseId,
   dosesLeft,
@@ -27,11 +17,7 @@ import {
 import { cn } from '~/lib/utils/shadcn'
 
 import { MedicationForm } from './medication-form'
-import { downloadCalendar } from './reminders'
 import { TMedicationsProperties } from './type'
-
-const medicineLabel = (medication: THealthMedication) =>
-  [medication.name, medication.dose].filter(Boolean).join(' ')
 
 // The newest marks shown in a medicine's history; the rest stay stored.
 const HISTORY_SHOWN = 30
@@ -95,28 +81,6 @@ export const Medications = (properties: TMedicationsProperties) => {
   const handleRemove = (medication: THealthMedication) => {
     onChangeMedications(medications.filter((item) => item.id !== medication.id))
     onChangeDoses(doses.filter((dose) => dose.medicationId !== medication.id))
-  }
-
-  const handleCalendar = (medication: THealthMedication) => {
-    const next = nextDose({ medication, doses, today, now })
-    const name = log.name.trim() || t('health.untitled')
-    const title = t('health.medications.calendar', {
-      medicine: medicineLabel(medication),
-      name,
-    })
-    downloadCalendar(
-      reminderCalendar({
-        uid: medication.id,
-        title,
-        description: medication.note ?? '',
-        start: next?.date ?? today,
-        times: medication.times,
-        everyDays: medication.everyDays,
-        until: expectedEnd(medication, doses, today),
-        now: new Date().toISOString(),
-      }),
-      `${name}-${medication.name}`,
-    )
   }
 
   const title = (medication: THealthMedication) =>
@@ -251,18 +215,6 @@ export const Medications = (properties: TMedicationsProperties) => {
             )}
           </span>
           <div className="flex shrink-0">
-            {isActive && (
-              <UIButton
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label={t('health.reminders.calendar.add')}
-                title={t('health.reminders.calendar.add')}
-                onClick={() => handleCalendar(medication)}
-              >
-                <CalendarPlus className="size-4" />
-              </UIButton>
-            )}
             <UIButton
               type="button"
               variant="ghost"

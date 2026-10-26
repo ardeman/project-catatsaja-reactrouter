@@ -696,7 +696,7 @@
         "Pilih Tambah pengukuran untuk mencatat berat dan tinggi badan (dengan IMT), gula darah, asam urat, kolesterol, kalori, atau haid.",
         "Untuk anak, tumbuh kembang dibandingkan dengan standar WHO dari lahir sampai 19 tahun, dengan persentil dan status Kemenkes.",
         "Hasil ditampilkan terhadap rentang rujukan, bukan sebagai diagnosis. Tanyakan ke dokter jika ada yang membuatmu khawatir.",
-        "Tambah pengingat untuk diingatkan mengukur setiap beberapa hari atau sebelum haid yang diperkirakan. Pengingat yang jatuh tempo tampil di aplikasi, dan Tambah ke kalender memasukkannya ke kalender ponselmu.",
+        "Tambah pengingat untuk diingatkan mengukur setiap beberapa hari atau sebelum haid yang diperkirakan. Pengingat yang jatuh tempo tampil di aplikasi, dan nyalakan notifikasi di Pengaturan agar diingatkan tepat waktu.",
         "Pengaturan → Kesehatan menentukan kategori IMT dewasa dan satuan yang dipakai untuk hasil."
       ]
     },
@@ -1529,8 +1529,8 @@
     "reminders": {
       "title": "Pengingat",
       "add": "Tambah pengingat",
-      "empty": "Belum ada pengingat. Tambahkan agar diingatkan untuk mengukur, dan masukkan ke kalender HP-mu.",
-      "hint": "Pengingat yang jatuh tempo muncul di sini, di lonceng, di menu Kesehatan, dan di kartu catatan ini. Agar ada notifikasi tepat waktu, tambahkan pengingat ke kalender HP-mu.",
+      "empty": "Belum ada pengingat. Tambahkan agar diingatkan untuk mengukur.",
+      "hint": "Pengingat yang jatuh tempo muncul di sini, di lonceng, di menu Kesehatan, dan di kartu catatan ini. Agar diingatkan tepat waktu, nyalakan notifikasi di Pengaturan → Umum.",
       "kind": "Apa",
       "everyDays": "Setiap (hari)",
       "daysBefore": "Hari sebelumnya",
@@ -1560,13 +1560,7 @@
         }
       },
       "logNow": "Catat sekarang",
-      "remove": "Hapus pengingat",
-      "calendar": {
-        "add": "Tambah ke kalender",
-        "measure": "{{kind}}: {{name}}",
-        "period": "Perkiraan haid: {{name}}",
-        "description": "Pengingat dari Catat Saja."
-      }
+      "remove": "Hapus pengingat"
     },
     "medications": {
       "title": "Obat",
@@ -1575,7 +1569,7 @@
       "remove": "Hapus obat dan riwayatnya",
       "stop": "Berhenti minum",
       "empty": "Belum ada obat. Tambahkan agar diingatkan di setiap dosis dan tahu mana yang sudah diminum.",
-      "hint": "Dosis yang menunggu ditandai muncul di sini, di lonceng, dan di menu Kesehatan. Agar diingatkan tepat waktu, tambahkan obat ke kalender ponsel. Selalu ikuti petunjuk dokter atau apoteker.",
+      "hint": "Dosis yang menunggu ditandai muncul di sini, di lonceng, dan di menu Kesehatan. Agar diingatkan tepat waktu, nyalakan notifikasi di Pengaturan → Umum. Selalu ikuti petunjuk dokter atau apoteker.",
       "today": "Hari ini",
       "waiting": "Dosis menunggu",
       "dueAt": "{{day}}, {{time}}",
@@ -1601,7 +1595,6 @@
       "done": "Pengobatan selesai",
       "finished_one": "{{count}} obat selesai",
       "finished_other": "{{count}} obat selesai",
-      "calendar": "{{medicine}}: {{name}}",
       "courses": {
         "ongoing": "Terus-menerus",
         "days": "Selama beberapa hari",

@@ -1,4 +1,4 @@
-import { BellRing, CalendarPlus, Plus, Trash2 } from 'lucide-react'
+import { BellRing, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -19,7 +19,6 @@ import { newHealthEntryId, periodStats } from '~/lib/utils/health'
 import {
   daysFrom,
   dueReminders,
-  reminderCalendar,
   reminderStatus,
 } from '~/lib/utils/health-reminders'
 
@@ -35,21 +34,8 @@ const measurementKinds = [
   'calories',
 ] as const
 
-// Saves a reminder as a calendar file; phones open it in their calendar,
-// which then alerts on time (the app can't while it is closed).
-export const downloadCalendar = (text: string, name: string) => {
-  const url = URL.createObjectURL(
-    new Blob([text], { type: 'text/calendar;charset=utf-8' }),
-  )
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `${name}.ics`
-  link.click()
-  URL.revokeObjectURL(url)
-}
-
 // A log's reminders: the ones due now, with a way to log them, and the list
-// to add to, remove from, or put in the phone's calendar.
+// to add to or remove from.
 export const Reminders = (properties: TRemindersProperties) => {
   const { log, isReadOnly, showPeriod, onChange, onOpen } = properties
   const { t, i18n } = useTranslation()
@@ -106,40 +92,6 @@ export const Reminders = (properties: TRemindersProperties) => {
     onChange([...reminders, reminder])
     setIsAdding(false)
     setTime('')
-  }
-
-  const handleCalendar = (reminder: THealthReminder) => {
-    const status = reminderStatus({
-      reminder,
-      entries: log.content,
-      today: now,
-      nextPeriodStart,
-    })
-    // Not before today (dates compare as text): the latest of the two.
-    const start =
-      [status.dueDate ?? now, now]
-        .toSorted((a, b) => a.localeCompare(b))
-        .at(-1) ?? now
-    const name = log.name.trim() || t('health.untitled')
-    const title =
-      reminder.kind === 'period'
-        ? t('health.reminders.calendar.period', { name })
-        : t('health.reminders.calendar.measure', {
-            kind: kindLabel(reminder.kind),
-            name,
-          })
-    downloadCalendar(
-      reminderCalendar({
-        uid: reminder.id,
-        title,
-        description: t('health.reminders.calendar.description'),
-        start,
-        time: reminder.kind === 'period' ? undefined : reminder.time,
-        everyDays: reminder.kind === 'period' ? undefined : reminder.everyDays,
-        now: new Date().toISOString(),
-      }),
-      `${name}-${reminder.kind}`,
-    )
   }
 
   const kinds: TReminderKind[] = [
@@ -256,16 +208,6 @@ export const Reminders = (properties: TRemindersProperties) => {
                       .join(' · ')}
                   </span>
                 </span>
-                <UIButton
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label={t('health.reminders.calendar.add')}
-                  title={t('health.reminders.calendar.add')}
-                  onClick={() => handleCalendar(reminder)}
-                >
-                  <CalendarPlus className="size-4" />
-                </UIButton>
                 {!isReadOnly && (
                   <UIButton
                     type="button"

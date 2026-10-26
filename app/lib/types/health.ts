@@ -62,8 +62,8 @@ export type THealthEntryOf<TKind extends THealthKind> = Extract<
 >
 
 // A reminder to log a measurement every few days (at a time, or any time
-// that day), or that a period is expected in a few days. Shown when due;
-// a calendar file lets the phone alert on time.
+// that day), or that a period is expected in a few days. Shown when due
+// and sent as a push notification.
 export type THealthReminder =
   | {
       id: string

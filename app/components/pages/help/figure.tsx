@@ -1,7 +1,6 @@
 import {
   ChevronDown,
   ChevronUp,
-  CalendarPlus,
   Check,
   Circle,
   CircleUser,
@@ -269,10 +268,6 @@ const HealthFigure = () => {
       <MockButton
         icon={Plus}
         label={t('health.reminders.add')}
-      />
-      <MockButton
-        icon={CalendarPlus}
-        label={t('health.reminders.calendar.add')}
       />
       <HealthPreview />
     </Frame>
