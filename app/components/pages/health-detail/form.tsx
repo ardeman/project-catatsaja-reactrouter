@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 
 import { Action } from '~/components/base/action'
 import { Button } from '~/components/base/button'
+import { CardStyleLayer } from '~/components/base/card-style'
 import { DatePicker } from '~/components/base/date-picker'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Segmented } from '~/components/base/segmented'
@@ -26,8 +27,10 @@ import { useUserData } from '~/lib/hooks/use-get-user'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
+import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
 import { useUpdateHealthLog } from '~/lib/hooks/use-update-health-log'
 import { THealthEntry, THealthKind, THealthLogForm } from '~/lib/types/health'
+import { toCardStyle } from '~/lib/utils/card-style'
 import { today } from '~/lib/utils/finance'
 import { ageInYears } from '~/lib/utils/health'
 import { isSameJson, mergeById } from '~/lib/utils/merge-stored'
@@ -62,6 +65,7 @@ export const Form = (properties: TFormProperties) => {
   const formId = useId()
   const { t, i18n } = useTranslation()
   const { mutate: archive } = useUpdateArchive()
+  const { mutate: updateCardStyle } = useUpdateCardStyle()
   const {
     selectedHealthLog,
     handleDeleteHealthLog,
@@ -357,6 +361,10 @@ export const Form = (properties: TFormProperties) => {
   return (
     <FormProvider {...formMethods}>
       <div className="group/form is-shown mx-auto w-full max-w-3xl space-y-6">
+        <CardStyleLayer
+          isPage
+          cardStyle={toCardStyle(healthLog?.cardStyle)}
+        />
         <div className="sticky top-20 z-40 flex justify-center md:top-24">
           {healthLog ? (
             <Action
@@ -376,6 +384,10 @@ export const Form = (properties: TFormProperties) => {
               handleShare={() => handleShareHealthLog({ healthLog })}
               handleUnlink={() => handleUnlinkHealthLog({ healthLog })}
               sharedCount={sharedCount}
+              cardStyle={toCardStyle(healthLog.cardStyle)}
+              handleCardStyle={(next) =>
+                updateCardStyle('healthLogs', healthLog.id, next)
+              }
               handleBack={handleBackHealthLog}
               {...historyActions}
             />

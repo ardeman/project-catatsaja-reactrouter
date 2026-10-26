@@ -13,18 +13,39 @@ import { cn } from '~/lib/utils/shadcn'
 
 // A card's colour and background emoji, behind its content: the emoji in the
 // top corner, clear of the action bar at the bottom. The card needs
-// `isolate` so this layer stays above its surface and below its text.
-export const CardStyleLayer = (properties: { cardStyle?: TCardStyle }) => {
-  const { color, emoji } = properties.cardStyle ?? {}
+// `isolate` so this layer stays above its surface and below its text. On a
+// detail page (`isPage`) it covers the whole screen behind the page, softer
+// so long text stays easy to read; `main` is isolated for it.
+export const CardStyleLayer = (properties: {
+  cardStyle?: TCardStyle
+  isPage?: boolean
+}) => {
+  const { cardStyle, isPage = false } = properties
+  const { color, emoji } = cardStyle ?? {}
   if (!color && !emoji) return
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      style={color && { backgroundColor: `var(--card-${color})` }}
+      className={cn(
+        'pointer-events-none inset-0 -z-10 overflow-hidden',
+        isPage ? 'fixed' : 'absolute',
+      )}
     >
+      {color && (
+        <div
+          className={cn('absolute inset-0', isPage && 'opacity-60')}
+          style={{ backgroundColor: `var(--card-${color})` }}
+        />
+      )}
       {emoji && (
-        <span className="absolute -top-3 -right-3 rotate-12 text-[6rem] leading-none opacity-25 select-none dark:opacity-30">
+        <span
+          className={cn(
+            'absolute rotate-12 leading-none opacity-25 select-none dark:opacity-30',
+            isPage
+              ? 'top-36 right-2 text-[10rem] opacity-15 md:top-28 md:right-8 md:text-[16rem] dark:opacity-20'
+              : '-top-3 -right-3 text-[6rem]',
+          )}
+        >
           {emoji}
         </span>
       )}

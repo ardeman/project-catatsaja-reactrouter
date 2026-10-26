@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 
 import { Action } from '~/components/base/action'
+import { CardStyleLayer } from '~/components/base/card-style'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Segmented } from '~/components/base/segmented'
@@ -44,12 +45,14 @@ import { useMoney } from '~/lib/hooks/use-money'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
+import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
 import { useUpdateFinance } from '~/lib/hooks/use-update-finance'
 import {
   TFinanceCurrency,
   TFinanceEntry,
   TFinanceForm,
 } from '~/lib/types/finance'
+import { toCardStyle } from '~/lib/utils/card-style'
 import { readDraft } from '~/lib/utils/drafts'
 import {
   entryBookTotal,
@@ -81,6 +84,7 @@ export const Form = (properties: TFormProperties) => {
   const bookFormId = useId()
   const { t, i18n } = useTranslation()
   const { mutate: archive } = useUpdateArchive()
+  const { mutate: updateCardStyle } = useUpdateCardStyle()
   const {
     selectedFinance,
     handleDeleteFinance,
@@ -422,6 +426,10 @@ export const Form = (properties: TFormProperties) => {
         className="group/form is-shown mx-auto w-full max-w-3xl space-y-6"
         style={{ '--summary-height': `${summaryHeight}px` } as CSSProperties}
       >
+        <CardStyleLayer
+          isPage
+          cardStyle={toCardStyle(finance?.cardStyle)}
+        />
         <div className="sticky top-20 z-40 flex justify-center md:top-24">
           {finance ? (
             <Action
@@ -443,6 +451,10 @@ export const Form = (properties: TFormProperties) => {
               handleDuplicate={handleDuplicate}
               isLoading={isDuplicatePending}
               sharedCount={sharedCount}
+              cardStyle={toCardStyle(finance.cardStyle)}
+              handleCardStyle={(next) =>
+                updateCardStyle('finances', finance.id, next)
+              }
               handleBack={handleBackFinance}
               {...historyActions}
             />

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router'
 import { useEventListener } from 'usehooks-ts'
 
 import { Action, actionButtonClassName } from '~/components/base/action'
+import { CardStyleLayer } from '~/components/base/card-style'
 import {
   FormattingBar,
   MilkdownEditor,
@@ -23,8 +24,11 @@ import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
+import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
 import { useUpdateNote } from '~/lib/hooks/use-update-note'
+import { TCardStyle } from '~/lib/types/common'
 import { TNoteForm } from '~/lib/types/note'
+import { toCardStyle } from '~/lib/utils/card-style'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { noteSchema } from '~/lib/validations/note'
@@ -39,6 +43,7 @@ export const Form = (properties: TFormProperties) => {
   const { note } = properties
   const { t, i18n } = useTranslation()
   const { mutate: archive } = useUpdateArchive()
+  const { mutate: updateCardStyle } = useUpdateCardStyle()
   const {
     handleDeleteNote,
     handlePinNote,
@@ -231,6 +236,10 @@ export const Form = (properties: TFormProperties) => {
         onSubmit={handleCreate}
         className="group/form is-shown mx-auto w-full max-w-3xl space-y-4"
       >
+        <CardStyleLayer
+          isPage
+          cardStyle={toCardStyle(note?.cardStyle)}
+        />
         <div className="sticky top-20 z-40 flex flex-col gap-1 md:top-24">
           <Action
             className="w-full"
@@ -250,6 +259,9 @@ export const Form = (properties: TFormProperties) => {
               handleShare: () => handleShareNote({ note }),
               handleUnlink: () => handleUnlinkNote({ note }),
               sharedCount,
+              cardStyle: toCardStyle(note.cardStyle),
+              handleCardStyle: (next: TCardStyle) =>
+                updateCardStyle('notes', note.id, next),
             })}
             {...historyActions}
             {...(!isReadOnly && {
@@ -266,7 +278,7 @@ export const Form = (properties: TFormProperties) => {
             />
           )}
         </div>
-        <div className="rounded-xl border bg-card p-4 sm:p-6 md:p-8">
+        <div className="glass-surface rounded-xl border p-4 sm:p-6 md:p-8">
           <Textarea
             name="title"
             aria-label={t('notes.form.title.label')}

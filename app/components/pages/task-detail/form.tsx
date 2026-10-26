@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { Action } from '~/components/base/action'
+import { CardStyleLayer } from '~/components/base/card-style'
 import { Checkbox } from '~/components/base/checkbox'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Textarea } from '~/components/base/textarea'
@@ -22,8 +23,10 @@ import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
+import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
 import { useUpdateTask } from '~/lib/hooks/use-update-task'
 import { TTaskForm } from '~/lib/types/task'
+import { toCardStyle } from '~/lib/utils/card-style'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 import { taskSchema } from '~/lib/validations/task'
@@ -104,6 +107,7 @@ export const Form = (properties: TFormProperties) => {
   const { task } = properties
   const { t, i18n } = useTranslation()
   const { mutate: archive } = useUpdateArchive()
+  const { mutate: updateCardStyle } = useUpdateCardStyle()
   const {
     selectedTask,
     handleDeleteTask,
@@ -755,6 +759,10 @@ export const Form = (properties: TFormProperties) => {
         onSubmit={handleCreate}
         className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
       >
+        <CardStyleLayer
+          isPage
+          cardStyle={toCardStyle(task?.cardStyle)}
+        />
         <div className="sticky top-20 z-40 flex justify-center md:top-24">
           {task ? (
             <Action
@@ -770,6 +778,10 @@ export const Form = (properties: TFormProperties) => {
               handleShare={() => handleShareTask({ task })}
               handleUnlink={() => handleUnlinkTask({ task })}
               sharedCount={sharedCount}
+              cardStyle={toCardStyle(task.cardStyle)}
+              handleCardStyle={(next) =>
+                updateCardStyle('tasks', task.id, next)
+              }
               handleBack={handleBackTask}
               handleToggleCheckAll={
                 isReadOnly ? undefined : handleToggleCheckAll

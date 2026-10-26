@@ -23,8 +23,8 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: 'Give a card a colour and a background emoji with the palette button on it. Notes, lists, books and health logs look the same for everyone you share them with, and the look is encrypted with the rest when you use encryption.',
-          id: 'Beri kartu warna dan emoji latar lewat tombol palet di kartunya. Catatan, daftar, buku, dan catatan kesehatan tampil sama bagi semua orang yang kamu bagikan, dan tampilannya ikut dienkripsi bila kamu memakai enkripsi.',
+          en: 'Give a card a colour and a background emoji with the palette button on it or on its page, which takes on the same look. Notes, lists, books and health logs look the same for everyone you share them with, and the look is encrypted with the rest when you use encryption.',
+          id: 'Beri kartu warna dan emoji latar lewat tombol palet di kartu atau halamannya, yang ikut berganti tampilan. Catatan, daftar, buku, dan catatan kesehatan tampil sama bagi semua orang yang kamu bagikan, dan tampilannya ikut dienkripsi bila kamu memakai enkripsi.',
         },
       },
       {
