@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 
+import { HelpContents } from './contents'
 import { figures } from './figure'
 import { helpSections as sections } from './type'
 
@@ -14,29 +15,7 @@ export const HelpPage = () => {
         <h1 className="text-3xl font-semibold">{t('navigation.help')}</h1>
         <p className="text-lg">{t('help.description')}</p>
       </div>
-      <nav
-        aria-labelledby="help-contents"
-        className="grid gap-2"
-      >
-        <h2
-          id="help-contents"
-          className="text-sm font-medium text-muted-foreground"
-        >
-          {t('help.contents')}
-        </h2>
-        <ul className="flex flex-wrap gap-2">
-          {sections.map((key) => (
-            <li key={key}>
-              <a
-                href={`#help-${key}`}
-                className="inline-flex rounded-full border px-3 py-1 text-sm hover:bg-muted"
-              >
-                {t(`help.${key}.title`)}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <HelpContents />
       {sections.map((key) => {
         const Figure = figures[key]
         return (
@@ -47,7 +26,7 @@ export const HelpPage = () => {
           >
             <h2
               id={`help-${key}`}
-              className="scroll-mt-6 text-xl font-semibold"
+              className="scroll-mt-28 text-xl font-semibold sm:scroll-mt-40"
             >
               {t(`help.${key}.title`)}
             </h2>
