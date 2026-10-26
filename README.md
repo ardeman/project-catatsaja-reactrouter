@@ -53,7 +53,6 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 **Upcoming (dated)**
 
-- [ ] Around 2026-10-17 to 10-20: enforce App Check for Cloud Firestore once its "outdated client requests" stay near 0% for a few days (Firebase console → App Check). Authentication stays on monitoring: enforcing it needs App Check back in `firebase.ts` (AGENTS.md → Decisions).
 - [ ] Check push notifications on a real phone (the emulators have no push service): turning them on from the one-time step and from Settings, an invitation, a health reminder and a medicine dose, on Android and on an iPhone with the installed app.
 
 **Planned**
