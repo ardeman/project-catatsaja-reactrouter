@@ -4,6 +4,15 @@ import {
   TFinanceResponse,
 } from '~/lib/types/finance'
 import { TCurrency } from '~/lib/types/settings'
+import { TEntryFilter } from '~/lib/utils/entry-filter'
+import { TGroupBy } from '~/lib/utils/finance-analysis'
+
+export type TAnalysisOptions = {
+  // Only its period and dates are used.
+  range: TEntryFilter
+  // Unset until the person picks one: the grouping that suits the range.
+  groupBy?: TGroupBy
+}
 
 export type TFormProperties = {
   finance?: TFinanceResponse

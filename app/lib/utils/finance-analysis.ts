@@ -10,10 +10,26 @@ import { entryBookTotal, newestFirst, summarize } from './finance'
 // Analysis of one book, in the book's currency. Computed in the browser from
 // the entries; nothing is stored.
 
-export type TGranularity = 'day' | 'week' | 'month'
+type TTimeGranularity = 'day' | 'week' | 'month'
+
+// A period of time, or one day of the week added up over the whole range.
+export type TGranularity = TTimeGranularity | 'weekday'
+
+// What the analysis groups entries by, chosen by the person.
+export const groupings = [
+  'day',
+  'week',
+  'month',
+  'weekday',
+  'category',
+  'item',
+] as const
+
+export type TGroupBy = (typeof groupings)[number]
 
 export type TPeriod = {
-  // First day of the period, YYYY-MM-DD.
+  // First day of the period, YYYY-MM-DD. For a day of the week, a date
+  // that falls on it (see `groupByWeekday`).
   start: string
   income: number
   expense: number
@@ -34,37 +50,36 @@ const weekStart = (date: string) => {
   return toDate(time - weekday * DAY)
 }
 
-const periodStart = (date: string, granularity: TGranularity) => {
+const periodStart = (date: string, granularity: TTimeGranularity) => {
   if (granularity === 'day') return date
   return granularity === 'week' ? weekStart(date) : `${date.slice(0, 7)}-01`
 }
 
-const nextStart = (start: string, granularity: TGranularity) => {
+const nextStart = (start: string, granularity: TTimeGranularity) => {
   if (granularity === 'day') return toDate(toTime(start) + DAY)
   if (granularity === 'week') return toDate(toTime(start) + 7 * DAY)
   const [year, month] = start.split('-').map(Number)
   return toDate(Date.UTC(year, month, 1))
 }
 
-// Days from the first entry to the last, both counted.
-export const spanDays = (entries: TFinanceEntry[]) => {
-  if (entries.length === 0) return 0
-  const times = entries.map((entry) => toTime(entry.date))
-  return Math.round((Math.max(...times) - Math.min(...times)) / DAY) + 1
-}
+// Days from `from` to `to`, both counted.
+export const rangeDays = (from: string, to: string) =>
+  Math.round((toTime(to) - toTime(from)) / DAY) + 1
 
-// Days for a month's book, weeks up to half a year, months beyond.
-export const pickGranularity = (entries: TFinanceEntry[]): TGranularity => {
-  const days = spanDays(entries)
+// The grouping offered first for a range of `days`: days for a month,
+// weeks up to half a year, months beyond.
+export const pickGranularity = (days: number): TTimeGranularity => {
   if (days <= 31) return 'day'
   return days <= 183 ? 'week' : 'month'
 }
 
 // Every period from the first entry to the last, empty ones included, so
-// gaps show as gaps.
+// gaps show as gaps. A chosen range (`from`, `to`) is covered whole, and the
+// balance starts from `opening`, what the book held before it.
 export const groupByPeriod = (
   entries: TFinanceEntry[],
-  granularity: TGranularity,
+  granularity: TTimeGranularity,
+  { from = '', to = '', opening = 0 } = {},
 ): TPeriod[] => {
   if (entries.length === 0) return []
   const totals = new Map<string, { income: number; expense: number }>()
@@ -74,14 +89,14 @@ export const groupByPeriod = (
     total[entry.type] += entryBookTotal(entry)
     totals.set(start, total)
   }
-  let first = ''
-  let last = ''
+  let first = from && periodStart(from, granularity)
+  let last = to && periodStart(to, granularity)
   for (const start of totals.keys()) {
     if (!first || start < first) first = start
     if (start > last) last = start
   }
   const periods: TPeriod[] = []
-  let balance = 0
+  let balance = opening
   for (
     let start = first;
     start <= last;
@@ -92,6 +107,38 @@ export const groupByPeriod = (
     periods.push({ start, income, expense, balance })
   }
   return periods
+}
+
+// 2024-01-01 was a Monday: the dates of that week stand for the days of the
+// week, so charts and tooltips can label them like any period.
+const weekdayDates = Array.from({ length: 7 }, (_, index) =>
+  toDate(Date.UTC(2024, 0, 1 + index)),
+)
+
+// Income and expenses on each day of the week, Monday first. Balances mean
+// nothing here and stay 0.
+export const groupByWeekday = (entries: TFinanceEntry[]): TPeriod[] => {
+  const periods = weekdayDates.map((start) => ({
+    start,
+    income: 0,
+    expense: 0,
+    balance: 0,
+  }))
+  for (const entry of entries) {
+    const weekday = (new Date(toTime(entry.date)).getUTCDay() + 6) % 7
+    periods[weekday][entry.type] += entryBookTotal(entry)
+  }
+  return periods
+}
+
+// What the book held before `date`.
+export const balanceBefore = (entries: TFinanceEntry[], date: string) => {
+  let balance = 0
+  for (const entry of entries) {
+    if (entry.date >= date) continue
+    balance += (entry.type === 'income' ? 1 : -1) * entryBookTotal(entry)
+  }
+  return balance
 }
 
 // Largest first. Past `limit` categories, the rest fold into one "other"
@@ -185,7 +232,8 @@ export const niceTicks = (min: number, max: number, count = 4) => {
 }
 
 // "Oct 5" for days and weeks (weeks by their Monday), "Oct" for months,
-// with the year when `withYear` (months spanning years, long labels).
+// with the year when `withYear` (months spanning years, long labels). A day
+// of the week is "Mon", or "Monday" for long labels.
 export const formatPeriod = ({
   start,
   granularity,
@@ -199,9 +247,13 @@ export const formatPeriod = ({
 }) =>
   new Intl.DateTimeFormat(locale, {
     timeZone: 'UTC',
-    month: 'short',
-    ...(granularity !== 'month' && { day: 'numeric' }),
-    ...(withYear && { year: 'numeric' }),
+    ...(granularity === 'weekday'
+      ? { weekday: withYear ? 'long' : 'short' }
+      : {
+          month: 'short',
+          ...(granularity !== 'month' && { day: 'numeric' }),
+          ...(withYear && { year: 'numeric' }),
+        }),
   }).format(new Date(toTime(start)))
 
 // How many of the newest entries a book's summary keeps, for cards, search

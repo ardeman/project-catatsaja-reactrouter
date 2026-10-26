@@ -40,7 +40,7 @@ type TProperties = {
 
 // The custom period's dates, in a small form of their own so they can use
 // the app's date picker.
-const CustomDates = ({
+export const CustomDates = ({
   filter,
   setFilter,
 }: Pick<TProperties, 'filter' | 'setFilter'>) => {

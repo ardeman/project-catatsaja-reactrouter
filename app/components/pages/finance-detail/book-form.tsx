@@ -83,7 +83,7 @@ import { EntryFilter } from './entry-filter'
 import { EntryForm } from './entry-form.client'
 import { QuickAdd } from './quick-add.client'
 import { Summary } from './summary'
-import { TFormProperties } from './type'
+import { TAnalysisOptions, TFormProperties } from './type'
 
 export const Form = (properties: TFormProperties) => {
   const { finance } = properties
@@ -251,6 +251,9 @@ export const Form = (properties: TFormProperties) => {
   )
   // Kept while switching to Analysis and back, cleared when leaving the book.
   const [filter, setFilter] = useState<TEntryFilter>(emptyEntryFilter)
+  const [analysisOptions, setAnalysisOptions] = useState<TAnalysisOptions>({
+    range: emptyEntryFilter,
+  })
   const shownEntries = useMemo(
     () => filterEntries(entries, filter),
     [entries, filter],
@@ -664,6 +667,8 @@ export const Form = (properties: TFormProperties) => {
           <Analysis
             entries={entries}
             book={book}
+            options={analysisOptions}
+            setOptions={setAnalysisOptions}
           />
         ) : (
           <>

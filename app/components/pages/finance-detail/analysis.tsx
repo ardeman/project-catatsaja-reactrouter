@@ -1,18 +1,45 @@
 import { BanknoteArrowDown, BanknoteArrowUp } from 'lucide-react'
-import { ReactNode, useMemo, useState } from 'react'
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useId,
+  useMemo,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Segmented } from '~/components/base/segmented'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '~/components/base/select'
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceCurrency, TFinanceEntry } from '~/lib/types/finance'
+import {
+  entryPeriods,
+  filterEntries,
+  periodRange,
+  TEntryFilter,
+  TEntryPeriod,
+  toValue,
+} from '~/lib/utils/entry-filter'
 import { entryBookTotal, summarize } from '~/lib/utils/finance'
 import {
+  balanceBefore,
   formatPeriod,
   groupByPeriod,
+  groupByWeekday,
+  groupings,
   largestEntry,
   pickGranularity,
-  spanDays,
+  rangeDays,
   spendingChange,
+  TGroupBy,
   totalsByCategory,
 } from '~/lib/utils/finance-analysis'
 import { cn } from '~/lib/utils/shadcn'
@@ -21,11 +48,65 @@ import { similarItems } from '~/lib/utils/similar-items'
 import { BalanceChart } from './balance-chart'
 import { CashFlowChart } from './cash-flow-chart'
 import { CategoryBreakdown } from './category-breakdown'
+import { CustomDates } from './entry-filter'
 import { ItemBreakdown } from './item-breakdown'
+import { TAnalysisOptions } from './type'
 
 type TProperties = {
   entries: TFinanceEntry[]
   book: TFinanceCurrency
+  options: TAnalysisOptions
+  setOptions: Dispatch<SetStateAction<TAnalysisOptions>>
+}
+
+const timeGroupings = ['day', 'week', 'month'] as const
+
+const isTime = (
+  groupBy?: TGroupBy,
+): groupBy is (typeof timeGroupings)[number] =>
+  (timeGroupings as readonly (TGroupBy | undefined)[]).includes(groupBy)
+
+// A select with its name shown above it.
+const Picker = <T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string
+  value: T
+  options: { value: T; label: string }[]
+  onChange: (value: T) => void
+}) => {
+  const id = useId()
+  return (
+    <div className="grid min-w-0 gap-1">
+      <span
+        id={id}
+        className="text-xs text-muted-foreground"
+      >
+        {label}
+      </span>
+      <Select
+        value={value}
+        onValueChange={(next) => onChange(next as T)}
+      >
+        <SelectTrigger aria-labelledby={id}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem
+              key={option.value}
+              value={option.value}
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  )
 }
 
 const Section = ({
@@ -90,10 +171,16 @@ const Tile = ({
 )
 
 // The book's numbers at a glance, its cash flow and balance over time, and
-// where the money went. Everything comes from the entries, in the book's
-// currency.
-export const Analysis = ({ entries, book }: TProperties) => {
+// where the money went, for the range and grouping the person picks.
+// Everything comes from the entries, in the book's currency.
+export const Analysis = ({
+  entries,
+  book,
+  options,
+  setOptions,
+}: TProperties) => {
   const { t, i18n } = useTranslation()
+  const { range } = options
   const money = useMoney()
   const [view, setView] = useState<'chart' | 'table'>('chart')
   const [type, setType] = useState<TFinanceEntry['type']>('expense')
@@ -108,20 +195,62 @@ export const Analysis = ({ entries, book }: TProperties) => {
     maximumFractionDigits: 0,
   })
 
+  // A new range picks the grouping that suits it again, unless the person
+  // chose one that doesn't depend on its length.
+  const setRange = useCallback<Dispatch<SetStateAction<TEntryFilter>>>(
+    (next) =>
+      setOptions((current) => {
+        const nextRange =
+          typeof next === 'function' ? next(current.range) : next
+        if (nextRange === current.range) return current
+        return {
+          range: nextRange,
+          groupBy: isTime(current.groupBy) ? undefined : current.groupBy,
+        }
+      }),
+    [setOptions],
+  )
+
   const analysis = useMemo(() => {
-    const granularity = pickGranularity(entries)
+    const shown = filterEntries(entries, range)
+    const dates = shown
+      .map((entry) => entry.date)
+      .toSorted((a, b) => a.localeCompare(b))
+    const chosen = periodRange(range)
+    const today = toValue(new Date())
+    // The range's days, from its start (or the first entry) to its end, or
+    // today if that hasn't come yet, unless entries are dated later.
+    const from = chosen.from || dates[0] || today
+    const last = dates.at(-1) ?? from
+    const to = chosen.to
+      ? chosen.to > today
+        ? [today, last].toSorted((a, b) => a.localeCompare(b))[1]
+        : chosen.to
+      : last
+    const days = rangeDays(from, to)
+    const groupBy = options.groupBy ?? pickGranularity(days)
     return {
-      granularity,
-      periods: groupByPeriod(entries, granularity),
-      days: spanDays(entries),
-      totals: summarize(entries),
-      expenseCategories: totalsByCategory(entries, 'expense'),
-      incomeCategories: totalsByCategory(entries, 'income'),
-      largest: largestEntry(entries, 'expense'),
-      expenseItems: similarItems(entries, 'expense'),
-      incomeItems: similarItems(entries, 'income'),
+      shown,
+      groupBy,
+      periods:
+        groupBy === 'weekday'
+          ? groupByWeekday(shown)
+          : isTime(groupBy)
+            ? groupByPeriod(shown, groupBy, {
+                from,
+                to,
+                opening: balanceBefore(entries, from),
+              })
+            : [],
+      days,
+      totals: summarize(shown),
+      expenseCategories: totalsByCategory(shown, 'expense'),
+      incomeCategories: totalsByCategory(shown, 'income'),
+      largest: largestEntry(shown, 'expense'),
+      expenseItems: similarItems(shown, 'expense'),
+      incomeItems: similarItems(shown, 'income'),
     }
-  }, [entries])
+  }, [entries, range, options.groupBy])
 
   if (entries.length === 0)
     return (
@@ -130,10 +259,62 @@ export const Analysis = ({ entries, book }: TProperties) => {
       </p>
     )
 
-  const { granularity, periods, days, totals, largest } = analysis
+  const controls = (
+    <div className="grid gap-2">
+      <div className="grid grid-cols-2 gap-2">
+        <Picker
+          label={t('finances.filter.period.label')}
+          value={range.period}
+          options={entryPeriods.map((period) => ({
+            value: period,
+            label: t(`finances.filter.period.${period}`),
+          }))}
+          onChange={(period: TEntryPeriod) =>
+            setRange((current) => ({ ...current, period }))
+          }
+        />
+        <Picker
+          label={t('finances.analysis.groupBy.label')}
+          value={analysis.groupBy}
+          options={groupings.map((grouping) => ({
+            value: grouping,
+            label: t(`finances.analysis.groupBy.${grouping}`),
+          }))}
+          onChange={(groupBy: TGroupBy) =>
+            setOptions((current) => ({ ...current, groupBy }))
+          }
+        />
+      </div>
+      {range.period === 'custom' && (
+        <CustomDates
+          filter={range}
+          setFilter={setRange}
+        />
+      )}
+    </div>
+  )
+
+  if (analysis.shown.length === 0)
+    return (
+      <div className="grid grid-cols-1 gap-4">
+        {controls}
+        <p className="py-6 text-center text-sm text-muted-foreground">
+          {t('finances.analysis.emptyRange')}
+        </p>
+      </div>
+    )
+
+  const { groupBy, periods, days, totals, largest } = analysis
+  // Category and item groupings show their breakdown alone; days of the
+  // week have no balance.
+  const isOverTime = isTime(groupBy)
+  const granularity = isOverTime || groupBy === 'weekday' ? groupBy : undefined
   const { income, expense } = totals
   const savingsRate = income > 0 ? (income - expense) / income : undefined
-  const change = granularity === 'day' ? undefined : spendingChange(periods)
+  const change =
+    groupBy === 'week' || groupBy === 'month'
+      ? spendingChange(periods)
+      : undefined
   const topExpense = analysis.expenseCategories[0]
   const categoryLabel = (category: string) =>
     t(
@@ -161,6 +342,7 @@ export const Analysis = ({ entries, book }: TProperties) => {
     // charts draw at their measured width, and a plain grid kept them as
     // wide as they were drawn when the window got narrower.
     <div className="grid grid-cols-1 gap-4">
+      {controls}
       <dl className="grid grid-cols-2 gap-2">
         {savingsRate !== undefined && (
           <Tile
@@ -199,27 +381,29 @@ export const Analysis = ({ entries, book }: TProperties) => {
         )}
         {change !== undefined && (
           <Tile
-            label={t(`finances.analysis.insights.change.${granularity}`)}
+            label={t(`finances.analysis.insights.change.${groupBy}`)}
             value={percent.format(change)}
-            detail={t(`finances.analysis.insights.versus.${granularity}`)}
+            detail={t(`finances.analysis.insights.versus.${groupBy}`)}
             tone={change > 0 ? 'bad' : 'good'}
           />
         )}
       </dl>
 
-      <div className="flex justify-end">
-        <Segmented
-          label={t('finances.analysis.showAs')}
-          value={view}
-          options={[
-            { value: 'chart', label: t('finances.analysis.chart') },
-            { value: 'table', label: t('finances.analysis.table') },
-          ]}
-          onChange={setView}
-        />
-      </div>
+      {granularity && (
+        <div className="flex justify-end">
+          <Segmented
+            label={t('finances.analysis.showAs')}
+            value={view}
+            options={[
+              { value: 'chart', label: t('finances.analysis.chart') },
+              { value: 'table', label: t('finances.analysis.table') },
+            ]}
+            onChange={setView}
+          />
+        </div>
+      )}
 
-      {view === 'chart' ? (
+      {granularity === undefined ? undefined : view === 'chart' ? (
         <>
           <Section
             title={t('finances.analysis.cashFlow.title')}
@@ -249,13 +433,15 @@ export const Analysis = ({ entries, book }: TProperties) => {
               book={book}
             />
           </Section>
-          <Section title={t('finances.analysis.balance.title')}>
-            <BalanceChart
-              periods={periods}
-              granularity={granularity}
-              book={book}
-            />
-          </Section>
+          {isOverTime && (
+            <Section title={t('finances.analysis.balance.title')}>
+              <BalanceChart
+                periods={periods}
+                granularity={granularity}
+                book={book}
+              />
+            </Section>
+          )}
         </>
       ) : (
         <Section
@@ -276,7 +462,7 @@ export const Analysis = ({ entries, book }: TProperties) => {
                     t('finances.summary.income'),
                     t('finances.summary.expense'),
                     t('finances.analysis.net'),
-                    t('finances.summary.balance'),
+                    ...(isOverTime ? [t('finances.summary.balance')] : []),
                   ].map((heading) => (
                     <th
                       key={heading}
@@ -289,7 +475,7 @@ export const Analysis = ({ entries, book }: TProperties) => {
                 </tr>
               </thead>
               <tbody className="tabular-nums">
-                {periods.toReversed().map((period) => {
+                {(isOverTime ? periods.toReversed() : periods).map((period) => {
                   const net = period.income - period.expense
                   return (
                     <tr
@@ -321,9 +507,11 @@ export const Analysis = ({ entries, book }: TProperties) => {
                       >
                         {money(net, book, true)}
                       </td>
-                      <td className="py-2 pl-3 text-right whitespace-nowrap">
-                        {money(period.balance, book, period.balance < 0)}
-                      </td>
+                      {isOverTime && (
+                        <td className="py-2 pl-3 text-right whitespace-nowrap">
+                          {money(period.balance, book, period.balance < 0)}
+                        </td>
+                      )}
                     </tr>
                   )
                 })}
@@ -365,7 +553,7 @@ export const Analysis = ({ entries, book }: TProperties) => {
         </div>
       )}
 
-      {categories.length > 0 && (
+      {categories.length > 0 && groupBy !== 'item' && (
         <Section title={t('finances.analysis.categories.title')}>
           <CategoryBreakdown
             totals={categories}
@@ -375,7 +563,13 @@ export const Analysis = ({ entries, book }: TProperties) => {
       )}
 
       {/* Both breakdowns follow the type chosen above them. */}
-      {items.length > 0 && (
+      {items.length === 0 && groupBy === 'item' && (
+        <p className="py-6 text-center text-sm text-muted-foreground">
+          {t('finances.analysis.items.none')}
+        </p>
+      )}
+
+      {items.length > 0 && groupBy !== 'category' && (
         <Section
           title={t('finances.analysis.items.title')}
           subtitle={t('finances.analysis.items.subtitle')}

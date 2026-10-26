@@ -31,7 +31,7 @@ export const emptyEntryFilter: TEntryFilter = {
   to: '',
 }
 
-const toValue = (date: Date) =>
+export const toValue = (date: Date) =>
   [
     date.getFullYear(),
     String(date.getMonth() + 1).padStart(2, '0'),

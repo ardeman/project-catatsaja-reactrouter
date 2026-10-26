@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Choose the period a book’s Analysis covers and what it groups by: day, week, month, day of the week, category or item. The balance starts from what the book held before the period.',
+          id: 'Pilih periode yang dicakup Analisis buku dan cara mengelompokkannya: per hari, minggu, bulan, hari dalam seminggu, kategori, atau item. Saldo dimulai dari isi buku sebelum periode itu.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Filter a book’s entries by type, category and period (this month, last month, the last 3 months, this year or dates you choose), with the income and expenses of what is shown.',
           id: 'Saring entri buku menurut jenis, kategori, dan periode (bulan ini, bulan lalu, 3 bulan terakhir, tahun ini, atau tanggal pilihanmu), lengkap dengan pemasukan dan pengeluaran dari yang ditampilkan.',
         },

@@ -530,7 +530,8 @@
       "period": {
         "day": "Hari",
         "week": "Minggu",
-        "month": "Bulan"
+        "month": "Bulan",
+        "weekday": "Hari"
       },
       "cashFlow": {
         "title": "Arus kas",
@@ -538,7 +539,8 @@
         "subtitle": {
           "day": "Pemasukan dan pengeluaran per hari",
           "week": "Pemasukan dan pengeluaran per minggu",
-          "month": "Pemasukan dan pengeluaran per bulan"
+          "month": "Pemasukan dan pengeluaran per bulan",
+          "weekday": "Pemasukan dan pengeluaran tiap hari dalam seminggu, dijumlahkan selama periode"
         }
       },
       "balance": {
@@ -556,7 +558,8 @@
         "latestUp": "terakhir {{price}}, {{percent}} lebih mahal",
         "latestDown": "terakhir {{price}}, {{percent}} lebih murah",
         "showAll": "Lihat semua {{count}}",
-        "showFewer": "Lihat lebih sedikit"
+        "showFewer": "Lihat lebih sedikit",
+        "none": "Tidak ada yang muncul lebih dari sekali pada periode ini."
       },
       "categories": {
         "title": "Per kategori",
@@ -580,6 +583,16 @@
           "week": "dibanding minggu sebelumnya",
           "month": "dibanding bulan sebelumnya"
         }
+      },
+      "emptyRange": "Tidak ada entri pada periode ini.",
+      "groupBy": {
+        "label": "Kelompokkan per",
+        "day": "Hari",
+        "week": "Minggu",
+        "month": "Bulan",
+        "weekday": "Hari dalam seminggu",
+        "category": "Kategori",
+        "item": "Item"
       }
     },
     "receipt": {
