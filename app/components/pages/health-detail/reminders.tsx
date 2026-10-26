@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '~/components/base/select'
 import { Button as UIButton } from '~/components/ui/button'
+import { Checkbox } from '~/components/ui/checkbox'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { THealthReminder } from '~/lib/types/health'
@@ -19,6 +20,8 @@ import { newHealthEntryId, periodStats } from '~/lib/utils/health'
 import {
   daysFrom,
   dueReminders,
+  fertileWindow,
+  isReminderFor,
   reminderStatus,
 } from '~/lib/utils/health-reminders'
 
@@ -34,16 +37,19 @@ const measurementKinds = [
   'calories',
 ] as const
 
+// Reminders counted in days before something expected, not after a log.
+const isAhead = (kind: TReminderKind) => kind === 'period' || kind === 'fertile'
+
 // A log's reminders: the ones due now, with a way to log them, and the list
 // to add to or remove from.
 export const Reminders = (properties: TRemindersProperties) => {
-  const { log, isReadOnly, showPeriod, onChange, onOpen } = properties
+  const { log, isOwner, isReadOnly, showPeriod, onChange, onOpen } = properties
   const { t, i18n } = useTranslation()
   const reminders = log.reminders ?? []
   const now = today()
   const nextPeriodStart = periodStats(log.content, now)?.nextStart
   const due = dueReminders({
-    reminders,
+    reminders: reminders.filter((reminder) => isReminderFor(reminder, isOwner)),
     entries: log.content,
     today: now,
     nextPeriodStart,
@@ -52,6 +58,7 @@ export const Reminders = (properties: TRemindersProperties) => {
   const [kind, setKind] = useState<TReminderKind>('body')
   const [days, setDays] = useState('7')
   const [time, setTime] = useState('')
+  const [isShared, setIsShared] = useState(false)
 
   const formatDay = (date: string) =>
     new Intl.DateTimeFormat(i18n.language, {
@@ -61,42 +68,59 @@ export const Reminders = (properties: TRemindersProperties) => {
       timeZone: 'UTC',
     }).format(new Date(`${date}T00:00:00Z`))
 
-  const kindLabel = (value: TReminderKind) => t(`health.kinds.${value}`)
+  const kindLabel = (value: TReminderKind) =>
+    t(value === 'fertile' ? 'health.period.fertile' : `health.kinds.${value}`)
 
   const describe = (reminder: THealthReminder) =>
     reminder.kind === 'period'
       ? t('health.reminders.periodBefore', { count: reminder.daysBefore })
-      : [
-          t('health.reminders.every', { count: reminder.everyDays }),
-          reminder.time
-            ? t('health.reminders.at', { time: reminder.time })
-            : '',
-        ]
-          .filter(Boolean)
-          .join(' ')
+      : reminder.kind === 'fertile'
+        ? [
+            t('health.reminders.fertileBefore', { count: reminder.daysBefore }),
+            t(
+              reminder.shared
+                ? 'health.reminders.forShared'
+                : 'health.reminders.forOwner',
+            ),
+          ].join(' · ')
+        : [
+            t('health.reminders.every', { count: reminder.everyDays }),
+            reminder.time
+              ? t('health.reminders.at', { time: reminder.time })
+              : '',
+          ]
+            .filter(Boolean)
+            .join(' ')
 
   const handleAdd = () => {
-    const count = Math.max(
-      kind === 'period' ? 0 : 1,
-      Math.round(Number(days) || 0),
-    )
+    const count = Math.max(isAhead(kind) ? 0 : 1, Math.round(Number(days) || 0))
     const reminder: THealthReminder =
       kind === 'period'
         ? { id: newHealthEntryId(), kind, daysBefore: count }
-        : {
-            id: newHealthEntryId(),
-            kind,
-            everyDays: count,
-            ...(time && { time }),
-          }
+        : kind === 'fertile'
+          ? {
+              id: newHealthEntryId(),
+              kind,
+              daysBefore: count,
+              ...(isShared && { shared: true }),
+            }
+          : {
+              id: newHealthEntryId(),
+              kind,
+              everyDays: count,
+              ...(time && { time }),
+            }
     onChange([...reminders, reminder])
     setIsAdding(false)
     setTime('')
+    setIsShared(false)
   }
 
   const kinds: TReminderKind[] = [
     ...measurementKinds,
     ...(showPeriod ? (['period'] as const) : []),
+    // For the owner's own cycle, so only they set one up.
+    ...(showPeriod && isOwner ? (['fertile'] as const) : []),
   ]
 
   return (
@@ -149,14 +173,19 @@ export const Reminders = (properties: TRemindersProperties) => {
                       t('health.reminders.due.expected', {
                         date: formatDay(nextPeriodStart),
                       })
-                    : status.lastDate
-                      ? t('health.reminders.due.last', {
-                          count: daysFrom(status.lastDate, now),
+                    : reminder.kind === 'fertile'
+                      ? nextPeriodStart &&
+                        t('health.reminders.due.fertileFrom', {
+                          date: formatDay(fertileWindow(nextPeriodStart).start),
                         })
-                      : t('health.reminders.due.never')}
+                      : status.lastDate
+                        ? t('health.reminders.due.last', {
+                            count: daysFrom(status.lastDate, now),
+                          })
+                        : t('health.reminders.due.never')}
                 </span>
               </span>
-              {!isReadOnly && (
+              {!isReadOnly && reminder.kind !== 'fertile' && (
                 <UIButton
                   type="button"
                   size="sm"
@@ -240,7 +269,9 @@ export const Reminders = (properties: TRemindersProperties) => {
                 onValueChange={(next) => {
                   if (!next) return
                   setKind(next as TReminderKind)
-                  setDays(next === 'period' ? '2' : '7')
+                  setDays(
+                    next === 'period' ? '2' : next === 'fertile' ? '1' : '7',
+                  )
                 }}
               >
                 <SelectTrigger aria-label={t('health.reminders.kind')}>
@@ -261,7 +292,7 @@ export const Reminders = (properties: TRemindersProperties) => {
             <div className="grid gap-1">
               <Label htmlFor="health-reminder-days">
                 {t(
-                  kind === 'period'
+                  isAhead(kind)
                     ? 'health.reminders.daysBefore'
                     : 'health.reminders.everyDays',
                 )}
@@ -270,13 +301,13 @@ export const Reminders = (properties: TRemindersProperties) => {
                 id="health-reminder-days"
                 type="number"
                 inputMode="numeric"
-                min={kind === 'period' ? 0 : 1}
+                min={isAhead(kind) ? 0 : 1}
                 max={365}
                 value={days}
                 onChange={(event) => setDays(event.target.value)}
               />
             </div>
-            {kind !== 'period' && (
+            {!isAhead(kind) && (
               <div className="grid gap-1">
                 <Label htmlFor="health-reminder-time">
                   {t('health.reminders.time')}
@@ -290,6 +321,26 @@ export const Reminders = (properties: TRemindersProperties) => {
               </div>
             )}
           </div>
+          {kind === 'fertile' && (
+            <>
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="health-reminder-shared"
+                  checked={isShared}
+                  onCheckedChange={(checked) => setIsShared(checked === true)}
+                />
+                <Label
+                  htmlFor="health-reminder-shared"
+                  className="text-sm leading-snug font-normal"
+                >
+                  {t('health.reminders.shareFertile')}
+                </Label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t('health.period.disclaimer')}
+              </p>
+            </>
+          )}
           <div className="flex flex-wrap justify-end gap-2">
             <Button
               variant="outline"

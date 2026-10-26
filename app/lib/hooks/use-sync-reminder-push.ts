@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { syncPushSchedule, TPushReminder } from '~/apis/firestore/push-schedule'
 import { THealthLogResponse } from '~/lib/types/health'
 import { periodStats } from '~/lib/utils/health'
-import { reminderPushAt, reminderStatus } from '~/lib/utils/health-reminders'
+import {
+  isReminderFor,
+  reminderPushAt,
+  reminderStatus,
+} from '~/lib/utils/health-reminders'
 import { isFinished, upcomingDoses } from '~/lib/utils/medication-schedule'
 
 import { useClock } from './use-clock'
@@ -62,6 +66,7 @@ export const useSyncReminderPush = () => {
             id: reminder.id,
             kind: 'reminder' as const,
             times: at ? [timeOf(at)] : [],
+            ownerOnly: !isReminderFor(reminder, false),
             text: texts('settings.push.sealed.reminder', (lng) => ({
               name: log.name,
               reminder: i18n.t(`health.reminders.due.kind.${reminder.kind}`, {

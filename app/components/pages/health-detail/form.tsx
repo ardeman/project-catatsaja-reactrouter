@@ -492,6 +492,7 @@ export const Form = (properties: TFormProperties) => {
 
         <Reminders
           log={values}
+          isOwner={!healthLog || isOwner}
           isReadOnly={isReadOnly}
           showPeriod={shouldShowPeriod}
           onChange={(reminders) =>

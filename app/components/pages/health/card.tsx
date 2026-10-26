@@ -29,7 +29,7 @@ import {
   entriesOf,
   periodStats,
 } from '~/lib/utils/health'
-import { dueReminders } from '~/lib/utils/health-reminders'
+import { dueReminders, isReminderFor } from '~/lib/utils/health-reminders'
 import { isFinished, waitingDoses } from '~/lib/utils/medication-schedule'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
@@ -61,7 +61,9 @@ export const Card = (properties: TCardProperties) => {
   const doses = healthLog.doseLog ?? []
   const dueCount = isEditable
     ? dueReminders({
-        reminders: healthLog.reminders ?? [],
+        reminders: (healthLog.reminders ?? []).filter((reminder) =>
+          isReminderFor(reminder, isOwner),
+        ),
         entries,
         today: now,
         nextPeriodStart: periodStats(entries, now)?.nextStart,

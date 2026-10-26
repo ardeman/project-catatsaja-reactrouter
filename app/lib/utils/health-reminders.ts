@@ -20,6 +20,13 @@ type TReminder =
       time?: string
     }
   | { id: string; kind: 'period'; daysBefore: number }
+  | {
+      id: string
+      kind: 'fertile'
+      daysBefore: number
+      // Also for the people the log is shared with; only its owner otherwise.
+      shared?: boolean
+    }
 
 const DAY = 86_400_000
 
@@ -42,9 +49,19 @@ export type TReminderStatus = {
   lastDate?: string
 }
 
+// The fertile window before a period starting on `nextPeriodStart`:
+// ovulation 14 days before it, the five days before that and the day after
+// (as `periodStats` in health.ts).
+export const fertileWindow = (nextPeriodStart: string) => ({
+  start: addDays(nextPeriodStart, -19),
+  end: addDays(nextPeriodStart, -13),
+})
+
 // A measurement reminder is due `everyDays` after the last entry of its
 // kind (at once if there is none); a period reminder `daysBefore` the next
-// expected period (`nextPeriodStart`, from the period estimates).
+// expected period (`nextPeriodStart`, from the period estimates); a fertile
+// window reminder `daysBefore` that period's fertile window, until the
+// window ends.
 export const reminderStatus = ({
   reminder,
   entries,
@@ -60,6 +77,12 @@ export const reminderStatus = ({
     if (!nextPeriodStart) return { isDue: false }
     const dueDate = addDays(nextPeriodStart, -Math.max(0, reminder.daysBefore))
     return { dueDate, isDue: dueDate <= today }
+  }
+  if (reminder.kind === 'fertile') {
+    if (!nextPeriodStart) return { isDue: false }
+    const { start, end } = fertileWindow(nextPeriodStart)
+    const dueDate = addDays(start, -Math.max(0, reminder.daysBefore))
+    return { dueDate, isDue: dueDate <= today && today <= end }
   }
   const lastDate = entries
     .filter((entry) => entry.kind === reminder.kind)
@@ -88,11 +111,17 @@ export const reminderPushAt = ({
   now: string
 }) => {
   if (!status.dueDate) return
-  const time = (reminder.kind !== 'period' && reminder.time) || '09:00'
+  const time = ('time' in reminder && reminder.time) || '09:00'
   if (status.dueDate < today || (status.dueDate === today && time <= now))
     return
   return { date: status.dueDate, time }
 }
+
+// Whether a reminder is for this person: a fertile window reminder is only
+// for the log's owner unless it is shared; the others are for everyone who
+// can add to the log.
+export const isReminderFor = (reminder: TReminder, isOwner: boolean) =>
+  reminder.kind !== 'fertile' || isOwner || !!reminder.shared
 
 // The reminders due today or earlier, most overdue first.
 export const dueReminders = <TItem extends TReminder>({

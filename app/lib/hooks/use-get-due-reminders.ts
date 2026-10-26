@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { periodStats } from '~/lib/utils/health'
-import { dueReminders } from '~/lib/utils/health-reminders'
+import { dueReminders, isReminderFor } from '~/lib/utils/health-reminders'
 import { isFinished, waitingDoses } from '~/lib/utils/medication-schedule'
 
 import { useClock } from './use-clock'
@@ -34,7 +34,9 @@ export const useGetDueReminders = () => {
           name: log.name,
           nextPeriodStart,
           reminders: dueReminders({
-            reminders: log.reminders ?? [],
+            reminders: (log.reminders ?? []).filter((reminder) =>
+              isReminderFor(reminder, log.owner === uid),
+            ),
             entries: log.content ?? [],
             today,
             nextPeriodStart,

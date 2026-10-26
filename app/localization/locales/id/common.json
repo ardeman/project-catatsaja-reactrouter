@@ -754,14 +754,14 @@
     }
   },
   "privacyPolicy": {
-    "updated": "Terakhir diperbarui: 18 Oktober 2026",
+    "updated": "Terakhir diperbarui: 26 Oktober 2026",
     "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat. Catatan kesehatan bisa berisi hal yang sensitif, seperti menstruasi, hubungan seks (dan apakah memakai pengaman), serta obat; nyalakan enkripsi end-to-end agar kami tidak bisa membacanya.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
     "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, kapan item berubah, dan berapa bulan yang dicakup entri sebuah buku keuangan (tanpa bulan apa saja). Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
     "ai": "Pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik atau tempel, rekaman suara yang kamu buat, atau judul dan isi catatan atau daftar tugas, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu undang bisa melihat isinya (undangan mereka menampilkan judulnya), dan item baru masuk ke daftar mereka jika mereka menerimanya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna. Jika kamu memblokir seseorang, mereka tidak bisa mengundangmu lagi; daftar orang yang kamu blokir bersifat pribadi dan mereka tidak diberi tahu.",
-    "push": "Notifikasi push mati sampai kamu menyalakannya untuk sebuah perangkat di Pengaturan. Layanan push browsermu (Google, Apple, atau Mozilla) lalu memberi perangkat itu sebuah alamat, yang kami simpan di akunmu bersama kunci yang dibuat di perangkat tersebut. Saat seseorang mengundangmu, atau pengingat kesehatan atau dosis obat jatuh tempo, server kami (Google Cloud Functions) mengirim notifikasi ke perangkatmu dan ke orang yang diajak berbagi catatan kesehatan tersebut. Teksnya, seperti judul item atau nama obat, dienkripsi di perangkat pengirim untuk setiap perangkat penerima, sehingga kami dan layanan push tidak bisa membacanya. Yang terlihat oleh server adalah waktu setiap pengingat yang akan datang dan kepada siapa pengingat itu dikirim. Mematikan notifikasi untuk sebuah perangkat menghapus alamat dan kuncinya.",
+    "push": "Notifikasi push mati sampai kamu menyalakannya untuk sebuah perangkat di Pengaturan. Layanan push browsermu (Google, Apple, atau Mozilla) lalu memberi perangkat itu sebuah alamat, yang kami simpan di akunmu bersama kunci yang dibuat di perangkat tersebut. Saat seseorang mengundangmu, atau pengingat kesehatan atau dosis obat jatuh tempo, server kami (Google Cloud Functions) mengirim notifikasi ke perangkatmu dan ke orang yang diajak berbagi catatan kesehatan tersebut (pengingat masa subur hanya dikirim ke pemilik catatan, kecuali pemilik memilih untuk mengikutsertakan mereka). Teksnya, seperti judul item atau nama obat, dienkripsi di perangkat pengirim untuk setiap perangkat penerima, sehingga kami dan layanan push tidak bisa membacanya. Yang terlihat oleh server adalah waktu setiap pengingat yang akan datang dan kepada siapa pengingat itu dikirim. Mematikan notifikasi untuk sebuah perangkat menghapus alamat dan kuncinya.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
     "video": "Halaman utama memuat video yang di-hosting di YouTube. Video baru dimuat saat kamu menekan putar atau memilih sebuah cerita, melalui mode privasi YouTube (youtube-nocookie.com); setelah itu kebijakan privasi YouTube berlaku untuknya.",
@@ -1542,6 +1542,12 @@
       "next": "berikutnya {{date}}",
       "periodBefore_one": "{{count}} hari sebelum perkiraan haid",
       "periodBefore_other": "{{count}} hari sebelum perkiraan haid",
+      "fertileBefore_zero": "Saat masa subur dimulai",
+      "fertileBefore_one": "{{count}} hari sebelum masa subur",
+      "fertileBefore_other": "{{count}} hari sebelum masa subur",
+      "forOwner": "hanya pemilik catatan yang diingatkan",
+      "forShared": "semua yang dibagikan catatan ini ikut diingatkan",
+      "shareFertile": "Ingatkan juga orang yang dibagikan catatan ini",
       "dueNow": "Jatuh tempo",
       "dueCount_one": "{{count}} pengingat jatuh tempo",
       "dueCount_other": "{{count}} pengingat jatuh tempo",
@@ -1550,13 +1556,15 @@
         "last_one": "Terakhir dicatat kemarin.",
         "last_other": "Terakhir dicatat {{count}} hari lalu.",
         "expected": "Perkiraan {{date}}.",
+        "fertileFrom": "Mulai {{date}}.",
         "kind": {
           "body": "Saatnya menimbang dan mengukur.",
           "glucose": "Saatnya cek gula darah.",
           "uricAcid": "Saatnya cek asam urat.",
           "cholesterol": "Saatnya cek kolesterol.",
           "calories": "Saatnya mencatat makanan.",
-          "period": "Haidmu diperkirakan segera datang."
+          "period": "Haidmu diperkirakan segera datang.",
+          "fertile": "Masa subur segera tiba."
         }
       },
       "logNow": "Catat sekarang",

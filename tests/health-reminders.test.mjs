@@ -7,6 +7,7 @@ import { describe, test } from 'node:test'
 
 import {
   dueReminders,
+  isReminderFor,
   reminderPushAt,
   reminderStatus,
 } from '../app/lib/utils/health-reminders.ts'
@@ -72,6 +73,36 @@ describe('when a reminder is due', () => {
     })
   })
 
+  test('a fertile window reminder is due its days before the window, until it ends', () => {
+    const reminder = { id: 'f', kind: 'fertile', daysBefore: 2 }
+    // A period on 2026-11-05: ovulation 2026-10-22, window 10-17 to 10-23.
+    const status = (day) =>
+      reminderStatus({
+        reminder,
+        entries,
+        today: day,
+        nextPeriodStart: '2026-11-05',
+      })
+    assert.deepEqual(status('2026-10-14'), {
+      dueDate: '2026-10-15',
+      isDue: false,
+    })
+    assert.equal(status('2026-10-15').isDue, true)
+    assert.equal(status('2026-10-23').isDue, true)
+    assert.equal(status('2026-10-24').isDue, false)
+    assert.deepEqual(reminderStatus({ reminder, entries, today }), {
+      isDue: false,
+    })
+  })
+
+  test('a fertile window reminder is for the owner unless shared', () => {
+    const fertile = { id: 'f', kind: 'fertile', daysBefore: 0 }
+    assert.equal(isReminderFor(fertile, true), true)
+    assert.equal(isReminderFor(fertile, false), false)
+    assert.equal(isReminderFor({ ...fertile, shared: true }, false), true)
+    assert.equal(isReminderFor(weigh, false), true)
+  })
+
   test('lists the due ones, most overdue first', () => {
     const due = dueReminders({
       reminders: [
@@ -110,6 +141,11 @@ describe('when a reminder is pushed', () => {
     const period = { id: 'p', kind: 'period', daysBefore: 2 }
     assert.deepEqual(at(period, { dueDate: '2026-10-20', isDue: false }), {
       date: '2026-10-20',
+      time: '09:00',
+    })
+    const fertile = { id: 'f', kind: 'fertile', daysBefore: 0 }
+    assert.deepEqual(at(fertile, { dueDate: '2026-10-17', isDue: false }), {
+      date: '2026-10-17',
       time: '09:00',
     })
   })

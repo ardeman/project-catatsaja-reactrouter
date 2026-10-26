@@ -62,8 +62,9 @@ export type THealthEntryOf<TKind extends THealthKind> = Extract<
 >
 
 // A reminder to log a measurement every few days (at a time, or any time
-// that day), or that a period is expected in a few days. Shown when due
-// and sent as a push notification.
+// that day), that a period is expected in a few days, or that the fertile
+// window starts in a few days (for the owner only, unless `shared`). Shown
+// when due and sent as a push notification.
 export type THealthReminder =
   | {
       id: string
@@ -72,6 +73,7 @@ export type THealthReminder =
       time?: string
     }
   | { id: string; kind: 'period'; daysBefore: number }
+  | { id: string; kind: 'fertile'; daysBefore: number; shared?: boolean }
 
 // How long a medicine is taken: until a date, for a number of days or of
 // doses (skipped ones don't count), or with no end.

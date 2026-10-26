@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'A fertile window reminder: get a notification on the day the fertile window starts, or a few days before. It goes only to you unless you choose to remind the people the log is shared with too. Like the calendar, it is an estimate, not a method of birth control.',
+          id: 'Pengingat masa subur: dapatkan notifikasi pada hari masa subur dimulai, atau beberapa hari sebelumnya. Pengingat ini hanya untukmu, kecuali kamu memilih untuk mengingatkan juga orang yang dibagikan catatan ini. Seperti kalendernya, ini hanya perkiraan, bukan metode kontrasepsi.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Health reminders and medicines no longer have an Add to calendar button. Turn on notifications in Settings → General to be alerted on time; due reminders and doses still show in the app.',

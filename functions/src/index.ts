@@ -146,7 +146,7 @@ export const sendInvitationPush = onDocumentCreated(
 const LATE_MS = 15 * 60_000
 
 // A reminder's or a medicine's notification, to everyone with access to
-// the log, when one of its times has come (`pushSchedule`, kept by the app;
+// the log (or only its owner, `ownerOnly`), when one of its times has come (`pushSchedule`, kept by the app;
 // see firestore.rules). Times that have passed are taken off, and the
 // schedule is deleted once none are left or the log is gone.
 const sendReminder = async (schedule: QueryDocumentSnapshot, now: number) => {
@@ -184,7 +184,9 @@ const sendReminder = async (schedule: QueryDocumentSnapshot, now: number) => {
   const people = [
     ...new Set<string>([
       log.get('owner'),
-      ...(log.get('permissions.read') ?? []),
+      ...(schedule.get('ownerOnly') === true
+        ? []
+        : (log.get('permissions.read') ?? [])),
     ]),
   ].filter((uid) => typeof uid === 'string')
   await sendToDevices({

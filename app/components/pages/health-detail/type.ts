@@ -34,6 +34,8 @@ export type TEntryRow = {
 
 export type TRemindersProperties = {
   log: THealthLogForm
+  // A fertile window reminder is the owner's (`isReminderFor`).
+  isOwner: boolean
   isReadOnly: boolean
   // Period reminders only where period tracking shows.
   showPeriod: boolean

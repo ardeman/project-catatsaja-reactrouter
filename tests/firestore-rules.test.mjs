@@ -946,6 +946,11 @@ describe('health reminder push schedules', () => {
         .doc(path)
         .set(schedule({ kind: 'reminder' })),
     )
+    await assertSucceeds(
+      as(WRITER)
+        .doc(path)
+        .set(schedule({ kind: 'reminder', ownerOnly: true })),
+    )
     await assertSucceeds(as(WRITER).collection(`${log}/pushSchedule`).get())
     await assertSucceeds(as(OWNER).doc(path).delete())
   })
@@ -979,6 +984,7 @@ describe('health reminder push schedules', () => {
       },
       { updatedAt: new Date(2020, 0, 1) },
       { medicine: 'Paracetamol' },
+      { ownerOnly: 'yes' },
     ]
     for (const overrides of refused)
       await assertFails(as(OWNER).doc(path).set(schedule(overrides)))

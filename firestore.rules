@@ -350,8 +350,9 @@ service cloud.firestore {
 
         allow read, delete: if canSchedule();
         allow create, update: if canSchedule()
-          && request.resource.data.keys().hasOnly(['kind', 'times', 'next', 'sealed', 'updatedAt'])
+          && request.resource.data.keys().hasOnly(['kind', 'ownerOnly', 'times', 'next', 'sealed', 'updatedAt'])
           && request.resource.data.kind in ['medicine', 'reminder']
+          && request.resource.data.get('ownerOnly', false) is bool
           && request.resource.data.times is list
           && request.resource.data.times.size() > 0
           && request.resource.data.times.size() <= 64
