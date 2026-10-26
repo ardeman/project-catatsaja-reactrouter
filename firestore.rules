@@ -266,14 +266,14 @@ service cloud.firestore {
     match /notes/{noteId} {
       allow read: if canReadShared();
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['title', 'content', 'encrypted']);
+      allow update: if canUpdateShared(['title', 'content', 'cardStyle', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
 
     match /tasks/{taskId} {
       allow read: if canReadShared();
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['title', 'content', 'encrypted']);
+      allow update: if canUpdateShared(['title', 'content', 'cardStyle', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
     }
 
@@ -287,7 +287,7 @@ service cloud.firestore {
       allow read: if canReadShared();
       allow create: if isValidNewShared() && isMonthsBook(request.resource.data);
       allow update: if isMonthsBook(request.resource.data)
-        && canUpdateShared(['title', 'currency', 'accounts', 'summary', 'encrypted']);
+        && canUpdateShared(['title', 'currency', 'accounts', 'summary', 'cardStyle', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
 
       // A month of a moved book's entries. Read by its readers (not by people
@@ -332,7 +332,7 @@ service cloud.firestore {
     match /healthLogs/{healthLogId} {
       allow read: if canReadShared();
       allow create: if isValidNewShared();
-      allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content', 'reminders', 'medications', 'doseLog', 'encrypted']);
+      allow update: if canUpdateShared(['name', 'birthDate', 'sex', 'calorieTarget', 'content', 'reminders', 'medications', 'doseLog', 'cardStyle', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
 
       // When a reminder's or a medicine's push notifications go out, one

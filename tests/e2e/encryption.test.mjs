@@ -12,6 +12,7 @@ import {
   createNote,
   dbGet,
   dbList,
+  dbListWhen,
   dbPatch,
   keysOf,
   launch,
@@ -70,6 +71,23 @@ describe('end-to-end encryption', () => {
     assert.ok(!JSON.stringify(note.fields).includes('Ana secret note'))
     assert.deepEqual(keysOf(note.fields), [anaUid])
     assert.ok(await sees(page, 'Ana secret note'), 'Ana reads it')
+
+    // A card's colour and emoji are sealed with the content, and aren't an
+    // edit: the date stays.
+    const sealed = note.fields.encrypted.mapValue.fields.ct.stringValue
+    await page.getByRole('button', { name: 'Colour and emoji' }).click()
+    await page.getByRole('button', { name: 'Blue' }).click()
+    await page.getByRole('button', { name: '🌿' }).click()
+    await page.keyboard.press('Escape')
+    const [styled] = await dbListWhen(
+      'notes',
+      ([item]) =>
+        item?.fields.encrypted.mapValue.fields.ct.stringValue !== sealed,
+    )
+    assert.ok(!styled.fields.cardStyle, 'no readable card style')
+    assert.deepEqual(styled.fields.updatedAt, note.fields.updatedAt)
+    await page.reload()
+    await page.getByText('🌿').waitFor({ timeout: 15_000 })
     await page.context().close()
   })
 

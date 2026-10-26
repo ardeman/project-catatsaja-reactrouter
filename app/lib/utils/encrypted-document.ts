@@ -22,9 +22,9 @@ import {
 // so people who haven't turned encryption on work as before.
 
 export const contentFields = {
-  notes: ['title', 'content'],
-  tasks: ['title', 'content'],
-  finances: ['title', 'currency', 'accounts', 'summary'],
+  notes: ['title', 'content', 'cardStyle'],
+  tasks: ['title', 'content', 'cardStyle'],
+  finances: ['title', 'currency', 'accounts', 'summary', 'cardStyle'],
   healthLogs: [
     'name',
     'birthDate',
@@ -34,6 +34,7 @@ export const contentFields = {
     'reminders',
     'medications',
     'doseLog',
+    'cardStyle',
   ],
 } as const
 

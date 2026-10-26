@@ -248,9 +248,15 @@ describe('collections that are not part of the app', () => {
 
 // The fields a writer may change in each shared collection.
 const collections = {
-  notes: { title: 'A note', content: 'Text' },
-  tasks: { title: 'A list', content: [] },
-  finances: { title: 'A book', currency: {}, accounts: [], summary: {} },
+  notes: { title: 'A note', content: 'Text', cardStyle: {} },
+  tasks: { title: 'A list', content: [], cardStyle: {} },
+  finances: {
+    title: 'A book',
+    currency: {},
+    accounts: [],
+    summary: {},
+    cardStyle: {},
+  },
   healthLogs: {
     name: 'Me',
     birthDate: '1990-01-01',
@@ -260,6 +266,7 @@ const collections = {
     reminders: [],
     medications: [],
     doseLog: [],
+    cardStyle: {},
   },
 }
 

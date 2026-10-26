@@ -1120,7 +1120,8 @@
     "undo": "Urungkan",
     "redo": "Ulangi",
     "archive": "Arsipkan",
-    "unarchive": "Keluarkan dari arsip"
+    "unarchive": "Keluarkan dari arsip",
+    "cardStyle": "Warna dan emoji"
   },
   "collection": {
     "pinned": "Disematkan",
@@ -1805,6 +1806,23 @@
       "more_other": "dan {{count}} rilis lainnya",
       "open": "Lihat yang baru",
       "dismiss": "Tutup"
+    }
+  },
+  "cardStyle": {
+    "title": "Tampilan kartu",
+    "color": "Warna",
+    "emoji": "Emoji latar",
+    "none": "Tanpa",
+    "colors": {
+      "red": "Merah",
+      "orange": "Oranye",
+      "yellow": "Kuning",
+      "green": "Hijau",
+      "teal": "Hijau toska",
+      "blue": "Biru",
+      "purple": "Ungu",
+      "pink": "Merah muda",
+      "gray": "Abu-abu"
     }
   }
 }

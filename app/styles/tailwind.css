@@ -257,6 +257,17 @@
     --cat-6: #008300;
     --cat-7: #6250d6;
     --cat-other: hsl(var(--muted-foreground));
+    /* Card colours (`cardStyle.color`): soft tints laid over a card's
+       surface, so its text keeps the usual contrast. */
+    --card-red: hsl(0 90% 86% / 0.75);
+    --card-orange: hsl(28 95% 84% / 0.75);
+    --card-yellow: hsl(50 95% 80% / 0.75);
+    --card-green: hsl(130 55% 84% / 0.75);
+    --card-teal: hsl(175 50% 82% / 0.75);
+    --card-blue: hsl(212 85% 87% / 0.75);
+    --card-purple: hsl(265 75% 89% / 0.75);
+    --card-pink: hsl(330 85% 89% / 0.75);
+    --card-gray: hsl(220 12% 86% / 0.75);
   }
   /* Toasts sit above the phone bottom bar on the pages that have it, and
      above the floating create button too where there is one (list pages:
@@ -315,6 +326,15 @@
     --cat-5: #d55181;
     --cat-6: #008300;
     --cat-7: #9085e9;
+    --card-red: hsl(0 45% 32% / 0.6);
+    --card-orange: hsl(25 50% 30% / 0.6);
+    --card-yellow: hsl(48 45% 27% / 0.6);
+    --card-green: hsl(135 32% 25% / 0.6);
+    --card-teal: hsl(178 38% 24% / 0.6);
+    --card-blue: hsl(214 45% 30% / 0.6);
+    --card-purple: hsl(265 35% 32% / 0.6);
+    --card-pink: hsl(330 38% 31% / 0.6);
+    --card-gray: hsl(220 8% 30% / 0.6);
   }
 }
 

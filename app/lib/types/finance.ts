@@ -8,6 +8,7 @@ import {
 } from '~/lib/validations/finance'
 
 import {
+  TCardStyle,
   TAccessLists,
   THandleSetPermission,
   TPermissions,
@@ -69,6 +70,7 @@ export type TFinanceResponse = {
   isPinned?: boolean
   // Stored end-to-end encrypted (set when read, never saved).
   isEncrypted?: boolean
+  cardStyle?: TCardStyle
   pinnedBy?: string[]
   // Archived by the person (their own list only).
   isArchived?: boolean

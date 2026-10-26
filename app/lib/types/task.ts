@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { taskHelperSchema, taskSchema } from '~/lib/validations/task'
 
 import {
+  TCardStyle,
   TAccessLists,
   THandleSetPermission,
   TPermissions,
@@ -24,6 +25,7 @@ export type TTaskResponse = {
   isPinned?: boolean
   // Stored end-to-end encrypted (set when read, never saved).
   isEncrypted?: boolean
+  cardStyle?: TCardStyle
   pinnedBy?: string[]
   // Archived by the person (their own list only).
   isArchived?: boolean

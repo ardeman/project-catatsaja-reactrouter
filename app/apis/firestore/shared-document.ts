@@ -22,7 +22,7 @@ import {
 
 import { auth } from '~/lib/configs/firebase'
 import { firestore } from '~/lib/configs/firestore'
-import { TInvitation } from '~/lib/types/common'
+import { TCardStyle, TInvitation } from '~/lib/types/common'
 import {
   canEncrypt,
   contentFields,
@@ -355,6 +355,28 @@ const writeSharedPermission = async (
   await addInvitationPush(batch, name, item, uid)
   forget(name, item.id)
   return batch.commit()
+}
+
+// A card's colour and background emoji, for everyone it is shared with:
+// a content field, so it is sealed with the rest of an encrypted item.
+// Doesn't touch `updatedAt`: it isn't an edit.
+export const setCardStyle = async (
+  name: TCollection,
+  id: string,
+  cardStyle: TCardStyle,
+) => {
+  const { database } = requireUser()
+  const reference = doc(database, name, id)
+  const { commit } = await whilePreparingWrite(async () => {
+    const encoded = await encodeChanges(name, id, {
+      // Firestore refuses `undefined`: what was taken away is left out.
+      cardStyle: Object.fromEntries(
+        Object.entries(cardStyle).filter(([, value]) => value !== undefined),
+      ),
+    })
+    return { commit: updateDoc(reference, encoded) }
+  })
+  return commit
 }
 
 // Archiving or bringing back an item for the person only: it leaves their

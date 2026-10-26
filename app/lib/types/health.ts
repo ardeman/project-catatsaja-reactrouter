@@ -1,4 +1,5 @@
 import {
+  TCardStyle,
   TAccessLists,
   THandleSetPermission,
   TPermissions,
@@ -140,6 +141,7 @@ export type THealthLogResponse = {
   isPinned?: boolean
   // Stored end-to-end encrypted (set when read, never saved).
   isEncrypted?: boolean
+  cardStyle?: TCardStyle
   pinnedBy?: string[]
   // Archived by the person (their own list only).
   isArchived?: boolean

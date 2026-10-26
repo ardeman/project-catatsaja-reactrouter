@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'Give a card a colour and a background emoji with the palette button on it. Notes, lists, books and health logs look the same for everyone you share them with, and the look is encrypted with the rest when you use encryption.',
+          id: 'Beri kartu warna dan emoji latar lewat tombol palet di kartunya. Catatan, daftar, buku, dan catatan kesehatan tampil sama bagi semua orang yang kamu bagikan, dan tampilannya ikut dienkripsi bila kamu memakai enkripsi.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'A health log’s card now shows when you are in your fertile window or ovulating, as the overview does, not only when your next period is due.',

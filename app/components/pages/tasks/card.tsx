@@ -10,9 +10,12 @@ import {
   CardTitle,
   CardContent,
 } from '~/components/base/card'
+import { CardStyleLayer } from '~/components/base/card-style'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
+import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
+import { toCardStyle } from '~/lib/utils/card-style'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -23,6 +26,8 @@ export const Card = (properties: TCardProperties) => {
   const { task, className } = properties
   const { t, i18n } = useTranslation()
   const { mutate: archive } = useUpdateArchive()
+  const { mutate: updateCardStyle } = useUpdateCardStyle()
+  const cardStyle = toCardStyle(task.cardStyle)
   const { handleDeleteTask, handlePinTask, handleShareTask, handleUnlinkTask } =
     useTask()
   const { data: userData } = useUserData()
@@ -51,9 +56,10 @@ export const Card = (properties: TCardProperties) => {
     <UICard
       className={cn(
         className,
-        'group/card relative mb-4 w-full overflow-hidden pb-9 focus-within:ring-2 focus-within:ring-ring sm:w-80 sm:pb-0',
+        'group/card relative isolate mb-4 w-full overflow-hidden pb-9 focus-within:ring-2 focus-within:ring-ring sm:w-80 sm:pb-0',
       )}
     >
+      <CardStyleLayer cardStyle={cardStyle} />
       <Action
         className="absolute right-1 bottom-1 left-1 z-20"
         isOwner={isOwner}
@@ -66,6 +72,8 @@ export const Card = (properties: TCardProperties) => {
         handleShare={() => handleShareTask({ task })}
         handleUnlink={() => handleUnlinkTask({ task })}
         sharedCount={sharedCount}
+        cardStyle={cardStyle}
+        handleCardStyle={(next) => updateCardStyle('tasks', task.id, next)}
       />
       <CardHeader className="pb-4">
         <CardDescription className="flex justify-between text-xs">

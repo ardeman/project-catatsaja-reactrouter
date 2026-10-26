@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { noteHelperSchema, noteSchema } from '~/lib/validations/note'
 
 import {
+  TCardStyle,
   TAccessLists,
   THandleSetPermission,
   TPermissions,
@@ -22,6 +23,7 @@ export type TNoteResponse = {
   isPinned?: boolean
   // Stored end-to-end encrypted (set when read, never saved).
   isEncrypted?: boolean
+  cardStyle?: TCardStyle
   pinnedBy?: string[]
   // Archived by the person (their own list only).
   isArchived?: boolean

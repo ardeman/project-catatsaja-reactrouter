@@ -1120,7 +1120,8 @@
     "undo": "Undo",
     "redo": "Redo",
     "archive": "Archive",
-    "unarchive": "Move back from archive"
+    "unarchive": "Move back from archive",
+    "cardStyle": "Colour and emoji"
   },
   "collection": {
     "pinned": "Pinned",
@@ -1805,6 +1806,23 @@
       "more_other": "and {{count}} more releases",
       "open": "See what’s new",
       "dismiss": "Dismiss"
+    }
+  },
+  "cardStyle": {
+    "title": "Card look",
+    "color": "Colour",
+    "emoji": "Background emoji",
+    "none": "None",
+    "colors": {
+      "red": "Red",
+      "orange": "Orange",
+      "yellow": "Yellow",
+      "green": "Green",
+      "teal": "Teal",
+      "blue": "Blue",
+      "purple": "Purple",
+      "pink": "Pink",
+      "gray": "Grey"
     }
   }
 }

@@ -2,6 +2,7 @@ import { LucideIcon } from 'lucide-react'
 import { HTMLAttributes, ReactNode } from 'react'
 import { z } from 'zod'
 
+import { cardColors, cardEmojis } from '~/lib/constants/card-style'
 import { TUserResponse } from '~/lib/types/user'
 import { shareSchema } from '~/lib/validations/common'
 
@@ -88,6 +89,10 @@ export type TActionProperties = {
   isFormatting?: boolean
   // More buttons (such as a menu), drawn with the bar's button style.
   extra?: (buttonClassName: string) => ReactNode
+  // The card's colour and emoji; with `handleCardStyle`, shows the picker
+  // to people who can edit.
+  cardStyle?: TCardStyle
+  handleCardStyle?: (cardStyle: TCardStyle) => void
 }
 
 export type TMenu = {
@@ -112,3 +117,11 @@ export type TLiveSubscription<T> = (
   onData: (data: T) => void,
   onError: (error: unknown) => void,
 ) => () => void
+
+// A card's colour and background emoji, chosen by the owner or a writer and
+// seen by everyone the item is shared with (stored with the content, so
+// encrypted on an encrypted item).
+export type TCardStyle = {
+  color?: (typeof cardColors)[number]
+  emoji?: (typeof cardEmojis)[number]
+}

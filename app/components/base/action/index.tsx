@@ -17,6 +17,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
+import { CardStylePicker } from '~/components/base/card-style'
 import { TActionProperties } from '~/lib/types/common'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -53,6 +54,8 @@ export const Action = (properties: TActionProperties) => {
     handleToggleFormat,
     isFormatting = false,
     extra,
+    cardStyle,
+    handleCardStyle,
   } = properties
   const { t } = useTranslation()
   const buttonClassName = cn(actionButtonClassName, buttonClassNameProperty)
@@ -227,6 +230,13 @@ export const Action = (properties: TActionProperties) => {
       )}
       {extra && (
         <div className="flex flex-1 items-center">{extra(buttonClassName)}</div>
+      )}
+      {isEditable && handleCardStyle && (
+        <CardStylePicker
+          cardStyle={cardStyle}
+          onChange={handleCardStyle}
+          buttonClassName={buttonClassName}
+        />
       )}
       {handleDuplicate && (
         <Button

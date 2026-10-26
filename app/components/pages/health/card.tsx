@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/base/card'
+import { CardStyleLayer } from '~/components/base/card-style'
 import { HealthStatus } from '~/components/base/health-status'
 import { SexIcon } from '~/components/base/sex-icon'
 import { auth } from '~/lib/configs/firebase'
@@ -21,6 +22,8 @@ import {
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
+import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
+import { toCardStyle } from '~/lib/utils/card-style'
 import { cycleSummary } from '~/lib/utils/cycle-summary'
 import { today } from '~/lib/utils/finance'
 import {
@@ -45,6 +48,8 @@ export const Card = (properties: TCardProperties) => {
   const { healthLog, className } = properties
   const { t, i18n } = useTranslation()
   const { mutate: archive } = useUpdateArchive()
+  const { mutate: updateCardStyle } = useUpdateCardStyle()
+  const cardStyle = toCardStyle(healthLog.cardStyle)
   const {
     handleDeleteHealthLog,
     handlePinHealthLog,
@@ -137,9 +142,10 @@ export const Card = (properties: TCardProperties) => {
     <UICard
       className={cn(
         className,
-        'group/card relative mb-4 w-full overflow-hidden pb-9 focus-within:ring-2 focus-within:ring-ring sm:w-80 sm:pb-0',
+        'group/card relative isolate mb-4 w-full overflow-hidden pb-9 focus-within:ring-2 focus-within:ring-ring sm:w-80 sm:pb-0',
       )}
     >
+      <CardStyleLayer cardStyle={cardStyle} />
       <Action
         className="absolute right-1 bottom-1 left-1 z-20"
         isOwner={isOwner}
@@ -154,6 +160,10 @@ export const Card = (properties: TCardProperties) => {
         handleShare={() => handleShareHealthLog({ healthLog })}
         handleUnlink={() => handleUnlinkHealthLog({ healthLog })}
         sharedCount={sharedCount}
+        cardStyle={cardStyle}
+        handleCardStyle={(next) =>
+          updateCardStyle('healthLogs', healthLog.id, next)
+        }
       />
       <CardHeader className="pb-3">
         <CardDescription className="flex justify-between text-xs">

@@ -10,12 +10,15 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/base/card'
+import { CardStyleLayer } from '~/components/base/card-style'
 import { CategoryBar } from '~/components/base/category-bar'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
+import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
+import { toCardStyle } from '~/lib/utils/card-style'
 import { entryBookTotal } from '~/lib/utils/finance'
 import { summaryOf } from '~/lib/utils/finance-analysis'
 import { getDateLabel } from '~/lib/utils/parser'
@@ -28,6 +31,8 @@ export const Card = (properties: TCardProperties) => {
   const { finance, className } = properties
   const { t, i18n } = useTranslation()
   const { mutate: archive } = useUpdateArchive()
+  const { mutate: updateCardStyle } = useUpdateCardStyle()
+  const cardStyle = toCardStyle(finance.cardStyle)
   const {
     handleDeleteFinance,
     handlePinFinance,
@@ -62,9 +67,10 @@ export const Card = (properties: TCardProperties) => {
     <UICard
       className={cn(
         className,
-        'group/card relative mb-4 w-full overflow-hidden pb-9 focus-within:ring-2 focus-within:ring-ring sm:w-80 sm:pb-0',
+        'group/card relative isolate mb-4 w-full overflow-hidden pb-9 focus-within:ring-2 focus-within:ring-ring sm:w-80 sm:pb-0',
       )}
     >
+      <CardStyleLayer cardStyle={cardStyle} />
       <Action
         className="absolute right-1 bottom-1 left-1 z-20"
         isOwner={isOwner}
@@ -80,6 +86,10 @@ export const Card = (properties: TCardProperties) => {
         handleUnlink={() => handleUnlinkFinance({ finance })}
         handleDuplicate={() => handleDuplicateFinance({ finance })}
         sharedCount={sharedCount}
+        cardStyle={cardStyle}
+        handleCardStyle={(next) =>
+          updateCardStyle('finances', finance.id, next)
+        }
       />
       <CardHeader className="pb-3">
         <CardDescription className="flex justify-between text-xs">
