@@ -131,8 +131,18 @@ jobs:
       # The end-to-end tests drive Google Chrome; Playwright installs it and
       # the system libraries it needs on whatever Ubuntu the runner has
       # (--force: the runner image may already have a Chrome of its own).
+      # It usually takes half a minute, but Ubuntu's Azure mirror sometimes
+      # stalls and apt waits two minutes per request, so apt gives up after
+      # 15 seconds and tries again, and a failed install starts over.
       - name: Install Chrome
-        run: pnpm exec playwright install --with-deps --force chrome
+        timeout-minutes: 10
+        run: |
+          printf 'Acquire::http::Timeout "15";\nAcquire::https::Timeout "15";\nAcquire::Retries "3";\n' | sudo tee /etc/apt/apt.conf.d/99-ci-timeouts > /dev/null
+          for attempt in 1 2 3; do
+            pnpm exec playwright install --with-deps --force chrome && exit 0
+            echo "::warning::Installing Chrome failed on attempt $attempt"
+          done
+          exit 1
       # A failed suite runs once more, on fresh emulators, before it fails:
       # browser timing on a busy runner shouldn't block a deploy.
       - name: End-to-end tests
