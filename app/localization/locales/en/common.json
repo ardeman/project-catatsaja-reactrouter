@@ -621,6 +621,26 @@
       "check": "Gemini can misread. Check the amounts, dates and categories; you can change each entry after adding it.",
       "checkDate": "check the date",
       "edit": "Edit text"
+    },
+    "filter": {
+      "label": "Filter",
+      "clear": "Clear",
+      "allTypes": "All",
+      "allCategories": "All categories",
+      "from": "From",
+      "to": "To",
+      "shown_one": "{{count}} of {{total}} entries",
+      "shown_other": "{{count}} of {{total}} entries",
+      "empty": "No entries match these filters.",
+      "period": {
+        "label": "Period",
+        "all": "Any time",
+        "thisMonth": "This month",
+        "lastMonth": "Last month",
+        "last3Months": "Last 3 months",
+        "thisYear": "This year",
+        "custom": "Custom dates"
+      }
     }
   },
   "about": {

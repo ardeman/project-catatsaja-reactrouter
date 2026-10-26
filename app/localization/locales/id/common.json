@@ -621,6 +621,26 @@
       "check": "Gemini bisa salah baca. Periksa jumlah, tanggal, dan kategorinya; setiap entri bisa diubah setelah ditambahkan.",
       "checkDate": "periksa tanggalnya",
       "edit": "Ubah teks"
+    },
+    "filter": {
+      "label": "Filter",
+      "clear": "Hapus",
+      "allTypes": "Semua",
+      "allCategories": "Semua kategori",
+      "from": "Dari",
+      "to": "Sampai",
+      "shown_one": "{{count}} dari {{total}} entri",
+      "shown_other": "{{count}} dari {{total}} entri",
+      "empty": "Tidak ada entri yang cocok dengan filter ini.",
+      "period": {
+        "label": "Periode",
+        "all": "Kapan saja",
+        "thisMonth": "Bulan ini",
+        "lastMonth": "Bulan lalu",
+        "last3Months": "3 bulan terakhir",
+        "thisYear": "Tahun ini",
+        "custom": "Pilih tanggal"
+      }
     }
   },
   "about": {

@@ -55,6 +55,11 @@ import {
 import { toCardStyle } from '~/lib/utils/card-style'
 import { readDraft } from '~/lib/utils/drafts'
 import {
+  emptyEntryFilter,
+  filterEntries,
+  TEntryFilter,
+} from '~/lib/utils/entry-filter'
+import {
   entryBookTotal,
   entryTotal,
   groupByDate,
@@ -74,6 +79,7 @@ import { cn } from '~/lib/utils/shadcn'
 import { Accounts } from './accounts'
 import { AddCurrency } from './add-currency'
 import { Analysis } from './analysis'
+import { EntryFilter } from './entry-filter'
 import { EntryForm } from './entry-form.client'
 import { QuickAdd } from './quick-add.client'
 import { Summary } from './summary'
@@ -243,7 +249,16 @@ export const Form = (properties: TFormProperties) => {
     () => summarize(entries),
     [entries],
   )
-  const groupedEntries = useMemo(() => groupByDate(entries), [entries])
+  // Kept while switching to Analysis and back, cleared when leaving the book.
+  const [filter, setFilter] = useState<TEntryFilter>(emptyEntryFilter)
+  const shownEntries = useMemo(
+    () => filterEntries(entries, filter),
+    [entries, filter],
+  )
+  const groupedEntries = useMemo(
+    () => groupByDate(shownEntries),
+    [shownEntries],
+  )
   // Rebuild suggestions only when entries change, not while editing a title
   // or moving between dialogs.
   const history = useMemo(
@@ -689,9 +704,23 @@ export const Form = (properties: TFormProperties) => {
                 </div>
               ))}
 
-            {entries.length === 0 ? (
+            {entries.length > 0 && (
+              <EntryFilter
+                filter={filter}
+                setFilter={setFilter}
+                entries={entries}
+                shown={shownEntries}
+                book={book}
+              />
+            )}
+
+            {shownEntries.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
-                {t('finances.entry.empty')}
+                {t(
+                  entries.length === 0
+                    ? 'finances.entry.empty'
+                    : 'finances.filter.empty',
+                )}
               </p>
             ) : (
               groupedEntries.map(([date, dayEntries]) => (

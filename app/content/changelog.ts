@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Filter a book’s entries by type, category and period (this month, last month, the last 3 months, this year or dates you choose), with the income and expenses of what is shown.',
+          id: 'Saring entri buku menurut jenis, kategori, dan periode (bulan ini, bulan lalu, 3 bulan terakhir, tahun ini, atau tanggal pilihanmu), lengkap dengan pemasukan dan pengeluaran dari yang ditampilkan.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Give a card a colour and a background emoji with the palette button on it or on its page, which takes on the same look. Notes, lists, books and health logs look the same for everyone you share them with, and the look is encrypted with the rest when you use encryption.',
           id: 'Beri kartu warna dan emoji latar lewat tombol palet di kartu atau halamannya, yang ikut berganti tampilan. Catatan, daftar, buku, dan catatan kesehatan tampil sama bagi semua orang yang kamu bagikan, dan tampilannya ikut dienkripsi bila kamu memakai enkripsi.',
         },
