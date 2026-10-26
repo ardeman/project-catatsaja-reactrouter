@@ -2,6 +2,7 @@ import { LucideIcon, RefreshCw, Wrench } from 'lucide-react'
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { LanguageSelector } from '~/components/base/language-selector'
 import { Logo } from '~/components/base/logo'
 import { Button } from '~/components/ui/button'
 import { appVersion } from '~/lib/constants/app-version'
@@ -18,7 +19,10 @@ const Screen = ({
     role="status"
     className="flex flex-1 items-center justify-center p-4 md:p-8"
   >
-    <section className="glass-surface grid w-full max-w-md justify-items-center gap-3 rounded-2xl border p-6 text-center">
+    <section className="glass-surface relative grid w-full max-w-md justify-items-center gap-3 rounded-2xl border p-6 text-center">
+      <div className="absolute top-3 right-3">
+        <LanguageSelector />
+      </div>
       <span className="relative">
         <Logo className="size-14 rounded-2xl" />
         <span className="absolute -right-2 -bottom-2 flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow">

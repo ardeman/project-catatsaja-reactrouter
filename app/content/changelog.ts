@@ -34,6 +34,13 @@ export const releases: TRelease[] = [
           id: 'Pengingat dan Obat kini lebih ringkas: penjelasannya pindah ke tombol ⓘ di samping judulnya.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The language button now sits beside the page title on the sign-in and public pages, and appears only once.',
+          id: 'Tombol bahasa kini ada di samping judul halaman pada halaman masuk dan halaman publik, dan hanya muncul sekali.',
+        },
+      },
     ],
   },
   {

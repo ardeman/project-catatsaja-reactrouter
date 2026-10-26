@@ -15,18 +15,18 @@ export const AuthHeader = (properties: TProperties) => {
   const { title, description, showSize = true } = properties
   return (
     <CardHeader>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="grid min-w-0 gap-1.5">
-          <h1 className="text-2xl leading-tight font-semibold tracking-tight">
+      <div className="grid gap-1.5">
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="min-w-0 text-2xl leading-tight font-semibold tracking-tight">
             {title}
           </h1>
-          <CardDescription>{description}</CardDescription>
+          <div className="flex shrink-0 gap-2 [&_button]:size-11 [&_button]:min-w-[44px]">
+            <LanguageSelector />
+            <ModeToggle />
+            {showSize && <SizeToggle />}
+          </div>
         </div>
-        <div className="order-first flex shrink-0 justify-end gap-2 sm:order-none [&_button]:size-11 [&_button]:min-w-[44px]">
-          <LanguageSelector />
-          <ModeToggle />
-          {showSize && <SizeToggle />}
-        </div>
+        <CardDescription>{description}</CardDescription>
       </div>
     </CardHeader>
   )
