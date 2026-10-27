@@ -196,18 +196,18 @@ export const spendingChange = (periods: TPeriod[]) => {
   return (current - previous) / previous
 }
 
-// The largest value a chart's scale is drawn to: the largest, unless one or
-// two values dwarf the rest (over three times the next), which are then drawn
-// cut off so the others stay readable (a payday among daily spending).
+// The largest value a chart's scale is drawn to: the largest within four
+// times a typical value (the upper quartile), so a payday or a big purchase
+// doesn't flatten daily spending. Those above are drawn cut off, but never
+// more than an eighth of the values, or the chart would be mostly cut marks.
 export const scaleLimit = (values: number[]) => {
-  const sorted = values.filter((value) => value > 0).toSorted((a, b) => b - a)
-  let limit = sorted[0] ?? 0
-  for (let index = 0; index < 2; index++) {
-    const next = sorted[index + 1]
-    if (!next || sorted[index] <= 3 * next) break
-    limit = next
-  }
-  return limit
+  const sorted = values.filter((value) => value > 0).toSorted((a, b) => a - b)
+  const last = sorted.length - 1
+  if (last < 0) return 0
+  const typical = sorted[Math.floor(last * 0.75)]
+  const fits = sorted.findLast((value) => value <= 4 * typical) ?? typical
+  const cutAtMost = Math.min(last, Math.max(1, Math.floor(sorted.length / 8)))
+  return Math.max(fits, sorted[last - cutAtMost])
 }
 
 // Round axis ticks (1, 2 or 5 × a power of ten) covering min..max, always

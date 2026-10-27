@@ -107,9 +107,14 @@ export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
 
   // A day far above the rest (a salary) would flatten every other column:
   // the scale follows the others and it is drawn cut off, with its value.
+  // One limit for both sides, so income and expenses share a scale and a
+  // column is cut off only when it dwarfs the other side too.
+  const incomes = periods.map((period) => period.income)
+  const expenses = periods.map((period) => period.expense)
+  const limit = scaleLimit([...incomes, ...expenses])
   const ticks = niceTicks(
-    -scaleLimit(periods.map((period) => period.expense)),
-    scaleLimit(periods.map((period) => period.income)),
+    -Math.min(Math.max(0, ...expenses), limit),
+    Math.min(Math.max(0, ...incomes), limit),
   )
   const top = ticks.at(-1) ?? 0
   const bottom = ticks[0] ?? 0
