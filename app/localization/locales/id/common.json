@@ -565,6 +565,31 @@
         "title": "Per kategori",
         "rest": "Kategori lainnya"
       },
+      "groups": {
+        "title": "Grupmu",
+        "plus": "Fitur Catat Saja Plus.",
+        "hint": "Gabungkan kategori, misalnya Kebutuhan = makan + tagihan, untuk melihat jumlah tiap grup.",
+        "edit": "Ubah grup",
+        "create": "Buat grup",
+        "editHint": "Tiap kategori bisa masuk satu grup. Perubahan tersimpan bersama buku.",
+        "names": "Grup",
+        "name": {
+          "label": "Nama grup",
+          "placeholder": "Kebutuhan, keinginan…"
+        },
+        "add": "Tambah grup",
+        "remove": "Hapus grup",
+        "categories": {
+          "expense": "Kategori pengeluaran",
+          "income": "Kategori pemasukan"
+        },
+        "groupOf": "Grup untuk {{category}}",
+        "none": "Tanpa grup",
+        "untitled": "Grup tanpa nama",
+        "ungrouped": "Tanpa grup",
+        "emptyRange": "Tidak ada isi grupmu di rentang ini.",
+        "plusToEdit": "Mengubah grup perlu Catat Saja Plus."
+      },
       "compare": {
         "title": "Perbandingan",
         "subtitle": "{{current}} dibanding {{previous}}",
@@ -1868,5 +1893,8 @@
       "pink": "Merah muda",
       "gray": "Abu-abu"
     }
+  },
+  "plus": {
+    "soon": "Plus · segera hadir"
   }
 }

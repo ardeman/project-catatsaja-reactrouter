@@ -24,7 +24,14 @@ import {
 export const contentFields = {
   notes: ['title', 'content', 'cardStyle'],
   tasks: ['title', 'content', 'cardStyle'],
-  finances: ['title', 'currency', 'accounts', 'summary', 'cardStyle'],
+  finances: [
+    'title',
+    'currency',
+    'accounts',
+    'categoryGroups',
+    'summary',
+    'cardStyle',
+  ],
   healthLogs: [
     'name',
     'birthDate',

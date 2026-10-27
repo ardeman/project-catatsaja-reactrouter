@@ -44,4 +44,8 @@ export type TUserResponse = {
   seenRelease?: string
   bmiStandard?: TBmiStandard
   labUnits?: TLabUnits
+  // Catat Saja Plus and when it ends: written only by a server (a payment)
+  // or by hand in the Firebase console, never by the app.
+  plan?: 'plus'
+  planEndsAt?: TTime
 }

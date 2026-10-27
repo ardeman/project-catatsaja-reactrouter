@@ -565,6 +565,31 @@
         "title": "By category",
         "rest": "Other categories"
       },
+      "groups": {
+        "title": "Your groups",
+        "plus": "A Catat Saja Plus feature.",
+        "hint": "Put categories together, such as Needs = food + bills, to see what each group adds up to.",
+        "edit": "Edit groups",
+        "create": "Make groups",
+        "editHint": "Each category can be in one group. Changes save with the book.",
+        "names": "Groups",
+        "name": {
+          "label": "Group name",
+          "placeholder": "Needs, wants…"
+        },
+        "add": "Add group",
+        "remove": "Remove group",
+        "categories": {
+          "expense": "Expense categories",
+          "income": "Income categories"
+        },
+        "groupOf": "Group for {{category}}",
+        "none": "No group",
+        "untitled": "Untitled group",
+        "ungrouped": "Not grouped",
+        "emptyRange": "Nothing in your groups in this range.",
+        "plusToEdit": "Changing groups needs Catat Saja Plus."
+      },
       "compare": {
         "title": "Comparison",
         "subtitle": "{{current}} against {{previous}}",
@@ -1868,5 +1893,8 @@
       "pink": "Pink",
       "gray": "Grey"
     }
+  },
+  "plus": {
+    "soon": "Plus · coming soon"
   }
 }

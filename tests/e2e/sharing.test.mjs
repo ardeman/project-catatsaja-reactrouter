@@ -13,6 +13,7 @@ import {
   dbGetWhen,
   dbList,
   dbListWhen,
+  dbPatch,
   filePushKey,
   launch,
   newDevice,
@@ -482,5 +483,93 @@ describe('sharing and finance storage', () => {
     await opensWith(lina.page, bookId, 'Mira dinner')
     await lina.context.close()
     await mira.context.close()
+  })
+
+  test("a book's own groups of categories are Plus, encrypted and shared", async () => {
+    const openAnalysis = async (page, id) => {
+      await page.goto(`${APP}/finances/${id}`)
+      await page
+        .getByRole('button', { name: 'Analysis', exact: true })
+        .click({ timeout: 30_000 })
+    }
+    const groups = (page) =>
+      page.locator('section').filter({ hasText: 'Your groups' })
+
+    const rani = await newDevice(browser)
+    await signUp(rani.page, 'Rani', 'rani@example.com')
+    await rani.page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+    await setUpEncryption(rani.page, 'rani passphrase 1')
+    await rani.page.goto(`${APP}/finances/create`)
+    await rani.page.locator('textarea[name=title]').fill('Rani book')
+    await rani.page.getByRole('button', { name: 'Save' }).click()
+    await rani.page.waitForURL(/\/finances\/(?!create)/, { timeout: 30_000 })
+    const bookId = new URL(rani.page.url()).pathname.split('/').pop()
+    await rani.page.getByRole('button', { name: 'Add entry' }).click()
+    await rani.page.locator('input[name=description]').fill('Rani lunch')
+    await rani.page.locator('#finance-entry-amount').fill('50000')
+    await rani.page.getByRole('combobox', { name: 'Category' }).click()
+    await rani.page.getByRole('option', { name: 'Food & drinks' }).click()
+    await rani.page
+      .locator('form')
+      .getByRole('button', { name: 'Save' })
+      .last()
+      .click()
+    await rani.page.waitForTimeout(3000)
+
+    // Without Plus: told what it adds, and nothing to change.
+    await openAnalysis(rani.page, bookId)
+    await groups(rani.page)
+      .getByText('Plus · coming soon')
+      .waitFor({ timeout: 15_000 })
+    assert.equal(
+      await rani.page.getByRole('button', { name: 'Make groups' }).count(),
+      0,
+    )
+
+    // Plus, given by hand as the console would: groups can be made, and are
+    // sealed with the book.
+    const raniUid = await uidOf('rani@example.com')
+    await dbPatch(`users/${raniUid}`, {
+      plan: { stringValue: 'plus' },
+      planEndsAt: { timestampValue: '2099-01-01T00:00:00Z' },
+    })
+    const sealed = (await dbGet(`finances/${bookId}`)).encrypted.mapValue.fields
+      .ct.stringValue
+    await openAnalysis(rani.page, bookId)
+    await rani.page.getByRole('button', { name: 'Make groups' }).click()
+    const editor = rani.page.getByRole('dialog')
+    await editor.getByRole('button', { name: 'Add group' }).click()
+    await editor.getByLabel('Group name').fill('Needs')
+    await editor
+      .getByRole('combobox', { name: 'Group for Food & drinks' })
+      .click()
+    await rani.page.getByRole('option', { name: 'Needs' }).click()
+    await rani.page.keyboard.press('Escape')
+    const book = await dbGetWhen(
+      `finances/${bookId}`,
+      (fields) => fields?.encrypted.mapValue.fields.ct.stringValue !== sealed,
+    )
+    assert.ok(!book.categoryGroups, 'no readable groups')
+    assert.ok(!JSON.stringify(book).includes('Needs'), 'encrypted')
+    await openAnalysis(rani.page, bookId)
+    await groups(rani.page).getByText('Needs').waitFor({ timeout: 15_000 })
+
+    // Someone it is shared with to read sees the groups, and can't change
+    // them.
+    const sari = await newDevice(browser)
+    await signUp(sari.page, 'Sari', 'sari@example.com')
+    await sari.page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+    await setUpEncryption(sari.page, 'sari passphrase 1')
+    await shareWith(rani.page, 'sari@example.com', 'Read only')
+    await rani.page.keyboard.press('Escape')
+    await acceptInvitation(sari.page, 'Rani book', 'finances')
+    await openAnalysis(sari.page, bookId)
+    await groups(sari.page).getByText('Needs').waitFor({ timeout: 30_000 })
+    assert.equal(
+      await sari.page.getByRole('button', { name: 'Edit groups' }).count(),
+      0,
+    )
+    await rani.context.close()
+    await sari.context.close()
   })
 })

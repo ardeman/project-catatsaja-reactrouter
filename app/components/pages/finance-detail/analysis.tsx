@@ -1,7 +1,6 @@
 import { BanknoteArrowDown, BanknoteArrowUp } from 'lucide-react'
 import {
   Dispatch,
-  ReactNode,
   SetStateAction,
   useCallback,
   useId,
@@ -52,9 +51,11 @@ import { similarItems } from '~/lib/utils/similar-items'
 import { BalanceChart } from './balance-chart'
 import { CashFlowChart } from './cash-flow-chart'
 import { CategoryBreakdown } from './category-breakdown'
+import { CategoryGroups } from './category-groups'
 import { CustomDates } from './entry-filter'
 import { ItemBreakdown } from './item-breakdown'
 import { PeriodComparison } from './period-comparison'
+import { Section } from './section'
 import { TAnalysisOptions } from './type'
 
 type TProperties = {
@@ -62,6 +63,7 @@ type TProperties = {
   book: TFinanceCurrency
   options: TAnalysisOptions
   setOptions: Dispatch<SetStateAction<TAnalysisOptions>>
+  isReadOnly: boolean
 }
 
 const timeGroupings = ['day', 'week', 'month'] as const
@@ -114,33 +116,6 @@ const Picker = <T extends string>({
   )
 }
 
-const Section = ({
-  title,
-  subtitle,
-  action,
-  children,
-}: {
-  title: string
-  subtitle?: string
-  action?: ReactNode
-  children: ReactNode
-}) => (
-  <section className="glass-surface motion-enter grid grid-cols-1 gap-3 rounded-xl border p-4">
-    <div className="flex flex-wrap items-start justify-between gap-2">
-      {/* Takes the free width and wraps, so a long subtitle can't widen the
-          page on a phone. */}
-      <div className="grid min-w-0 flex-1 basis-48 gap-0.5">
-        <h2 className="text-sm font-medium">{title}</h2>
-        {subtitle && (
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
-        )}
-      </div>
-      {action}
-    </div>
-    {children}
-  </section>
-)
-
 const Tile = ({
   label,
   value,
@@ -183,6 +158,7 @@ export const Analysis = ({
   book,
   options,
   setOptions,
+  isReadOnly,
 }: TProperties) => {
   const { t, i18n } = useTranslation()
   const { range } = options
@@ -624,7 +600,16 @@ export const Analysis = ({
         </Section>
       )}
 
-      {/* Both breakdowns follow the type chosen above them. */}
+      {groupBy !== 'item' && (
+        <CategoryGroups
+          entries={analysis.shown}
+          type={shownType}
+          book={book}
+          isReadOnly={isReadOnly}
+        />
+      )}
+
+      {/* The breakdowns follow the type chosen above them. */}
       {items.length === 0 && groupBy === 'item' && (
         <p className="py-6 text-center text-sm text-muted-foreground">
           {t('finances.analysis.items.none')}

@@ -83,6 +83,13 @@ export const releases: TRelease[] = [
           id: 'Tombol bahasa kini ada di samping judul halaman pada halaman masuk dan halaman publik, dan hanya muncul sekali.',
         },
       },
+      {
+        kind: 'new',
+        text: {
+          en: 'Coming with Catat Saja Plus: your own groups of categories in a book’s Analysis, such as Needs = food + bills, with what each group adds up to and its share. Everyone the book is shared with sees them.',
+          id: 'Segera hadir bersama Catat Saja Plus: grup kategori buatanmu sendiri di Analisis buku, misalnya Kebutuhan = makan + tagihan, lengkap dengan jumlah dan porsi tiap grup. Semua orang yang diberi akses ke buku itu bisa melihatnya.',
+        },
+      },
     ],
   },
   {

@@ -53,6 +53,7 @@ import {
   TFinanceForm,
 } from '~/lib/types/finance'
 import { toCardStyle } from '~/lib/utils/card-style'
+import { normalizeGroups } from '~/lib/utils/category-groups'
 import { readDraft } from '~/lib/utils/drafts'
 import {
   emptyEntryFilter,
@@ -161,14 +162,19 @@ export const Form = (properties: TFormProperties) => {
     currency: selectedFinance?.currency ?? initialCurrency,
     content: selectedFinance?.content || [],
     accounts: selectedFinance?.accounts || [],
+    categoryGroups: selectedFinance?.categoryGroups || [],
   }
   const formMethods = useForm<TFinanceForm>({ defaultValues: stored })
-  // Entries and accounts merge one by one, so entries added or deleted on
-  // two devices at once are all kept.
+  // Entries, accounts and groups merge one by one, so those added or
+  // deleted on two devices at once are all kept.
   useStoredValues({
     form: formMethods,
     stored,
-    merge: { content: mergeById, accounts: mergeById },
+    merge: {
+      content: mergeById,
+      accounts: mergeById,
+      categoryGroups: mergeById,
+    },
   })
   const {
     watch,
@@ -181,6 +187,7 @@ export const Form = (properties: TFormProperties) => {
   const book = watch('currency')
   const entries = watch('content')
   const accounts = watch('accounts')
+  const categoryGroups = watch('categoryGroups')
   const isCurrencyLocked = !isReadOnly && entries.length > 0
   // Read-only people see accounts only when there are some.
   const hasAccounts = !isReadOnly || (accounts ?? []).length > 0
@@ -293,7 +300,11 @@ export const Form = (properties: TFormProperties) => {
   const save = async () => {
     if (isReadOnly) return
     const values = getValues()
-    const data = { ...values, accounts: normalizeAccounts(values.accounts) }
+    const data = {
+      ...values,
+      accounts: normalizeAccounts(values.accounts),
+      categoryGroups: normalizeGroups(values.categoryGroups),
+    }
     if (selectedFinance) {
       const changes: Partial<TFinanceForm> = {}
       if (data.title !== (selectedFinance.title || ''))
@@ -304,6 +315,10 @@ export const Form = (properties: TFormProperties) => {
         changes.content = data.content
       if (!isSameJson(data.accounts, selectedFinance.accounts || []))
         changes.accounts = data.accounts
+      if (
+        !isSameJson(data.categoryGroups, selectedFinance.categoryGroups || [])
+      )
+        changes.categoryGroups = data.categoryGroups
       if (Object.keys(changes).length === 0) return
       setSaveStatus('saving')
       const isSaved = await mutateUpdateFinance({
@@ -346,15 +361,22 @@ export const Form = (properties: TFormProperties) => {
       JSON.stringify(book),
       JSON.stringify(entries),
       JSON.stringify(accounts),
+      JSON.stringify(categoryGroups),
     ],
     saveWhenIdle: !!selectedFinance,
   })
 
-  // Undo and redo over the whole book (title, currency, entries, accounts),
-  // in steps (a pause in changes, or each entry saved).
+  // Undo and redo over the whole book (title, currency, entries, accounts,
+  // groups), in steps (a pause in changes, or each entry saved).
   const current = useMemo(
-    () => ({ title: watchTitle, currency: book, content: entries, accounts }),
-    [watchTitle, book, entries, accounts],
+    () => ({
+      title: watchTitle,
+      currency: book,
+      content: entries,
+      accounts,
+      categoryGroups,
+    }),
+    [watchTitle, book, entries, accounts, categoryGroups],
   )
   const undoHistory = useUndoHistory({
     key: selectedFinance?.id ?? 'create',
@@ -365,7 +387,13 @@ export const Form = (properties: TFormProperties) => {
     if (!next) return
     setEditing(undefined)
     setIsEntryOpen(false)
-    for (const field of ['title', 'currency', 'content', 'accounts'] as const)
+    for (const field of [
+      'title',
+      'currency',
+      'content',
+      'accounts',
+      'categoryGroups',
+    ] as const)
       setValue(field, next[field], { shouldDirty: true })
   }
   const historyActions = isReadOnly
@@ -669,6 +697,7 @@ export const Form = (properties: TFormProperties) => {
             book={book}
             options={analysisOptions}
             setOptions={setAnalysisOptions}
+            isReadOnly={isReadOnly}
           />
         ) : (
           <>

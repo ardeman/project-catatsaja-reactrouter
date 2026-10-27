@@ -85,6 +85,40 @@ describe('users', () => {
     )
   })
 
+  test('nobody gives themselves Plus or changes when it ends', async () => {
+    const plan = { plan: 'plus', planEndsAt: new Date('2099-01-01') }
+    await assertFails(as(OWNER).doc(`users/${OWNER}`).update(plan))
+    await assertFails(
+      as(UNREGISTERED)
+        .doc(`users/${UNREGISTERED}`)
+        .set({ uid: UNREGISTERED, ...plan }),
+    )
+    await assertSucceeds(
+      as(UNREGISTERED).doc(`users/${UNREGISTERED}`).set({ uid: UNREGISTERED }),
+    )
+
+    // Given by the server: the rest of the profile can still change, and
+    // the plan can't be extended or removed.
+    await seed(`users/${OWNER}`, {
+      uid: OWNER,
+      plan: 'plus',
+      planEndsAt: new Date('2026-01-01'),
+    })
+    await assertSucceeds(
+      as(OWNER).doc(`users/${OWNER}`).update({ displayName: 'Me' }),
+    )
+    await assertFails(
+      as(OWNER)
+        .doc(`users/${OWNER}`)
+        .update({ planEndsAt: new Date('2099-01-01') }),
+    )
+    await assertFails(
+      as(OWNER)
+        .doc(`users/${OWNER}`)
+        .update({ plan: firebase.firestore.FieldValue.delete() }),
+    )
+  })
+
   test('the sealed private key is private to its owner', async () => {
     const path = `users/${OWNER}/keys/main`
     await assertSucceeds(as(OWNER).doc(path).set({ v: 1, publicKey: 'pk' }))
@@ -254,6 +288,7 @@ const collections = {
     title: 'A book',
     currency: {},
     accounts: [],
+    categoryGroups: [],
     summary: {},
     cardStyle: {},
   },

@@ -30,11 +30,21 @@ export type TFinanceAccount = {
   balance: number | null
 }
 
-// A book: a title, the currency its totals are in, its entries and the
-// accounts it is checked against (missing on books made before them).
+// The person's own group of categories (such as Needs = food + bills), to
+// see their total and share. A category is in one group at most.
+type TCategoryGroup = {
+  id: string
+  name: string
+  categories: string[]
+}
+
+// A book: a title, the currency its totals are in, its entries, the
+// accounts it is checked against and its groups of categories (missing on
+// books made before them).
 export type TFinanceForm = z.infer<typeof bookSchema> & {
   content: TFinanceEntry[]
   accounts?: TFinanceAccount[]
+  categoryGroups?: TCategoryGroup[]
 }
 
 export type TCreateFinanceRequest = TFinanceForm
