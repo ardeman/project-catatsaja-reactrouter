@@ -38,6 +38,12 @@ export const toValue = (date: Date) =>
     String(date.getDate()).padStart(2, '0'),
   ].join('-')
 
+// A YYYY-MM-DD date as midnight local time.
+export const fromValue = (value: string) => {
+  const [year, month, day] = value.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
 // The first and last day a period covers, as YYYY-MM-DD; empty is open.
 export const periodRange = (
   filter: Pick<TEntryFilter, 'period' | 'from' | 'to'>,
@@ -99,4 +105,63 @@ export const filterEntries = (
       (!from || entry.date >= from) &&
       (!to || entry.date <= to),
   )
+}
+
+// What a range is compared with: the range just before it, or the same
+// dates a year earlier.
+export const comparisons = ['previous', 'lastYear'] as const
+
+export type TComparison = (typeof comparisons)[number]
+
+// Calendar periods move back by whole months, so a month compares with a
+// month.
+const periodMonths: Partial<Record<TEntryPeriod, number>> = {
+  thisMonth: 1,
+  lastMonth: 1,
+  last3Months: 3,
+  thisYear: 12,
+}
+
+const daysInMonth = (year: number, month: number) =>
+  new Date(year, month + 1, 0).getDate()
+
+// The same day `months` earlier, or that month's last day if it is shorter.
+// A month's last day stays its last day (31 March → 28 February).
+const monthsBefore = (date: string, months: number) => {
+  const [year, month, day] = date.split('-').map(Number)
+  const target = month - 1 - months
+  const isLastDay = day === daysInMonth(year, month - 1)
+  const length = daysInMonth(year, target)
+  return toValue(
+    new Date(year, target, isLastDay ? length : Math.min(day, length)),
+  )
+}
+
+const daysBefore = (date: string, days: number) => {
+  const value = fromValue(date)
+  value.setDate(value.getDate() - days)
+  return toValue(value)
+}
+
+// The range compared with `from`–`to` (both YYYY-MM-DD, counted), where `to`
+// is how far the range has got: this month so far compares with the same
+// days of last month. A custom range compares with as many days just before
+// it.
+export const comparedRange = (
+  { from, to }: { from: string; to: string },
+  period: TEntryPeriod,
+  comparison: TComparison,
+) => {
+  const months = comparison === 'lastYear' ? 12 : periodMonths[period]
+  if (months)
+    return { from: monthsBefore(from, months), to: monthsBefore(to, months) }
+  const [fromYear, fromMonth, fromDay] = from.split('-').map(Number)
+  const [toYear, toMonth, toDay] = to.split('-').map(Number)
+  const days =
+    Math.round(
+      (Date.UTC(toYear, toMonth - 1, toDay) -
+        Date.UTC(fromYear, fromMonth - 1, fromDay)) /
+        86_400_000,
+    ) + 1
+  return { from: daysBefore(from, days), to: daysBefore(from, 1) }
 }

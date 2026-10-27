@@ -37,6 +37,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'A book’s Analysis compares the period with the one before it, or with the same dates a year earlier: income, expenses, net and each category, with how much each changed. This month so far is compared with the same days of last month.',
+          id: 'Analisis buku membandingkan periode dengan periode sebelumnya, atau dengan tanggal yang sama setahun sebelumnya: pemasukan, pengeluaran, bersih, dan tiap kategori, lengkap dengan besar perubahannya. Bulan ini sejauh ini dibandingkan dengan hari yang sama di bulan lalu.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Give a card a colour and a background emoji with the palette button on it or on its page, which takes on the same look. Notes, lists, books and health logs look the same for everyone you share them with, and the look is encrypted with the rest when you use encryption.',
           id: 'Beri kartu warna dan emoji latar lewat tombol palet di kartu atau halamannya, yang ikut berganti tampilan. Catatan, daftar, buku, dan catatan kesehatan tampil sama bagi semua orang yang kamu bagikan, dan tampilannya ikut dienkripsi bila kamu memakai enkripsi.',
         },

@@ -565,6 +565,17 @@
         "title": "Per kategori",
         "rest": "Kategori lainnya"
       },
+      "compare": {
+        "title": "Perbandingan",
+        "subtitle": "{{current}} dibanding {{previous}}",
+        "with": "Bandingkan dengan",
+        "previousRange": "Periode sebelumnya",
+        "lastYearRange": "Tahun sebelumnya",
+        "was": "sebelumnya {{amount}}",
+        "same": "tetap",
+        "new": "baru",
+        "empty": "Tidak ada catatan pada periode pembanding."
+      },
       "insights": {
         "savingsRate": "Tingkat tabungan",
         "ofIncome": "dari pemasukan tersisa",

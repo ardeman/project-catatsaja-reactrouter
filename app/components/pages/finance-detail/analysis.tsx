@@ -21,10 +21,14 @@ import {
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceCurrency, TFinanceEntry } from '~/lib/types/finance'
 import {
+  comparedRange,
+  comparisons,
   entryPeriods,
   filterEntries,
+  fromValue,
   periodRange,
   TEntryFilter,
+  TComparison,
   TEntryPeriod,
   toValue,
 } from '~/lib/utils/entry-filter'
@@ -50,6 +54,7 @@ import { CashFlowChart } from './cash-flow-chart'
 import { CategoryBreakdown } from './category-breakdown'
 import { CustomDates } from './entry-filter'
 import { ItemBreakdown } from './item-breakdown'
+import { PeriodComparison } from './period-comparison'
 import { TAnalysisOptions } from './type'
 
 type TProperties = {
@@ -184,6 +189,7 @@ export const Analysis = ({
   const money = useMoney()
   const [view, setView] = useState<'chart' | 'table'>('chart')
   const [type, setType] = useState<TFinanceEntry['type']>('expense')
+  const [comparison, setComparison] = useState<TComparison>('previous')
   // Changes carry their sign (+20%); shares and rates don't.
   const percent = new Intl.NumberFormat(i18n.language, {
     style: 'percent',
@@ -193,6 +199,11 @@ export const Analysis = ({
   const share = new Intl.NumberFormat(i18n.language, {
     style: 'percent',
     maximumFractionDigits: 0,
+  })
+  const dates = new Intl.DateTimeFormat(i18n.language, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
   })
 
   // A new range picks the grouping that suits it again, unless the person
@@ -229,6 +240,10 @@ export const Analysis = ({
       : last
     const days = rangeDays(from, to)
     const groupBy = options.groupBy ?? pickGranularity(days)
+    // Only a range with a start has one to compare with.
+    const compared = chosen.from
+      ? comparedRange({ from, to }, range.period, comparison)
+      : undefined
     return {
       shown,
       groupBy,
@@ -243,6 +258,13 @@ export const Analysis = ({
               })
             : [],
       days,
+      range: { from, to },
+      compared,
+      previous: compared
+        ? entries.filter(
+            (entry) => entry.date >= compared.from && entry.date <= compared.to,
+          )
+        : [],
       totals: summarize(shown),
       expenseCategories: totalsByCategory(shown, 'expense'),
       incomeCategories: totalsByCategory(shown, 'income'),
@@ -250,7 +272,7 @@ export const Analysis = ({
       expenseItems: similarItems(shown, 'expense'),
       incomeItems: similarItems(shown, 'income'),
     }
-  }, [entries, range, options.groupBy])
+  }, [entries, range, options.groupBy, comparison])
 
   if (entries.length === 0)
     return (
@@ -304,7 +326,7 @@ export const Analysis = ({
       </div>
     )
 
-  const { groupBy, periods, days, totals, largest } = analysis
+  const { groupBy, periods, days, totals, largest, compared } = analysis
   // Category and item groupings show their breakdown alone; days of the
   // week have no balance.
   const isOverTime = isTime(groupBy)
@@ -551,6 +573,46 @@ export const Analysis = ({
             onChange={setType}
           />
         </div>
+      )}
+
+      {compared && (
+        <Section
+          title={t('finances.analysis.compare.title')}
+          subtitle={t('finances.analysis.compare.subtitle', {
+            current: dates.formatRange(
+              fromValue(analysis.range.from),
+              fromValue(analysis.range.to),
+            ),
+            previous: dates.formatRange(
+              fromValue(compared.from),
+              fromValue(compared.to),
+            ),
+          })}
+          action={
+            <Segmented
+              label={t('finances.analysis.compare.with')}
+              value={comparison}
+              options={comparisons.map((option) => ({
+                value: option,
+                label: t(`finances.analysis.compare.${option}Range`),
+              }))}
+              onChange={setComparison}
+            />
+          }
+        >
+          {analysis.previous.length > 0 ? (
+            <PeriodComparison
+              current={analysis.shown}
+              previous={analysis.previous}
+              type={shownType}
+              book={book}
+            />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {t('finances.analysis.compare.empty')}
+            </p>
+          )}
+        </Section>
       )}
 
       {categories.length > 0 && groupBy !== 'item' && (

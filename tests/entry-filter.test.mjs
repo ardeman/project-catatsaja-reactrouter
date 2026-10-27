@@ -7,6 +7,7 @@ import { describe, test } from 'node:test'
 
 import {
   activeFilterCount,
+  comparedRange,
   emptyEntryFilter,
   filterEntries,
   periodRange,
@@ -114,6 +115,72 @@ describe('activeFilterCount', () => {
     assert.equal(
       activeFilterCount({ ...emptyEntryFilter, period: 'custom' }),
       0,
+    )
+  })
+})
+
+describe('comparedRange', () => {
+  test('a month with the month before, ending on its last day', () => {
+    assert.deepEqual(
+      comparedRange(
+        { from: '2026-03-01', to: '2026-03-31' },
+        'lastMonth',
+        'previous',
+      ),
+      { from: '2026-02-01', to: '2026-02-28' },
+    )
+  })
+
+  test('this month so far with the same days of last month', () => {
+    assert.deepEqual(
+      comparedRange(
+        { from: '2026-10-01', to: '2026-10-27' },
+        'thisMonth',
+        'previous',
+      ),
+      { from: '2026-09-01', to: '2026-09-27' },
+    )
+    // A day the month before doesn't have becomes its last day.
+    assert.deepEqual(
+      comparedRange(
+        { from: '2026-03-01', to: '2026-03-30' },
+        'thisMonth',
+        'previous',
+      ),
+      { from: '2026-02-01', to: '2026-02-28' },
+    )
+  })
+
+  test('3 months with the 3 before, across a new year', () => {
+    assert.deepEqual(
+      comparedRange(
+        { from: '2026-01-01', to: '2026-03-31' },
+        'last3Months',
+        'previous',
+      ),
+      { from: '2025-10-01', to: '2025-12-31' },
+    )
+  })
+
+  test('the same dates a year earlier', () => {
+    assert.deepEqual(
+      comparedRange(
+        { from: '2028-02-01', to: '2028-02-29' },
+        'custom',
+        'lastYear',
+      ),
+      { from: '2027-02-01', to: '2027-02-28' },
+    )
+  })
+
+  test('custom dates with as many days just before them', () => {
+    assert.deepEqual(
+      comparedRange(
+        { from: '2026-03-01', to: '2026-03-10' },
+        'custom',
+        'previous',
+      ),
+      { from: '2026-02-19', to: '2026-02-28' },
     )
   })
 })

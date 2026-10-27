@@ -196,6 +196,47 @@ export const spendingChange = (periods: TPeriod[]) => {
   return (current - previous) / previous
 }
 
+export type TComparedCategory = {
+  category: string
+  current: number
+  previous: number
+}
+
+// Each category's total in two ranges, largest now first. Past `limit`
+// categories, the rest fold into one "other" row, as in `totalsByCategory`.
+export const compareCategories = (
+  current: TFinanceEntry[],
+  previous: TFinanceEntry[],
+  type: TFinanceEntry['type'],
+  limit = 6,
+): TComparedCategory[] => {
+  const totals = new Map<string, TComparedCategory>()
+  const add = (entries: TFinanceEntry[], key: 'current' | 'previous') => {
+    for (const entry of entries) {
+      if (entry.type !== type) continue
+      const total = totals.get(entry.category) ?? {
+        category: entry.category,
+        current: 0,
+        previous: 0,
+      }
+      total[key] += entryBookTotal(entry)
+      totals.set(entry.category, total)
+    }
+  }
+  add(current, 'current')
+  add(previous, 'previous')
+  const sorted = Array.from(totals, ([, total]) => total).toSorted(
+    (a, b) => b.current - a.current || b.previous - a.previous,
+  )
+  if (sorted.length <= limit + 1) return sorted
+  const rest = { category: 'rest', current: 0, previous: 0 }
+  for (const item of sorted.slice(limit)) {
+    rest.current += item.current
+    rest.previous += item.previous
+  }
+  return [...sorted.slice(0, limit), rest]
+}
+
 // The largest value a chart's scale is drawn to: the largest within four
 // times a typical value (the upper quartile), so a payday or a big purchase
 // doesn't flatten daily spending. Those above are drawn cut off, but never

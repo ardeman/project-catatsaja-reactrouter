@@ -565,6 +565,17 @@
         "title": "By category",
         "rest": "Other categories"
       },
+      "compare": {
+        "title": "Comparison",
+        "subtitle": "{{current}} against {{previous}}",
+        "with": "Compare with",
+        "previousRange": "Period before",
+        "lastYearRange": "Year before",
+        "was": "was {{amount}}",
+        "same": "no change",
+        "new": "new",
+        "empty": "No entries in the period to compare with."
+      },
       "insights": {
         "savingsRate": "Savings rate",
         "ofIncome": "of income kept",
