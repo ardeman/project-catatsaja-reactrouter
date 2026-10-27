@@ -95,18 +95,14 @@ jobs:
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    # The ui suite checks interface behaviour only: its failure shows, but
-    # doesn't block a deploy. The others guard stored, shared and encrypted
-    # data and must pass.
-    continue-on-error: ${{ matrix.suite == 'ui' }}
     strategy:
       # Finish every suite even if another fails, so all failures are visible.
       fail-fast: false
       matrix:
-        suite: [encryption, sharing, ai, ui]
+        suite: [encryption, sharing, ai]
     # Each suite needs its own runner: they use the same ports and some
     # reset the emulator database. Scenarios within a file stay sequential.
-    steps:
+    steps: &e2e-steps
       - name: Checkout
         uses: actions/checkout@v7
       - name: Set up pnpm
@@ -131,18 +127,22 @@ jobs:
       # The end-to-end tests drive Google Chrome; Playwright installs it and
       # the system libraries it needs on whatever Ubuntu the runner has
       # (--force: the runner image may already have a Chrome of its own).
-      # It usually takes half a minute, but Ubuntu's Azure mirror sometimes
-      # stalls and apt waits two minutes per request, so apt gives up after
-      # 15 seconds and tries again, and a failed install starts over.
-      - name: Install Chrome
-        timeout-minutes: 10
+      # Ubuntu's mirror is sometimes slow (8 minutes for 22 MB), so the
+      # downloaded packages are kept between runs, per runner image.
+      - name: Keep downloaded system packages
+        id: apt
         run: |
-          printf 'Acquire::http::Timeout "15";\nAcquire::https::Timeout "15";\nAcquire::Retries "3";\n' | sudo tee /etc/apt/apt.conf.d/99-ci-timeouts > /dev/null
-          for attempt in 1 2 3; do
-            pnpm exec playwright install --with-deps --force chrome && exit 0
-            echo "::warning::Installing Chrome failed on attempt $attempt"
-          done
-          exit 1
+          echo "image=$ImageOS-$ImageVersion" >> "$GITHUB_OUTPUT"
+          mkdir -p ~/apt-archives/partial
+          echo "Dir::Cache::Archives \"$HOME/apt-archives/\";" | sudo tee /etc/apt/apt.conf.d/99-ci-archives > /dev/null
+      - name: Cache the system packages
+        uses: actions/cache@v6
+        with:
+          path: ~/apt-archives/*.deb
+          key: apt-${{ steps.apt.outputs.image }}-${{ hashFiles('package.json') }}
+          restore-keys: apt-${{ steps.apt.outputs.image }}-
+      - name: Install Chrome
+        run: pnpm exec playwright install --with-deps --force chrome
       # A failed suite runs once more, on fresh emulators, before it fails:
       # browser timing on a busy runner shouldn't block a deploy.
       - name: End-to-end tests
@@ -154,6 +154,21 @@ jobs:
             echo "::warning::$SUITE failed on attempt $attempt"
           done
           exit 1
+
+  # The ui suite checks interface behaviour only, so it runs beside the
+  # deploy instead of before it: its failure shows in the run, but neither
+  # it nor a slow runner holds back a deploy. The others guard stored,
+  # shared and encrypted data and must pass.
+  e2e-ui:
+    name: End-to-end (${{ matrix.suite }})
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      matrix:
+        suite: [ui]
+    steps: *e2e-steps
 
   # Keep the existing "checks" status as the gate for branch protection
   # and deployment, including every matrix job (skipped for docs only).
