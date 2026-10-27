@@ -485,7 +485,7 @@ describe('sharing and finance storage', () => {
     await mira.context.close()
   })
 
-  test("a book's own groups of categories are Plus, encrypted and shared", async () => {
+  test("a book's own groups of categories and budgets are Plus, encrypted and shared", async () => {
     const openAnalysis = async (page, id) => {
       await page.goto(`${APP}/finances/${id}`)
       await page
@@ -494,6 +494,8 @@ describe('sharing and finance storage', () => {
     }
     const groups = (page) =>
       page.locator('section').filter({ hasText: 'Your groups' })
+    const budgets = (page) =>
+      page.locator('section').filter({ hasText: 'Budgets' })
 
     const rani = await newDevice(browser)
     await signUp(rani.page, 'Rani', 'rani@example.com')
@@ -525,6 +527,11 @@ describe('sharing and finance storage', () => {
       await rani.page.getByRole('button', { name: 'Make groups' }).count(),
       0,
     )
+    await budgets(rani.page).getByText('Plus · coming soon').waitFor()
+    assert.equal(
+      await rani.page.getByRole('button', { name: 'Set budgets' }).count(),
+      0,
+    )
 
     // Plus, given by hand as the console would: groups can be made, and are
     // sealed with the book.
@@ -554,6 +561,27 @@ describe('sharing and finance storage', () => {
     await openAnalysis(rani.page, bookId)
     await groups(rani.page).getByText('Needs').waitFor({ timeout: 15_000 })
 
+    // A budget for this month's food: what is left of it, sealed too.
+    const sealedGroups = (await dbGet(`finances/${bookId}`)).encrypted.mapValue
+      .fields.ct.stringValue
+    await rani.page.getByRole('button', { name: 'Set budgets' }).click()
+    const budgetEditor = rani.page.getByRole('dialog')
+    await budgetEditor.getByRole('button', { name: 'Add budget' }).click()
+    await budgetEditor
+      .getByLabel('Monthly limit for Food & drinks')
+      .fill('80000')
+    await rani.page.keyboard.press('Escape')
+    const budgeted = await dbGetWhen(
+      `finances/${bookId}`,
+      (fields) =>
+        fields?.encrypted.mapValue.fields.ct.stringValue !== sealedGroups,
+    )
+    assert.ok(!budgeted.budgets, 'no readable budgets')
+    await openAnalysis(rani.page, bookId)
+    await budgets(rani.page)
+      .getByText(/30[.,]000 left/)
+      .waitFor({ timeout: 15_000 })
+
     // Someone it is shared with to read sees the groups, and can't change
     // them.
     const sari = await newDevice(browser)
@@ -567,6 +595,13 @@ describe('sharing and finance storage', () => {
     await groups(sari.page).getByText('Needs').waitFor({ timeout: 30_000 })
     assert.equal(
       await sari.page.getByRole('button', { name: 'Edit groups' }).count(),
+      0,
+    )
+    await budgets(sari.page)
+      .getByText(/30[.,]000 left/)
+      .waitFor()
+    assert.equal(
+      await sari.page.getByRole('button', { name: 'Edit budgets' }).count(),
       0,
     )
     await rani.context.close()

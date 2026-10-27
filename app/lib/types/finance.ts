@@ -38,13 +38,22 @@ type TCategoryGroup = {
   categories: string[]
 }
 
+// A monthly limit on one expense category, in the book's currency. One not
+// entered yet is null, like an account's balance.
+type TFinanceBudget = {
+  id: string
+  category: string
+  limit: number | null
+}
+
 // A book: a title, the currency its totals are in, its entries, the
-// accounts it is checked against and its groups of categories (missing on
-// books made before them).
+// accounts it is checked against, its groups of categories and its budgets
+// (missing on books made before them).
 export type TFinanceForm = z.infer<typeof bookSchema> & {
   content: TFinanceEntry[]
   accounts?: TFinanceAccount[]
   categoryGroups?: TCategoryGroup[]
+  budgets?: TFinanceBudget[]
 }
 
 export type TCreateFinanceRequest = TFinanceForm

@@ -86,6 +86,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Coming with Catat Saja Plus: budgets in a book’s Analysis, a monthly limit for a category such as food, with what is left to spend this month. Everyone the book is shared with sees them.',
+          id: 'Segera hadir bersama Catat Saja Plus: anggaran di Analisis buku, batas bulanan untuk kategori seperti makan, lengkap dengan sisa yang bisa dibelanjakan bulan ini. Semua orang yang diberi akses ke buku itu bisa melihatnya.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Coming with Catat Saja Plus: your own groups of categories in a book’s Analysis, such as Needs = food + bills, with what each group adds up to and its share. Everyone the book is shared with sees them.',
           id: 'Segera hadir bersama Catat Saja Plus: grup kategori buatanmu sendiri di Analisis buku, misalnya Kebutuhan = makan + tagihan, lengkap dengan jumlah dan porsi tiap grup. Semua orang yang diberi akses ke buku itu bisa melihatnya.',
         },

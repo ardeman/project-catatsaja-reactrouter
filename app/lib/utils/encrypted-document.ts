@@ -29,6 +29,7 @@ export const contentFields = {
     'currency',
     'accounts',
     'categoryGroups',
+    'budgets',
     'summary',
     'cardStyle',
   ],

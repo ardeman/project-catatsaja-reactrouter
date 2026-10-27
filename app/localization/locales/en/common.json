@@ -565,6 +565,22 @@
         "title": "By category",
         "rest": "Other categories"
       },
+      "budgets": {
+        "title": "Budgets",
+        "plus": "A Catat Saja Plus feature.",
+        "hint": "Set a monthly limit for a category, such as food, to see what is left to spend this month.",
+        "edit": "Edit budgets",
+        "create": "Set budgets",
+        "editHint": "A monthly limit per expense category, in the book’s currency. Changes save with the book.",
+        "add": "Add budget",
+        "remove": "Remove budget",
+        "category": "Category",
+        "limitOf": "Monthly limit for {{category}}",
+        "left": "{{amount}} left",
+        "over": "{{amount}} over",
+        "of": "{{spent}} of {{limit}}",
+        "plusToEdit": "Changing budgets needs Catat Saja Plus."
+      },
       "groups": {
         "title": "Your groups",
         "plus": "A Catat Saja Plus feature.",

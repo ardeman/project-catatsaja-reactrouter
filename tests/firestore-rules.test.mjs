@@ -289,6 +289,7 @@ const collections = {
     currency: {},
     accounts: [],
     categoryGroups: [],
+    budgets: [],
     summary: {},
     cardStyle: {},
   },

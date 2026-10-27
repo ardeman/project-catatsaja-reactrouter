@@ -565,6 +565,22 @@
         "title": "Per kategori",
         "rest": "Kategori lainnya"
       },
+      "budgets": {
+        "title": "Anggaran",
+        "plus": "Fitur Catat Saja Plus.",
+        "hint": "Atur batas bulanan untuk satu kategori, misalnya makan, untuk melihat sisa yang bisa dibelanjakan bulan ini.",
+        "edit": "Ubah anggaran",
+        "create": "Atur anggaran",
+        "editHint": "Batas bulanan per kategori pengeluaran, dalam mata uang buku. Perubahan tersimpan bersama buku.",
+        "add": "Tambah anggaran",
+        "remove": "Hapus anggaran",
+        "category": "Kategori",
+        "limitOf": "Batas bulanan untuk {{category}}",
+        "left": "Sisa {{amount}}",
+        "over": "Lewat {{amount}}",
+        "of": "{{spent}} dari {{limit}}",
+        "plusToEdit": "Mengubah anggaran memerlukan Catat Saja Plus."
+      },
       "groups": {
         "title": "Grupmu",
         "plus": "Fitur Catat Saja Plus.",

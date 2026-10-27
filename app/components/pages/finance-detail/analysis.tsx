@@ -49,6 +49,7 @@ import { cn } from '~/lib/utils/shadcn'
 import { similarItems } from '~/lib/utils/similar-items'
 
 import { BalanceChart } from './balance-chart'
+import { Budgets } from './budgets'
 import { CashFlowChart } from './cash-flow-chart'
 import { CategoryBreakdown } from './category-breakdown'
 import { CategoryGroups } from './category-groups'
@@ -599,6 +600,12 @@ export const Analysis = ({
           />
         </Section>
       )}
+
+      <Budgets
+        entries={entries}
+        book={book}
+        isReadOnly={isReadOnly}
+      />
 
       {groupBy !== 'item' && (
         <CategoryGroups
