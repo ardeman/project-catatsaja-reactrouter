@@ -298,7 +298,7 @@ service cloud.firestore {
       allow read: if canReadShared();
       allow create: if isValidNewShared() && isMonthsBook(request.resource.data);
       allow update: if isMonthsBook(request.resource.data)
-        && canUpdateShared(['title', 'currency', 'accounts', 'categoryGroups', 'budgets', 'summary', 'cardStyle', 'encrypted']);
+        && canUpdateShared(['title', 'currency', 'accounts', 'categoryGroups', 'budgets', 'goals', 'payday', 'summary', 'cardStyle', 'encrypted']);
       allow delete: if isOwner(resource.data.owner);
 
       // A month of a moved book's entries. Read by its readers (not by people

@@ -30,6 +30,8 @@ export const contentFields = {
     'accounts',
     'categoryGroups',
     'budgets',
+    'goals',
+    'payday',
     'summary',
     'cardStyle',
   ],

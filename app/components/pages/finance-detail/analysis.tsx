@@ -54,6 +54,7 @@ import { CashFlowChart } from './cash-flow-chart'
 import { CategoryBreakdown } from './category-breakdown'
 import { CategoryGroups } from './category-groups'
 import { CustomDates } from './entry-filter'
+import { Goals } from './goals'
 import { ItemBreakdown } from './item-breakdown'
 import { PeriodComparison } from './period-comparison'
 import { Section } from './section'
@@ -602,6 +603,12 @@ export const Analysis = ({
       )}
 
       <Budgets
+        entries={entries}
+        book={book}
+        isReadOnly={isReadOnly}
+      />
+
+      <Goals
         entries={entries}
         book={book}
         isReadOnly={isReadOnly}

@@ -290,6 +290,8 @@ const collections = {
     accounts: [],
     categoryGroups: [],
     budgets: [],
+    goals: [],
+    payday: 25,
     summary: {},
     cardStyle: {},
   },

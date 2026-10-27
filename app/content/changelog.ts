@@ -86,6 +86,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Coming with Catat Saja Plus: savings goals in a book’s Analysis, such as school fees in July, with how much to put aside each payday so every goal is ready in time, counted from what the book already holds. Everyone the book is shared with sees them.',
+          id: 'Segera hadir bersama Catat Saja Plus: target tabungan di Analisis buku, misalnya uang sekolah di bulan Juli, lengkap dengan berapa yang perlu disisihkan setiap gajian agar semua target siap tepat waktu, dihitung dari yang sudah ada di buku. Semua orang yang diberi akses ke buku itu bisa melihatnya.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Coming with Catat Saja Plus: budgets in a book’s Analysis, a monthly limit for a category such as food, with what is left to spend this month. Everyone the book is shared with sees them.',
           id: 'Segera hadir bersama Catat Saja Plus: anggaran di Analisis buku, batas bulanan untuk kategori seperti makan, lengkap dengan sisa yang bisa dibelanjakan bulan ini. Semua orang yang diberi akses ke buku itu bisa melihatnya.',
         },

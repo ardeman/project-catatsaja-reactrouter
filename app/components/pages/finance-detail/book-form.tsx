@@ -76,6 +76,7 @@ import {
   getDateLabel,
   getDefaultCurrencyFormat,
 } from '~/lib/utils/parser'
+import { normalizeGoals, normalizePayday } from '~/lib/utils/savings-goals'
 import { cn } from '~/lib/utils/shadcn'
 
 import { Accounts } from './accounts'
@@ -165,10 +166,12 @@ export const Form = (properties: TFormProperties) => {
     accounts: selectedFinance?.accounts || [],
     categoryGroups: selectedFinance?.categoryGroups || [],
     budgets: selectedFinance?.budgets || [],
+    goals: selectedFinance?.goals || [],
+    payday: selectedFinance?.payday ?? null,
   }
   const formMethods = useForm<TFinanceForm>({ defaultValues: stored })
-  // Entries, accounts, groups and budgets merge one by one, so those added
-  // or deleted on two devices at once are all kept.
+  // Entries, accounts, groups, budgets and goals merge one by one, so those
+  // added or deleted on two devices at once are all kept.
   useStoredValues({
     form: formMethods,
     stored,
@@ -177,6 +180,7 @@ export const Form = (properties: TFormProperties) => {
       accounts: mergeById,
       categoryGroups: mergeById,
       budgets: mergeById,
+      goals: mergeById,
     },
   })
   const {
@@ -192,6 +196,8 @@ export const Form = (properties: TFormProperties) => {
   const accounts = watch('accounts')
   const categoryGroups = watch('categoryGroups')
   const budgets = watch('budgets')
+  const goals = watch('goals')
+  const payday = watch('payday')
   const isCurrencyLocked = !isReadOnly && entries.length > 0
   // Read-only people see accounts only when there are some.
   const hasAccounts = !isReadOnly || (accounts ?? []).length > 0
@@ -309,6 +315,8 @@ export const Form = (properties: TFormProperties) => {
       accounts: normalizeAccounts(values.accounts),
       categoryGroups: normalizeGroups(values.categoryGroups),
       budgets: normalizeBudgets(values.budgets),
+      goals: normalizeGoals(values.goals),
+      payday: normalizePayday(values.payday),
     }
     if (selectedFinance) {
       const changes: Partial<TFinanceForm> = {}
@@ -326,6 +334,10 @@ export const Form = (properties: TFormProperties) => {
         changes.categoryGroups = data.categoryGroups
       if (!isSameJson(data.budgets, selectedFinance.budgets || []))
         changes.budgets = data.budgets
+      if (!isSameJson(data.goals, selectedFinance.goals || []))
+        changes.goals = data.goals
+      if (data.payday !== (selectedFinance.payday ?? null))
+        changes.payday = data.payday
       if (Object.keys(changes).length === 0) return
       setSaveStatus('saving')
       const isSaved = await mutateUpdateFinance({
@@ -370,12 +382,15 @@ export const Form = (properties: TFormProperties) => {
       JSON.stringify(accounts),
       JSON.stringify(categoryGroups),
       JSON.stringify(budgets),
+      JSON.stringify(goals),
+      payday,
     ],
     saveWhenIdle: !!selectedFinance,
   })
 
   // Undo and redo over the whole book (title, currency, entries, accounts,
-  // groups, budgets), in steps (a pause in changes, or each entry saved).
+  // groups, budgets, goals), in steps (a pause in changes, or each entry
+  // saved).
   const current = useMemo(
     () => ({
       title: watchTitle,
@@ -384,8 +399,19 @@ export const Form = (properties: TFormProperties) => {
       accounts,
       categoryGroups,
       budgets,
+      goals,
+      payday,
     }),
-    [watchTitle, book, entries, accounts, categoryGroups, budgets],
+    [
+      watchTitle,
+      book,
+      entries,
+      accounts,
+      categoryGroups,
+      budgets,
+      goals,
+      payday,
+    ],
   )
   const undoHistory = useUndoHistory({
     key: selectedFinance?.id ?? 'create',
@@ -403,6 +429,8 @@ export const Form = (properties: TFormProperties) => {
       'accounts',
       'categoryGroups',
       'budgets',
+      'goals',
+      'payday',
     ] as const)
       setValue(field, next[field], { shouldDirty: true })
   }

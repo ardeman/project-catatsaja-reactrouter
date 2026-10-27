@@ -46,14 +46,28 @@ type TFinanceBudget = {
   limit: number | null
 }
 
+// Something to save for by a month (YYYY-MM), in the book's currency. Once
+// done, it keeps what it actually cost. Amounts not entered yet are null.
+type TFinanceGoal = {
+  id: string
+  name: string
+  amount: number | null
+  due: string
+  done: boolean
+  spent: number | null
+}
+
 // A book: a title, the currency its totals are in, its entries, the
-// accounts it is checked against, its groups of categories and its budgets
+// accounts it is checked against, its groups of categories, its budgets,
+// its savings goals and the payday (a day of the month) they are saved on
 // (missing on books made before them).
 export type TFinanceForm = z.infer<typeof bookSchema> & {
   content: TFinanceEntry[]
   accounts?: TFinanceAccount[]
   categoryGroups?: TCategoryGroup[]
   budgets?: TFinanceBudget[]
+  goals?: TFinanceGoal[]
+  payday?: number | null
 }
 
 export type TCreateFinanceRequest = TFinanceForm
