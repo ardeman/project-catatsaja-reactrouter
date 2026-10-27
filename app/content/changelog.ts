@@ -42,6 +42,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'In a book’s Analysis and entry filter, Expense and Income now come in the same order, with the same names and icons, and the Analysis figures sit on cards like the rest of the page.',
+          id: 'Di Analisis dan saringan entri buku, Pengeluaran dan Pemasukan kini tampil dengan urutan, nama, dan ikon yang sama, dan angka-angka Analisis tampil di kartu seperti bagian lain halaman.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Opening a book and going back no longer marks it as just edited or moves it to the top of the list.',

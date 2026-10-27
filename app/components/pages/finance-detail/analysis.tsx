@@ -147,7 +147,7 @@ const Tile = ({
   detail?: string
   tone?: 'good' | 'bad'
 }) => (
-  <div className="grid min-w-0 content-start gap-0.5 rounded-lg bg-muted/50 p-3">
+  <div className="glass-surface grid min-w-0 content-start gap-0.5 rounded-xl border p-3">
     <dt className="text-xs text-muted-foreground">{label}</dt>
     <dd
       className={cn(
@@ -529,7 +529,7 @@ export const Analysis = ({
             options={[
               {
                 value: 'expense',
-                label: t('finances.summary.expense'),
+                label: t('finances.form.type.expense'),
                 icon: (
                   <BanknoteArrowUp
                     aria-hidden="true"
@@ -539,7 +539,7 @@ export const Analysis = ({
               },
               {
                 value: 'income',
-                label: t('finances.summary.income'),
+                label: t('finances.form.type.income'),
                 icon: (
                   <BanknoteArrowDown
                     aria-hidden="true"

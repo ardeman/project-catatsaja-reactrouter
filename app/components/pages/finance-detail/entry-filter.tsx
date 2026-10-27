@@ -1,4 +1,4 @@
-import { ListFilter, X } from 'lucide-react'
+import { BanknoteArrowDown, BanknoteArrowUp, ListFilter, X } from 'lucide-react'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
@@ -156,8 +156,26 @@ export const EntryFilter = (properties: TProperties) => {
             className="justify-self-start"
             options={[
               { value: 'all', label: t('finances.filter.allTypes') },
-              { value: 'income', label: t('finances.form.type.income') },
-              { value: 'expense', label: t('finances.form.type.expense') },
+              {
+                value: 'expense',
+                label: t('finances.form.type.expense'),
+                icon: (
+                  <BanknoteArrowUp
+                    aria-hidden="true"
+                    className="size-3.5 text-expense"
+                  />
+                ),
+              },
+              {
+                value: 'income',
+                label: t('finances.form.type.income'),
+                icon: (
+                  <BanknoteArrowDown
+                    aria-hidden="true"
+                    className="size-3.5 text-income"
+                  />
+                ),
+              },
             ]}
             onChange={(type) =>
               update({
