@@ -161,15 +161,16 @@
      scrolls under it blurs and fades into the page colour. Its height is 0
      wherever there is no top safe area. */
   .status-bar-fade {
-    height: calc(env(safe-area-inset-top) * 1.5);
+    height: calc(env(safe-area-inset-top) * 1.75);
     background-image: linear-gradient(
       to bottom,
-      hsl(var(--background) / 0.9) 50%,
+      hsl(var(--background) / 0.55),
+      hsl(var(--background) / 0.25) 50%,
       hsl(var(--background) / 0)
     );
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    mask-image: linear-gradient(to bottom, black 50%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    mask-image: linear-gradient(to bottom, black 25%, transparent);
   }
 
   @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
