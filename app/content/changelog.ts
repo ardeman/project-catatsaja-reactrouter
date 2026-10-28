@@ -55,6 +55,13 @@ export const releases: TRelease[] = [
           id: 'Setelah menambah entri ke buku, halaman kini benar-benar bergulir ke entri baru tepat di bawah formulir, bukan membiarkannya tertutup formulir.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'On iPhone, tapping a field to type no longer zooms the page in.',
+          id: 'Di iPhone, mengetuk kolom untuk mengetik tidak lagi memperbesar halaman.',
+        },
+      },
     ],
   },
   {
