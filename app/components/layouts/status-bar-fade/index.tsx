@@ -1,5 +1,5 @@
 // Fills the area under the installed app's see-through status bar on iPhone
-// (statusBarStyles), so content scrolling up fades into it.
+// (`appMeta` in metadata.ts), so content scrolling up fades into it.
 export const StatusBarFade = () => (
   <div
     aria-hidden

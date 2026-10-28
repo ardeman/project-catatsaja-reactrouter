@@ -7,11 +7,7 @@ import {
   ReactNode,
 } from 'react'
 
-import {
-  favicons,
-  statusBarStyles,
-  themeColors,
-} from '~/lib/constants/metadata'
+import { favicons, themeColors } from '~/lib/constants/metadata'
 
 // A new tag instead of a changed one: some browsers (Safari) only repaint
 // their bars for a new tag.
@@ -98,11 +94,6 @@ export const ThemeProvider = ({
       // The browser and installed-app bars follow the app's theme.
       replaceMeta('theme-color', themeColors[resolved])
       replaceIcon(favicons[resolved])
-      // iOS may apply a changed status bar only when the app next starts.
-      replaceMeta(
-        'apple-mobile-web-app-status-bar-style',
-        statusBarStyles[resolved],
-      )
     }
     apply()
     // In "system" mode, follow the device when it switches.

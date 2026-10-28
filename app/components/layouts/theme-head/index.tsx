@@ -1,11 +1,7 @@
 import { useSyncExternalStore } from 'react'
 
 import { protectedPages } from '~/lib/configs/page'
-import {
-  favicons,
-  statusBarStyles,
-  themeColors,
-} from '~/lib/constants/metadata'
+import { favicons, themeColors } from '~/lib/constants/metadata'
 import {
   lastVisitStorageKey,
   navPages,
@@ -57,11 +53,6 @@ const themeScript = `(() => {
     icon.type = 'image/png'
     icon.href = dark ? '${favicons.dark}' : '${favicons.light}'
     document.head.append(icon)
-    // iOS reads the installed app's status bar style when the app starts.
-    const bar = document.createElement('meta')
-    bar.name = 'apple-mobile-web-app-status-bar-style'
-    bar.content = dark ? '${statusBarStyles.dark}' : '${statusBarStyles.light}'
-    document.head.append(bar)
     const size = localStorage.getItem('tailwind-size')
     const sizes = { small: '87.5%', large: '112.5%' }
     if (sizes[size]) document.documentElement.style.setProperty('--base-size', sizes[size])
