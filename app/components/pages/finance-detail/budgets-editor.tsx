@@ -49,8 +49,9 @@ export const budgetLabelKey = (category: string) =>
     ? 'finances.analysis.budgets.wholeBook'
     : `finances.form.category.${category}.label`
 
-// Choosing a monthly limit for all of the book's spending and for expense
-// categories, one budget per category. Changes go into the book's form as they are made, so they save
+// Choosing a limit for all of the book's spending and for expense categories,
+// one budget per category, and one period for all of them: each month or the
+// whole book. Changes go into the book's form as they are made, so they save
 // like the rest of the book.
 export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
   const { t } = useTranslation()
@@ -59,6 +60,8 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
   const budgets = useWatch({ control, name: 'budgets' }) ?? []
   const used = new Set(budgets.map((budget) => budget.category))
   const unused = budgetCategories.filter((key) => !used.has(key))
+  // One period for all budgets, stored on each (see `normalizeBudgets`).
+  const period = budgets[0]?.period ?? 'month'
 
   const update = (next: TFinanceForm['budgets']) =>
     setValue('budgets', next, { shouldDirty: true })
@@ -68,20 +71,19 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
     if (!first) return
     update([
       ...(getValues('budgets') ?? []),
-      { id: crypto.randomUUID(), category: first, limit: null },
+      { id: crypto.randomUUID(), category: first, limit: null, period },
     ])
   }
 
   const handleRemove = (id: string) =>
     update((getValues('budgets') ?? []).filter((budget) => budget.id !== id))
 
-  const handlePeriod = (id: string, period: string) =>
+  const handlePeriod = (next: string) =>
     update(
-      (getValues('budgets') ?? []).map((budget) =>
-        budget.id === id
-          ? { ...budget, period: period === 'book' ? 'book' : 'month' }
-          : budget,
-      ),
+      (getValues('budgets') ?? []).map((budget) => ({
+        ...budget,
+        period: next === 'book' ? 'book' : 'month',
+      })),
     )
 
   const handleCategory = (id: string, category: string) =>
@@ -99,6 +101,29 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
       description={t('finances.analysis.budgets.editHint')}
     >
       <div className="grid gap-1.5">
+        {budgets.length > 0 && (
+          <Select
+            value={period}
+            onValueChange={handlePeriod}
+          >
+            <SelectTrigger
+              className="h-8 justify-self-start"
+              aria-label={t('finances.analysis.budgets.period.label')}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {(['month', 'book'] as const).map((key) => (
+                <SelectItem
+                  key={key}
+                  value={key}
+                >
+                  {t(`finances.analysis.budgets.period.${key}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
         {budgets.length > 0 && (
           <ul className="grid gap-1.5">
             {budgets.map((budget, index) => (
@@ -159,27 +184,6 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
                 >
                   <X className="size-4" />
                 </Button>
-                <Select
-                  value={budget.period ?? 'month'}
-                  onValueChange={(period) => handlePeriod(budget.id, period)}
-                >
-                  <SelectTrigger
-                    className="h-8"
-                    aria-label={t('finances.analysis.budgets.period.label')}
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(['month', 'book'] as const).map((period) => (
-                      <SelectItem
-                        key={period}
-                        value={period}
-                      >
-                        {t(`finances.analysis.budgets.period.${period}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </li>
             ))}
           </ul>

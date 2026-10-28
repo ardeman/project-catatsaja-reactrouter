@@ -567,8 +567,8 @@ describe('sharing and finance storage', () => {
     await openAnalysis(rani.page, bookId)
     await groups(rani.page).getByText('Needs').waitFor({ timeout: 15_000 })
 
-    // A budget on all spending for the whole book, and one for this month's
-    // food: what is left of each, sealed too.
+    // Budgets for the whole book, on all spending and on food: the period
+    // chosen once applies to both, and what is left of each is sealed too.
     const sealedGroups = (await dbGet(`finances/${bookId}`)).encrypted.mapValue
       .fields.ct.stringValue
     await rani.page.getByRole('button', { name: 'Set budgets' }).click()

@@ -1,5 +1,6 @@
 // A book's budgets: a limit per expense category or on all of the book's
-// spending, for each month or for the whole book, and what is left of it. Computed in the browser, in the book's currency;
+// spending, all of them for each month or all for the whole book, and what is
+// left of each. Computed in the browser, in the book's currency;
 // nothing is stored but the limits. No app imports, so `pnpm test:unit`
 // can run it.
 
@@ -38,9 +39,11 @@ export const monthOf = (date: string) => date.slice(0, 7)
 
 // Limits arrive as typed text ("1500000") until saved as numbers; one left
 // empty is saved as null. A category keeps the first budget that has it
-// (two devices may have added one each at once).
+// (two devices may have added one each at once). The period is one choice for
+// all budgets, stored on each: the first budget's.
 export const normalizeBudgets = <T extends TBudget>(budgets: T[] = []): T[] => {
   const seen = new Set<string>()
+  const period = budgets[0]?.period
   return budgets
     .filter((budget) => {
       if (seen.has(budget.category)) return false
@@ -52,6 +55,7 @@ export const normalizeBudgets = <T extends TBudget>(budgets: T[] = []): T[] => {
       const limit = Number(text)
       return {
         ...budget,
+        ...(period && { period }),
         limit: text === '' || Number.isNaN(limit) ? null : limit,
       }
     })

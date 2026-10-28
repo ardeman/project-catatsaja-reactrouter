@@ -51,8 +51,8 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: 'Coming with Catat Saja Plus: a budget for all of a book’s spending, beside the budgets per category, and a choice for each budget between every month and the whole book.',
-          id: 'Segera hadir bersama Catat Saja Plus: anggaran untuk semua pengeluaran buku, di samping anggaran per kategori, dan pilihan untuk tiap anggaran antara per bulan atau seluruh buku.',
+          en: 'Coming with Catat Saja Plus: a budget for all of a book’s spending, beside the budgets per category, and one choice for all of them between every month and the whole book.',
+          id: 'Segera hadir bersama Catat Saja Plus: anggaran untuk semua pengeluaran buku, di samping anggaran per kategori, dan satu pilihan untuk semuanya antara per bulan atau seluruh buku.',
         },
       },
       {

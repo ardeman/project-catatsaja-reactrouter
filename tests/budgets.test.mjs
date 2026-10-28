@@ -158,4 +158,15 @@ describe('normalizing budgets', () => {
       [food],
     )
   })
+
+  test('every budget takes the first one’s period', () => {
+    assert.deepEqual(
+      normalizeBudgets([
+        { id: 'a', category: 'fnb', limit: 1, period: 'book' },
+        { id: 'b', category: 'bills', limit: 2, period: 'month' },
+        { id: 'c', category: 'transport', limit: 3 },
+      ]).map(({ period }) => period),
+      ['book', 'book', 'book'],
+    )
+  })
 })
