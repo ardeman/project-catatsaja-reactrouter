@@ -85,3 +85,44 @@ export const keywordTotals = (
     .filter((row) => row.count > 0)
     .toSorted((a, b) => b.total - a.total)
 }
+
+export type TKeywordRow = {
+  id: string
+  text: string
+  count: number
+  // One per type with matching entries, in the order the types were given.
+  totals: (Omit<TKeywordTotal, 'id' | 'text' | 'count'> & {
+    type: TEntryLike['type']
+    count: number
+  })[]
+}
+
+// The keyword totals of several types in one list, a row per keyword with
+// what it adds up to in each type, the largest altogether first.
+export const combinedKeywordTotals = (
+  entries: TEntryLike[],
+  types: TEntryLike['type'][],
+  keywords: TKeyword[] = [],
+): TKeywordRow[] => {
+  const rows: TKeywordRow[] = []
+  const byId = new Map<string, TKeywordRow>()
+  for (const type of types) {
+    for (const { id, text, count, total, share } of keywordTotals(
+      entries,
+      type,
+      keywords,
+    )) {
+      let row = byId.get(id)
+      if (!row) {
+        row = { id, text, count: 0, totals: [] }
+        byId.set(id, row)
+        rows.push(row)
+      }
+      row.count += count
+      row.totals.push({ type, count, total, share })
+    }
+  }
+  const sumOf = (row: TKeywordRow) =>
+    row.totals.reduce((sum, { total }) => sum + total, 0)
+  return rows.toSorted((a, b) => sumOf(b) - sumOf(a))
+}

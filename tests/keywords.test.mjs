@@ -5,7 +5,11 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 
-import { keywordTotals, normalizeKeywords } from '../app/lib/utils/keywords.ts'
+import {
+  combinedKeywordTotals,
+  keywordTotals,
+  normalizeKeywords,
+} from '../app/lib/utils/keywords.ts'
 
 const entry = (description, amount, overrides = {}) => ({
   type: 'expense',
@@ -62,6 +66,45 @@ describe('keyword totals', () => {
       [
         ['milk', 100, 1],
         ['coffee', 40, 0.4],
+      ],
+    )
+  })
+})
+
+describe('combined keyword totals', () => {
+  test('give a row per keyword with each type, the largest altogether first', () => {
+    const entries = [
+      entry('Superbank transfer', 30),
+      entry('Superbank bunga', 100, { type: 'income' }),
+      entry('Aladin bunga', 120, { type: 'income' }),
+      entry('Superbank bunga', 60, { type: 'income' }),
+    ]
+    assert.deepEqual(
+      combinedKeywordTotals(
+        entries,
+        ['expense', 'income'],
+        [
+          { id: 'aladin', text: 'aladin' },
+          { id: 'super', text: 'superbank' },
+          { id: 'none', text: 'pulsa' },
+        ],
+      ),
+      [
+        {
+          id: 'super',
+          text: 'superbank',
+          count: 3,
+          totals: [
+            { type: 'expense', count: 1, total: 30, share: 1 },
+            { type: 'income', count: 2, total: 160, share: 160 / 280 },
+          ],
+        },
+        {
+          id: 'aladin',
+          text: 'aladin',
+          count: 1,
+          totals: [{ type: 'income', count: 1, total: 120, share: 120 / 280 }],
+        },
       ],
     )
   })
