@@ -90,7 +90,7 @@ export const MoveMoney = (properties: TProperties) => {
                 >
                   {account.name.trim() ||
                     t('finances.accounts.move.unnamed', { number: index + 1 })}
-                  <span className="text-muted-foreground tabular-nums">
+                  <span className="ms-2 text-muted-foreground tabular-nums">
                     {money(Number(account.balance) || 0, book)}
                   </span>
                 </SelectItem>
