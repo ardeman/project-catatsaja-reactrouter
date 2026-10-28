@@ -2,6 +2,7 @@ import {
   TFinanceAccount,
   TFinanceCurrency,
   TFinanceEntry,
+  TTransfer,
 } from '~/lib/types/finance'
 import { TCurrency } from '~/lib/types/settings'
 
@@ -37,6 +38,27 @@ export const normalizeAccounts = (accounts: TFinanceAccount[] = []) =>
 
 export const sumAccounts = (accounts: TFinanceAccount[] = []) =>
   accounts.reduce((total, account) => total + (Number(account.balance) || 0), 0)
+
+// The accounts after moving an amount from one to another, rounded to the
+// book's smallest unit. A balance not entered yet counts as 0.
+export const moveBetweenAccounts = (
+  accounts: TFinanceAccount[],
+  { from, to, amount }: TTransfer,
+  fractionDigits: number,
+) => {
+  const unit = 10 ** fractionDigits
+  const change = (account: TFinanceAccount, by: number) => ({
+    ...account,
+    balance: Math.round(((Number(account.balance) || 0) + by) * unit) / unit,
+  })
+  return accounts.map((account) =>
+    account.id === from
+      ? change(account, -amount)
+      : account.id === to
+        ? change(account, amount)
+        : account,
+  )
+}
 
 // What the accounts hold minus the book's balance, rounded to the book's
 // smallest unit so float noise reads as a match.

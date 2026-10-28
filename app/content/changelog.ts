@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: "Took cash out or topped up an e-wallet? In a book's accounts, Move takes the amount off one account and adds it to another in one step. The book's income and expenses stay as they are.",
+          id: 'Tarik tunai atau isi saldo dompet digital? Di akun sebuah buku, Pindahkan mengurangi satu akun dan menambah akun lain sekaligus. Pemasukan dan pengeluaran buku tetap sama.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'On phones, the top bar is gone: search and your account (with notifications) now sit in the bottom bar, within reach of your thumb, search opens right in the tab bar (rising above the keyboard), and pages use the full screen.',

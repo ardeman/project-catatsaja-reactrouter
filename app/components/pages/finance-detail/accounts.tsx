@@ -1,4 +1,4 @@
-import { Plus, X } from 'lucide-react'
+import { ArrowLeftRight, Plus, X } from 'lucide-react'
 import { useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -14,10 +14,15 @@ import {
 import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceCurrency, TFinanceForm } from '~/lib/types/finance'
-import { accountsDifference, sumAccounts } from '~/lib/utils/finance'
+import {
+  accountsDifference,
+  moveBetweenAccounts,
+  sumAccounts,
+} from '~/lib/utils/finance'
 import { cn } from '~/lib/utils/shadcn'
 
 import { Difference, differenceClassName } from './difference'
+import { MoveMoney } from './move-money'
 
 type TProperties = {
   book: TFinanceCurrency
@@ -37,6 +42,7 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
   const accounts = useWatch({ control, name: 'accounts' }) ?? []
   const [addedId, setAddedId] = useState<string>()
   const [isDifferenceHintOpen, setIsDifferenceHintOpen] = useState(false)
+  const [isMoveOpen, setIsMoveOpen] = useState(false)
 
   if (isReadOnly && accounts.length === 0) return null
 
@@ -73,24 +79,38 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
             {t('finances.accounts.title')}
           </h2>
           {!isReadOnly && (
-            <Tooltip
-              // Explains the section until the first account is added.
-              open={accounts.length > 0 ? false : undefined}
-            >
-              <TooltipTrigger asChild>
+            <div className="-my-1 -mr-2 flex items-center">
+              {accounts.length > 1 && (
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="-my-1 -mr-2 gap-1"
-                  onClick={handleAdd}
+                  className="gap-1"
+                  onClick={() => setIsMoveOpen(true)}
                 >
-                  <Plus className="size-3.5" />
-                  {t('finances.accounts.add')}
+                  <ArrowLeftRight className="size-3.5" />
+                  {t('finances.accounts.move.button')}
                 </Button>
-              </TooltipTrigger>
-              <TooltipContent>{t('finances.accounts.hint')}</TooltipContent>
-            </Tooltip>
+              )}
+              <Tooltip
+                // Explains the section until the first account is added.
+                open={accounts.length > 0 ? false : undefined}
+              >
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1"
+                    onClick={handleAdd}
+                  >
+                    <Plus className="size-3.5" />
+                    {t('finances.accounts.add')}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t('finances.accounts.hint')}</TooltipContent>
+              </Tooltip>
+            </div>
           )}
         </div>
 
@@ -199,6 +219,25 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
           </>
         )}
       </div>
+      {!isReadOnly && (
+        <MoveMoney
+          open={isMoveOpen}
+          setOpen={setIsMoveOpen}
+          accounts={accounts}
+          book={book}
+          onMove={(transfer) =>
+            setValue(
+              'accounts',
+              moveBetweenAccounts(
+                getValues('accounts') ?? [],
+                transfer,
+                book.maximumFractionDigits,
+              ),
+              { shouldDirty: true },
+            )
+          }
+        />
+      )}
     </TooltipProvider>
   )
 }

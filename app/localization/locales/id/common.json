@@ -516,7 +516,18 @@
       "hint": "Tambahkan jumlah uang yang benar-benar ada di tiap dompet atau rekening bank untuk dicocokkan dengan buku.",
       "match": "Cocok dengan buku.",
       "more": "Mungkin ada pemasukan yang belum dicatat.",
-      "less": "Mungkin ada pengeluaran yang belum dicatat."
+      "less": "Mungkin ada pengeluaran yang belum dicatat.",
+      "move": {
+        "button": "Pindahkan",
+        "title": "Pindahkan uang",
+        "description": "Pindahkan uang dari satu akun ke akun lain, misalnya tarik tunai atau isi saldo. Kedua saldo berubah; pemasukan dan pengeluaran buku tidak.",
+        "from": "Dari",
+        "to": "Ke",
+        "amount": "Jumlah",
+        "submit": "Pindahkan",
+        "unnamed": "Akun {{number}}",
+        "sameAccount": "Pilih akun yang berbeda."
+      }
     },
     "entry": {
       "ready": "Entri ditambahkan. Siap untuk entri berikutnya.",

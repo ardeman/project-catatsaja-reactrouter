@@ -4,6 +4,7 @@ import {
   bookSchema,
   entrySchema,
   receiptSchema,
+  transferSchema,
   typedEntriesSchema,
 } from '~/lib/validations/finance'
 
@@ -29,6 +30,10 @@ export type TFinanceAccount = {
   name: string
   balance: number | null
 }
+
+export type TTransferForm = z.input<ReturnType<typeof transferSchema>>
+
+export type TTransfer = z.output<ReturnType<typeof transferSchema>>
 
 // The person's own group of categories (such as Needs = food + bills), to
 // see their total and share. A category is in one group at most.

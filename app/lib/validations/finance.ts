@@ -33,6 +33,26 @@ export const entrySchema = (t: TFunction) =>
     }),
   })
 
+// Money moved from one of a book's accounts to another: both balances
+// change, the book's totals don't.
+export const transferSchema = (t: TFunction) =>
+  z
+    .object({
+      from: z
+        .string()
+        .min(1, { error: t('zod:errors.invalid_type_received_null') }),
+      to: z
+        .string()
+        .min(1, { error: t('zod:errors.invalid_type_received_null') }),
+      amount: z.coerce.number().positive({
+        error: t('zod:errors.too_small.number.not_inclusive', { minimum: 0 }),
+      }),
+    })
+    .refine((transfer) => transfer.from !== transfer.to, {
+      error: t('finances.accounts.move.sameAccount'),
+      path: ['to'],
+    })
+
 export const bookSchema = z.object({
   title: z.string(),
   currency: currencySchema,

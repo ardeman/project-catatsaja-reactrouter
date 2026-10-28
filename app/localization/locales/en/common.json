@@ -516,7 +516,18 @@
       "hint": "Add what you actually have in each wallet or bank account to check it against the book.",
       "match": "Matches the book.",
       "more": "Possibly unrecorded income.",
-      "less": "Possibly unrecorded expenses."
+      "less": "Possibly unrecorded expenses.",
+      "move": {
+        "button": "Move",
+        "title": "Move money",
+        "description": "Move money from one account to another, such as cash taken out or a top-up. Both balances change; the book's income and expenses don't.",
+        "from": "From",
+        "to": "To",
+        "amount": "Amount",
+        "submit": "Move",
+        "unnamed": "Account {{number}}",
+        "sameAccount": "Choose a different account."
+      }
     },
     "entry": {
       "ready": "Entry added. Ready for the next one.",
