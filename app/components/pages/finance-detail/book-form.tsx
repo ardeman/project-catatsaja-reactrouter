@@ -86,7 +86,7 @@ import { Analysis } from './analysis'
 import { EntryFilter } from './entry-filter'
 import { EntryForm } from './entry-form.client'
 import { QuickAdd } from './quick-add.client'
-import { Summary } from './summary'
+import { Summary, TSummaryPart } from './summary'
 import { TAnalysisOptions, TFormProperties } from './type'
 
 // While the Add buttons float over the entries, the day showing just below
@@ -229,6 +229,19 @@ export const Form = (properties: TFormProperties) => {
   // The floating totals' height (0 while hidden), so the "Add entry" card
   // floats below them.
   const compactSummary = useRef<HTMLDivElement>(null)
+  const totalsCard = useRef<HTMLDivElement>(null)
+  const accountsCard = useRef<HTMLDivElement>(null)
+  // A part of the floating totals scrolls back to where it's shown in full.
+  const handleSummarySelect = (part: TSummaryPart) => {
+    const target =
+      part === 'difference' ? accountsCard.current : totalsCard.current
+    target?.scrollIntoView({
+      block: 'start',
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'auto'
+        : 'smooth',
+    })
+  }
   const [summaryHeight, setSummaryHeight] = useState(0)
   useEffect(() => {
     const element = compactSummary.current
@@ -713,8 +726,9 @@ export const Form = (properties: TFormProperties) => {
         {/* The totals and the accounts look like one card. `!mb-0` undoes
             the stack's spacing between the parts. */}
         <div
+          ref={totalsCard}
           className={cn(
-            'glass-surface',
+            'glass-surface scroll-mt-[8.5rem] md:scroll-mt-[9.5rem]',
             hasAccounts
               ? '!mb-0 rounded-t-xl border border-b-0 bg-none px-4 pt-4 pb-3 [clip-path:inset(-2rem_-2rem_0_-2rem)]'
               : '!mb-0 rounded-xl border p-4',
@@ -731,9 +745,10 @@ export const Form = (properties: TFormProperties) => {
         </div>
         {hasAccounts && (
           <div
+            ref={accountsCard}
             // The shadow is cut at the top, so the join with the totals
             // doesn't show.
-            className="glass-surface !mb-0 rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)]"
+            className="glass-surface !mb-0 scroll-mt-[8.5rem] rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)] md:scroll-mt-[9.5rem]"
           >
             <Accounts
               book={book}
@@ -766,6 +781,7 @@ export const Form = (properties: TFormProperties) => {
                 balance={balance}
                 accounts={accounts ?? []}
                 isCompact
+                onSelect={handleSummarySelect}
               />
             </div>
           )}

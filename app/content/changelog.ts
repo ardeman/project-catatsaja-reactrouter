@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'In a book scrolled down, tap Balance or Difference in the bar at the top to jump back to the totals or the accounts.',
+          id: 'Saat buku sudah digulir ke bawah, ketuk Saldo atau Selisih di bilah atas untuk kembali ke total atau ke daftar akun.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Pressing Add entry after scrolling down a book starts the new entry on the day shown just below the button, instead of today.',
           id: 'Menekan Tambah entri setelah menggulir buku ke bawah membuat entri baru dimulai pada tanggal yang tampil tepat di bawah tombol, bukan hari ini.',
         },

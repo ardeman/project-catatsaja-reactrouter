@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useMoney } from '~/lib/hooks/use-money'
@@ -17,11 +18,16 @@ type TProperties = {
   // (which have scrolled away), on one line, so the book can be checked
   // against them while reading or adding entries.
   isCompact: boolean
+  // Compact only: each part scrolls back to where it's shown in full.
+  onSelect?: (part: TSummaryPart) => void
 }
+
+export type TSummaryPart = 'balance' | 'difference'
 
 // The book's totals, at the top of the summary card.
 export const Summary = (properties: TProperties) => {
-  const { book, income, expense, balance, accounts, isCompact } = properties
+  const { book, income, expense, balance, accounts, isCompact, onSelect } =
+    properties
   const { t } = useTranslation()
   const money = useMoney()
 
@@ -64,8 +70,14 @@ export const Summary = (properties: TProperties) => {
     accounts.length > 0
       ? accountsDifference(accounts, balance, book.maximumFractionDigits)
       : undefined
-  const items = [
+  const items: {
+    part: TSummaryPart
+    label: string
+    value: ReactNode
+    className: string
+  }[] = [
     {
+      part: 'balance',
       label: t('finances.summary.balance'),
       value: money(balance, book, balance < 0),
       className: cn('font-semibold', balance < 0 && 'text-destructive-text'),
@@ -74,6 +86,7 @@ export const Summary = (properties: TProperties) => {
       ? []
       : [
           {
+            part: 'difference' as const,
             label: t('finances.summary.difference'),
             value: (
               <Difference
@@ -93,12 +106,26 @@ export const Summary = (properties: TProperties) => {
         items.length === 2 ? 'grid-cols-2' : 'grid-cols-1',
       )}
     >
-      {items.map(({ label, value, className }) => (
+      {items.map(({ part, label, value, className }) => (
         <div
-          key={label}
-          className="flex min-w-0 items-baseline justify-between gap-2 sm:grid sm:justify-start sm:gap-0"
+          key={part}
+          className="relative flex min-w-0 items-baseline justify-between gap-2 sm:grid sm:justify-start sm:gap-0"
         >
-          <dt className="truncate text-xs text-muted-foreground">{label}</dt>
+          <dt className="truncate text-xs text-muted-foreground">
+            {onSelect ? (
+              // The button covers the whole part, so the value is
+              // clickable too.
+              <button
+                type="button"
+                className="rounded-sm after:absolute after:-inset-1 after:rounded-md hover:after:bg-foreground/5 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-ring"
+                onClick={() => onSelect(part)}
+              >
+                {label}
+              </button>
+            ) : (
+              label
+            )}
+          </dt>
           <dd
             className={cn(
               'text-sm font-medium whitespace-nowrap tabular-nums',
