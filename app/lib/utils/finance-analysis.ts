@@ -272,6 +272,13 @@ export const niceTicks = (min: number, max: number, count = 4) => {
   return ticks
 }
 
+// A share with whole percents, written "<1%" when it rounds to 0 but isn't
+// nothing, so a small category doesn't read as none.
+export const formatShare = (percent: Intl.NumberFormat, share: number) =>
+  share > 0 && share < 0.005
+    ? `<${percent.format(0.01)}`
+    : percent.format(share)
+
 // "Oct 5" for days and weeks (weeks by their Monday), "Oct" for months,
 // with the year when `withYear` (months spanning years, long labels). A day
 // of the week is "Mon", or "Monday" for long labels.

@@ -12,6 +12,7 @@ import {
   TFinanceForm,
 } from '~/lib/types/finance'
 import { groupTotals, ungrouped } from '~/lib/utils/category-groups'
+import { formatShare } from '~/lib/utils/finance-analysis'
 import { cn } from '~/lib/utils/shadcn'
 
 import { CategoryGroupsEditor } from './category-groups-editor'
@@ -57,6 +58,8 @@ export const CategoryGroups = ({
     if (isReadOnly) return
     return (
       <Section
+        id="groups"
+        isFoldedFirst
         title={t('finances.analysis.groups.title')}
         subtitle={t('finances.analysis.groups.plus')}
         action={
@@ -79,7 +82,10 @@ export const CategoryGroups = ({
 
   return (
     <Section
+      id="groups"
+      isFoldedFirst={!hasGroups}
       title={t('finances.analysis.groups.title')}
+      summary={t('finances.analysis.groups.saved', { count: groups.length })}
       action={
         canEdit && (
           <Button
@@ -132,7 +138,7 @@ export const CategoryGroups = ({
                     <span className="text-right tabular-nums">
                       <span className="font-medium">{money(total, book)}</span>{' '}
                       <span className="text-xs text-muted-foreground">
-                        {percent.format(share)}
+                        {formatShare(percent, share)}
                       </span>
                     </span>
                     <span

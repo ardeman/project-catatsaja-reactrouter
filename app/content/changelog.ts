@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'A book’s Analysis is shorter: fold any card to one line with its gist (such as what came in and went out, or how many budgets are over), long lists show the first five, and cards you haven’t set up start folded. Small shares read <1% instead of 0%, and the cash flow chart’s labels no longer overlap.',
+          id: 'Analisis buku kini lebih ringkas: lipat kartu mana pun jadi satu baris berisi intinya (misalnya uang masuk dan keluar, atau berapa anggaran yang terlampaui), daftar panjang menampilkan lima teratas, dan kartu yang belum diatur mulai terlipat. Bagian kecil tertulis <1%, bukan 0%, dan label grafik arus kas tidak lagi bertumpuk.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'Coming with Catat Saja Plus: keywords in a book’s Analysis, such as bensin or grab, gojek, with what the entries mentioning them add up to in the period. Everyone the book is shared with sees them.',

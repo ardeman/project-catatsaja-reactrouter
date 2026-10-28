@@ -25,6 +25,9 @@ const AXIS_BAND = 24
 // Room for the value of a column cut off at the top or bottom.
 const CUT_LABEL = 14
 const LEFT = 44
+// The least room between the values of two cut-off columns on one side;
+// closer ones show only the first, and the tooltip has the rest.
+const CUT_LABEL_GAP = 40
 const RADIUS = 4
 
 // A column growing up (sign 1) or down (sign -1) from the baseline, with a
@@ -65,7 +68,7 @@ const CutMark = ({
   width: number
   end: number
   sign: 1 | -1
-  label: string
+  label?: string
 }) => {
   const at = end + sign * 12
   return (
@@ -81,15 +84,17 @@ const CutMark = ({
           strokeWidth={1.5}
         />
       ))}
-      <text
-        x={x + width / 2}
-        y={end - sign * 5}
-        dy={sign === 1 ? 0 : '0.7em'}
-        textAnchor="middle"
-        className="fill-foreground text-[10px] font-medium tabular-nums"
-      >
-        {label}
-      </text>
+      {label && (
+        <text
+          x={x + width / 2}
+          y={end - sign * 5}
+          dy={sign === 1 ? 0 : '0.7em'}
+          textAnchor="middle"
+          className="fill-foreground text-[10px] font-medium tabular-nums"
+        >
+          {label}
+        </text>
+      )}
     </>
   )
 }
@@ -134,6 +139,22 @@ export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
     periods.length / Math.max(Math.floor(plotWidth / 56), 1),
   )
   const height = plotBottom + AXIS_BAND
+  const centerOf = (position: number) => LEFT + slot * position + slot / 2
+  const labelledCuts = (isCut: (period: TPeriod) => boolean) => {
+    const shown = new Set<number>()
+    let last = -Infinity
+    for (const [position, period] of periods.entries()) {
+      if (!isCut(period) || centerOf(position) - last < CUT_LABEL_GAP) continue
+      shown.add(position)
+      last = centerOf(position)
+    }
+    return shown
+  }
+  const cutAbove = labelledCuts((period) => period.income > top)
+  const cutBelow = labelledCuts((period) => period.expense > -bottom)
+  // A date at either end is anchored inside the chart, not cut off.
+  const anchorOf = (center: number) =>
+    center + 24 > width ? 'end' : center - 24 < LEFT ? 'start' : 'middle'
   const active = index === undefined ? undefined : periods[index]
 
   return (
@@ -175,7 +196,7 @@ export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
             </g>
           ))}
           {periods.map((period, position) => {
-            const center = LEFT + slot * position + slot / 2
+            const center = centerOf(position)
             const x = center - barWidth / 2
             return (
               <g key={period.start}>
@@ -214,7 +235,11 @@ export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
                     width={barWidth}
                     end={y(top)}
                     sign={1}
-                    label={compact.format(period.income)}
+                    label={
+                      cutAbove.has(position)
+                        ? compact.format(period.income)
+                        : undefined
+                    }
                   />
                 )}
                 {period.expense > -bottom && (
@@ -223,14 +248,18 @@ export const CashFlowChart = ({ periods, granularity, book }: TProperties) => {
                     width={barWidth}
                     end={y(bottom)}
                     sign={-1}
-                    label={compact.format(-period.expense)}
+                    label={
+                      cutBelow.has(position)
+                        ? compact.format(-period.expense)
+                        : undefined
+                    }
                   />
                 )}
                 {position % labelEvery === 0 && (
                   <text
                     x={center}
                     y={plotBottom + 16}
-                    textAnchor="middle"
+                    textAnchor={anchorOf(center)}
                     className="fill-muted-foreground text-[10px]"
                   >
                     {formatPeriod({

@@ -559,8 +559,6 @@
         "each_other": "{{count}} kali · rata-rata {{price}}",
         "latestUp": "terakhir {{price}}, {{percent}} lebih mahal",
         "latestDown": "terakhir {{price}}, {{percent}} lebih murah",
-        "showAll": "Lihat semua {{count}}",
-        "showFewer": "Lihat lebih sedikit",
         "none": "Tidak ada yang muncul lebih dari sekali pada periode ini."
       },
       "categories": {
@@ -587,7 +585,10 @@
         "left": "Sisa {{amount}}",
         "over": "Lewat {{amount}}",
         "of": "{{spent}} dari {{limit}}",
-        "plusToEdit": "Mengubah anggaran memerlukan Catat Saja Plus."
+        "plusToEdit": "Mengubah anggaran memerlukan Catat Saja Plus.",
+        "overCount_one": "{{count}} melebihi anggaran",
+        "overCount_other": "{{count}} melebihi anggaran",
+        "allWithin": "Semua masih dalam anggaran"
       },
       "goals": {
         "title": "Target tabungan",
@@ -647,7 +648,9 @@
         "untitled": "Grup tanpa nama",
         "ungrouped": "Tanpa grup",
         "emptyRange": "Tidak ada isi grupmu di rentang ini.",
-        "plusToEdit": "Mengubah grup perlu Catat Saja Plus."
+        "plusToEdit": "Mengubah grup perlu Catat Saja Plus.",
+        "saved_one": "{{count}} kelompok",
+        "saved_other": "{{count}} kelompok"
       },
       "keywords": {
         "title": "Per kata kunci",
@@ -663,7 +666,9 @@
         "count_one": "{{count}} catatan",
         "count_other": "{{count}} catatan",
         "emptyRange": "Tidak ada catatan dengan kata kuncimu dalam rentang ini.",
-        "plusToEdit": "Mengubah kata kunci perlu Catat Saja Plus."
+        "plusToEdit": "Mengubah kata kunci perlu Catat Saja Plus.",
+        "saved_one": "{{count}} kata kunci",
+        "saved_other": "{{count}} kata kunci"
       },
       "copy": {
         "open": "Salin dari buku lain",
@@ -716,6 +721,19 @@
         "weekday": "Hari dalam seminggu",
         "category": "Kategori",
         "item": "Item"
+      },
+      "section": {
+        "open": "Tampilkan kartu ini",
+        "fold": "Lipat kartu ini"
+      },
+      "showAll": "Tampilkan semua {{count}}",
+      "showFewer": "Tampilkan lebih sedikit",
+      "summary": {
+        "cashFlow": "{{income}} masuk · {{expense}} keluar",
+        "balance": "{{amount}} di akhir",
+        "categories": "Terbanyak {{category}}, {{share}}",
+        "items_one": "{{count}} hal muncul lebih dari sekali",
+        "items_other": "{{count}} hal muncul lebih dari sekali"
       }
     },
     "receipt": {

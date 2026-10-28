@@ -11,6 +11,7 @@ import {
   TFinanceEntry,
   TFinanceForm,
 } from '~/lib/types/finance'
+import { formatShare } from '~/lib/utils/finance-analysis'
 import { keywordTotals } from '~/lib/utils/keywords'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -52,6 +53,8 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
     if (isReadOnly) return
     return (
       <Section
+        id="keywords"
+        isFoldedFirst
         title={t('finances.analysis.keywords.title')}
         subtitle={t('finances.analysis.keywords.plus')}
         action={
@@ -74,7 +77,12 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
 
   return (
     <Section
+      id="keywords"
+      isFoldedFirst={!hasKeywords}
       title={t('finances.analysis.keywords.title')}
+      summary={t('finances.analysis.keywords.saved', {
+        count: keywords.length,
+      })}
       action={
         canEdit && (
           <Button
@@ -122,7 +130,7 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
                     <span className="text-right tabular-nums">
                       <span className="font-medium">{money(total, book)}</span>{' '}
                       <span className="text-xs text-muted-foreground">
-                        {percent.format(share)}
+                        {formatShare(percent, share)}
                       </span>
                     </span>
                     <span

@@ -559,8 +559,6 @@
         "each_other": "{{count}} times · {{price}} each",
         "latestUp": "latest {{price}}, {{percent}} more",
         "latestDown": "latest {{price}}, {{percent}} less",
-        "showAll": "Show all {{count}}",
-        "showFewer": "Show fewer",
         "none": "Nothing came up more than once in this period."
       },
       "categories": {
@@ -587,7 +585,10 @@
         "left": "{{amount}} left",
         "over": "{{amount}} over",
         "of": "{{spent}} of {{limit}}",
-        "plusToEdit": "Changing budgets needs Catat Saja Plus."
+        "plusToEdit": "Changing budgets needs Catat Saja Plus.",
+        "overCount_one": "{{count}} over budget",
+        "overCount_other": "{{count}} over budget",
+        "allWithin": "All within budget"
       },
       "goals": {
         "title": "Savings goals",
@@ -647,7 +648,9 @@
         "untitled": "Untitled group",
         "ungrouped": "Not grouped",
         "emptyRange": "Nothing in your groups in this range.",
-        "plusToEdit": "Changing groups needs Catat Saja Plus."
+        "plusToEdit": "Changing groups needs Catat Saja Plus.",
+        "saved_one": "{{count}} group",
+        "saved_other": "{{count}} groups"
       },
       "keywords": {
         "title": "By keyword",
@@ -663,7 +666,9 @@
         "count_one": "{{count}} entry",
         "count_other": "{{count}} entries",
         "emptyRange": "No entries with your keywords in this range.",
-        "plusToEdit": "Changing keywords needs Catat Saja Plus."
+        "plusToEdit": "Changing keywords needs Catat Saja Plus.",
+        "saved_one": "{{count}} keyword",
+        "saved_other": "{{count}} keywords"
       },
       "copy": {
         "open": "Copy from another book",
@@ -716,6 +721,19 @@
         "weekday": "Day of the week",
         "category": "Category",
         "item": "Item"
+      },
+      "section": {
+        "open": "Show this card",
+        "fold": "Fold this card"
+      },
+      "showAll": "Show all {{count}}",
+      "showFewer": "Show fewer",
+      "summary": {
+        "cashFlow": "{{income}} in · {{expense}} out",
+        "balance": "{{amount}} at the end",
+        "categories": "Most is {{category}}, {{share}}",
+        "items_one": "{{count}} thing came up more than once",
+        "items_other": "{{count}} things came up more than once"
       }
     },
     "receipt": {

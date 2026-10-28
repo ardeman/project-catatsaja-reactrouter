@@ -40,6 +40,7 @@ import { entryBookTotal, summarize } from '~/lib/utils/finance'
 import {
   balanceBefore,
   formatPeriod,
+  formatShare,
   groupByPeriod,
   groupByWeekday,
   groupings,
@@ -364,6 +365,11 @@ export const Analysis = ({
         })
       : title
 
+  const flowSummary = t('finances.analysis.summary.cashFlow', {
+    income: money(income, book),
+    expense: money(expense, book),
+  })
+
   return (
     // One column that may shrink below its content (`grid-cols-1`): the
     // charts draw at their measured width, and a plain grid kept them as
@@ -433,7 +439,9 @@ export const Analysis = ({
       {granularity === undefined ? undefined : view === 'chart' ? (
         <>
           <Section
+            id="cash-flow"
             title={t('finances.analysis.cashFlow.title')}
+            summary={flowSummary}
             subtitle={t(`finances.analysis.cashFlow.subtitle.${granularity}`)}
             action={
               <ul className="flex gap-3 text-xs text-muted-foreground">
@@ -461,7 +469,20 @@ export const Analysis = ({
             />
           </Section>
           {isOverTime && (
-            <Section title={t('finances.analysis.balance.title')}>
+            <Section
+              id="balance"
+              title={t('finances.analysis.balance.title')}
+              summary={
+                periods.length > 0 &&
+                t('finances.analysis.summary.balance', {
+                  amount: money(
+                    periods.at(-1)?.balance ?? 0,
+                    book,
+                    (periods.at(-1)?.balance ?? 0) < 0,
+                  ),
+                })
+              }
+            >
               <BalanceChart
                 periods={periods}
                 granularity={granularity}
@@ -472,7 +493,9 @@ export const Analysis = ({
         </>
       ) : (
         <Section
+          id="period-table"
           title={t('finances.analysis.periodTable.title')}
+          summary={flowSummary}
           subtitle={t(`finances.analysis.cashFlow.subtitle.${granularity}`)}
         >
           <div className="-mx-4 overflow-x-auto px-4">
@@ -592,6 +615,7 @@ export const Analysis = ({
 
       {compared && (
         <Section
+          id="compare"
           title={t('finances.analysis.compare.title')}
           subtitle={t('finances.analysis.compare.subtitle', {
             current: dates.formatRange(
@@ -636,7 +660,12 @@ export const Analysis = ({
             categories.length > 0 && (
               <Section
                 key={type}
+                id={`categories-${type}`}
                 title={titleOf(t('finances.analysis.categories.title'), type)}
+                summary={t('finances.analysis.summary.categories', {
+                  category: categoryLabel(categories[0].category),
+                  share: formatShare(share, categories[0].share),
+                })}
               >
                 <CategoryBreakdown
                   totals={categories}
@@ -660,7 +689,11 @@ export const Analysis = ({
             items.length > 0 && (
               <Section
                 key={type}
+                id={`items-${type}`}
                 title={titleOf(t('finances.analysis.items.title'), type)}
+                summary={t('finances.analysis.summary.items', {
+                  count: items.length,
+                })}
                 subtitle={t('finances.analysis.items.subtitle')}
               >
                 <ItemBreakdown

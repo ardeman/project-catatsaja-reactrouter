@@ -4,6 +4,9 @@ import { CategoryIcon } from '~/components/base/category-icon'
 import { categoryColor } from '~/lib/constants/finance'
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceCurrency, TCategoryTotal } from '~/lib/types/finance'
+import { formatShare } from '~/lib/utils/finance-analysis'
+
+import { useShowAll } from './show-all'
 
 type TProperties = {
   totals: TCategoryTotal[]
@@ -21,39 +24,43 @@ export const CategoryBreakdown = ({ totals, book }: TProperties) => {
   })
   // The folded "other" row can be the largest.
   const largest = Math.max(0, ...totals.map((item) => item.total))
+  const { shown, button } = useShowAll(totals)
 
   return (
-    <ul className="grid gap-3">
-      {totals.map(({ category, total, share }) => {
-        const label = t(
-          category === 'rest'
-            ? 'finances.analysis.categories.rest'
-            : `finances.form.category.${category}.label`,
-        )
-        return (
-          <li
-            key={category}
-            className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
-          >
-            <CategoryIcon category={category} />
-            <span className="truncate">{label}</span>
-            <span className="text-right tabular-nums">
-              <span className="font-medium">{money(total, book)}</span>{' '}
-              <span className="text-xs text-muted-foreground">
-                {percent.format(share)}
+    <div className="grid gap-3">
+      <ul className="grid gap-3">
+        {shown.map(({ category, total, share }) => {
+          const label = t(
+            category === 'rest'
+              ? 'finances.analysis.categories.rest'
+              : `finances.form.category.${category}.label`,
+          )
+          return (
+            <li
+              key={category}
+              className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
+            >
+              <CategoryIcon category={category} />
+              <span className="truncate">{label}</span>
+              <span className="text-right tabular-nums">
+                <span className="font-medium">{money(total, book)}</span>{' '}
+                <span className="text-xs text-muted-foreground">
+                  {formatShare(percent, share)}
+                </span>
               </span>
-            </span>
-            <span
-              aria-hidden="true"
-              className="col-start-2 col-end-4 h-2 rounded-r-[4px]"
-              style={{
-                width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
-                backgroundColor: categoryColor(category),
-              }}
-            />
-          </li>
-        )
-      })}
-    </ul>
+              <span
+                aria-hidden="true"
+                className="col-start-2 col-end-4 h-2 rounded-r-[4px]"
+                style={{
+                  width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
+                  backgroundColor: categoryColor(category),
+                }}
+              />
+            </li>
+          )
+        })}
+      </ul>
+      {button}
+    </div>
   )
 }

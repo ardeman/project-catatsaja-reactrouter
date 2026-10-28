@@ -1,11 +1,12 @@
 import { ArrowDown, ArrowUp } from 'lucide-react'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceCurrency } from '~/lib/types/finance'
 import { cn } from '~/lib/utils/shadcn'
 import { TSimilarItem } from '~/lib/utils/similar-items'
+
+import { useShowAll } from './show-all'
 
 type TProperties = {
   items: TSimilarItem[]
@@ -15,8 +16,6 @@ type TProperties = {
   showsPriceChange: boolean
 }
 
-// How many rows show before "Show all".
-const SHOWN = 8
 // Smaller price changes than this aren't worth pointing out.
 const NOTABLE_CHANGE = 0.01
 
@@ -27,12 +26,11 @@ export const ItemBreakdown = (properties: TProperties) => {
   const { items, book, showsPriceChange } = properties
   const { t, i18n } = useTranslation()
   const money = useMoney()
-  const [isAllShown, setIsAllShown] = useState(false)
+  const { shown, button } = useShowAll(items)
   const percent = new Intl.NumberFormat(i18n.language, {
     style: 'percent',
     maximumFractionDigits: 0,
   })
-  const shown = isAllShown ? items : items.slice(0, SHOWN)
 
   return (
     <div className="grid gap-3">
@@ -96,17 +94,7 @@ export const ItemBreakdown = (properties: TProperties) => {
           )
         })}
       </ul>
-      {items.length > SHOWN && (
-        <button
-          type="button"
-          onClick={() => setIsAllShown((current) => !current)}
-          className="justify-self-start text-xs font-medium underline underline-offset-4"
-        >
-          {isAllShown
-            ? t('finances.analysis.items.showFewer')
-            : t('finances.analysis.items.showAll', { count: items.length })}
-        </button>
-      )}
+      {button}
     </div>
   )
 }

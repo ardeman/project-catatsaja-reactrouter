@@ -62,6 +62,8 @@ export const Goals = ({ entries, book, isReadOnly }: TProperties) => {
     if (isReadOnly) return
     return (
       <Section
+        id="goals"
+        isFoldedFirst
         title={t('finances.analysis.goals.title')}
         subtitle={t('finances.analysis.goals.plus')}
         action={
@@ -84,6 +86,8 @@ export const Goals = ({ entries, book, isReadOnly }: TProperties) => {
 
   return (
     <Section
+      id="goals"
+      isFoldedFirst={!hasGoals}
       title={t('finances.analysis.goals.title')}
       subtitle={t(
         savings.from === 'accounts'
