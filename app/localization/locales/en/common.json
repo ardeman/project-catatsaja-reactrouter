@@ -19,7 +19,8 @@
     "termsOfService": "Terms of service",
     "signOut": "Sign out",
     "search": {
-      "placeholder": "Search"
+      "placeholder": "Search",
+      "close": "Close search"
     },
     "currency": "Currency",
     "userMenu": "Account menu",

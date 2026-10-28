@@ -23,8 +23,8 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'On phones, the top bar is gone: search and your account (with notifications) now sit in the bottom bar, within reach of your thumb, and pages use the full screen.',
-          id: 'Di ponsel, bilah atas kini tidak ada: pencarian dan akun Anda (beserta notifikasi) ada di bilah bawah, mudah dijangkau ibu jari, dan halaman memakai seluruh layar.',
+          en: 'On phones, the top bar is gone: search and your account (with notifications) now sit in the bottom bar, within reach of your thumb, search opens right in the tab bar (rising above the keyboard), and pages use the full screen.',
+          id: 'Di ponsel, bilah atas kini tidak ada: pencarian dan akun Anda (beserta notifikasi) ada di bilah bawah, mudah dijangkau ibu jari, pencarian terbuka langsung di bilah tab (naik di atas keyboard), dan halaman memakai seluruh layar.',
         },
       },
       {

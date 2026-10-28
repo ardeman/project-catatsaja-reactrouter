@@ -148,7 +148,8 @@ export const Search = (properties: TSearchProperties) => {
             isShowingResults ? activeDescendant : undefined
           }
           autoComplete="off"
-          className="w-full pl-10 md:pr-16"
+          // On phones the bar's glass pill is the field.
+          className="w-full pl-10 max-md:h-14 max-md:rounded-full max-md:border-0 max-md:shadow-none max-md:focus-visible:ring-0 md:pr-16"
         />
         {!query && (
           <kbd className="pointer-events-none absolute right-3 hidden rounded border bg-muted px-1.5 py-0.5 font-sans text-[0.7rem] text-muted-foreground md:block">
@@ -398,9 +399,10 @@ const Results = (properties: TResultsProperties) => {
       id={listId}
       role="listbox"
       aria-label={t('navigation.search.placeholder')}
-      // Keep focus in the box so a click doesn't close the list first.
+      // Keep focus in the box so a click doesn't close the list first. On
+      // phones the list opens upward from the search box in the bottom row.
       onMouseDown={(event) => event.preventDefault()}
-      className="glass-surface fixed inset-x-4 top-[calc(4.5rem+env(safe-area-inset-top))] z-50 max-h-[70vh] overflow-y-auto rounded-xl border p-2 text-popover-foreground md:absolute md:inset-x-0 md:top-full md:mt-2"
+      className="glass-surface fixed inset-x-4 z-50 max-h-[min(70vh,calc(var(--keyboard-height)-6rem-env(safe-area-inset-top)))] overflow-y-auto rounded-xl border p-2 text-popover-foreground max-md:bottom-[calc(var(--row-bottom)+4.5rem+2px)] md:absolute md:inset-x-0 md:top-full md:mt-2"
     >
       {renderBody()}
     </ul>

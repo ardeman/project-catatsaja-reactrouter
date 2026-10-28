@@ -19,7 +19,8 @@
     "termsOfService": "Syarat layanan",
     "signOut": "Keluar",
     "search": {
-      "placeholder": "Cari"
+      "placeholder": "Cari",
+      "close": "Tutup pencarian"
     },
     "currency": "Mata uang",
     "userMenu": "Menu akun",

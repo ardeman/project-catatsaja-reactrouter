@@ -4,8 +4,9 @@ import {
   Lock,
   LogOut,
   Search as SearchIcon,
+  X,
 } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { CSSProperties, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import { useMediaQuery } from 'usehooks-ts'
@@ -28,6 +29,7 @@ import {
 import { appName } from '~/lib/constants/metadata'
 import { useEncryptionSession } from '~/lib/hooks/use-encryption-session'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useKeyboardInset } from '~/lib/hooks/use-keyboard-inset'
 import { useLogout } from '~/lib/hooks/use-logout'
 import { TMenu } from '~/lib/types/common'
 import { lockSession } from '~/lib/utils/encryption-session'
@@ -77,26 +79,39 @@ export const Navbar = (properties: TProperties) => {
   const { mutate: mutateLogout } = useLogout()
   const notifications = useNotifications()
   // Phones have no top bar: the pages are bottom tabs, beside an account tab
-  // and a Search button that brings the search box down from the top.
+  // and a Search button that turns the tabs' pill into the search box, the
+  // row rising above the keyboard while it's open.
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const searchReference = useRef<HTMLInputElement>(null)
   const [isSearching, setIsSearching] = useState(false)
+  const keyboard = useKeyboardInset(!isDesktop && isSearching)
+  // The bottom row's place, shared by the tabs, the Search button and the box.
+  const rowStyle = {
+    '--row-bottom': keyboard?.bottom
+      ? `max(var(--nav-bottom), ${keyboard.bottom + 8}px)`
+      : 'var(--nav-bottom)',
+    '--keyboard-height': keyboard ? `${keyboard.height}px` : '100svh',
+  } as CSSProperties
+  const searchLabel = t(
+    isSearching ? 'navigation.search.close' : 'navigation.search.placeholder',
+  )
 
   return (
     <>
       <header
         className={cn(
-          'top-0 z-50 flex h-16 w-full items-center gap-4 px-4 md:sticky md:px-6',
-          'max-md:fixed max-md:h-[calc(4rem+env(safe-area-inset-top))] max-md:pt-[env(safe-area-inset-top)] max-md:motion-safe:transition-[translate,opacity] max-md:motion-safe:duration-200',
-          !isSearching &&
-            'max-md:pointer-events-none max-md:-translate-y-full max-md:opacity-0',
+          'z-50 flex h-16 w-full items-center gap-4 px-4 md:sticky md:top-0 md:px-6',
+          // In the tabs' pill: as tall, and clear of the Search button.
+          'max-md:fixed max-md:right-[calc(0.5rem+4rem+2px+0.375rem)] max-md:bottom-(--row-bottom) max-md:left-2 max-md:z-51 max-md:h-[calc(4rem+2px)] max-md:w-auto max-md:px-1 max-md:motion-safe:transition-opacity max-md:motion-safe:duration-200',
+          !isSearching && 'max-md:pointer-events-none max-md:opacity-0',
           className,
         )}
+        style={rowStyle}
       >
         {/* Keep blur off the ancestor so search can blur the page behind it. */}
         <div
           aria-hidden="true"
-          className="glass-surface pointer-events-none absolute inset-0 -z-10 border-b"
+          className="glass-surface pointer-events-none absolute inset-0 -z-10 max-md:rounded-full max-md:border md:border-b"
         />
         <Navigation className="hidden shrink-0 flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
@@ -187,10 +202,17 @@ export const Navbar = (properties: TProperties) => {
         </div>
       </header>
       {!isDesktop && (
-        <div className="fixed inset-x-2 bottom-(--nav-bottom) z-50 flex gap-1.5">
+        <div
+          className="fixed inset-x-2 bottom-(--row-bottom) z-50 flex gap-1.5"
+          style={rowStyle}
+        >
           <Navigation
             variant="bottom"
-            className="glass-surface flex min-w-0 flex-1 gap-0 rounded-full border p-1"
+            className={cn(
+              'glass-surface flex min-w-0 flex-1 gap-0 rounded-full border p-1 motion-safe:transition-opacity motion-safe:duration-200',
+              // The search box takes the pill's place.
+              isSearching && 'pointer-events-none opacity-0',
+            )}
             trailing={
               <AccountSheet
                 notifications={notifications}
@@ -200,9 +222,17 @@ export const Navbar = (properties: TProperties) => {
           />
           <button
             type="button"
-            aria-label={t('navigation.search.placeholder')}
-            title={t('navigation.search.placeholder')}
+            aria-label={searchLabel}
+            title={searchLabel}
+            aria-pressed={isSearching}
+            // Keep focus in the box, so a tap closes search instead of
+            // blurring it and opening it again.
+            onMouseDown={(event) => event.preventDefault()}
             onClick={() => {
+              if (isSearching) {
+                searchReference.current?.blur()
+                return
+              }
               // In the tap itself, or the phone won't open its keyboard.
               searchReference.current?.focus()
               searchReference.current?.select()
@@ -210,10 +240,17 @@ export const Navbar = (properties: TProperties) => {
             // As tall as the pill: its tabs plus padding and border.
             className="glass-surface flex size-[calc(4rem+2px)] shrink-0 items-center justify-center rounded-full border text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
           >
-            <SearchIcon
-              aria-hidden="true"
-              className="size-5"
-            />
+            {isSearching ? (
+              <X
+                aria-hidden="true"
+                className="size-5"
+              />
+            ) : (
+              <SearchIcon
+                aria-hidden="true"
+                className="size-5"
+              />
+            )}
           </button>
         </div>
       )}
