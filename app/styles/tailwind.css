@@ -158,26 +158,24 @@
   }
 
   /* Behind the installed app's see-through status bar on iPhone: what
-     scrolls under it blurs and fades into the page colour. Its height is 0
-     wherever there is no top safe area. */
+     scrolls under it blurs, fading out downwards. It has no tint and covers
+     only the status bar, so at rest it matches the page and blurs nothing
+     below. Its height is 0 wherever there is no top safe area. */
   .status-bar-fade {
-    height: calc(env(safe-area-inset-top) * 1.75);
-    background-image: linear-gradient(
-      to bottom,
-      hsl(var(--background) / 0.55),
-      hsl(var(--background) / 0.25) 50%,
-      hsl(var(--background) / 0)
-    );
+    height: env(safe-area-inset-top);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    mask-image: linear-gradient(to bottom, black 25%, transparent);
+    mask-image: linear-gradient(to bottom, black 50%, transparent);
   }
 
   @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     .status-bar-fade {
-      height: env(safe-area-inset-top);
-      background-color: hsl(var(--background));
-      background-image: none;
+      /* The page's colour under .app-background. */
+      background-color: color-mix(
+        in srgb,
+        hsl(var(--muted)) 40%,
+        hsl(var(--background))
+      );
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
       mask-image: none;
