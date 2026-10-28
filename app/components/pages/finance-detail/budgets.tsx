@@ -119,16 +119,35 @@ export const Budgets = ({ entries, book, isReadOnly }: TProperties) => {
             {shown.map(({ id, category, limit, spent, left, share }) => (
               <li
                 key={id}
-                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
+                className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-1 text-sm"
               >
                 <BudgetIcon category={category} />
                 <span className="truncate">{t(budgetLabelKey(category))}</span>
-                {/* What is left above what was spent, so the category's name
-                  keeps its width on a phone. */}
-                <span className="grid text-right tabular-nums">
+                <span
+                  aria-hidden="true"
+                  className="col-span-2 h-2 overflow-hidden rounded-[4px] bg-muted"
+                >
                   <span
                     className={cn(
-                      'font-medium',
+                      'block h-full rounded-r-[4px]',
+                      left < 0 ? 'bg-destructive' : 'bg-viz-expense',
+                    )}
+                    style={{ width: `${Math.min(share, 1) * 100}%` }}
+                  />
+                </span>
+                {/* The amounts go under the bar, so the category's name keeps
+                  its width on a phone; what is left wraps to its own line when
+                  both don't fit. */}
+                <span className="col-span-2 flex flex-wrap items-baseline justify-between gap-x-2 tabular-nums">
+                  <span className="text-xs text-muted-foreground">
+                    {t('finances.analysis.budgets.of', {
+                      spent: money(spent, book),
+                      limit: money(limit, book),
+                    })}
+                  </span>
+                  <span
+                    className={cn(
+                      'ml-auto font-medium',
                       left < 0 && 'text-destructive-text',
                     )}
                   >
@@ -139,24 +158,6 @@ export const Budgets = ({ entries, book, isReadOnly }: TProperties) => {
                       { amount: money(Math.abs(left), book) },
                     )}
                   </span>
-                  <span className="text-xs text-muted-foreground">
-                    {t('finances.analysis.budgets.of', {
-                      spent: money(spent, book),
-                      limit: money(limit, book),
-                    })}
-                  </span>
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="col-span-3 h-2 overflow-hidden rounded-[4px] bg-muted"
-                >
-                  <span
-                    className={cn(
-                      'block h-full rounded-r-[4px]',
-                      left < 0 ? 'bg-destructive' : 'bg-viz-expense',
-                    )}
-                    style={{ width: `${Math.min(share, 1) * 100}%` }}
-                  />
                 </span>
               </li>
             ))}
