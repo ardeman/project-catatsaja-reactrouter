@@ -240,7 +240,7 @@ export const Form = (properties: TFormProperties) => {
           isPage
           cardStyle={toCardStyle(note?.cardStyle)}
         />
-        <div className="sticky top-4 z-40 flex flex-col gap-1 md:top-24">
+        <div className="sticky top-[calc(1rem+env(safe-area-inset-top))] z-40 flex flex-col gap-1 md:top-24">
           <Action
             className="w-full"
             buttonClassName="glass-surface"
