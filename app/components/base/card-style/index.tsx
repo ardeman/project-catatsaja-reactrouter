@@ -15,7 +15,8 @@ import { cn } from '~/lib/utils/shadcn'
 // top corner, clear of the action bar at the bottom. The card needs
 // `isolate` so this layer stays above its surface and below its text. On a
 // detail page (`isPage`) it covers the whole screen behind the page, softer
-// so long text stays easy to read; `main` is isolated for it.
+// so long text stays easy to read; `main` is isolated for it. Its height is
+// set (`h-lvh`) because Chrome left `inset-0` alone 16px short of the bottom.
 export const CardStyleLayer = (properties: {
   cardStyle?: TCardStyle
   isPage?: boolean
@@ -28,7 +29,7 @@ export const CardStyleLayer = (properties: {
       aria-hidden="true"
       className={cn(
         'pointer-events-none inset-0 -z-10 overflow-hidden',
-        isPage ? 'fixed' : 'absolute',
+        isPage ? 'fixed h-lvh' : 'absolute',
       )}
     >
       {color && (
