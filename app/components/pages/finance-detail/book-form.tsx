@@ -283,6 +283,30 @@ export const Form = (properties: TFormProperties) => {
     () => groupByDate(shownEntries),
     [shownEntries],
   )
+  // New entries scroll into view just below the floating form (or the Add
+  // buttons), so the person sees where they landed.
+  const [addedIds, setAddedIds] = useState<string[]>([])
+  useEffect(() => {
+    if (addedIds.length === 0) return
+    // The rows come in list order, so the first is the topmost.
+    const row = document.querySelector(
+      addedIds.map((id) => `[data-entry-id="${CSS.escape(id)}"]`).join(','),
+    )
+    if (!row) {
+      // Wait for the list to catch up, unless the filter hides the entries.
+      if (entries.some(({ id }) => addedIds.includes(id))) setAddedIds([])
+      return
+    }
+    setAddedIds([])
+    const dock = document.querySelector('[data-entry-dock]')
+    const top = (dock?.getBoundingClientRect().bottom ?? 0) + 8
+    window.scrollBy({
+      top: row.getBoundingClientRect().top - top,
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'instant'
+        : 'smooth',
+    })
+  }, [addedIds, groupedEntries, entries])
   // Rebuild suggestions only when entries change, not while editing a title
   // or moving between dialogs.
   const history = useMemo(
@@ -474,6 +498,7 @@ export const Form = (properties: TFormProperties) => {
         : [...current, entry],
       { shouldDirty: true },
     )
+    if (!exists) setAddedIds([entry.id])
   }
 
   // Entries read from a receipt, after the person checked them.
@@ -481,6 +506,7 @@ export const Form = (properties: TFormProperties) => {
     setValue('content', [...getValues('content'), ...added], {
       shouldDirty: true,
     })
+    setAddedIds(added.map(({ id }) => id))
   }
 
   const handleDeleteEntry = (id: string) => {
@@ -768,6 +794,7 @@ export const Form = (properties: TFormProperties) => {
                 <div
                   // Floats under the book's totals, like the entry form, so
                   // adding is always one tap away while scrolling.
+                  data-entry-dock
                   className="motion-fade sticky top-[calc(7.5rem+var(--summary-height,0px)+0.5rem)] z-20 flex flex-wrap gap-2 md:top-[calc(8.5rem+var(--summary-height,0px)+0.5rem)]"
                 >
                   <Button
@@ -852,6 +879,7 @@ export const Form = (properties: TFormProperties) => {
                       return (
                         <li
                           key={entry.id}
+                          data-entry-id={entry.id}
                           className="min-w-0"
                         >
                           <button

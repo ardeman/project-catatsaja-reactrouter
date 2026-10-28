@@ -257,12 +257,15 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   }
 
   // Start at the description when the form opens and after each saved
-  // entry, so a batch can be typed without reaching for the pointer.
+  // entry, so a batch can be typed without reaching for the pointer. Only
+  // opening scrolls to the form: after a save the book scrolls to the new
+  // entry instead.
   useEffect(() => {
     if (focusRequest === 0) return
-    panelReference.current?.scrollIntoView({ block: 'start' })
+    if (savedCount === 0)
+      panelReference.current?.scrollIntoView({ block: 'start' })
     setFocus('description')
-  }, [focusRequest, setFocus])
+  }, [focusRequest, savedCount, setFocus])
 
   useEffect(() => {
     if (editingFields.rate) setFocus('rate')
@@ -297,6 +300,8 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   return (
     <section
       ref={panelReference}
+      // Only the add form floats; the edit form sits in the list.
+      data-entry-dock={isEditing ? undefined : true}
       aria-labelledby="finance-entry-title"
       className={cn(
         'motion-enter [&_[role=combobox]]:h-8 [&_button[aria-haspopup=dialog]]:h-8 [&_input]:h-8 [&_label]:block [&_label]:text-xs [&_label]:leading-tight',

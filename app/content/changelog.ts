@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'After adding to a book, with the form, Quick add or a receipt, the page scrolls to the new entries, just below the form, so you can see where they landed.',
+          id: 'Setelah menambah entri ke buku, lewat formulir, Tambah cepat, atau struk, halaman bergulir ke entri baru tepat di bawah formulir, jadi kamu bisa melihat di mana entri itu masuk.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Notes open faster: the editor loads a third less. To get there, the Formula button for maths is gone; formulas already in a note stay as text between $ signs.',
           id: 'Catatan terbuka lebih cepat: editornya sepertiga lebih ringan. Untuk itu, tombol Rumus untuk matematika dihapus; rumus yang sudah ada di catatan tetap tersimpan sebagai teks di antara tanda $.',
         },
