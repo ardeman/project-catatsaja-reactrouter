@@ -657,6 +657,18 @@
         "emptyRange": "No entries with your keywords in this range.",
         "plusToEdit": "Changing keywords needs Catat Saja Plus."
       },
+      "copy": {
+        "open": "Copy from another book",
+        "title": "Copy from another book",
+        "description": "Adds the other book's groups of categories, budgets, keywords, savings goals still to reach, and payday. What this book already has stays as it is. Changes save with the book.",
+        "from": "Book to copy from",
+        "confirm": "Copy",
+        "converted": "Amounts are converted from {{from}} to {{to}} with your rates in Settings.",
+        "noRate": "There's no rate from {{from}} to {{to}} in your Settings, so budgets and goals are copied without amounts.",
+        "done_one": "Copied {{count}} item. Undo takes it back.",
+        "done_other": "Copied {{count}} items. Undo takes them back.",
+        "nothing": "This book already has everything the other one has."
+      },
       "compare": {
         "title": "Comparison",
         "subtitle": "{{current}} against {{previous}}",

@@ -657,6 +657,18 @@
         "emptyRange": "Tidak ada catatan dengan kata kuncimu dalam rentang ini.",
         "plusToEdit": "Mengubah kata kunci perlu Catat Saja Plus."
       },
+      "copy": {
+        "open": "Salin dari buku lain",
+        "title": "Salin dari buku lain",
+        "description": "Menambahkan kelompok kategori, anggaran, kata kunci, target tabungan yang belum tercapai, dan tanggal gajian dari buku lain. Yang sudah ada di buku ini tetap seperti semula. Perubahan tersimpan bersama buku.",
+        "from": "Buku sumber",
+        "confirm": "Salin",
+        "converted": "Jumlah dikonversi dari {{from}} ke {{to}} dengan kurs Anda di Pengaturan.",
+        "noRate": "Belum ada kurs dari {{from}} ke {{to}} di Pengaturan Anda, jadi anggaran dan target disalin tanpa jumlah.",
+        "done_one": "{{count}} hal disalin. Urungkan untuk membatalkannya.",
+        "done_other": "{{count}} hal disalin. Urungkan untuk membatalkannya.",
+        "nothing": "Buku ini sudah punya semua yang ada di buku lain itu."
+      },
       "compare": {
         "title": "Perbandingan",
         "subtitle": "{{current}} dibanding {{previous}}",

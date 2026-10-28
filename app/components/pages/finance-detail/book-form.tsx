@@ -747,6 +747,8 @@ export const Form = (properties: TFormProperties) => {
             options={analysisOptions}
             setOptions={setAnalysisOptions}
             isReadOnly={isReadOnly}
+            books={books.filter((item) => item.id !== finance?.id)}
+            currencies={currencies}
           />
         ) : (
           <>

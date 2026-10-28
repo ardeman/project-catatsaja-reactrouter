@@ -28,6 +28,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'new',
+        text: {
+          en: 'Coming with Catat Saja Plus: copy another book’s groups of categories, budgets, keywords, savings goals and payday into a book’s Analysis. What the book already has stays, and amounts are converted with your rates.',
+          id: 'Segera hadir bersama Catat Saja Plus: salin kelompok kategori, anggaran, kata kunci, target tabungan, dan tanggal gajian dari buku lain ke Analisis buku. Yang sudah ada di buku itu tetap, dan jumlahnya dikonversi dengan kursmu.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'In a book’s Analysis, By item now comes right after By category.',

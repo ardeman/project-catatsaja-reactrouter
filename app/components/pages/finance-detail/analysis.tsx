@@ -18,7 +18,12 @@ import {
   SelectValue,
 } from '~/components/base/select'
 import { useMoney } from '~/lib/hooks/use-money'
-import { TFinanceCurrency, TFinanceEntry } from '~/lib/types/finance'
+import {
+  TFinanceCurrency,
+  TFinanceEntry,
+  TFinanceResponse,
+} from '~/lib/types/finance'
+import { TCurrency } from '~/lib/types/settings'
 import {
   comparedRange,
   comparisons,
@@ -53,6 +58,7 @@ import { Budgets } from './budgets'
 import { CashFlowChart } from './cash-flow-chart'
 import { CategoryBreakdown } from './category-breakdown'
 import { CategoryGroups } from './category-groups'
+import { CopyAnalysis } from './copy-analysis'
 import { CustomDates } from './entry-filter'
 import { Goals } from './goals'
 import { ItemBreakdown } from './item-breakdown'
@@ -67,6 +73,9 @@ type TProperties = {
   options: TAnalysisOptions
   setOptions: Dispatch<SetStateAction<TAnalysisOptions>>
   isReadOnly: boolean
+  // The person's other books, to copy the analysis setup from.
+  books: TFinanceResponse[]
+  currencies: TCurrency[]
 }
 
 const timeGroupings = ['day', 'week', 'month'] as const
@@ -162,6 +171,8 @@ export const Analysis = ({
   options,
   setOptions,
   isReadOnly,
+  books,
+  currencies,
 }: TProperties) => {
   const { t, i18n } = useTranslation()
   const { range } = options
@@ -650,6 +661,12 @@ export const Analysis = ({
           isReadOnly={isReadOnly}
         />
       )}
+
+      <CopyAnalysis
+        books={books}
+        currencies={currencies}
+        isReadOnly={isReadOnly}
+      />
     </div>
   )
 }
