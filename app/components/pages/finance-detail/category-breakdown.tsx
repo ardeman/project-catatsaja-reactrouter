@@ -19,7 +19,8 @@ type TProperties = {
 // and share written beside it, so nothing depends on the colour. A thin
 // stacked bar on top shows the whole split at a glance, in the rows' order,
 // with gaps so neighbours that share a colour stay apart. Pointing at a
-// segment (or tapping it; tap again to clear) dims the other rows.
+// segment (or tapping it; tap again to clear) dims the other rows, and
+// pointing at a row dims the other segments.
 export const CategoryBreakdown = ({ totals, book }: TProperties) => {
   const { t, i18n } = useTranslation()
   const money = useMoney()
@@ -88,6 +89,12 @@ export const CategoryBreakdown = ({ totals, book }: TProperties) => {
                 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm transition-opacity',
                 isDimmed(category) && 'opacity-40',
               )}
+              onPointerEnter={(event) => {
+                if (event.pointerType === 'mouse') setHighlighted(category)
+              }}
+              onPointerLeave={(event) => {
+                if (event.pointerType === 'mouse') setHighlighted(undefined)
+              }}
             >
               <CategoryIcon category={category} />
               <span className="truncate">{label}</span>
