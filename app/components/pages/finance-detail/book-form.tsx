@@ -118,8 +118,6 @@ export const Form = (properties: TFormProperties) => {
     handleShareFinance,
     handleUnlinkFinance,
     handleBackFinance,
-    handleDuplicateFinance,
-    isDuplicatePending,
   } = useFinance()
   const { data: userData } = useUserData()
   const { data: currencies = [] } = useGetCurrencies()
@@ -448,13 +446,6 @@ export const Form = (properties: TFormProperties) => {
     return reference
   }
 
-  // Copies what is on screen, after saving it, and opens the copy.
-  const handleDuplicate = async () => {
-    await save()
-    const reference = await handleDuplicateFinance({ finance: getValues() })
-    if (reference) navigate(`/finances/${reference.id}`)
-  }
-
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault()
     const reference = await save()
@@ -623,8 +614,6 @@ export const Form = (properties: TFormProperties) => {
               }
               handleShare={() => handleShareFinance({ finance })}
               handleUnlink={() => handleUnlinkFinance({ finance })}
-              handleDuplicate={handleDuplicate}
-              isLoading={isDuplicatePending}
               sharedCount={sharedCount}
               cardStyle={toCardStyle(finance.cardStyle)}
               handleCardStyle={(next) =>
