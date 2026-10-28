@@ -14,7 +14,9 @@ type TProperties = {
 }
 
 // Largest first, each bar in its category's colour with the name, amount
-// and share written beside it, so nothing depends on the colour.
+// and share written beside it, so nothing depends on the colour. A thin
+// stacked bar on top shows the whole split at a glance, in the rows' order,
+// with gaps so neighbours that share a colour stay apart.
 export const CategoryBreakdown = ({ totals, book }: TProperties) => {
   const { t, i18n } = useTranslation()
   const money = useMoney()
@@ -24,10 +26,28 @@ export const CategoryBreakdown = ({ totals, book }: TProperties) => {
   })
   // The folded "other" row can be the largest.
   const largest = Math.max(0, ...totals.map((item) => item.total))
+  const sum = totals.reduce((total, item) => total + item.total, 0)
   const { shown, button } = useShowAll(totals)
 
   return (
     <div className="grid gap-3">
+      {sum > 0 && (
+        <div
+          aria-hidden="true"
+          className="flex h-3 gap-0.5 overflow-hidden rounded-[4px]"
+        >
+          {totals.map(({ category, total }) => (
+            <span
+              key={category}
+              className="min-w-0.5"
+              style={{
+                flexBasis: `${(total / sum) * 100}%`,
+                backgroundColor: categoryColor(category),
+              }}
+            />
+          ))}
+        </div>
+      )}
       <ul className="grid gap-3">
         {shown.map(({ category, total, share }) => {
           const label = t(

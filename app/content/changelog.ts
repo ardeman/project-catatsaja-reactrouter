@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'In a book’s Analysis, the totals by category start with one bar that shows the whole split at a glance.',
+          id: 'Di Analisis buku, jumlah per kategori kini diawali satu batang yang menunjukkan seluruh pembagiannya sekilas.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'A book’s Analysis is shorter: fold any card to one line with its gist (such as what came in and went out, or how many budgets are over), long lists show the first five, and cards you haven’t set up start folded. Small shares read <1% instead of 0%, and the cash flow chart’s labels no longer overlap.',
           id: 'Analisis buku kini lebih ringkas: lipat kartu mana pun jadi satu baris berisi intinya (misalnya uang masuk dan keluar, atau berapa anggaran yang terlampaui), daftar panjang menampilkan lima teratas, dan kartu yang belum diatur mulai terlipat. Bagian kecil tertulis <1%, bukan 0%, dan label grafik arus kas tidak lagi bertumpuk.',
         },
