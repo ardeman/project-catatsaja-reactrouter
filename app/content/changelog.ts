@@ -42,6 +42,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'fixed',
+        text: {
+          en: 'Fields and buttons line up again when editing a book’s accounts, budgets and savings goals, and next to a health log’s calorie target, even when a field shows a message below it.',
+          id: 'Kolom dan tombol kembali sejajar saat mengubah akun, anggaran, dan target tabungan buku, serta di samping target kalori log kesehatan, meski ada pesan di bawah kolom.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'In a book’s Analysis, By item now comes right after By category.',

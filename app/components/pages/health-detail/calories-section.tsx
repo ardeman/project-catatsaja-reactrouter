@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { NumberInput } from '~/components/base/number-input'
 import { Button } from '~/components/ui/button'
+import { Label } from '~/components/ui/label'
 import { THealthLogForm } from '~/lib/types/health'
 import { today } from '~/lib/utils/finance'
 import {
@@ -99,29 +100,35 @@ export const CaloriesSection = (properties: TSectionProperties) => {
             </p>
           </>
         )}
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2">
-          <NumberInput
-            name="calorieTarget"
-            label={t('health.calories.target')}
-            placeholder="2000"
-            allowMath
-            fractionDigits={0}
-            disabled={isReadOnly}
-          />
-          {suggestion && !isReadOnly && suggestion !== target && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                setValue('calorieTarget', suggestion, { shouldDirty: true })
-              }
-            >
-              {t('health.calories.useSuggestion', {
-                amount: number.format(suggestion),
-              })}
-            </Button>
-          )}
+        {/* The label sits outside the row, so the button lines up with the
+            field and stays put when a calculation's result shows below. */}
+        <div className="[&>:not([hidden])~:not([hidden])]:mt-1">
+          <Label htmlFor="calorie-target">{t('health.calories.target')}</Label>
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
+            <NumberInput
+              name="calorieTarget"
+              id="calorie-target"
+              placeholder="2000"
+              allowMath
+              fractionDigits={0}
+              disabled={isReadOnly}
+            />
+            {suggestion && !isReadOnly && suggestion !== target && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9"
+                onClick={() =>
+                  setValue('calorieTarget', suggestion, { shouldDirty: true })
+                }
+              >
+                {t('health.calories.useSuggestion', {
+                  amount: number.format(suggestion),
+                })}
+              </Button>
+            )}
+          </div>
         </div>
         {suggestion && (
           <p className="text-xs text-muted-foreground">

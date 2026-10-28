@@ -100,7 +100,7 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
               {accounts.map((account, index) => (
                 <li
                   key={account.id}
-                  className="motion-enter grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-center gap-1.5 [&_input]:h-8 [&_input]:text-sm"
+                  className="motion-enter grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-start gap-1.5 [&_input]:h-8 [&_input]:text-sm"
                 >
                   <Input<TFinanceForm>
                     name={`accounts.${index}.name`}

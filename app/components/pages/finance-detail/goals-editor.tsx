@@ -159,7 +159,7 @@ export const GoalsEditor = ({
                 key={goal.id}
                 className="grid gap-1.5 rounded-lg border p-2 [&_input]:h-8 [&_input]:text-sm"
               >
-                <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-center gap-1.5">
+                <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-start gap-1.5">
                   <Input<TFinanceForm>
                     name={`goals.${index}.name`}
                     label={t('finances.analysis.goals.name')}
@@ -190,7 +190,7 @@ export const GoalsEditor = ({
                     <X className="size-4" />
                   </Button>
                 </div>
-                <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-center gap-1.5">
+                <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-start gap-1.5">
                   <Select
                     value={goal.due}
                     onValueChange={(due) => handleDue(goal.id, due)}
@@ -228,6 +228,7 @@ export const GoalsEditor = ({
                     name={`goals.${index}.done`}
                     label={t('finances.analysis.goals.done')}
                     className="pr-1"
+                    containerClassName="h-8"
                   />
                 </div>
               </li>
