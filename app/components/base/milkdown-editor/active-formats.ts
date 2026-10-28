@@ -1,4 +1,4 @@
-import { EditorState, NodeSelection, Plugin } from '@milkdown/kit/prose/state'
+import { EditorState, Plugin } from '@milkdown/kit/prose/state'
 import { $prose } from '@milkdown/kit/utils'
 
 import { TEditorFormat } from './type'
@@ -26,15 +26,6 @@ const getActiveFormats = (state: EditorState) => {
       : doc.rangeHasMark(from, to, type)
     if (isOn) active.push(format)
   }
-  let hasFormula =
-    selection instanceof NodeSelection &&
-    selection.node.type.name === 'math_inline'
-  if (!empty && !hasFormula)
-    doc.nodesBetween(from, to, (node) => {
-      if (node.type.name === 'math_inline') hasFormula = true
-      return !hasFormula
-    })
-  if (hasFormula) active.push('formula')
   const parent = $from.parent
   if (parent.type.name === 'heading')
     active.push(parent.attrs.level === 1 ? 'heading' : 'subheading')

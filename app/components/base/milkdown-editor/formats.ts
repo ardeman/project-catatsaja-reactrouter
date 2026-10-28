@@ -8,7 +8,6 @@ import {
   List,
   ListOrdered,
   Pilcrow,
-  Sigma,
   Strikethrough,
 } from 'lucide-react'
 
@@ -18,7 +17,6 @@ export const formats = [
   { value: 'code', icon: Code },
   { value: 'strikethrough', icon: Strikethrough },
   { value: 'link', icon: Link },
-  { value: 'formula', icon: Sigma },
   { value: 'heading', icon: Heading1 },
   { value: 'subheading', icon: Heading2 },
   { value: 'bullets', icon: List },

@@ -169,8 +169,7 @@
       "text": "Normal text",
       "code": "Code",
       "link": "Link",
-      "strikethrough": "Strikethrough",
-      "formula": "Formula"
+      "strikethrough": "Strikethrough"
     },
     "untitled": "Untitled note",
     "empty": {

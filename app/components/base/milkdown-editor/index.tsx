@@ -1,4 +1,12 @@
-import { Crepe } from '@milkdown/crepe'
+import { languages } from '@codemirror/language-data'
+import { CrepeBuilder } from '@milkdown/crepe/builder'
+import { codeMirror } from '@milkdown/crepe/feature/code-mirror'
+import { cursor } from '@milkdown/crepe/feature/cursor'
+import { imageBlock } from '@milkdown/crepe/feature/image-block'
+import { linkTooltip } from '@milkdown/crepe/feature/link-tooltip'
+import { listItem } from '@milkdown/crepe/feature/list-item'
+import { placeholder } from '@milkdown/crepe/feature/placeholder'
+import { table } from '@milkdown/crepe/feature/table'
 import { editorViewCtx } from '@milkdown/kit/core'
 import { replaceAll } from '@milkdown/kit/utils'
 import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/react'
@@ -10,7 +18,17 @@ import { codeTheme } from './code-theme'
 import { FormattingMenu } from './formatting-menu.client'
 import { TEditorFormat, TMilkdownEditorProperties } from './type'
 
-import '@milkdown/crepe/theme/common/style.css'
+// Only the features added below, not Crepe's style.css: that also brings
+// KaTeX (math), the slash menu, toolbars and AI, which notes don't use.
+import '@milkdown/crepe/theme/common/prosemirror.css'
+import '@milkdown/crepe/theme/common/reset.css'
+import '@milkdown/crepe/theme/common/code-mirror.css'
+import '@milkdown/crepe/theme/common/cursor.css'
+import '@milkdown/crepe/theme/common/image-block.css'
+import '@milkdown/crepe/theme/common/link-tooltip.css'
+import '@milkdown/crepe/theme/common/list-item.css'
+import '@milkdown/crepe/theme/common/placeholder.css'
+import '@milkdown/crepe/theme/common/table.css'
 import '~/styles/crepe.css'
 
 export { FormattingBar } from './formatting-bar'
@@ -43,7 +61,7 @@ const Editor = <TFormValues extends Record<string, unknown>>(
   const { register, setValue, getValues, setFocus, getFieldState } =
     useFormContext<TFormValues>()
   const { ref } = register(name)
-  const crepeReference = useRef<Crepe>(undefined)
+  const crepeReference = useRef<CrepeBuilder>(undefined)
   const editorElement = useRef<HTMLElement | null>(null)
   const readOnlyReference = useRef(readOnly)
   // Markdown this component put into the editor itself, so the change
@@ -56,25 +74,22 @@ const Editor = <TFormValues extends Record<string, unknown>>(
   }, [onActiveFormatsChange])
 
   useEditor((root) => {
-    const crepe = new Crepe({
+    // The builder adds only the features listed, so the rest (KaTeX math
+    // alone is the largest part of the editor) stays out of the bundle.
+    const crepe = new CrepeBuilder({
       root,
       defaultValue: (getValues(name) as string) || '',
-      features: {
-        [Crepe.Feature.BlockEdit]: false,
-        [Crepe.Feature.Toolbar]: false,
-      },
-      featureConfigs: {
-        [Crepe.Feature.CodeMirror]: { theme: codeTheme },
-        // The virtual cursor hides the native caret (caret-color:
-        // transparent), and iOS draws the selection handles in the caret's
-        // colour, so they disappeared.
-        [Crepe.Feature.Cursor]: { virtual: false },
-        [Crepe.Feature.Placeholder]: {
-          text: placeholderText,
-          mode: 'doc',
-        },
-      },
     })
+      .addFeature(codeMirror, { theme: codeTheme, languages })
+      // The virtual cursor hides the native caret (caret-color:
+      // transparent), and iOS draws the selection handles in the caret's
+      // colour, so they disappeared.
+      .addFeature(cursor, { virtual: false })
+      .addFeature(imageBlock)
+      .addFeature(linkTooltip)
+      .addFeature(listItem)
+      .addFeature(placeholder, { text: placeholderText, mode: 'doc' })
+      .addFeature(table)
     crepe.editor.use(
       activeFormatsPlugin((formats) => {
         setActiveFormats(formats)

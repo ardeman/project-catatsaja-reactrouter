@@ -145,11 +145,6 @@ export const FormattingMenu = ({
           commands.call(toggleLinkCommand.key)
           break
         }
-        case 'formula': {
-          // The enabled Crepe Latex feature registers this named command.
-          commands.call('ToggleLatex')
-          break
-        }
         case 'heading': {
           commands.call(wrapInHeadingCommand.key, 1)
           break

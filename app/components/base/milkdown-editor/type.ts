@@ -23,7 +23,6 @@ export type TEditorFormat =
   | 'code'
   | 'strikethrough'
   | 'link'
-  | 'formula'
   | 'heading'
   | 'subheading'
   | 'bullets'

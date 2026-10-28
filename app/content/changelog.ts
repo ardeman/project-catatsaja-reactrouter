@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Notes open faster: the editor loads a third less. To get there, the Formula button for maths is gone; formulas already in a note stay as text between $ signs.',
+          id: 'Catatan terbuka lebih cepat: editornya sepertiga lebih ringan. Untuk itu, tombol Rumus untuk matematika dihapus; rumus yang sudah ada di catatan tetap tersimpan sebagai teks di antara tanda $.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'In a book’s Analysis, the totals by category start with one bar that shows the whole split at a glance. Point at or tap a part of it, or point at a category below, to pick it out.',
           id: 'Di Analisis buku, jumlah per kategori kini diawali satu batang yang menunjukkan seluruh pembagiannya sekilas. Arahkan kursor atau ketuk salah satu bagiannya, atau arahkan kursor ke kategori di bawahnya, untuk menyorotnya.',
         },
