@@ -136,7 +136,10 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
             {pending ? <LoaderCircle className="animate-spin" /> : <Sparkles />}
           </UIButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent
+          align="end"
+          className="glass-surface"
+        >
           <DropdownMenuItem onSelect={handleDictate}>
             <Mic className="size-4" />
             {t('tasks.ai.dictate')}

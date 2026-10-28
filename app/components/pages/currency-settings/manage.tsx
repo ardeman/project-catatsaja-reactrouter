@@ -295,7 +295,7 @@ export const ManageCurrencies = () => {
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
       >
-        <DialogContent className="glass-surface">
+        <DialogContent className="glass-surface glass-thick">
           <DialogHeader>
             <DialogTitle>
               {t(
@@ -403,7 +403,7 @@ export const ManageCurrencies = () => {
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
       >
-        <DialogContent className="glass-surface">
+        <DialogContent className="glass-surface glass-thick">
           <DialogHeader>
             <DialogTitle>
               {t('settings.manageCurrencies.button.delete')}

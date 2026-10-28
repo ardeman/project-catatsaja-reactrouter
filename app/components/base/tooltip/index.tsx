@@ -11,7 +11,7 @@ export {
 
 // The look every tooltip shares, hints and chart readouts alike.
 export const tooltipSurface =
-  'rounded-lg border bg-popover px-3 py-2.5 text-xs text-popover-foreground shadow-md'
+  'glass-surface rounded-lg border px-3 py-2.5 text-xs text-popover-foreground'
 
 export const TooltipContent = (
   properties: ComponentProps<typeof UITooltipContent>,

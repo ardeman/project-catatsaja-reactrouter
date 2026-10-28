@@ -31,7 +31,7 @@ export const SectionInfo = ({
     </PopoverTrigger>
     <PopoverContent
       align="start"
-      className="text-sm text-muted-foreground"
+      className="glass-surface text-sm text-muted-foreground"
     >
       {text}
     </PopoverContent>

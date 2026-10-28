@@ -28,6 +28,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'A new glass look: cards, bars, menus, tooltips, notices and sheets are clearer panes with a soft shine on their edges. If your device is set to reduce transparency or increase contrast, they stay solid.',
+          id: 'Tampilan kaca baru: kartu, bilah, menu, tooltip, pemberitahuan, dan lembar kini berupa panel bening dengan kilau lembut di tepinya. Jika perangkat Anda diatur untuk mengurangi transparansi atau menambah kontras, semuanya tetap padat.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'After adding to a book, the page now really scrolls to the new entry, just below the form, instead of leaving it hidden behind the form.',

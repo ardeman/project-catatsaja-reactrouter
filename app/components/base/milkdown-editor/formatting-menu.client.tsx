@@ -209,7 +209,7 @@ export const FormattingMenu = ({
           aria-label={t('notes.formatting.title')}
           align="start"
           collisionPadding={12}
-          className="w-72 max-w-[calc(100vw-1.5rem)] p-2"
+          className="glass-surface w-72 max-w-[calc(100vw-1.5rem)] p-2"
           onOpenAutoFocus={(event) => {
             // A touch release must not refocus the editor from a menu
             // button and dismiss the popup before an option is chosen.
