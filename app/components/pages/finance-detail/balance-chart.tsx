@@ -78,7 +78,7 @@ export const BalanceChart = ({ periods, granularity, book }: TProperties) => {
           height={height}
           role="img"
           aria-label={t('finances.analysis.balance.label')}
-          className="block touch-pan-y outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
+          className="block touch-pan-y outline-none select-none [-webkit-touch-callout:none] focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
           {...focusProps}
         >
           {ticks.map((tick) => (

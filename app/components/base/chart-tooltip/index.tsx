@@ -32,7 +32,7 @@ export const ChartTooltip = ({ title, rows, x, width }: TProperties) => {
       aria-live="polite"
       className={cn(
         tooltipSurface,
-        'pointer-events-none absolute top-0 z-10 grid gap-2',
+        'pointer-events-none absolute top-0 z-10 grid gap-2 select-none',
       )}
       style={{ left, width: tooltipWidth }}
     >

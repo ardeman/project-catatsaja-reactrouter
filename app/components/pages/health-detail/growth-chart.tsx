@@ -161,7 +161,7 @@ export const GrowthChart = ({
           height={height}
           role="img"
           aria-label={label}
-          className="block touch-pan-y outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
+          className="block touch-pan-y outline-none select-none [-webkit-touch-callout:none] focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
           {...(points.length > 0 && focusProps)}
         >
           {/* The usual range (−2 to +2 SD), lightly shaded. */}

@@ -23,8 +23,15 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'In a book’s Analysis, the totals by category start with one bar that shows the whole split at a glance.',
-          id: 'Di Analisis buku, jumlah per kategori kini diawali satu batang yang menunjukkan seluruh pembagiannya sekilas.',
+          en: 'In a book’s Analysis, the totals by category start with one bar that shows the whole split at a glance. Point at or tap a part of it to pick out its category.',
+          id: 'Di Analisis buku, jumlah per kategori kini diawali satu batang yang menunjukkan seluruh pembagiannya sekilas. Arahkan kursor atau ketuk salah satu bagiannya untuk menyorot kategorinya.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Holding a finger on a chart on a phone no longer selects its text.',
+          id: 'Menahan jari di grafik pada ponsel tidak lagi memilih teksnya.',
         },
       },
       {

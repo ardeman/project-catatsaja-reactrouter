@@ -114,7 +114,7 @@ export const MetricChart = ({ points, label, format, band }: TProperties) => {
           height={height}
           role="img"
           aria-label={label}
-          className="block touch-pan-y outline-none focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
+          className="block touch-pan-y outline-none select-none [-webkit-touch-callout:none] focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-ring"
           {...focusProps}
         >
           {band && (
