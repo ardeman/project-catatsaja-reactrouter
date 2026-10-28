@@ -42,6 +42,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'new',
+        text: {
+          en: 'Coming with Catat Saja Plus: a budget for all of a book’s spending, beside the budgets per category, with what is left of it this month.',
+          id: 'Segera hadir bersama Catat Saja Plus: anggaran untuk semua pengeluaran buku, di samping anggaran per kategori, lengkap dengan sisanya bulan ini.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Fields and buttons line up again when editing a book’s accounts, budgets and savings goals, and next to a health log’s calorie target, even when a field shows a message below it.',

@@ -1,4 +1,4 @@
-import { Plus, X } from 'lucide-react'
+import { Plus, Wallet, X } from 'lucide-react'
 import { Dispatch, SetStateAction } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +16,7 @@ import {
 import { Button } from '~/components/ui/button'
 import { financeCategories } from '~/lib/constants/finance'
 import { TFinanceCurrency, TFinanceForm } from '~/lib/types/finance'
+import { wholeBook } from '~/lib/utils/budgets'
 
 type TProperties = {
   open: boolean
@@ -23,12 +24,33 @@ type TProperties = {
   book: TFinanceCurrency
 }
 
-const expenseCategories = financeCategories.filter(
-  (category) => category.type === 'expense',
-)
+// The whole book first, then the expense categories.
+const budgetCategories = [
+  wholeBook,
+  ...financeCategories
+    .filter((category) => category.type === 'expense')
+    .map(({ key }) => key),
+]
 
-// Choosing a monthly limit for expense categories, one budget per
-// category. Changes go into the book's form as they are made, so they save
+// A budget's icon: a category's, or a wallet for the whole book.
+export const BudgetIcon = ({ category }: { category: string }) =>
+  category === wholeBook ? (
+    <Wallet
+      aria-hidden="true"
+      className="size-4 shrink-0 text-muted-foreground"
+    />
+  ) : (
+    <CategoryIcon category={category} />
+  )
+
+// The translation key of a budget's name.
+export const budgetLabelKey = (category: string) =>
+  category === wholeBook
+    ? 'finances.analysis.budgets.wholeBook'
+    : `finances.form.category.${category}.label`
+
+// Choosing a monthly limit for all of the book's spending and for expense
+// categories, one budget per category. Changes go into the book's form as they are made, so they save
 // like the rest of the book.
 export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
   const { t } = useTranslation()
@@ -36,7 +58,7 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
   // Rows are keyed by their own id (see `accounts.tsx`).
   const budgets = useWatch({ control, name: 'budgets' }) ?? []
   const used = new Set(budgets.map((budget) => budget.category))
-  const unused = expenseCategories.filter(({ key }) => !used.has(key))
+  const unused = budgetCategories.filter((key) => !used.has(key))
 
   const update = (next: TFinanceForm['budgets']) =>
     setValue('budgets', next, { shouldDirty: true })
@@ -46,7 +68,7 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
     if (!first) return
     update([
       ...(getValues('budgets') ?? []),
-      { id: crypto.randomUUID(), category: first.key, limit: null },
+      { id: crypto.randomUUID(), category: first, limit: null },
     ])
   }
 
@@ -88,18 +110,18 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {expenseCategories
+                    {budgetCategories
                       .filter(
-                        ({ key }) => key === budget.category || !used.has(key),
+                        (key) => key === budget.category || !used.has(key),
                       )
-                      .map(({ key }) => (
+                      .map((key) => (
                         <SelectItem
                           key={key}
                           value={key}
                         >
                           <span className="flex items-center gap-2">
-                            <CategoryIcon category={key} />
-                            {t(`finances.form.category.${key}.label`)}
+                            <BudgetIcon category={key} />
+                            {t(budgetLabelKey(key))}
                           </span>
                         </SelectItem>
                       ))}
@@ -110,9 +132,7 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
                   allowMath
                   fractionDigits={book.maximumFractionDigits}
                   accessibleLabel={t('finances.analysis.budgets.limitOf', {
-                    category: t(
-                      `finances.form.category.${budget.category}.label`,
-                    ),
+                    category: t(budgetLabelKey(budget.category)),
                     // An attribute, not HTML: "Food & drinks" stays.
                     interpolation: { escapeValue: false },
                   })}

@@ -5,7 +5,11 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 
-import { budgetUsage, normalizeBudgets } from '../app/lib/utils/budgets.ts'
+import {
+  budgetUsage,
+  normalizeBudgets,
+  wholeBook,
+} from '../app/lib/utils/budgets.ts'
 
 const entry = (category, amount, overrides = {}) => ({
   date: '2026-10-05',
@@ -82,6 +86,29 @@ describe('budget usage', () => {
         '2026-10',
       ),
       [],
+    )
+  })
+})
+
+describe('the whole book budget', () => {
+  test("counts all of the month's expenses and comes first", () => {
+    const all = { id: 'all', category: wholeBook, limit: 2000 }
+    const usage = budgetUsage(
+      [
+        entry('fnb', 900),
+        entry('transport', 300),
+        entry('fnb', 999, { date: '2026-09-30' }),
+        entry('salary', 5000, { type: 'income' }),
+      ],
+      [food, all],
+      '2026-10',
+    )
+    assert.deepEqual(
+      usage.map(({ id, spent, left }) => ({ id, spent, left })),
+      [
+        { id: 'all', spent: 1200, left: 800 },
+        { id: 'food', spent: 900, left: 100 },
+      ],
     )
   })
 })

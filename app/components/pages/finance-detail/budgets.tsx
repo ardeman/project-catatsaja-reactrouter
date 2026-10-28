@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { CategoryIcon } from '~/components/base/category-icon'
 import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
 import { usePlan } from '~/lib/hooks/use-plan'
@@ -16,7 +15,7 @@ import { budgetUsage, monthOf } from '~/lib/utils/budgets'
 import { today } from '~/lib/utils/finance'
 import { cn } from '~/lib/utils/shadcn'
 
-import { BudgetsEditor } from './budgets-editor'
+import { BudgetIcon, BudgetsEditor, budgetLabelKey } from './budgets-editor'
 import { Section } from './section'
 
 type TProperties = {
@@ -27,8 +26,8 @@ type TProperties = {
   isReadOnly: boolean
 }
 
-// The book's budgets (a Plus feature): each category's monthly limit and
-// what is left of it this month. Everyone the book is shared with sees
+// The book's budgets (a Plus feature): the monthly limit on all of its
+// spending and on each category, and what is left of it this month. Everyone the book is shared with sees
 // them; only a writer with Plus changes them. Someone without Plus and
 // without budgets is told what Plus would add.
 export const Budgets = ({ entries, book, isReadOnly }: TProperties) => {
@@ -102,10 +101,8 @@ export const Budgets = ({ entries, book, isReadOnly }: TProperties) => {
               key={id}
               className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
             >
-              <CategoryIcon category={category} />
-              <span className="truncate">
-                {t(`finances.form.category.${category}.label`)}
-              </span>
+              <BudgetIcon category={category} />
+              <span className="truncate">{t(budgetLabelKey(category))}</span>
               {/* What is left above what was spent, so the category's name
                   keeps its width on a phone. */}
               <span className="grid text-right tabular-nums">
