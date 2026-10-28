@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Pressing Add entry after scrolling down a book starts the new entry on the day shown just below the button, instead of today.',
+          id: 'Menekan Tambah entri setelah menggulir buku ke bawah membuat entri baru dimulai pada tanggal yang tampil tepat di bawah tombol, bukan hari ini.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'After adding to a book, with the form, Quick add or a receipt, the page scrolls to the new entries, just below the form, so you can see where they landed.',
           id: 'Setelah menambah entri ke buku, lewat formulir, Tambah cepat, atau struk, halaman bergulir ke entri baru tepat di bawah formulir, jadi kamu bisa melihat di mana entri itu masuk.',
         },

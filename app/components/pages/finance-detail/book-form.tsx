@@ -89,6 +89,22 @@ import { QuickAdd } from './quick-add.client'
 import { Summary } from './summary'
 import { TAnalysisOptions, TFormProperties } from './type'
 
+// While the Add buttons float over the entries, the day showing just below
+// them, so a new entry lands where the person scrolled to. Undefined (today)
+// while they still sit above the list.
+const dayBelowDock = () => {
+  const dock = document.querySelector('[data-entry-dock]')
+  const next = dock?.nextElementSibling
+  if (!dock || !next) return
+  const bottom = dock.getBoundingClientRect().bottom
+  if (next.getBoundingClientRect().top >= bottom) return
+  const days = document.querySelectorAll<HTMLElement>('[data-entry-date]')
+  const below = [...days].find(
+    (day) => day.getBoundingClientRect().bottom > bottom,
+  )
+  return below?.dataset.entryDate
+}
+
 export const Form = (properties: TFormProperties) => {
   const { finance } = properties
   const bookFormId = useId()
@@ -322,6 +338,8 @@ export const Form = (properties: TFormProperties) => {
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
   const [editing, setEditing] = useState<TFinanceEntry>()
+  // A new entry's date: the day under the floating Add button.
+  const [entryDate, setEntryDate] = useState<string>()
   // Unsaved new entries and Quick add text, per book (lib/utils/drafts);
   // a waiting entry draft opens the form again.
   const entryDraftKey = finance ? `entry:${finance.id}` : undefined
@@ -481,6 +499,7 @@ export const Form = (properties: TFormProperties) => {
   const openEntry = (entry?: TFinanceEntry) => {
     setEditing(entry)
     setIsEntryOpen(!entry)
+    if (!entry) setEntryDate(dayBelowDock())
   }
 
   const closeEntry = () => {
@@ -782,6 +801,7 @@ export const Form = (properties: TFormProperties) => {
               (isEntryOpen ? (
                 <EntryForm
                   onClose={closeEntry}
+                  date={entryDate}
                   book={book}
                   currencies={currencies}
                   history={history}
@@ -838,6 +858,7 @@ export const Form = (properties: TFormProperties) => {
               groupedEntries.map(([date, dayEntries]) => (
                 <section
                   key={date}
+                  data-entry-date={date}
                   className="grid gap-1"
                 >
                   <h2 className="text-xs font-medium text-muted-foreground">

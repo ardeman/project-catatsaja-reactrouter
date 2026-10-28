@@ -62,6 +62,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const {
     onClose,
     entry,
+    date,
     book,
     currencies,
     history,
@@ -81,7 +82,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
 
   const empty: TFinanceEntryForm = {
     id: newEntryId(),
-    date: today(),
+    date: date ?? today(),
     type: 'expense',
     category: '',
     description: '',

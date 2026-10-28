@@ -22,6 +22,8 @@ export type TEntryFormProperties = {
   onClose: () => void
   // The entry being edited; a new one when undefined.
   entry?: TFinanceEntry
+  // A new entry's date (yyyy-mm-dd); today when undefined.
+  date?: string
   book: TFinanceCurrency
   currencies: TCurrency[]
   // Past entries from every book, newest first, for category suggestions.
