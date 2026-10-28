@@ -102,7 +102,7 @@ export const Navbar = (properties: TProperties) => {
         className={cn(
           'z-50 flex h-16 w-full items-center gap-4 px-4 md:sticky md:top-0 md:px-6',
           // In the tabs' pill: as tall, and clear of the Search button.
-          'max-md:fixed max-md:right-[calc(0.5rem+4rem+2px+0.375rem)] max-md:bottom-(--row-bottom) max-md:left-2 max-md:z-51 max-md:h-[calc(4rem+2px)] max-md:w-auto max-md:px-1 max-md:motion-safe:transition-opacity max-md:motion-safe:duration-200',
+          'max-md:fixed max-md:right-[calc(1rem+4rem+2px+0.375rem)] max-md:bottom-(--row-bottom) max-md:left-4 max-md:z-51 max-md:h-[calc(4rem+2px)] max-md:w-auto max-md:px-1 max-md:motion-safe:transition-opacity max-md:motion-safe:duration-200',
           !isSearching && 'max-md:pointer-events-none max-md:opacity-0',
           className,
         )}
@@ -203,7 +203,7 @@ export const Navbar = (properties: TProperties) => {
       </header>
       {!isDesktop && (
         <div
-          className="fixed inset-x-2 bottom-(--row-bottom) z-50 flex gap-1.5"
+          className="fixed inset-x-4 bottom-(--row-bottom) z-50 flex gap-1.5"
           style={rowStyle}
         >
           <Navigation
