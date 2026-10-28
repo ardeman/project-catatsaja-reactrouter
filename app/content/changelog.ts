@@ -65,6 +65,13 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
+          en: 'Tapping an entry near the top of a book opens it fully in view, no longer half hidden under the totals and the Add entry button.',
+          id: 'Mengetuk transaksi di dekat bagian atas buku kini membukanya utuh, tidak lagi setengah tertutup total dan tombol Tambah entri.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
           en: 'Holding a finger on a chart on a phone no longer selects its text.',
           id: 'Menahan jari di grafik pada ponsel tidak lagi memilih teksnya.',
         },
