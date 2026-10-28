@@ -46,7 +46,6 @@ export const Form = (properties: TFormProperties) => {
   const { mutate: updateCardStyle } = useUpdateCardStyle()
   const {
     handleDeleteNote,
-    handlePinNote,
     handleShareNote,
     handleUnlinkNote,
     handleBackNote,
@@ -60,7 +59,6 @@ export const Form = (properties: TFormProperties) => {
       })
     : ''
   const { data: userData } = useUserData()
-  const isPinned = note?.isPinned
   const canWrite = note?.permissions?.write.includes(userData?.uid || '')
   const isOwner = note?.owner === userData?.uid
   const isEditable = isOwner || canWrite
@@ -251,9 +249,7 @@ export const Form = (properties: TFormProperties) => {
             {...(note && {
               isOwner,
               isEditable,
-              isPinned,
               handleDelete: () => handleDeleteNote({ note }),
-              handlePin: () => handlePinNote({ note, isPinned: !isPinned }),
               isArchived: note.isArchived,
               handleArchive: () => archive('notes', note.id, !note.isArchived),
               handleShare: () => handleShareNote({ note }),

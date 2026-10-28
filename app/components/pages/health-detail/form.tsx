@@ -69,7 +69,6 @@ export const Form = (properties: TFormProperties) => {
   const {
     selectedHealthLog,
     handleDeleteHealthLog,
-    handlePinHealthLog,
     handleShareHealthLog,
     handleUnlinkHealthLog,
     handleBackHealthLog,
@@ -80,7 +79,6 @@ export const Form = (properties: TFormProperties) => {
   const { mutate: mutateCreate, isPending: isCreatePending } =
     useCreateHealthLog()
   const { mutate: mutateUpdate } = useUpdateHealthLog()
-  const isPinned = healthLog?.isPinned
   const canWrite = healthLog?.permissions?.write.includes(userData?.uid || '')
   const isOwner = healthLog?.owner === userData?.uid
   const isEditable = isOwner || canWrite
@@ -372,11 +370,7 @@ export const Form = (properties: TFormProperties) => {
               buttonClassName="glass-surface"
               isOwner={isOwner}
               isEditable={isEditable}
-              isPinned={isPinned}
               handleDelete={() => handleDeleteHealthLog({ healthLog })}
-              handlePin={() =>
-                handlePinHealthLog({ healthLog, isPinned: !isPinned })
-              }
               isArchived={healthLog.isArchived}
               handleArchive={() =>
                 archive('healthLogs', healthLog.id, !healthLog.isArchived)

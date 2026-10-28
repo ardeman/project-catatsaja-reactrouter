@@ -115,7 +115,6 @@ export const Form = (properties: TFormProperties) => {
   const {
     selectedFinance,
     handleDeleteFinance,
-    handlePinFinance,
     handleShareFinance,
     handleUnlinkFinance,
     handleBackFinance,
@@ -147,7 +146,6 @@ export const Form = (properties: TFormProperties) => {
   const { mutate: mutateCreateFinance, isPending: isCreatePending } =
     useCreateFinance()
   const { mutate: mutateUpdateFinance } = useUpdateFinance()
-  const isPinned = finance?.isPinned
   const canWrite = finance?.permissions?.write.includes(userData?.uid || '')
   const isOwner = finance?.owner === userData?.uid
   const isEditable = isOwner || canWrite
@@ -618,11 +616,7 @@ export const Form = (properties: TFormProperties) => {
               buttonClassName="glass-surface"
               isOwner={isOwner}
               isEditable={isEditable}
-              isPinned={isPinned}
               handleDelete={() => handleDeleteFinance({ finance })}
-              handlePin={() =>
-                handlePinFinance({ finance, isPinned: !isPinned })
-              }
               isArchived={finance.isArchived}
               handleArchive={() =>
                 archive('finances', finance.id, !finance.isArchived)

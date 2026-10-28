@@ -111,7 +111,6 @@ export const Form = (properties: TFormProperties) => {
   const {
     selectedTask,
     handleDeleteTask,
-    handlePinTask,
     handleShareTask,
     handleUnlinkTask,
     handleBackTask,
@@ -130,7 +129,6 @@ export const Form = (properties: TFormProperties) => {
   const [isCreatingTask, setIsCreatingTask] = useState(false)
   const formElement = useRef<HTMLFormElement>(null)
   const pointerCaret = useRef<{ fieldId: string; caret: number }>(undefined)
-  const isPinned = task?.isPinned
   const canWrite = task?.permissions?.write.includes(userData?.uid || '')
   const isOwner = task?.owner === userData?.uid
   const isEditable = isOwner || canWrite
@@ -770,9 +768,7 @@ export const Form = (properties: TFormProperties) => {
               buttonClassName="glass-surface"
               isOwner={isOwner}
               isEditable={isEditable}
-              isPinned={isPinned}
               handleDelete={() => handleDeleteTask({ task })}
-              handlePin={() => handlePinTask({ task, isPinned: !isPinned })}
               isArchived={task.isArchived}
               handleArchive={() => archive('tasks', task.id, !task.isArchived)}
               handleShare={() => handleShareTask({ task })}

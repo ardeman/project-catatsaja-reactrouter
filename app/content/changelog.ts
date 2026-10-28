@@ -49,6 +49,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'The bar at the top of an open note, task, book or health log has one button fewer: pin items from their cards in the list.',
+          id: 'Bilah di atas catatan, tugas, buku, atau log kesehatan yang terbuka kini berkurang satu tombol: sematkan item dari kartunya di daftar.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'After adding to a book, the page now really scrolls to the new entry, just below the form, instead of leaving it hidden behind the form.',
