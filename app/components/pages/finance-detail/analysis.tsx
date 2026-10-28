@@ -1,4 +1,4 @@
-import { BanknoteArrowDown, BanknoteArrowUp } from 'lucide-react'
+import { BanknoteArrowDown, BanknoteArrowUp, Layers } from 'lucide-react'
 import {
   Dispatch,
   SetStateAction,
@@ -77,6 +77,9 @@ type TProperties = {
   books: TFinanceResponse[]
   currencies: TCurrency[]
 }
+
+// The breakdowns show one type, or both one after the other.
+type TShownType = TFinanceEntry['type'] | 'all'
 
 const timeGroupings = ['day', 'week', 'month'] as const
 
@@ -178,7 +181,7 @@ export const Analysis = ({
   const { range } = options
   const money = useMoney()
   const [view, setView] = useState<'chart' | 'table'>('chart')
-  const [type, setType] = useState<TFinanceEntry['type']>('expense')
+  const [type, setType] = useState<TShownType>('all')
   const [comparison, setComparison] = useState<TComparison>('previous')
   // Changes carry their sign (+20%); shares and rates don't.
   const percent = new Intl.NumberFormat(i18n.language, {
@@ -342,12 +345,24 @@ export const Analysis = ({
     : analysis.expenseCategories.length > 0
       ? 'expense'
       : 'income'
-  const categories =
-    shownType === 'expense'
-      ? analysis.expenseCategories
-      : analysis.incomeCategories
-  const items =
-    shownType === 'expense' ? analysis.expenseItems : analysis.incomeItems
+  const shownTypes: TFinanceEntry['type'][] =
+    shownType === 'all' ? ['expense', 'income'] : [shownType]
+  const breakdowns = shownTypes.map((type) => ({
+    type,
+    categories:
+      type === 'expense'
+        ? analysis.expenseCategories
+        : analysis.incomeCategories,
+    items: type === 'expense' ? analysis.expenseItems : analysis.incomeItems,
+  }))
+  // With both shown, each breakdown's title says which type it is.
+  const titleOf = (title: string, type: TFinanceEntry['type']) =>
+    shownTypes.length > 1
+      ? t('finances.analysis.ofType', {
+          title,
+          type: t(`finances.form.type.${type}`),
+        })
+      : title
 
   return (
     // One column that may shrink below its content (`grid-cols-1`): the
@@ -540,6 +555,16 @@ export const Analysis = ({
             value={shownType}
             options={[
               {
+                value: 'all',
+                label: t('finances.analysis.allTypes'),
+                icon: (
+                  <Layers
+                    aria-hidden="true"
+                    className="size-3.5 text-muted-foreground"
+                  />
+                ),
+              },
+              {
                 value: 'expense',
                 label: t('finances.form.type.expense'),
                 icon: (
@@ -594,7 +619,7 @@ export const Analysis = ({
             <PeriodComparison
               current={analysis.shown}
               previous={analysis.previous}
-              type={shownType}
+              types={shownTypes}
               book={book}
             />
           ) : (
@@ -605,38 +630,51 @@ export const Analysis = ({
         </Section>
       )}
 
-      {categories.length > 0 && groupBy !== 'item' && (
-        <Section title={t('finances.analysis.categories.title')}>
-          <CategoryBreakdown
-            totals={categories}
-            book={book}
-          />
-        </Section>
-      )}
+      {groupBy !== 'item' &&
+        breakdowns.map(
+          ({ type, categories }) =>
+            categories.length > 0 && (
+              <Section
+                key={type}
+                title={titleOf(t('finances.analysis.categories.title'), type)}
+              >
+                <CategoryBreakdown
+                  totals={categories}
+                  book={book}
+                />
+              </Section>
+            ),
+        )}
 
       {/* The breakdowns follow the type chosen above them. */}
-      {items.length === 0 && groupBy === 'item' && (
-        <p className="py-6 text-center text-sm text-muted-foreground">
-          {t('finances.analysis.items.none')}
-        </p>
-      )}
+      {breakdowns.every(({ items }) => items.length === 0) &&
+        groupBy === 'item' && (
+          <p className="py-6 text-center text-sm text-muted-foreground">
+            {t('finances.analysis.items.none')}
+          </p>
+        )}
 
-      {items.length > 0 && groupBy !== 'category' && (
-        <Section
-          title={t('finances.analysis.items.title')}
-          subtitle={t('finances.analysis.items.subtitle')}
-        >
-          <ItemBreakdown
-            items={items}
-            book={book}
-            showsPriceChange={shownType === 'expense'}
-          />
-        </Section>
-      )}
+      {groupBy !== 'category' &&
+        breakdowns.map(
+          ({ type, items }) =>
+            items.length > 0 && (
+              <Section
+                key={type}
+                title={titleOf(t('finances.analysis.items.title'), type)}
+                subtitle={t('finances.analysis.items.subtitle')}
+              >
+                <ItemBreakdown
+                  items={items}
+                  book={book}
+                  showsPriceChange={type === 'expense'}
+                />
+              </Section>
+            ),
+        )}
 
       <Keywords
         entries={analysis.shown}
-        type={shownType}
+        types={shownTypes}
         book={book}
         isReadOnly={isReadOnly}
       />
@@ -656,7 +694,7 @@ export const Analysis = ({
       {groupBy !== 'item' && (
         <CategoryGroups
           entries={analysis.shown}
-          type={shownType}
+          types={shownTypes}
           book={book}
           isReadOnly={isReadOnly}
         />

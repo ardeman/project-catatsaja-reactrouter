@@ -550,6 +550,8 @@
       "periodTable": {
         "title": "By period"
       },
+      "allTypes": "All",
+      "ofType": "{{title}} · {{type}}",
       "items": {
         "title": "By item",
         "subtitle": "Things that came up more than once, grouped by name (sizes like 1kg or x2 don’t count).",

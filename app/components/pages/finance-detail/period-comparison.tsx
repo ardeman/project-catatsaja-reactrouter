@@ -10,8 +10,9 @@ import { cn } from '~/lib/utils/shadcn'
 type TProperties = {
   current: TFinanceEntry[]
   previous: TFinanceEntry[]
-  // The type whose categories are compared, as chosen above the breakdowns.
-  type: TFinanceEntry['type']
+  // The types whose categories are compared, as chosen above the
+  // breakdowns: expenses first when both are.
+  types: TFinanceEntry['type'][]
   book: TFinanceCurrency
 }
 
@@ -24,6 +25,8 @@ type TRow = {
   // Income and net going up is good; an expense going up is not.
   higherIsGood: boolean
   isTotal?: boolean
+  // The first category of its type, set apart from the rows above.
+  startsType?: boolean
 }
 
 // The range's income, expense, net and categories beside the range it is
@@ -31,7 +34,7 @@ type TRow = {
 export const PeriodComparison = ({
   current,
   previous,
-  type,
+  types,
   book,
 }: TProperties) => {
   const { t, i18n } = useTranslation()
@@ -68,25 +71,27 @@ export const PeriodComparison = ({
       higherIsGood: true,
       isTotal: true,
     },
-    ...compareCategories(current, previous, type).map((item) => ({
-      key: `category-${item.category}`,
-      label: t(
-        item.category === 'rest'
-          ? 'finances.analysis.categories.rest'
-          : `finances.form.category.${item.category}.label`,
-      ),
-      category: item.category,
-      current: item.current,
-      previous: item.previous,
-      higherIsGood: type === 'income',
-    })),
+    ...types.flatMap((type) =>
+      compareCategories(current, previous, type).map((item, index) => ({
+        key: `category-${type}-${item.category}`,
+        label: t(
+          item.category === 'rest'
+            ? 'finances.analysis.categories.rest'
+            : `finances.form.category.${item.category}.label`,
+        ),
+        category: item.category,
+        current: item.current,
+        previous: item.previous,
+        higherIsGood: type === 'income',
+        startsType: index === 0,
+      })),
+    ),
   ]
-  const firstCategory = rows.findIndex((row) => row.category)
 
   // Two lines a row, so the change stays in view on a phone.
   return (
     <ul className="grid text-sm tabular-nums">
-      {rows.map((row, index) => {
+      {rows.map((row) => {
         const change = row.current - row.previous
         // A share means little when it started from nothing or below it.
         const share = row.previous > 0 ? change / row.previous : undefined
@@ -97,7 +102,7 @@ export const PeriodComparison = ({
             key={row.key}
             className={cn(
               'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5 border-b py-2 last:border-0',
-              index === firstCategory && 'border-t-2',
+              row.startsType && 'border-t-2',
             )}
           >
             <span

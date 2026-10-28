@@ -21,8 +21,8 @@ import { assignCategory } from '~/lib/utils/category-groups'
 type TProperties = {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
-  // The categories offered: those of the type the analysis shows.
-  type: TFinanceEntry['type']
+  // The categories offered: those of the types the analysis shows.
+  types: TFinanceEntry['type'][]
 }
 
 const none = 'none'
@@ -30,15 +30,12 @@ const none = 'none'
 // Naming groups and choosing each category's group, one group at most per
 // category. Changes go into the book's form as they are made, so they save
 // like the rest of the book.
-export const CategoryGroupsEditor = ({ open, setOpen, type }: TProperties) => {
+export const CategoryGroupsEditor = ({ open, setOpen, types }: TProperties) => {
   const { t } = useTranslation()
   const { control, getValues, setValue } = useFormContext<TFinanceForm>()
   // Rows are keyed by their own id (see `accounts.tsx`).
   const groups = useWatch({ control, name: 'categoryGroups' }) ?? []
   const [addedId, setAddedId] = useState<string>()
-  const categories = financeCategories.filter(
-    (category) => category.type === type,
-  )
 
   const update = (next: TFinanceForm['categoryGroups']) =>
     setValue('categoryGroups', next, { shouldDirty: true })
@@ -125,58 +122,64 @@ export const CategoryGroupsEditor = ({ open, setOpen, type }: TProperties) => {
           </Button>
         </div>
 
-        {groups.length > 0 && (
-          <div className="grid gap-1.5">
-            <h3 className="text-xs text-muted-foreground">
-              {t(`finances.analysis.groups.categories.${type}`)}
-            </h3>
-            <ul className="grid gap-1.5">
-              {categories.map(({ key }) => {
-                const label = t(`finances.form.category.${key}.label`)
-                const current =
-                  groups.find((group) => group.categories.includes(key))?.id ??
-                  none
-                return (
-                  <li
-                    key={key}
-                    className="grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] items-center gap-2 text-sm"
-                  >
-                    <CategoryIcon category={key} />
-                    <span className="truncate">{label}</span>
-                    <Select
-                      value={current}
-                      onValueChange={(id) => handleAssign(key, id)}
-                    >
-                      <SelectTrigger
-                        className="h-8"
-                        aria-label={t('finances.analysis.groups.groupOf', {
-                          category: label,
-                          // An attribute, not HTML: "Food & drinks" stays.
-                          interpolation: { escapeValue: false },
-                        })}
+        {groups.length > 0 &&
+          types.map((type) => (
+            <div
+              key={type}
+              className="grid gap-1.5"
+            >
+              <h3 className="text-xs text-muted-foreground">
+                {t(`finances.analysis.groups.categories.${type}`)}
+              </h3>
+              <ul className="grid gap-1.5">
+                {financeCategories
+                  .filter((category) => category.type === type)
+                  .map(({ key }) => {
+                    const label = t(`finances.form.category.${key}.label`)
+                    const current =
+                      groups.find((group) => group.categories.includes(key))
+                        ?.id ?? none
+                    return (
+                      <li
+                        key={key}
+                        className="grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] items-center gap-2 text-sm"
                       >
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={none}>
-                          {t('finances.analysis.groups.none')}
-                        </SelectItem>
-                        {groups.map((group) => (
-                          <SelectItem
-                            key={group.id}
-                            value={group.id}
+                        <CategoryIcon category={key} />
+                        <span className="truncate">{label}</span>
+                        <Select
+                          value={current}
+                          onValueChange={(id) => handleAssign(key, id)}
+                        >
+                          <SelectTrigger
+                            className="h-8"
+                            aria-label={t('finances.analysis.groups.groupOf', {
+                              category: label,
+                              // An attribute, not HTML: "Food & drinks" stays.
+                              interpolation: { escapeValue: false },
+                            })}
                           >
-                            {groupName(group.name)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        )}
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={none}>
+                              {t('finances.analysis.groups.none')}
+                            </SelectItem>
+                            {groups.map((group) => (
+                              <SelectItem
+                                key={group.id}
+                                value={group.id}
+                              >
+                                {groupName(group.name)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </li>
+                    )
+                  })}
+              </ul>
+            </div>
+          ))}
       </div>
     </Modal>
   )

@@ -20,7 +20,8 @@ import { Section } from './section'
 type TProperties = {
   // The entries in the analysis's range.
   entries: TFinanceEntry[]
-  type: TFinanceEntry['type']
+  // Expenses first when both are shown.
+  types: TFinanceEntry['type'][]
   book: TFinanceCurrency
   isReadOnly: boolean
 }
@@ -31,7 +32,7 @@ type TProperties = {
 // what Plus would add.
 export const CategoryGroups = ({
   entries,
-  type,
+  types,
   book,
   isReadOnly,
 }: TProperties) => {
@@ -47,7 +48,9 @@ export const CategoryGroups = ({
   })
 
   const canEdit = !isReadOnly && hasPlus
-  const totals = groupTotals(entries, type, groups)
+  const lists = types
+    .map((type) => ({ type, totals: groupTotals(entries, type, groups) }))
+    .filter(({ totals }) => totals.length > 0)
   const hasGroups = groups.length > 0
 
   if (!hasGroups && !canEdit) {
@@ -72,10 +75,7 @@ export const CategoryGroups = ({
       </Section>
     )
   }
-  if (!canEdit && totals.length === 0) return
-
-  // The largest row, which can be "not grouped".
-  const largest = Math.max(0, ...totals.map((row) => row.total))
+  if (!canEdit && lists.length === 0) return
 
   return (
     <Section
@@ -99,46 +99,62 @@ export const CategoryGroups = ({
         )
       }
     >
-      {totals.length > 0 ? (
-        <ul className="grid gap-3">
-          {totals.map(({ id, name, total, share }) => (
-            <li
-              key={id}
-              className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
+      {lists.length > 0 ? (
+        lists.map(({ type, totals }) => {
+          // The largest row, which can be "not grouped".
+          const largest = Math.max(0, ...totals.map((row) => row.total))
+          return (
+            <div
+              key={type}
+              className="grid gap-2"
             >
-              <span
-                className={cn(
-                  'truncate',
-                  id === ungrouped && 'text-muted-foreground',
-                )}
-              >
-                {id === ungrouped
-                  ? t('finances.analysis.groups.ungrouped')
-                  : name || t('finances.analysis.groups.untitled')}
-              </span>
-              <span className="text-right tabular-nums">
-                <span className="font-medium">{money(total, book)}</span>{' '}
-                <span className="text-xs text-muted-foreground">
-                  {percent.format(share)}
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                className={cn(
-                  'col-span-2 h-2 rounded-r-[4px]',
-                  id === ungrouped
-                    ? 'bg-muted-foreground/40'
-                    : type === 'expense'
-                      ? 'bg-viz-expense'
-                      : 'bg-viz-income',
-                )}
-                style={{
-                  width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
-                }}
-              />
-            </li>
-          ))}
-        </ul>
+              {types.length > 1 && (
+                <h3 className="text-xs text-muted-foreground">
+                  {t(`finances.form.type.${type}`)}
+                </h3>
+              )}
+              <ul className="grid gap-3">
+                {totals.map(({ id, name, total, share }) => (
+                  <li
+                    key={id}
+                    className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
+                  >
+                    <span
+                      className={cn(
+                        'truncate',
+                        id === ungrouped && 'text-muted-foreground',
+                      )}
+                    >
+                      {id === ungrouped
+                        ? t('finances.analysis.groups.ungrouped')
+                        : name || t('finances.analysis.groups.untitled')}
+                    </span>
+                    <span className="text-right tabular-nums">
+                      <span className="font-medium">{money(total, book)}</span>{' '}
+                      <span className="text-xs text-muted-foreground">
+                        {percent.format(share)}
+                      </span>
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        'col-span-2 h-2 rounded-r-[4px]',
+                        id === ungrouped
+                          ? 'bg-muted-foreground/40'
+                          : type === 'expense'
+                            ? 'bg-viz-expense'
+                            : 'bg-viz-income',
+                      )}
+                      style={{
+                        width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
+                      }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        })
       ) : (
         <p className="text-sm text-muted-foreground">
           {t(
@@ -157,7 +173,7 @@ export const CategoryGroups = ({
         <CategoryGroupsEditor
           open={isEditing}
           setOpen={setIsEditing}
-          type={type}
+          types={types}
         />
       )}
     </Section>

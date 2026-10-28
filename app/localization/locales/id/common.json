@@ -550,6 +550,8 @@
       "periodTable": {
         "title": "Per periode"
       },
+      "allTypes": "Semua",
+      "ofType": "{{title}} · {{type}}",
       "items": {
         "title": "Per item",
         "subtitle": "Yang muncul lebih dari sekali, dikelompokkan menurut nama (ukuran seperti 1kg atau x2 tidak dihitung).",

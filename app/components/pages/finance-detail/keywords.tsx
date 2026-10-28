@@ -20,7 +20,8 @@ import { Section } from './section'
 type TProperties = {
   // The entries in the analysis's range.
   entries: TFinanceEntry[]
-  type: TFinanceEntry['type']
+  // Expenses first when both are shown.
+  types: TFinanceEntry['type'][]
   book: TFinanceCurrency
   isReadOnly: boolean
 }
@@ -29,7 +30,7 @@ type TProperties = {
 // description has them add up to. Everyone the book is shared with sees
 // them; only a writer with Plus changes them. Someone without Plus and
 // without keywords is told what Plus would add.
-export const Keywords = ({ entries, type, book, isReadOnly }: TProperties) => {
+export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
   const { t, i18n } = useTranslation()
   const money = useMoney()
   const { hasPlus } = usePlan()
@@ -42,7 +43,9 @@ export const Keywords = ({ entries, type, book, isReadOnly }: TProperties) => {
   })
 
   const canEdit = !isReadOnly && hasPlus
-  const totals = keywordTotals(entries, type, keywords)
+  const lists = types
+    .map((type) => ({ type, totals: keywordTotals(entries, type, keywords) }))
+    .filter(({ totals }) => totals.length > 0)
   const hasKeywords = keywords.length > 0
 
   if (!hasKeywords && !canEdit) {
@@ -67,9 +70,7 @@ export const Keywords = ({ entries, type, book, isReadOnly }: TProperties) => {
       </Section>
     )
   }
-  if (!canEdit && totals.length === 0) return
-
-  const largest = Math.max(0, ...totals.map((row) => row.total))
+  if (!canEdit && lists.length === 0) return
 
   return (
     <Section
@@ -93,38 +94,53 @@ export const Keywords = ({ entries, type, book, isReadOnly }: TProperties) => {
         )
       }
     >
-      {totals.length > 0 ? (
-        <ul className="grid gap-3">
-          {totals.map(({ id, text, count, total, share }) => (
-            <li
-              key={id}
-              className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
+      {lists.length > 0 ? (
+        lists.map(({ type, totals }) => {
+          const largest = Math.max(0, ...totals.map((row) => row.total))
+          return (
+            <div
+              key={type}
+              className="grid gap-2"
             >
-              <span className="grid">
-                <span className="truncate">{text}</span>
-                <span className="text-xs text-muted-foreground">
-                  {t('finances.analysis.keywords.count', { count })}
-                </span>
-              </span>
-              <span className="text-right tabular-nums">
-                <span className="font-medium">{money(total, book)}</span>{' '}
-                <span className="text-xs text-muted-foreground">
-                  {percent.format(share)}
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                className={cn(
-                  'col-span-2 h-2 rounded-r-[4px]',
-                  type === 'expense' ? 'bg-viz-expense' : 'bg-viz-income',
-                )}
-                style={{
-                  width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
-                }}
-              />
-            </li>
-          ))}
-        </ul>
+              {types.length > 1 && (
+                <h3 className="text-xs text-muted-foreground">
+                  {t(`finances.form.type.${type}`)}
+                </h3>
+              )}
+              <ul className="grid gap-3">
+                {totals.map(({ id, text, count, total, share }) => (
+                  <li
+                    key={id}
+                    className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
+                  >
+                    <span className="grid">
+                      <span className="truncate">{text}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {t('finances.analysis.keywords.count', { count })}
+                      </span>
+                    </span>
+                    <span className="text-right tabular-nums">
+                      <span className="font-medium">{money(total, book)}</span>{' '}
+                      <span className="text-xs text-muted-foreground">
+                        {percent.format(share)}
+                      </span>
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        'col-span-2 h-2 rounded-r-[4px]',
+                        type === 'expense' ? 'bg-viz-expense' : 'bg-viz-income',
+                      )}
+                      style={{
+                        width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
+                      }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        })
       ) : (
         <p className="text-sm text-muted-foreground">
           {t(

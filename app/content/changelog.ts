@@ -37,6 +37,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'In a book’s Analysis, All now sits beside Expense and Income and is chosen at first: it shows the breakdowns for expenses and income one after the other.',
+          id: 'Di Analisis buku, kini ada Semua di samping Pengeluaran dan Pemasukan, dan dipilih sejak awal: rincian pengeluaran dan pemasukan ditampilkan berurutan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'In a book’s Analysis, By item now comes right after By category.',
           id: 'Di Analisis buku, Per item kini tepat setelah Per kategori.',
         },
