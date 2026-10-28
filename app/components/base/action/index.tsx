@@ -59,6 +59,10 @@ export const Action = (properties: TActionProperties) => {
   } = properties
   const { t } = useTranslation()
   const buttonClassName = cn(actionButtonClassName, buttonClassNameProperty)
+  // Deleting (or leaving) asks whether to archive instead, so the bar shows
+  // its own archive button only to bring an archived item back.
+  const canRemove = isOwner ? !!handleDelete : !!handleUnlink
+  const shouldShowArchive = !!handleArchive && (!!isArchived || !canRemove)
 
   return (
     <div className={cn(className, 'flex justify-between gap-1')}>
@@ -255,7 +259,7 @@ export const Action = (properties: TActionProperties) => {
           <Copy />
         </Button>
       )}
-      {handleArchive && (
+      {shouldShowArchive && (
         <Button
           variant="outline"
           aria-label={t(isArchived ? 'actions.unarchive' : 'actions.archive')}
@@ -263,7 +267,7 @@ export const Action = (properties: TActionProperties) => {
           aria-pressed={!!isArchived}
           onClick={(event) => {
             event.stopPropagation()
-            handleArchive()
+            handleArchive?.()
           }}
           containerClassName="flex-1 flex items-center"
           className={cn(buttonClassName, isArchived && 'text-primary')}

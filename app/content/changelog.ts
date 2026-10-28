@@ -30,6 +30,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Delete and Archive are now one button: deleting a note, task, book or health log asks whether to archive it instead, so it leaves your list without being lost. Archived items still have their button to move them back.',
+          id: 'Hapus dan Arsipkan kini satu tombol: menghapus catatan, tugas, buku, atau log kesehatan akan menanyakan apakah Anda ingin mengarsipkannya saja, agar hilang dari daftar tanpa terhapus. Item yang diarsipkan tetap punya tombol untuk mengembalikannya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'On phones, the top bar is gone: search and your account (with notifications) now sit in the bottom bar, within reach of your thumb, search opens right in the tab bar (rising above the keyboard), and pages use the full screen.',
           id: 'Di ponsel, bilah atas kini tidak ada: pencarian dan akun Anda (beserta notifikasi) ada di bilah bawah, mudah dijangkau ibu jari, pencarian terbuka langsung di bilah tab (naik di atas keyboard), dan halaman memakai seluruh layar.',
         },

@@ -6,6 +6,7 @@ import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useGetNotes } from '~/lib/hooks/use-get-notes'
 import { useShareNote } from '~/lib/hooks/use-share-note'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import {
   THandleDeletePermission,
   THandleSetPermission,
@@ -29,6 +30,7 @@ export const List = () => {
   } = useNote()
   const { data: notesData, isLoading } = useGetNotes()
   const { mutate: mutateShare } = useShareNote()
+  const { mutate: archive } = useUpdateArchive()
   const sharedNote = notesData?.find((item) => item.id === selectedNote?.id)
 
   const handleShare = (parameters: THandleSetPermission) => {
@@ -66,7 +68,17 @@ export const List = () => {
         open={openConfirmation}
         setOpen={setOpenConfirmation}
         handleConfirm={handleConfirm}
+        confirmLabel={t(`actions.${selectedConfirmation?.kind}`)}
         variant="destructive"
+        {...(selectedConfirmation &&
+          !selectedConfirmation.detail.isArchived && {
+            description: t('form.archiveInstead.description'),
+            secondaryLabel: t('form.archiveInstead.action'),
+            handleSecondary: () => {
+              setOpenConfirmation(false)
+              void archive('notes', selectedConfirmation.detail.id, true)
+            },
+          })}
         title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}

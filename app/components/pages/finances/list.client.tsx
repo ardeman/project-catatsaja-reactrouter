@@ -6,6 +6,7 @@ import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useShareFinance } from '~/lib/hooks/use-share-finance'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import {
   THandleDeletePermission,
   THandleSetPermission,
@@ -29,6 +30,7 @@ export const List = () => {
   } = useFinance()
   const { data: financesData, isLoading } = useGetFinances()
   const { mutate: mutateShare } = useShareFinance()
+  const { mutate: archive } = useUpdateArchive()
   const sharedFinance = financesData?.find(
     (item) => item.id === selectedFinance?.id,
   )
@@ -76,7 +78,17 @@ export const List = () => {
         open={openConfirmation}
         setOpen={setOpenConfirmation}
         handleConfirm={handleConfirm}
+        confirmLabel={t(`actions.${selectedConfirmation?.kind}`)}
         variant="destructive"
+        {...(selectedConfirmation &&
+          !selectedConfirmation.detail.isArchived && {
+            description: t('form.archiveInstead.description'),
+            secondaryLabel: t('form.archiveInstead.action'),
+            handleSecondary: () => {
+              setOpenConfirmation(false)
+              void archive('finances', selectedConfirmation.detail.id, true)
+            },
+          })}
         title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}

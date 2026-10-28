@@ -33,6 +33,8 @@ export const Modal = (properties: TProperties) => {
     onClose,
     handleConfirm,
     confirmLabel,
+    secondaryLabel,
+    handleSecondary,
     variant = 'default',
   } = properties
   const isDesktop = useMediaQuery('(min-width: 768px)')
@@ -54,6 +56,8 @@ export const Modal = (properties: TProperties) => {
         handleClose={handleClose}
         handleConfirm={handleConfirm}
         confirmLabel={confirmLabel}
+        secondaryLabel={secondaryLabel}
+        handleSecondary={handleSecondary}
         variant={variant}
       >
         {children}
@@ -70,6 +74,8 @@ export const Modal = (properties: TProperties) => {
       handleClose={handleClose}
       handleConfirm={handleConfirm}
       confirmLabel={confirmLabel}
+      secondaryLabel={secondaryLabel}
+      handleSecondary={handleSecondary}
       variant={variant}
     >
       {children}
@@ -87,6 +93,8 @@ const Dialog = (parameters: TParameters) => {
     handleClose,
     handleConfirm,
     confirmLabel,
+    secondaryLabel,
+    handleSecondary,
     variant,
   } = parameters
   const { t } = useTranslation()
@@ -108,6 +116,14 @@ const Dialog = (parameters: TParameters) => {
         {children}
         {handleConfirm && (
           <DialogFooter>
+            {handleSecondary && (
+              <Button
+                variant="outline"
+                onClick={handleSecondary}
+              >
+                {secondaryLabel}
+              </Button>
+            )}
             <Button
               variant={variant}
               onClick={handleConfirm}
@@ -131,6 +147,8 @@ const Drawer = (parameters: TParameters) => {
     handleClose,
     handleConfirm,
     confirmLabel,
+    secondaryLabel,
+    handleSecondary,
     variant,
   } = parameters
   const { t } = useTranslation()
@@ -155,6 +173,14 @@ const Drawer = (parameters: TParameters) => {
           </DrawerHeader>
           <div className="grid gap-2 p-4">{children}</div>
           <DrawerFooter className="pt-2 pb-6">
+            {handleSecondary && (
+              <Button
+                variant="outline"
+                onClick={handleSecondary}
+              >
+                {secondaryLabel}
+              </Button>
+            )}
             {handleConfirm && (
               <Button
                 variant={variant}

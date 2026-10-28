@@ -31,6 +31,10 @@
     "save": "Save",
     "delete": "Delete this <span>{{item}}</span>?",
     "unlink": "Remove this <span>{{item}}</span> from your list?",
+    "archiveInstead": {
+      "description": "Or archive it: it leaves your list but stays under Archived, ready to move back.",
+      "action": "Archive instead"
+    },
     "share": "Share this <span>{{item}}</span>",
     "confirm": "Confirm",
     "undo": "Undo",

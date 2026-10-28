@@ -11,6 +11,7 @@ import { useGetFinance } from '~/lib/hooks/use-get-finance'
 import { useLogout } from '~/lib/hooks/use-logout'
 import { useShareFinance } from '~/lib/hooks/use-share-finance'
 import { toast } from '~/lib/hooks/use-toast'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import {
   THandleDeletePermission,
   THandleSetPermission,
@@ -40,6 +41,7 @@ export const Content = () => {
     selectedFinance,
   } = useFinance()
   const { mutate: mutateShare } = useShareFinance()
+  const { mutate: archive } = useUpdateArchive()
 
   useEffect(() => {
     if (financeData) setSelectedFinance(financeData)
@@ -121,7 +123,17 @@ export const Content = () => {
         open={openConfirmation}
         setOpen={setOpenConfirmation}
         handleConfirm={handleConfirm}
+        confirmLabel={t(`actions.${selectedConfirmation?.kind}`)}
         variant="destructive"
+        {...(selectedConfirmation &&
+          !selectedConfirmation.detail.isArchived && {
+            description: t('form.archiveInstead.description'),
+            secondaryLabel: t('form.archiveInstead.action'),
+            handleSecondary: () => {
+              setOpenConfirmation(false)
+              void archive('finances', selectedConfirmation.detail.id, true)
+            },
+          })}
         title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}

@@ -13,6 +13,10 @@ export type TProperties = {
   handleConfirm?: () => void | Promise<void>
   // The confirm button's text; "Confirm" when not given.
   confirmLabel?: string
+  // A second, safer choice shown before the confirm button, such as
+  // archiving instead of deleting.
+  secondaryLabel?: string
+  handleSecondary?: () => void | Promise<void>
   variant?: VariantProps<typeof variantClassName>['variant']
 }
 

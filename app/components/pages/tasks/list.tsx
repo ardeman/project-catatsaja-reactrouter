@@ -6,6 +6,7 @@ import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
 import { useShareTask } from '~/lib/hooks/use-share-task'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import {
   THandleDeletePermission,
   THandleSetPermission,
@@ -28,6 +29,7 @@ export const List = () => {
   } = useTask()
   const { data: tasksData, isLoading } = useGetTasks()
   const { mutate: mutateShare } = useShareTask()
+  const { mutate: archive } = useUpdateArchive()
   const sharedTask = tasksData?.find((item) => item.id === selectedTask?.id)
 
   const handleShare = (parameters: THandleSetPermission) => {
@@ -69,7 +71,17 @@ export const List = () => {
         open={openConfirmation}
         setOpen={setOpenConfirmation}
         handleConfirm={handleConfirm}
+        confirmLabel={t(`actions.${selectedConfirmation?.kind}`)}
         variant="destructive"
+        {...(selectedConfirmation &&
+          !selectedConfirmation.detail.isArchived && {
+            description: t('form.archiveInstead.description'),
+            secondaryLabel: t('form.archiveInstead.action'),
+            handleSecondary: () => {
+              setOpenConfirmation(false)
+              void archive('tasks', selectedConfirmation.detail.id, true)
+            },
+          })}
         title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}

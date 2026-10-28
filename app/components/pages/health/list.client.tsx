@@ -6,6 +6,7 @@ import { Modal } from '~/components/base/modal'
 import { Share } from '~/components/base/share'
 import { useGetHealthLogs } from '~/lib/hooks/use-get-health-logs'
 import { useShareHealthLog } from '~/lib/hooks/use-share-health-log'
+import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import {
   THandleDeletePermission,
   THandleSetPermission,
@@ -28,6 +29,7 @@ export const List = () => {
   } = useHealthLog()
   const { data: healthLogsData, isLoading } = useGetHealthLogs()
   const { mutate: mutateShare } = useShareHealthLog()
+  const { mutate: archive } = useUpdateArchive()
   const sharedHealthLog = healthLogsData?.find(
     (item) => item.id === selectedHealthLog?.id,
   )
@@ -76,7 +78,17 @@ export const List = () => {
         open={openConfirmation}
         setOpen={setOpenConfirmation}
         handleConfirm={handleConfirm}
+        confirmLabel={t(`actions.${selectedConfirmation?.kind}`)}
         variant="destructive"
+        {...(selectedConfirmation &&
+          !selectedConfirmation.detail.isArchived && {
+            description: t('form.archiveInstead.description'),
+            secondaryLabel: t('form.archiveInstead.action'),
+            handleSecondary: () => {
+              setOpenConfirmation(false)
+              void archive('healthLogs', selectedConfirmation.detail.id, true)
+            },
+          })}
         title={
           <Trans
             i18nKey={`form.${selectedConfirmation?.kind}`}

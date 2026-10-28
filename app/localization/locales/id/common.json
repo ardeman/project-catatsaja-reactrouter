@@ -31,6 +31,10 @@
     "save": "Simpan",
     "delete": "Hapus <span>{{item}}</span> ini?",
     "unlink": "Hapus <span>{{item}}</span> ini dari daftarmu?",
+    "archiveInstead": {
+      "description": "Atau arsipkan: keluar dari daftarmu, tetapi tetap ada di Arsip dan bisa dikembalikan.",
+      "action": "Arsipkan saja"
+    },
     "share": "Bagikan <span>{{item}}</span> ini",
     "confirm": "Ya",
     "undo": "Urungkan",

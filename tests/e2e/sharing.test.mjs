@@ -244,9 +244,11 @@ describe('sharing and finance storage', () => {
     await hana.page
       .locator('div')
       .filter({ has: hana.page.getByText('Hana old idea') })
-      .getByRole('button', { name: 'Archive' })
+      .getByRole('button', { name: 'Delete' })
       .last()
       .click()
+    // Deleting offers archiving instead; there is no separate Archive button.
+    await hana.page.getByRole('button', { name: 'Archive instead' }).click()
     await hana.page.getByText('Archived (1)').waitFor({ timeout: 15_000 })
     assert.equal(
       await hana.page.getByText('Hana old idea').count(),
