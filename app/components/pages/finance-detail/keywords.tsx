@@ -55,6 +55,8 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
     0,
     ...rows.flatMap(({ totals }) => totals.map(({ total }) => total)),
   )
+  // A bar's share of the full width, never too thin to see.
+  const widthOf = (total: number) => Math.max((total / (largest || 1)) * 100, 1)
   const hasKeywords = keywords.length > 0
 
   if (!hasKeywords && !canEdit) {
@@ -178,19 +180,49 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
                       </span>
                     )}
                   </span>
-                  {totals.map(({ type, total }) => (
+                  {types.length > 1 ? (
+                    // Spending to the left of the centre line, income to
+                    // the right, and a tick where the net falls.
                     <span
-                      key={type}
                       aria-hidden="true"
-                      className={cn(
-                        'col-span-2 h-2 rounded-r-[4px]',
-                        barClass[type],
+                      className="relative col-span-2 h-2"
+                    >
+                      {totals.map(({ type, total }) => (
+                        <span
+                          key={type}
+                          className={cn(
+                            'absolute inset-y-0',
+                            type === 'expense'
+                              ? 'right-1/2 rounded-l-[4px]'
+                              : 'left-1/2 rounded-r-[4px]',
+                            barClass[type],
+                          )}
+                          style={{ width: `${widthOf(total) / 2}%` }}
+                        />
+                      ))}
+                      <span className="absolute -inset-y-1 left-1/2 w-px -translate-x-1/2 bg-border" />
+                      {net !== undefined && (
+                        <span
+                          className="absolute -inset-y-1 w-0.5 -translate-x-1/2 rounded-full bg-foreground"
+                          style={{
+                            left: `${50 + (net / (largest || 1)) * 50}%`,
+                          }}
+                        />
                       )}
-                      style={{
-                        width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
-                      }}
-                    />
-                  ))}
+                    </span>
+                  ) : (
+                    totals.map(({ type, total }) => (
+                      <span
+                        key={type}
+                        aria-hidden="true"
+                        className={cn(
+                          'col-span-2 h-2 rounded-r-[4px]',
+                          barClass[type],
+                        )}
+                        style={{ width: `${widthOf(total)}%` }}
+                      />
+                    ))
+                  )}
                 </li>
               )
             })}
