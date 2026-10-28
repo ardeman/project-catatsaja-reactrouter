@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-29',
+    title: {
+      en: 'New entries in view',
+      id: 'Entri baru terlihat',
+    },
+    changes: [
+      {
+        kind: 'fixed',
+        text: {
+          en: 'After adding to a book, the page now really scrolls to the new entry, just below the form, instead of leaving it hidden behind the form.',
+          id: 'Setelah menambah entri ke buku, halaman kini benar-benar bergulir ke entri baru tepat di bawah formulir, bukan membiarkannya tertutup formulir.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-28',
     title: {
       en: 'Totals by keyword',

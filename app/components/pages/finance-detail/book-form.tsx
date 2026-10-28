@@ -352,14 +352,18 @@ export const Form = (properties: TFormProperties) => {
       return
     }
     setAddedIds([])
+    // The page scrolls inside the layout's scroll area, not the window, so
+    // the row scrolls itself into view, with a margin that clears the dock.
+    if (!(row instanceof HTMLElement)) return
     const dock = document.querySelector('[data-entry-dock]')
-    const top = (dock?.getBoundingClientRect().bottom ?? 0) + 8
-    window.scrollBy({
-      top: row.getBoundingClientRect().top - top,
+    row.style.scrollMarginTop = `${(dock?.getBoundingClientRect().bottom ?? 0) + 8}px`
+    row.scrollIntoView({
+      block: 'start',
       behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
         ? 'instant'
         : 'smooth',
     })
+    row.style.scrollMarginTop = ''
   }, [addedIds, groupedEntries, entries])
   // Rebuild suggestions only when entries change, not while editing a title
   // or moving between dialogs.
