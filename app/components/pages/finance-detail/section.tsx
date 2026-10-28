@@ -115,14 +115,15 @@ export const Section = ({
         </div>
         {action}
       </div>
-      {!isFolded && (
-        <div
-          id={contentId}
-          className="grid grid-cols-1 gap-3"
-        >
-          {children}
-        </div>
-      )}
+      {/* Hidden, not unmounted, when folded: an editor dialog inside still
+          opens from the action beside the title. */}
+      <div
+        id={contentId}
+        hidden={isFolded}
+        className="grid grid-cols-1 gap-3"
+      >
+        {children}
+      </div>
     </section>
   )
 }
