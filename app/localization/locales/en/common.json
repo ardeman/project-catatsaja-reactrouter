@@ -665,6 +665,7 @@
         "remove": "Remove keyword",
         "count_one": "{{count}} entry",
         "count_other": "{{count}} entries",
+        "net": "Net {{amount}}",
         "emptyRange": "No entries with your keywords in this range.",
         "plusToEdit": "Changing keywords needs Catat Saja Plus.",
         "saved_one": "{{count}} keyword",

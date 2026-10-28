@@ -129,47 +129,71 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
             </ul>
           )}
           <ul className="grid gap-3">
-            {rows.map(({ id, text, count, totals }) => (
-              <li
-                key={id}
-                className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1 text-sm"
-              >
-                <span className="grid">
-                  <span className="truncate">{text}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {t('finances.analysis.keywords.count', { count })}
-                  </span>
-                </span>
-                <span className="grid text-right tabular-nums">
-                  {totals.map(({ type, total, share }) => (
-                    <span key={type}>
-                      {types.length > 1 && (
-                        <span className="sr-only">
-                          {t(`finances.summary.${type}`)}:{' '}
-                        </span>
-                      )}
-                      <span className="font-medium">{money(total, book)}</span>{' '}
-                      <span className="text-xs text-muted-foreground">
-                        {formatShare(percent, share)}
-                      </span>
+            {rows.map(({ id, text, count, totals }) => {
+              // Income less expenses, when the keyword has both.
+              const totalOf = (type: TFinanceEntry['type']) =>
+                totals.find((item) => item.type === type)?.total ?? 0
+              const net =
+                totals.length > 1
+                  ? totalOf('income') - totalOf('expense')
+                  : undefined
+              return (
+                <li
+                  key={id}
+                  className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1 text-sm"
+                >
+                  <span className="grid">
+                    <span className="truncate">{text}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {t('finances.analysis.keywords.count', { count })}
                     </span>
-                  ))}
-                </span>
-                {totals.map(({ type, total }) => (
-                  <span
-                    key={type}
-                    aria-hidden="true"
-                    className={cn(
-                      'col-span-2 h-2 rounded-r-[4px]',
-                      barClass[type],
+                  </span>
+                  <span className="grid text-right tabular-nums">
+                    {totals.map(({ type, total, share }) => (
+                      <span key={type}>
+                        {types.length > 1 && (
+                          <span className="sr-only">
+                            {t(`finances.summary.${type}`)}:{' '}
+                          </span>
+                        )}
+                        <span className="font-medium">
+                          {money(total, book)}
+                        </span>{' '}
+                        <span className="text-xs text-muted-foreground">
+                          {formatShare(percent, share)}
+                        </span>
+                      </span>
+                    ))}
+                    {net !== undefined && (
+                      <span
+                        className={cn(
+                          'text-xs',
+                          net > 0 && 'text-income',
+                          net < 0 && 'text-expense',
+                        )}
+                      >
+                        {t('finances.analysis.keywords.net', {
+                          amount: money(net, book, true),
+                        })}
+                      </span>
                     )}
-                    style={{
-                      width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
-                    }}
-                  />
-                ))}
-              </li>
-            ))}
+                  </span>
+                  {totals.map(({ type, total }) => (
+                    <span
+                      key={type}
+                      aria-hidden="true"
+                      className={cn(
+                        'col-span-2 h-2 rounded-r-[4px]',
+                        barClass[type],
+                      )}
+                      style={{
+                        width: `${Math.max((total / (largest || 1)) * 100, 1)}%`,
+                      }}
+                    />
+                  ))}
+                </li>
+              )
+            })}
           </ul>
         </div>
       ) : (

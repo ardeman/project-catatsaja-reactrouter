@@ -665,6 +665,7 @@
         "remove": "Hapus kata kunci",
         "count_one": "{{count}} catatan",
         "count_other": "{{count}} catatan",
+        "net": "Bersih {{amount}}",
         "emptyRange": "Tidak ada catatan dengan kata kuncimu dalam rentang ini.",
         "plusToEdit": "Mengubah kata kunci perlu Catat Saja Plus.",
         "saved_one": "{{count}} kata kunci",

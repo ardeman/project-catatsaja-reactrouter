@@ -30,8 +30,8 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: 'Coming with Catat Saja Plus: keywords in a book’s Analysis, such as bensin or grab, gojek, with what the entries mentioning them add up to in the period (with All, a keyword’s income and spending share one line). Everyone the book is shared with sees them.',
-          id: 'Segera hadir bersama Catat Saja Plus: kata kunci di Analisis buku, misalnya bensin atau grab, gojek, lengkap dengan jumlah catatan yang memuatnya dalam periode itu (dengan Semua, pemasukan dan pengeluaran satu kata kunci tampil di satu baris). Semua orang yang diberi akses ke buku itu bisa melihatnya.',
+          en: 'Coming with Catat Saja Plus: keywords in a book’s Analysis, such as bensin or grab, gojek, with what the entries mentioning them add up to in the period (with All, a keyword’s income and spending share one line, with what’s left after spending). Everyone the book is shared with sees them.',
+          id: 'Segera hadir bersama Catat Saja Plus: kata kunci di Analisis buku, misalnya bensin atau grab, gojek, lengkap dengan jumlah catatan yang memuatnya dalam periode itu (dengan Semua, pemasukan dan pengeluaran satu kata kunci tampil di satu baris, beserta selisih bersihnya). Semua orang yang diberi akses ke buku itu bisa melihatnya.',
         },
       },
       {
