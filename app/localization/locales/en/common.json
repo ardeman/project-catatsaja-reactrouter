@@ -641,6 +641,22 @@
         "emptyRange": "Nothing in your groups in this range.",
         "plusToEdit": "Changing groups needs Catat Saja Plus."
       },
+      "keywords": {
+        "title": "By keyword",
+        "plus": "A Catat Saja Plus feature.",
+        "hint": "Save words to look for in descriptions, such as bensin or grab, gojek, to see what those entries add up to.",
+        "edit": "Edit keywords",
+        "create": "Add keywords",
+        "editHint": "Entries whose description has the word count, in any case. Separate alternatives with commas. Changes save with the book.",
+        "keyword": "Keyword",
+        "placeholder": "bensin, or grab, gojek",
+        "add": "Add keyword",
+        "remove": "Remove keyword",
+        "count_one": "{{count}} entry",
+        "count_other": "{{count}} entries",
+        "emptyRange": "No entries with your keywords in this range.",
+        "plusToEdit": "Changing keywords needs Catat Saja Plus."
+      },
       "compare": {
         "title": "Comparison",
         "subtitle": "{{current}} against {{previous}}",

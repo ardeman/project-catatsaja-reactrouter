@@ -57,10 +57,17 @@ type TFinanceGoal = {
   spent: number | null
 }
 
+// Words to look for in entries' descriptions, such as "bensin" or "grab,
+// gojek" (commas separate alternatives), to see what they add up to.
+type TFinanceKeyword = {
+  id: string
+  text: string
+}
+
 // A book: a title, the currency its totals are in, its entries, the
 // accounts it is checked against, its groups of categories, its budgets,
-// its savings goals and the payday (a day of the month) they are saved on
-// (missing on books made before them).
+// its savings goals and the payday (a day of the month) they are saved on,
+// and its keywords (missing on books made before them).
 export type TFinanceForm = z.infer<typeof bookSchema> & {
   content: TFinanceEntry[]
   accounts?: TFinanceAccount[]
@@ -68,6 +75,7 @@ export type TFinanceForm = z.infer<typeof bookSchema> & {
   budgets?: TFinanceBudget[]
   goals?: TFinanceGoal[]
   payday?: number | null
+  keywords?: TFinanceKeyword[]
 }
 
 export type TCreateFinanceRequest = TFinanceForm

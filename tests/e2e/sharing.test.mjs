@@ -485,7 +485,7 @@ describe('sharing and finance storage', () => {
     await mira.context.close()
   })
 
-  test("a book's own groups of categories, budgets and savings goals are Plus, encrypted and shared", async () => {
+  test("a book's own groups of categories, budgets, savings goals and keywords are Plus, encrypted and shared", async () => {
     const openAnalysis = async (page, id) => {
       await page.goto(`${APP}/finances/${id}`)
       await page
@@ -498,6 +498,8 @@ describe('sharing and finance storage', () => {
       page.locator('section').filter({ hasText: 'Budgets' })
     const goals = (page) =>
       page.locator('section').filter({ hasText: 'Savings goals' })
+    const keywords = (page) =>
+      page.locator('section').filter({ hasText: 'By keyword' })
 
     const rani = await newDevice(browser)
     await signUp(rani.page, 'Rani', 'rani@example.com')
@@ -535,6 +537,7 @@ describe('sharing and finance storage', () => {
       0,
     )
     await goals(rani.page).getByText('Plus · coming soon').waitFor()
+    await keywords(rani.page).getByText('Plus · coming soon').waitFor()
 
     // Plus, given by hand as the console would: groups can be made, and are
     // sealed with the book.
@@ -609,6 +612,26 @@ describe('sharing and finance storage', () => {
       .getByText(/^Save .+ a month$/)
       .waitFor({ timeout: 15_000 })
 
+    // A keyword found in the lunch entry's description, sealed too.
+    const sealedGoals = (await dbGet(`finances/${bookId}`)).encrypted.mapValue
+      .fields.ct.stringValue
+    await rani.page.getByRole('button', { name: 'Add keywords' }).click()
+    const keywordEditor = rani.page.getByRole('dialog')
+    await keywordEditor.getByRole('button', { name: 'Add keyword' }).click()
+    await keywordEditor
+      .getByLabel('Keyword', { exact: true })
+      .fill('LUNCH, dinner')
+    await rani.page.keyboard.press('Escape')
+    const tagged = await dbGetWhen(
+      `finances/${bookId}`,
+      (fields) =>
+        fields?.encrypted.mapValue.fields.ct.stringValue !== sealedGoals,
+    )
+    assert.ok(!tagged.keywords, 'no readable keywords')
+    assert.ok(!JSON.stringify(tagged).includes('dinner'), 'encrypted')
+    await openAnalysis(rani.page, bookId)
+    await keywords(rani.page).getByText('1 entry').waitFor({ timeout: 15_000 })
+
     // Someone it is shared with to read sees the groups, and can't change
     // them.
     const sari = await newDevice(browser)
@@ -637,6 +660,11 @@ describe('sharing and finance storage', () => {
       .waitFor()
     assert.equal(
       await sari.page.getByRole('button', { name: 'Edit goals' }).count(),
+      0,
+    )
+    await keywords(sari.page).getByText('LUNCH, dinner').waitFor()
+    assert.equal(
+      await sari.page.getByRole('button', { name: 'Edit keywords' }).count(),
       0,
     )
     await rani.context.close()

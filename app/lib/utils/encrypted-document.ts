@@ -32,6 +32,7 @@ export const contentFields = {
     'budgets',
     'goals',
     'payday',
+    'keywords',
     'summary',
     'cardStyle',
   ],

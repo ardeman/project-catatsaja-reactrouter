@@ -641,6 +641,22 @@
         "emptyRange": "Tidak ada isi grupmu di rentang ini.",
         "plusToEdit": "Mengubah grup perlu Catat Saja Plus."
       },
+      "keywords": {
+        "title": "Per kata kunci",
+        "plus": "Fitur Catat Saja Plus.",
+        "hint": "Simpan kata yang dicari di keterangan, misalnya bensin atau grab, gojek, untuk melihat jumlah catatan itu.",
+        "edit": "Ubah kata kunci",
+        "create": "Tambah kata kunci",
+        "editHint": "Catatan yang keterangannya memuat kata itu ikut dihitung, huruf besar atau kecil sama saja. Pisahkan pilihan lain dengan koma. Perubahan tersimpan bersama buku.",
+        "keyword": "Kata kunci",
+        "placeholder": "bensin, atau grab, gojek",
+        "add": "Tambah kata kunci",
+        "remove": "Hapus kata kunci",
+        "count_one": "{{count}} catatan",
+        "count_other": "{{count}} catatan",
+        "emptyRange": "Tidak ada catatan dengan kata kuncimu dalam rentang ini.",
+        "plusToEdit": "Mengubah kata kunci perlu Catat Saja Plus."
+      },
       "compare": {
         "title": "Perbandingan",
         "subtitle": "{{current}} dibanding {{previous}}",

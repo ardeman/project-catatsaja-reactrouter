@@ -14,6 +14,29 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-28',
+    title: {
+      en: 'Totals by keyword',
+      id: 'Jumlah per kata kunci',
+    },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Coming with Catat Saja Plus: keywords in a book’s Analysis, such as bensin or grab, gojek, with what the entries mentioning them add up to in the period. Everyone the book is shared with sees them.',
+          id: 'Segera hadir bersama Catat Saja Plus: kata kunci di Analisis buku, misalnya bensin atau grab, gojek, lengkap dengan jumlah catatan yang memuatnya dalam periode itu. Semua orang yang diberi akses ke buku itu bisa melihatnya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'In a book’s Analysis, By item now comes right after By category.',
+          id: 'Di Analisis buku, Per item kini tepat setelah Per kategori.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-27',
     title: {
       en: 'Your cycle at a glance',

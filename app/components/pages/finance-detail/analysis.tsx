@@ -56,6 +56,7 @@ import { CategoryGroups } from './category-groups'
 import { CustomDates } from './entry-filter'
 import { Goals } from './goals'
 import { ItemBreakdown } from './item-breakdown'
+import { Keywords } from './keywords'
 import { PeriodComparison } from './period-comparison'
 import { Section } from './section'
 import { TAnalysisOptions } from './type'
@@ -602,6 +603,33 @@ export const Analysis = ({
         </Section>
       )}
 
+      {/* The breakdowns follow the type chosen above them. */}
+      {items.length === 0 && groupBy === 'item' && (
+        <p className="py-6 text-center text-sm text-muted-foreground">
+          {t('finances.analysis.items.none')}
+        </p>
+      )}
+
+      {items.length > 0 && groupBy !== 'category' && (
+        <Section
+          title={t('finances.analysis.items.title')}
+          subtitle={t('finances.analysis.items.subtitle')}
+        >
+          <ItemBreakdown
+            items={items}
+            book={book}
+            showsPriceChange={shownType === 'expense'}
+          />
+        </Section>
+      )}
+
+      <Keywords
+        entries={analysis.shown}
+        type={shownType}
+        book={book}
+        isReadOnly={isReadOnly}
+      />
+
       <Budgets
         entries={entries}
         book={book}
@@ -621,26 +649,6 @@ export const Analysis = ({
           book={book}
           isReadOnly={isReadOnly}
         />
-      )}
-
-      {/* The breakdowns follow the type chosen above them. */}
-      {items.length === 0 && groupBy === 'item' && (
-        <p className="py-6 text-center text-sm text-muted-foreground">
-          {t('finances.analysis.items.none')}
-        </p>
-      )}
-
-      {items.length > 0 && groupBy !== 'category' && (
-        <Section
-          title={t('finances.analysis.items.title')}
-          subtitle={t('finances.analysis.items.subtitle')}
-        >
-          <ItemBreakdown
-            items={items}
-            book={book}
-            showsPriceChange={shownType === 'expense'}
-          />
-        </Section>
       )}
     </div>
   )
