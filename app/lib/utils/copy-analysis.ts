@@ -4,7 +4,12 @@
 // into its currency. No app imports, so `pnpm test:unit` can run it.
 
 type TGroup = { id: string; name: string; categories: string[] }
-type TBudget = { id: string; category: string; limit: number | null }
+type TBudget = {
+  id: string
+  category: string
+  limit: number | null
+  period?: 'month' | 'book'
+}
 type TKeyword = { id: string; text: string }
 type TGoal = {
   id: string
@@ -97,6 +102,7 @@ export const copySetup = (
       id: newId(),
       category: budget.category,
       limit: convert(budget.limit),
+      ...(budget.period && { period: budget.period }),
     })
     added++
   }

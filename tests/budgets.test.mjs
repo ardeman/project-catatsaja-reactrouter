@@ -37,6 +37,7 @@ describe('budget usage', () => {
       {
         id: 'food',
         category: 'fnb',
+        period: 'month',
         limit: 1000,
         spent: 500,
         left: 500,
@@ -108,6 +109,30 @@ describe('the whole book budget', () => {
       [
         { id: 'all', spent: 1200, left: 800 },
         { id: 'food', spent: 900, left: 100 },
+      ],
+    )
+  })
+})
+
+describe('whole book budgets', () => {
+  test("count every month's expenses, not only this month's", () => {
+    const usage = budgetUsage(
+      [
+        entry('fnb', 300),
+        entry('fnb', 200, { date: '2026-09-30' }),
+        entry('transport', 100, { date: '2026-08-01' }),
+      ],
+      [
+        { ...food, period: 'book' },
+        { id: 'all', category: wholeBook, limit: 1000, period: 'book' },
+      ],
+      '2026-10',
+    )
+    assert.deepEqual(
+      usage.map(({ id, period, spent }) => ({ id, period, spent })),
+      [
+        { id: 'all', period: 'book', spent: 600 },
+        { id: 'food', period: 'book', spent: 500 },
       ],
     )
   })

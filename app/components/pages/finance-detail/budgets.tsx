@@ -26,8 +26,8 @@ type TProperties = {
   isReadOnly: boolean
 }
 
-// The book's budgets (a Plus feature): the monthly limit on all of its
-// spending and on each category, and what is left of it this month. Everyone the book is shared with sees
+// The book's budgets (a Plus feature): the limit on all of its spending and
+// on each category, for this month or the whole book, and what is left. Everyone the book is shared with sees
 // them; only a writer with Plus changes them. Someone without Plus and
 // without budgets is told what Plus would add.
 export const Budgets = ({ entries, book, isReadOnly }: TProperties) => {
@@ -74,7 +74,12 @@ export const Budgets = ({ entries, book, isReadOnly }: TProperties) => {
   return (
     <Section
       title={t('finances.analysis.budgets.title')}
-      subtitle={monthName}
+      // Whole-book budgets don't depend on the month.
+      subtitle={
+        usage.every(({ period }) => period === 'book') && usage.length > 0
+          ? undefined
+          : monthName
+      }
       action={
         canEdit && (
           <Button
@@ -96,13 +101,20 @@ export const Budgets = ({ entries, book, isReadOnly }: TProperties) => {
     >
       {usage.length > 0 ? (
         <ul className="grid gap-3">
-          {usage.map(({ id, category, limit, spent, left, share }) => (
+          {usage.map(({ id, category, period, limit, spent, left, share }) => (
             <li
               key={id}
               className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 text-sm"
             >
               <BudgetIcon category={category} />
-              <span className="truncate">{t(budgetLabelKey(category))}</span>
+              <span className="grid min-w-0">
+                <span className="truncate">{t(budgetLabelKey(category))}</span>
+                {period === 'book' && (
+                  <span className="truncate text-xs text-muted-foreground">
+                    {t('finances.analysis.budgets.period.book')}
+                  </span>
+                )}
+              </span>
               {/* What is left above what was spent, so the category's name
                   keeps its width on a phone. */}
               <span className="grid text-right tabular-nums">

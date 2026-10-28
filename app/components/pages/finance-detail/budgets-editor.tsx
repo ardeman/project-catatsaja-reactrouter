@@ -75,6 +75,15 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
   const handleRemove = (id: string) =>
     update((getValues('budgets') ?? []).filter((budget) => budget.id !== id))
 
+  const handlePeriod = (id: string, period: string) =>
+    update(
+      (getValues('budgets') ?? []).map((budget) =>
+        budget.id === id
+          ? { ...budget, period: period === 'book' ? 'book' : 'month' }
+          : budget,
+      ),
+    )
+
   const handleCategory = (id: string, category: string) =>
     update(
       (getValues('budgets') ?? []).map((budget) =>
@@ -95,7 +104,7 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
             {budgets.map((budget, index) => (
               <li
                 key={budget.id}
-                className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-start gap-1.5 [&_input]:h-8 [&_input]:text-sm"
+                className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-start gap-1.5 rounded-lg border p-2 [&_input]:h-8 [&_input]:text-sm"
               >
                 <Select
                   value={budget.category}
@@ -150,6 +159,27 @@ export const BudgetsEditor = ({ open, setOpen, book }: TProperties) => {
                 >
                   <X className="size-4" />
                 </Button>
+                <Select
+                  value={budget.period ?? 'month'}
+                  onValueChange={(period) => handlePeriod(budget.id, period)}
+                >
+                  <SelectTrigger
+                    className="h-8"
+                    aria-label={t('finances.analysis.budgets.period.label')}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(['month', 'book'] as const).map((period) => (
+                      <SelectItem
+                        key={period}
+                        value={period}
+                      >
+                        {t(`finances.analysis.budgets.period.${period}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </li>
             ))}
           </ul>

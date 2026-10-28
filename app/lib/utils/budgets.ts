@@ -1,5 +1,5 @@
-// A book's budgets: a monthly limit per expense category or on all of the
-// book's spending, and what is left of it in a month. Computed in the browser, in the book's currency;
+// A book's budgets: a limit per expense category or on all of the book's
+// spending, for each month or for the whole book, and what is left of it. Computed in the browser, in the book's currency;
 // nothing is stored but the limits. No app imports, so `pnpm test:unit`
 // can run it.
 
@@ -16,11 +16,13 @@ type TBudget = {
   id: string
   category: string
   limit: number | null
+  period?: 'month' | 'book'
 }
 
 export type TBudgetUsage = {
   id: string
   category: string
+  period: 'month' | 'book'
   limit: number
   spent: number
   // Negative once spending goes over the limit.
@@ -55,37 +57,47 @@ export const normalizeBudgets = <T extends TBudget>(budgets: T[] = []): T[] => {
     })
 }
 
-// What each budget has spent in a month (YYYY-MM) and what is left, the
-// most used first, after the whole book's. Budgets without a limit above 0
-// are left out.
+// What each budget has spent and what is left: in a month (YYYY-MM), or
+// since the book began for a whole-book budget. The most used first, after
+// the one on all spending. Budgets without a limit above 0 are left out.
 export const budgetUsage = (
   entries: TEntryLike[],
   budgets: TBudget[] = [],
   month: string,
 ): TBudgetUsage[] => {
-  const spentBy = new Map<string, number>()
-  let spentAll = 0
+  // Per category, plus the whole book's, for the month and for all time.
+  const spent = {
+    month: new Map<string, number>(),
+    book: new Map<string, number>(),
+  }
+  const add = (totals: Map<string, number>, key: string, total: number) =>
+    totals.set(key, (totals.get(key) ?? 0) + total)
   for (const entry of entries) {
-    if (entry.type !== 'expense' || monthOf(entry.date) !== month) continue
+    if (entry.type !== 'expense') continue
     const total = entry.quantity * entry.amount * entry.rate
-    spentBy.set(entry.category, (spentBy.get(entry.category) ?? 0) + total)
-    spentAll += total
+    const periods =
+      monthOf(entry.date) === month
+        ? (['month', 'book'] as const)
+        : (['book'] as const)
+    for (const period of periods) {
+      add(spent[period], entry.category, total)
+      add(spent[period], wholeBook, total)
+    }
   }
   return normalizeBudgets(budgets)
     .filter((budget) => (budget.limit ?? 0) > 0)
     .map((budget) => {
       const limit = budget.limit ?? 0
-      const spent =
-        budget.category === wholeBook
-          ? spentAll
-          : (spentBy.get(budget.category) ?? 0)
+      const period = budget.period ?? 'month'
+      const used = spent[period].get(budget.category) ?? 0
       return {
         id: budget.id,
         category: budget.category,
+        period,
         limit,
-        spent,
-        left: limit - spent,
-        share: spent / limit,
+        spent: used,
+        left: limit - used,
+        share: used / limit,
       }
     })
     .toSorted(

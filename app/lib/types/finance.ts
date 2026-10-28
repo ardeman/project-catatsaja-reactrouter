@@ -44,6 +44,8 @@ type TFinanceBudget = {
   id: string
   category: string
   limit: number | null
+  // What the limit is for: each month (the default) or the whole book.
+  period?: 'month' | 'book'
 }
 
 // Something to save for by a month (YYYY-MM), in the book's currency. Once
