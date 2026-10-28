@@ -4,6 +4,8 @@ import { Bug, Settings } from 'lucide-react'
 import { githubRepository, githubUser } from '~/lib/constants/metadata'
 import { TMenu } from '~/lib/types/common'
 
+export const isExternal = (href: string) => href.startsWith('http')
+
 export const userMenus = (t: TFunction): TMenu[] => [
   {
     name: t('navigation.settings'),

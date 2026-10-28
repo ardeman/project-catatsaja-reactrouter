@@ -763,7 +763,7 @@ export const Form = (properties: TFormProperties) => {
           isPage
           cardStyle={toCardStyle(task?.cardStyle)}
         />
-        <div className="sticky top-20 z-40 flex justify-center md:top-24">
+        <div className="sticky top-4 z-40 flex justify-center md:top-24">
           {task ? (
             <Action
               className="w-full"

@@ -612,7 +612,7 @@ export const Form = (properties: TFormProperties) => {
           isPage
           cardStyle={toCardStyle(finance?.cardStyle)}
         />
-        <div className="sticky top-20 z-40 flex justify-center md:top-24">
+        <div className="sticky top-4 z-40 flex justify-center md:top-24">
           {finance ? (
             <Action
               className="w-full"
@@ -757,7 +757,7 @@ export const Form = (properties: TFormProperties) => {
         <div
           ref={totalsCard}
           className={cn(
-            'glass-surface scroll-mt-[8.5rem] md:scroll-mt-[9.5rem]',
+            'glass-surface scroll-mt-[4.5rem] md:scroll-mt-[9.5rem]',
             hasAccounts
               ? '!mb-0 rounded-t-xl border border-b-0 bg-none px-4 pt-4 pb-3 [clip-path:inset(-2rem_-2rem_0_-2rem)]'
               : '!mb-0 rounded-xl border p-4',
@@ -780,7 +780,7 @@ export const Form = (properties: TFormProperties) => {
             ref={accountsCard}
             // The shadow is cut at the top, so the join with the totals
             // doesn't show.
-            className="glass-surface !mb-0 scroll-mt-[8.5rem] rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)] md:scroll-mt-[9.5rem]"
+            className="glass-surface !mb-0 scroll-mt-[4.5rem] rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)] md:scroll-mt-[9.5rem]"
           >
             <Accounts
               book={book}
@@ -799,7 +799,7 @@ export const Form = (properties: TFormProperties) => {
         />
         <div
           ref={summaryReference}
-          className="sticky top-[7.5rem] z-30 h-0 md:top-[8.5rem]"
+          className="sticky top-[3.5rem] z-30 h-0 md:top-[8.5rem]"
         >
           {isSummaryStuck && (
             <div
@@ -866,7 +866,7 @@ export const Form = (properties: TFormProperties) => {
                   // Floats under the book's totals, like the entry form, so
                   // adding is always one tap away while scrolling.
                   data-entry-dock
-                  className="motion-fade sticky top-[calc(7.5rem+var(--summary-height,0px)+0.5rem)] z-20 flex flex-wrap gap-2 md:top-[calc(8.5rem+var(--summary-height,0px)+0.5rem)]"
+                  className="motion-fade sticky top-[calc(3.5rem+var(--summary-height,0px)+0.5rem)] z-20 flex flex-wrap gap-2 md:top-[calc(8.5rem+var(--summary-height,0px)+0.5rem)]"
                 >
                   <Button
                     type="button"

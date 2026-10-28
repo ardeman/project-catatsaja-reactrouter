@@ -24,7 +24,7 @@ const SWIPE_THRESHOLD = 6
 type TBox = { left: number; width: number }
 
 export const Navigation = (properties: TProperties) => {
-  const { className, variant = 'bar' } = properties
+  const { className, variant = 'bar', trailing } = properties
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -204,7 +204,7 @@ export const Navigation = (properties: TProperties) => {
               'flex items-center gap-2 whitespace-nowrap transition-colors hover:text-foreground',
               isActive ? 'text-primary' : 'text-muted-foreground',
               isBottom &&
-                'relative h-14 min-w-0 flex-col justify-center gap-0.5 rounded-full px-1 text-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
+                'relative h-14 min-w-0 flex-1 basis-0 flex-col justify-center gap-0.5 rounded-full text-[0.6875rem] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
               isBottom &&
                 (index === highlighted
                   ? 'text-foreground'
@@ -225,7 +225,11 @@ export const Navigation = (properties: TProperties) => {
                 )}
               </span>
             )}
-            {nav.name}
+            {isBottom ? (
+              <span className="max-w-full truncate">{nav.name}</span>
+            ) : (
+              nav.name
+            )}
             {nav.href === '/health' && dueCount > 0 && (
               <span className="sr-only">
                 {t('health.reminders.dueCount', { count: dueCount })}
@@ -234,6 +238,7 @@ export const Navigation = (properties: TProperties) => {
           </Link>
         )
       })}
+      {isBottom && trailing}
     </nav>
   )
 }

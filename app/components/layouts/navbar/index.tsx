@@ -1,9 +1,20 @@
-import { CircleUser, ExternalLink, Lock, LogOut } from 'lucide-react'
+import {
+  CircleUser,
+  ExternalLink,
+  Lock,
+  LogOut,
+  Search as SearchIcon,
+} from 'lucide-react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
+import { useMediaQuery } from 'usehooks-ts'
 
 import { InstallApp } from '~/components/base/install-app'
-import { Notifications } from '~/components/layouts/notifications'
+import {
+  Notifications,
+  useNotifications,
+} from '~/components/layouts/notifications'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import {
@@ -22,13 +33,12 @@ import { TMenu } from '~/lib/types/common'
 import { lockSession } from '~/lib/utils/encryption-session'
 import { cn } from '~/lib/utils/shadcn'
 
-import { aboutMenus, userMenus } from './constant'
+import { AccountSheet } from './account-sheet'
+import { aboutMenus, isExternal, userMenus } from './constant'
 import { Navigation } from './navigation'
 import { Search } from './search'
 import { TProperties } from './type'
 export { aboutMenus } from './constant'
-
-const isExternal = (href: string) => href.startsWith('http')
 
 const MenuLink = (properties: { menu: TMenu }) => {
   const { menu } = properties
@@ -65,12 +75,21 @@ export const Navbar = (properties: TProperties) => {
   }
 
   const { mutate: mutateLogout } = useLogout()
+  const notifications = useNotifications()
+  // Phones have no top bar: the pages are bottom tabs, beside an account tab
+  // and a Search button that brings the search box down from the top.
+  const isDesktop = useMediaQuery('(min-width: 768px)')
+  const searchReference = useRef<HTMLInputElement>(null)
+  const [isSearching, setIsSearching] = useState(false)
 
   return (
     <>
       <header
         className={cn(
-          'sticky top-0 z-50 flex h-16 w-full items-center gap-4 px-4 md:px-6',
+          'top-0 z-50 flex h-16 w-full items-center gap-4 px-4 md:sticky md:px-6',
+          'max-md:fixed max-md:h-[calc(4rem+env(safe-area-inset-top))] max-md:pt-[env(safe-area-inset-top)] max-md:motion-safe:transition-[translate,opacity] max-md:motion-safe:duration-200',
+          !isSearching &&
+            'max-md:pointer-events-none max-md:-translate-y-full max-md:opacity-0',
           className,
         )}
       >
@@ -81,91 +100,122 @@ export const Navbar = (properties: TProperties) => {
         />
         <Navigation className="hidden shrink-0 flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <Search />
-          <Notifications />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="shrink-0 rounded-full [&_svg]:size-6"
+          <Search
+            inputReference={searchReference}
+            onFocusChange={setIsSearching}
+          />
+          {isDesktop && <Notifications notifications={notifications} />}
+          {isDesktop && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="shrink-0 rounded-full [&_svg]:size-6"
+                >
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={userData?.photoURL || ''} />
+                    <AvatarFallback>
+                      <CircleUser />
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="sr-only">{t('navigation.userMenu')}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="glass-surface w-60"
               >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={userData?.photoURL || ''} />
-                  <AvatarFallback>
-                    <CircleUser />
-                  </AvatarFallback>
-                </Avatar>
-                <span className="sr-only">{t('navigation.userMenu')}</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="glass-surface w-60"
-            >
-              <DropdownMenuLabel className="grid font-normal">
-                {userData?.displayName && (
-                  <span className="truncate font-medium">
-                    {userData.displayName}
+                <DropdownMenuLabel className="grid font-normal">
+                  {userData?.displayName && (
+                    <span className="truncate font-medium">
+                      {userData.displayName}
+                    </span>
+                  )}
+                  <span className="truncate text-xs text-muted-foreground">
+                    {userData?.email}
                   </span>
-                )}
-                <span className="truncate text-xs text-muted-foreground">
-                  {userData?.email}
-                </span>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {userMenus(t).map((menu) => (
-                <MenuLink
-                  key={menu.href}
-                  menu={menu}
-                />
-              ))}
-              <InstallApp>
-                {({ onClick, label, icon }) => (
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {userMenus(t).map((menu) => (
+                  <MenuLink
+                    key={menu.href}
+                    menu={menu}
+                  />
+                ))}
+                <InstallApp>
+                  {({ onClick, label, icon }) => (
+                    <DropdownMenuItem
+                      onClick={onClick}
+                      className="cursor-pointer gap-2 [&_svg]:text-muted-foreground"
+                    >
+                      {icon}
+                      {label}
+                    </DropdownMenuItem>
+                  )}
+                </InstallApp>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                  {appName}
+                </DropdownMenuLabel>
+                {aboutMenus(t).map((menu) => (
+                  <MenuLink
+                    key={menu.href}
+                    menu={menu}
+                  />
+                ))}
+                <DropdownMenuSeparator />
+                {userData?.publicKey && encryption.status === 'unlocked' && (
                   <DropdownMenuItem
-                    onClick={onClick}
-                    className="cursor-pointer gap-2 [&_svg]:text-muted-foreground"
+                    onClick={() => void lockSession()}
+                    className="cursor-pointer gap-2"
                   >
-                    {icon}
-                    {label}
+                    <Lock className="size-4 text-muted-foreground" />
+                    {t('encryption.settings.lock')}
                   </DropdownMenuItem>
                 )}
-              </InstallApp>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                {appName}
-              </DropdownMenuLabel>
-              {aboutMenus(t).map((menu) => (
-                <MenuLink
-                  key={menu.href}
-                  menu={menu}
-                />
-              ))}
-              <DropdownMenuSeparator />
-              {userData?.publicKey && encryption.status === 'unlocked' && (
                 <DropdownMenuItem
-                  onClick={() => void lockSession()}
+                  onClick={handleLogout}
                   className="cursor-pointer gap-2"
                 >
-                  <Lock className="size-4 text-muted-foreground" />
-                  {t('encryption.settings.lock')}
+                  <LogOut className="size-4 text-muted-foreground" />
+                  {t('navigation.signOut')}
                 </DropdownMenuItem>
-              )}
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="cursor-pointer gap-2"
-              >
-                <LogOut className="size-4 text-muted-foreground" />
-                {t('navigation.signOut')}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </header>
-      <Navigation
-        variant="bottom"
-        className="glass-surface fixed inset-x-3 bottom-(--nav-bottom) z-50 grid auto-cols-fr grid-flow-col gap-1 rounded-full border p-1 md:hidden"
-      />
+      {!isDesktop && (
+        <div className="fixed inset-x-3 bottom-(--nav-bottom) z-50 flex gap-1.5">
+          <Navigation
+            variant="bottom"
+            className="glass-surface flex min-w-0 flex-1 gap-0 rounded-full border p-1"
+            trailing={
+              <AccountSheet
+                notifications={notifications}
+                onSignOut={handleLogout}
+              />
+            }
+          />
+          <button
+            type="button"
+            aria-label={t('navigation.search.placeholder')}
+            title={t('navigation.search.placeholder')}
+            onClick={() => {
+              // In the tap itself, or the phone won't open its keyboard.
+              searchReference.current?.focus()
+              searchReference.current?.select()
+            }}
+            className="glass-surface flex size-14 shrink-0 items-center justify-center self-center rounded-full border text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
+          >
+            <SearchIcon
+              aria-hidden="true"
+              className="size-5"
+            />
+          </button>
+        </div>
+      )}
     </>
   )
 }

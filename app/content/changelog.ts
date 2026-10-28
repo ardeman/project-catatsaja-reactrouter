@@ -16,10 +16,17 @@ export const releases: TRelease[] = [
   {
     date: '2026-10-29',
     title: {
-      en: 'New entries in view',
-      id: 'Entri baru terlihat',
+      en: 'Everything at the bottom on phones',
+      id: 'Semua di bagian bawah pada ponsel',
     },
     changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'On phones, the top bar is gone: search and your account (with notifications) now sit in the bottom bar, within reach of your thumb, and pages use the full screen.',
+          id: 'Di ponsel, bilah atas kini tidak ada: pencarian dan akun Anda (beserta notifikasi) ada di bilah bawah, mudah dijangkau ibu jari, dan halaman memakai seluruh layar.',
+        },
+      },
       {
         kind: 'fixed',
         text: {

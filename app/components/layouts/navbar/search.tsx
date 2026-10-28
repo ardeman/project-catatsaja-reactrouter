@@ -47,9 +47,17 @@ type TGroup = {
   options: TOption[]
 }
 
+type TSearchProperties = {
+  // Lets the phone's Search button focus the box (it must happen in the tap
+  // for the keyboard to open).
+  inputReference?: RefObject<HTMLInputElement | null>
+  onFocusChange?: (isFocused: boolean) => void
+}
+
 // Searches notes, tasks, finances and health logs at once. Typing shows the best matches
 // of each; Enter opens the highlighted one, "See all" filters that list.
-export const Search = () => {
+export const Search = (properties: TSearchProperties) => {
+  const { onFocusChange } = properties
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -57,7 +65,8 @@ export const Search = () => {
   const listQuery = searchParameters.get('q') || ''
   const [query, setQuery] = useState(listQuery)
   const [isOpen, setIsOpen] = useState(false)
-  const inputReference = useRef<HTMLInputElement>(null)
+  const ownInputReference = useRef<HTMLInputElement>(null)
+  const inputReference = properties.inputReference ?? ownInputReference
   const listId = useId()
   // Pages rendered at build time show the Ctrl shortcut until hydrated.
   const isMac = useSyncExternalStore(noSubscribe, isMacSnapshot, () => false)
@@ -93,7 +102,7 @@ export const Search = () => {
     }
     addEventListener('keydown', handleKeyDown)
     return () => removeEventListener('keydown', handleKeyDown)
-  }, [])
+  }, [inputReference])
 
   const handleOpen = (option: TOption) => {
     // A single result opens on its own; "See all" keeps the words in the box.
@@ -121,8 +130,14 @@ export const Search = () => {
             setQuery(event.target.value)
             setIsOpen(true)
           }}
-          onFocus={() => setIsOpen(true)}
-          onBlur={() => setIsOpen(false)}
+          onFocus={() => {
+            setIsOpen(true)
+            onFocusChange?.(true)
+          }}
+          onBlur={() => {
+            setIsOpen(false)
+            onFocusChange?.(false)
+          }}
           placeholder={t('navigation.search.placeholder')}
           aria-label={t('navigation.search.placeholder')}
           role="combobox"
@@ -385,7 +400,7 @@ const Results = (properties: TResultsProperties) => {
       aria-label={t('navigation.search.placeholder')}
       // Keep focus in the box so a click doesn't close the list first.
       onMouseDown={(event) => event.preventDefault()}
-      className="glass-surface fixed inset-x-4 top-[4.5rem] z-50 max-h-[70vh] overflow-y-auto rounded-xl border p-2 text-popover-foreground md:absolute md:inset-x-0 md:top-full md:mt-2"
+      className="glass-surface fixed inset-x-4 top-[calc(4.5rem+env(safe-area-inset-top))] z-50 max-h-[70vh] overflow-y-auto rounded-xl border p-2 text-popover-foreground md:absolute md:inset-x-0 md:top-full md:mt-2"
     >
       {renderBody()}
     </ul>

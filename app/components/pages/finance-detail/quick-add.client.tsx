@@ -143,7 +143,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
       {isOpen ? (
         <section
           aria-labelledby="quick-add-title"
-          className="motion-enter glass-surface glass-float order-last grid max-h-[calc(100dvh-18rem-var(--summary-height,0px))] basis-full gap-3 overflow-y-auto rounded-xl border p-3 shadow-lg sm:p-4 md:max-h-[calc(100dvh-14rem-var(--summary-height,0px))] [&_[role=combobox]]:bg-background [&_input]:bg-background [&_textarea]:bg-background"
+          className="motion-enter glass-surface glass-float order-last grid max-h-[calc(100dvh-14rem-var(--summary-height,0px))] basis-full gap-3 overflow-y-auto rounded-xl border p-3 shadow-lg sm:p-4 md:max-h-[calc(100dvh-14rem-var(--summary-height,0px))] [&_[role=combobox]]:bg-background [&_input]:bg-background [&_textarea]:bg-background"
         >
           <h2
             id="quick-add-title"

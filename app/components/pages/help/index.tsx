@@ -26,7 +26,7 @@ export const HelpPage = () => {
           >
             <h2
               id={`help-${key}`}
-              className="scroll-mt-28 text-xl font-semibold sm:scroll-mt-40"
+              className="scroll-mt-12 text-xl font-semibold sm:scroll-mt-40"
             >
               {t(`help.${key}.title`)}
             </h2>

@@ -52,7 +52,7 @@ const Main = () => {
 
   return (
     <ScrollArea className="flex h-dvh w-full">
-      <main className="app-background isolate flex min-h-dvh w-screen flex-col pb-[calc(5rem+var(--nav-bottom))] md:pb-0">
+      <main className="app-background isolate flex min-h-dvh w-screen flex-col pt-[env(safe-area-inset-top)] pb-[calc(5rem+var(--nav-bottom))] md:pt-0 md:pb-0">
         <Navbar />
         <MaintenanceGate>
           <EncryptionGate>
