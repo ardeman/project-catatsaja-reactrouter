@@ -191,21 +191,14 @@ jobs:
             test "$E2E_RESULT" = success
           fi
 
-  deploy:
-    needs: checks
-    # Only main, from a push or a run by hand; never pull requests or the
-    # weekly check.
+  # Builds beside the tests, so installing and building (and a slow npm
+  # registry, which once held an install for three minutes) stay off the
+  # deploy's path. Only main, like deploy, so pull requests never build with
+  # the secrets.
+  build:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # One deploy at a time, in order.
-    concurrency:
-      group: deploy-production
-      cancel-in-progress: false
-    permissions:
-      contents: read
-      checks: write
-      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -238,6 +231,43 @@ jobs:
         run: pnpm exec react-router build
       - name: Verify build output
         run: test -f build/client/index.html && ls build/client
+      - name: Keep the build for the deploy
+        uses: actions/upload-artifact@v7
+        with:
+          name: hosting
+          path: build/client
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    needs: [checks, build]
+    # Only main, from a push or a run by hand; never pull requests or the
+    # weekly check.
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # One deploy at a time, in order.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      # For firebase.json; the files come from the build job.
+      - name: Checkout
+        uses: actions/checkout@v7
+      # The deploy action runs the Firebase CLI on this Node.
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Get the build
+        uses: actions/download-artifact@v8
+        with:
+          name: hosting
+          path: build/client
       - name: Deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
