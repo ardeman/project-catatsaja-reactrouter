@@ -51,12 +51,21 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
   const canEdit = !isReadOnly && hasPlus
   // With both types shown, a keyword's income and expense share one row.
   const rows = combinedKeywordTotals(entries, types, keywords)
-  const largest = Math.max(
-    0,
-    ...rows.flatMap(({ totals }) => totals.map(({ total }) => total)),
-  )
+  const largestOf = (type: TFinanceEntry['type']) =>
+    Math.max(
+      0,
+      ...rows.flatMap(({ totals }) =>
+        totals.filter((item) => item.type === type).map(({ total }) => total),
+      ),
+    )
+  const largest = Math.max(...types.map((type) => largestOf(type)))
   // A bar's share of the full width, never too thin to see.
   const widthOf = (total: number) => Math.max((total / (largest || 1)) * 100, 1)
+  // With both types shown, the zero line sits where the largest spending
+  // and the largest income meet, so neither side is left mostly empty.
+  const span = largestOf('expense') + largestOf('income') || 1
+  const zero = (largestOf('expense') / span) * 100
+  const sideWidthOf = (total: number) => Math.max((total / span) * 100, 1)
   const hasKeywords = keywords.length > 0
 
   if (!hasKeywords && !canEdit) {
@@ -130,8 +139,9 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
               ))}
             </ul>
           )}
-          <ul className="grid gap-3">
+          <ul className="grid gap-2.5">
             {rows.map(({ id, text, count, totals }) => {
+              const isBoth = types.length > 1
               // Income less expenses, when the keyword has both.
               const totalOf = (type: TFinanceEntry['type']) =>
                 totals.find((item) => item.type === type)?.total ?? 0
@@ -139,37 +149,45 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
                 totals.length > 1
                   ? totalOf('income') - totalOf('expense')
                   : undefined
+              // With both types shown, spending is signed minus and
+              // income plus, matching the side of the zero line.
+              const amountOf = (type: TFinanceEntry['type'], total: number) =>
+                isBoth
+                  ? money(type === 'expense' ? -total : total, book, true)
+                  : money(total, book)
               return (
                 <li
                   key={id}
-                  className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-2 gap-y-1 text-sm"
+                  className="grid gap-1 text-sm"
                 >
-                  <span className="grid">
-                    <span className="truncate">{text}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {t('finances.analysis.keywords.count', { count })}
-                    </span>
-                  </span>
-                  <span className="grid text-right tabular-nums">
-                    {totals.map(({ type, total, share }) => (
-                      <span key={type}>
-                        {types.length > 1 && (
-                          <span className="sr-only">
-                            {t(`finances.summary.${type}`)}:{' '}
-                          </span>
-                        )}
-                        <span className="font-medium">
-                          {money(total, book)}
-                        </span>{' '}
-                        <span className="text-xs text-muted-foreground">
-                          {formatShare(percent, share)}
-                        </span>
+                  <span className="flex items-baseline gap-2">
+                    <span className="min-w-0 flex-1 truncate">
+                      <span className="font-medium">{text}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {' · '}
+                        {t('finances.analysis.keywords.count', { count })}
                       </span>
-                    ))}
-                    {net !== undefined && (
+                    </span>
+                    {net === undefined ? (
+                      totals.map(({ type, total }) => (
+                        <span
+                          key={type}
+                          className="shrink-0 tabular-nums"
+                        >
+                          {isBoth && (
+                            <span className="sr-only">
+                              {t(`finances.summary.${type}`)}:{' '}
+                            </span>
+                          )}
+                          <span className="font-medium">
+                            {amountOf(type, total)}
+                          </span>
+                        </span>
+                      ))
+                    ) : (
                       <span
                         className={cn(
-                          'text-xs',
+                          'shrink-0 font-medium tabular-nums',
                           net > 0 && 'text-income',
                           net < 0 && 'text-expense',
                         )}
@@ -180,48 +198,83 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
                       </span>
                     )}
                   </span>
-                  {types.length > 1 ? (
-                    // Spending to the left of the centre line, income to
-                    // the right, and a tick where the net falls.
-                    <span
-                      aria-hidden="true"
-                      className="relative col-span-2 h-2"
-                    >
-                      {totals.map(({ type, total }) => (
+                  <span
+                    aria-hidden="true"
+                    className="relative h-1.5 overflow-hidden rounded-full bg-muted"
+                  >
+                    {isBoth ? (
+                      // Spending to the left of the zero line, income
+                      // to the right.
+                      <>
+                        {totals.map(({ type, total }) => (
+                          <span
+                            key={type}
+                            className={cn(
+                              'absolute inset-y-0',
+                              type === 'expense'
+                                ? 'rounded-l-full'
+                                : 'rounded-r-full',
+                              barClass[type],
+                            )}
+                            style={{
+                              width: `${sideWidthOf(total)}%`,
+                              ...(type === 'expense'
+                                ? { right: `${100 - zero}%` }
+                                : { left: `${zero}%` }),
+                            }}
+                          />
+                        ))}
+                        {zero > 0 && zero < 100 && (
+                          <span
+                            className="absolute inset-y-0 w-px -translate-x-1/2 bg-background"
+                            style={{ left: `${zero}%` }}
+                          />
+                        )}
+                      </>
+                    ) : (
+                      totals.map(({ type, total }) => (
                         <span
                           key={type}
                           className={cn(
-                            'absolute inset-y-0',
-                            type === 'expense'
-                              ? 'right-1/2 rounded-l-[4px]'
-                              : 'left-1/2 rounded-r-[4px]',
+                            'absolute inset-y-0 left-0 rounded-full',
                             barClass[type],
                           )}
-                          style={{ width: `${widthOf(total) / 2}%` }}
+                          style={{ width: `${widthOf(total)}%` }}
                         />
-                      ))}
-                      <span className="absolute -inset-y-1 left-1/2 w-px -translate-x-1/2 bg-border" />
-                      {net !== undefined && (
-                        <span
-                          className="absolute -inset-y-1 w-0.5 -translate-x-1/2 rounded-full bg-foreground"
-                          style={{
-                            left: `${50 + (net / (largest || 1)) * 50}%`,
-                          }}
-                        />
-                      )}
-                    </span>
-                  ) : (
-                    totals.map(({ type, total }) => (
+                      ))
+                    )}
+                  </span>
+                  {net === undefined ? (
+                    // The share under the bar, on its side of the zero
+                    // line.
+                    totals.map(({ type, share }) => (
                       <span
                         key={type}
-                        aria-hidden="true"
                         className={cn(
-                          'col-span-2 h-2 rounded-r-[4px]',
-                          barClass[type],
+                          'text-xs text-muted-foreground tabular-nums',
+                          !(isBoth && type === 'expense') && 'text-right',
                         )}
-                        style={{ width: `${widthOf(total)}%` }}
-                      />
+                      >
+                        {t(`finances.analysis.keywords.shareOf.${type}`, {
+                          share: formatShare(percent, share),
+                        })}
+                      </span>
                     ))
+                  ) : (
+                    // Each side's figure under its half of the bar.
+                    <span className="flex justify-between gap-2 text-xs text-muted-foreground tabular-nums">
+                      {totals.map(({ type, total, share }) => (
+                        <span key={type}>
+                          <span className="sr-only">
+                            {t(`finances.summary.${type}`)}:{' '}
+                          </span>
+                          {amountOf(type, total)} ·{' '}
+                          {t(`finances.analysis.keywords.shareOf.${type}`, {
+                            share: formatShare(percent, share),
+                          })}
+                        </span>
+                      ))}
+                    </span>
                   )}
                 </li>
               )

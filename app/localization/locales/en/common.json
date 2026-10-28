@@ -666,6 +666,10 @@
         "count_one": "{{count}} entry",
         "count_other": "{{count}} entries",
         "net": "Net {{amount}}",
+        "shareOf": {
+          "expense": "{{share}} of spending",
+          "income": "{{share}} of income"
+        },
         "emptyRange": "No entries with your keywords in this range.",
         "plusToEdit": "Changing keywords needs Catat Saja Plus.",
         "saved_one": "{{count}} keyword",
