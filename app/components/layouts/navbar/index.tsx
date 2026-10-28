@@ -187,7 +187,7 @@ export const Navbar = (properties: TProperties) => {
         </div>
       </header>
       {!isDesktop && (
-        <div className="fixed inset-x-3 bottom-(--nav-bottom) z-50 flex gap-1.5">
+        <div className="fixed inset-x-2 bottom-(--nav-bottom) z-50 flex gap-1.5">
           <Navigation
             variant="bottom"
             className="glass-surface flex min-w-0 flex-1 gap-0 rounded-full border p-1"
@@ -207,7 +207,8 @@ export const Navbar = (properties: TProperties) => {
               searchReference.current?.focus()
               searchReference.current?.select()
             }}
-            className="glass-surface flex size-14 shrink-0 items-center justify-center self-center rounded-full border text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
+            // As tall as the pill: its tabs plus padding and border.
+            className="glass-surface flex size-[calc(4rem+2px)] shrink-0 items-center justify-center rounded-full border text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
           >
             <SearchIcon
               aria-hidden="true"

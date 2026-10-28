@@ -86,13 +86,20 @@ export const useNotifications = () => {
 
 type TNotifications = ReturnType<typeof useNotifications>
 
-export const NotificationCount = (properties: { count: number }) => {
-  const { count } = properties
+export const NotificationCount = (properties: {
+  count: number
+  className?: string
+}) => {
+  const { count, className } = properties
   if (count === 0) return
   return (
     <span
       aria-hidden="true"
-      className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[0.625rem] leading-none font-semibold text-white ring-2 ring-background"
+      className={cn(
+        '-top-0.5 -right-0.5',
+        className,
+        'absolute flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[0.625rem] leading-none font-semibold text-white ring-2 ring-background',
+      )}
     >
       {count > 9 ? '9+' : count}
     </span>

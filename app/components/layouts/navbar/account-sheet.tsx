@@ -82,17 +82,21 @@ export const AccountSheet = (properties: {
           aria-label={label}
           title={label}
           draggable={false}
-          className="relative flex h-14 w-10 shrink-0 items-center justify-center rounded-full [-webkit-touch-callout:none] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
+          className="relative flex h-14 min-w-0 flex-1 basis-0 flex-col items-center justify-center gap-0.5 rounded-full text-[0.625rem] tracking-tight text-muted-foreground transition-colors [-webkit-touch-callout:none] hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
         >
           <span className="relative">
-            <Avatar className="size-8">
+            <Avatar className="size-5">
               <AvatarImage src={userData?.photoURL || ''} />
-              <AvatarFallback>
-                <CircleUser className="size-5 text-muted-foreground" />
+              <AvatarFallback className="bg-transparent">
+                <CircleUser className="size-5" />
               </AvatarFallback>
             </Avatar>
-            <NotificationCount count={notifications.count} />
+            <NotificationCount
+              count={notifications.count}
+              className="-top-1.5 -right-2.5"
+            />
           </span>
+          <span className="max-w-full truncate">{t('navigation.account')}</span>
         </button>
       </DrawerTrigger>
       <DrawerContent className="glass-surface glass-thick max-h-[85dvh] rounded-t-3xl [&>:first-child]:bg-foreground/20">

@@ -204,7 +204,7 @@ export const Navigation = (properties: TProperties) => {
               'flex items-center gap-2 whitespace-nowrap transition-colors hover:text-foreground',
               isActive ? 'text-primary' : 'text-muted-foreground',
               isBottom &&
-                'relative h-14 min-w-0 flex-1 basis-0 flex-col justify-center gap-0.5 rounded-full text-[0.6875rem] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
+                'relative h-14 min-w-0 flex-1 basis-0 flex-col justify-center gap-0.5 rounded-full text-[0.625rem] tracking-tight focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
               isBottom &&
                 (index === highlighted
                   ? 'text-foreground'
