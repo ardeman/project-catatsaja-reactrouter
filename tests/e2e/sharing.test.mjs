@@ -567,15 +567,18 @@ describe('sharing and finance storage', () => {
     await openAnalysis(rani.page, bookId)
     await groups(rani.page).getByText('Needs').waitFor({ timeout: 15_000 })
 
-    // A budget for this month's food: what is left of it, sealed too.
+    // A budget on all spending for the whole book, and one for this month's
+    // food: what is left of each, sealed too.
     const sealedGroups = (await dbGet(`finances/${bookId}`)).encrypted.mapValue
       .fields.ct.stringValue
     await rani.page.getByRole('button', { name: 'Set budgets' }).click()
     const budgetEditor = rani.page.getByRole('dialog')
     await budgetEditor.getByRole('button', { name: 'Add budget' }).click()
-    await budgetEditor
-      .getByLabel('Monthly limit for Food & drinks')
-      .fill('80000')
+    await budgetEditor.getByLabel('Limit for All spending').fill('900000')
+    await budgetEditor.getByRole('combobox', { name: 'Budget period' }).click()
+    await rani.page.getByRole('option', { name: 'Whole book' }).click()
+    await budgetEditor.getByRole('button', { name: 'Add budget' }).click()
+    await budgetEditor.getByLabel('Limit for Food & drinks').fill('80000')
     await rani.page.keyboard.press('Escape')
     const budgeted = await dbGetWhen(
       `finances/${bookId}`,
@@ -587,6 +590,7 @@ describe('sharing and finance storage', () => {
     await budgets(rani.page)
       .getByText(/30[.,]000 left/)
       .waitFor({ timeout: 15_000 })
+    await budgets(rani.page).getByText('Whole book').waitFor()
 
     // A savings goal half a year away and a payday: what to put aside each
     // month, sealed too.
