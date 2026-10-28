@@ -42,6 +42,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'In the app installed on an iPhone or iPad, pages now reach the top of the screen and fade softly under the status bar.',
+          id: 'Di aplikasi yang terpasang di iPhone atau iPad, halaman kini mencapai bagian atas layar dan memudar lembut di bawah bilah status.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'After adding to a book, the page now really scrolls to the new entry, just below the form, instead of leaving it hidden behind the form.',

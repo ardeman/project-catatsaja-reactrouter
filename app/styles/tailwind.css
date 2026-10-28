@@ -157,7 +157,31 @@
     }
   }
 
+  /* Behind the installed app's see-through status bar on iPhone: what
+     scrolls under it blurs and fades into the page colour. Its height is 0
+     wherever there is no top safe area. */
+  .status-bar-fade {
+    height: calc(env(safe-area-inset-top) * 1.5);
+    background-image: linear-gradient(
+      to bottom,
+      hsl(var(--background) / 0.9) 50%,
+      hsl(var(--background) / 0)
+    );
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    mask-image: linear-gradient(to bottom, black 50%, transparent);
+  }
+
   @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    .status-bar-fade {
+      height: env(safe-area-inset-top);
+      background-color: hsl(var(--background));
+      background-image: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      mask-image: none;
+    }
+
     .glass-surface {
       background-color: hsl(var(--background));
       background-image: none;

@@ -7,6 +7,7 @@ import { EncryptionGate } from '~/components/layouts/encryption-gate'
 import { MaintenanceGate } from '~/components/layouts/maintenance-gate'
 import { Navbar } from '~/components/layouts/navbar'
 import { PushPrompt } from '~/components/layouts/push-prompt'
+import { StatusBarFade } from '~/components/layouts/status-bar-fade'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { rememberStartPage } from '~/lib/constants/navigation'
 import { useTheme } from '~/lib/contexts/theme'
@@ -53,6 +54,7 @@ const Main = () => {
   return (
     <ScrollArea className="flex h-dvh w-full">
       <main className="app-background isolate flex min-h-dvh w-screen flex-col pt-[env(safe-area-inset-top)] pb-[calc(5rem+var(--nav-bottom))] md:pt-0 md:pb-0">
+        <StatusBarFade />
         <Navbar />
         <MaintenanceGate>
           <EncryptionGate>

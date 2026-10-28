@@ -22,8 +22,12 @@ export const authorUrl = 'https://ardeman.com'
 export const themeColor = '#ffffff'
 export const themeColors = { light: themeColor, dark: '#0c0a09' }
 // The installed app's status bar on iPhone and iPad, which ignores
-// theme-color: white with dark text, or black with light text.
-export const statusBarStyles = { light: 'default', dark: 'black' }
+// theme-color: see-through, so the page runs under it and fades into it
+// (StatusBarFade). Kept per theme so either can go back to an opaque bar.
+export const statusBarStyles = {
+  light: 'black-translucent',
+  dark: 'black-translucent',
+}
 export const appDescription =
   'Write notes, keep checklists, track your money and health, and share them with the people you choose.'
 const manifest = '/site.webmanifest'
