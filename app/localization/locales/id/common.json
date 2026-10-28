@@ -482,6 +482,23 @@
       "incomeExpense": "Masuk <in>{{income}}</in> · Keluar <out>{{expense}}</out>",
       "byCategory": "Pengeluaran per kategori"
     },
+    "selected": {
+      "label_one": "{{count}} dipilih",
+      "label_other": "{{count}} dipilih",
+      "clear": "Hapus pilihan",
+      "add": "Tambahkan {{name}} ke jumlah",
+      "remove": "Keluarkan {{name}} dari jumlah",
+      "calculate": "Tambahkan ke kalkulator"
+    },
+    "calculator": {
+      "label": "Kalkulator",
+      "open": "Kalkulator",
+      "close": "Tutup kalkulator",
+      "clear": "Hapus",
+      "back": "Hapus terakhir",
+      "copy": "Salin hasil",
+      "copied": "Hasil disalin"
+    },
     "accounts": {
       "title": "Akunmu",
       "name": {

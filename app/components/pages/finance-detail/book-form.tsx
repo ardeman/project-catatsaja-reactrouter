@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { CalculatorIcon, Check, Plus } from 'lucide-react'
 import {
   type CSSProperties,
   useEffect,
@@ -83,6 +83,7 @@ import { cn } from '~/lib/utils/shadcn'
 import { Accounts } from './accounts'
 import { AddCurrency } from './add-currency'
 import { Analysis } from './analysis'
+import { Calculator } from './calculator'
 import { EntryFilter } from './entry-filter'
 import { EntryForm } from './entry-form.client'
 import { QuickAdd } from './quick-add.client'
@@ -312,6 +313,30 @@ export const Form = (properties: TFormProperties) => {
     () => groupByDate(shownEntries),
     [shownEntries],
   )
+  // Entries ticked by their icon add up in the totals; nothing is saved.
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const selected = useMemo(() => {
+    const ids = new Set(selectedIds)
+    const chosen = entries.filter((entry) => ids.has(entry.id))
+    return { count: chosen.length, total: summarize(chosen).balance }
+  }, [entries, selectedIds])
+  const toggleSelected = (id: string) =>
+    setSelectedIds((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id],
+    )
+  // The floating calculator's calculation; undefined while it's closed.
+  const [calculation, setCalculation] = useState<string>()
+  const addToCalculation = (total: number) => {
+    const value = String(Number(total.toFixed(book.maximumFractionDigits ?? 2)))
+    setCalculation((current) => {
+      if (!current) return value
+      return /[+\-*/(]$/.test(current) || value.startsWith('-')
+        ? `${current}${value}`
+        : `${current}+${value}`
+    })
+  }
   // New entries scroll into view just below the floating form (or the Add
   // buttons), so the person sees where they landed.
   const [addedIds, setAddedIds] = useState<string[]>([])
@@ -741,6 +766,9 @@ export const Form = (properties: TFormProperties) => {
             balance={balance}
             accounts={accounts ?? []}
             isCompact={false}
+            selected={selected}
+            onClearSelected={() => setSelectedIds([])}
+            onCalculate={addToCalculation}
           />
         </div>
         {hasAccounts && (
@@ -782,6 +810,9 @@ export const Form = (properties: TFormProperties) => {
                 accounts={accounts ?? []}
                 isCompact
                 onSelect={handleSummarySelect}
+                selected={selected}
+                onClearSelected={() => setSelectedIds([])}
+                onCalculate={addToCalculation}
               />
             </div>
           )}
@@ -859,6 +890,24 @@ export const Form = (properties: TFormProperties) => {
                 entries={entries}
                 shown={shownEntries}
                 book={book}
+                actions={
+                  <Button
+                    type="button"
+                    variant={calculation === undefined ? 'ghost' : 'secondary'}
+                    size="icon"
+                    className="size-8"
+                    aria-label={t('finances.calculator.open')}
+                    title={t('finances.calculator.open')}
+                    aria-pressed={calculation !== undefined}
+                    onClick={() =>
+                      setCalculation((current) =>
+                        current === undefined ? '' : undefined,
+                      )
+                    }
+                  >
+                    <CalculatorIcon className="size-4" />
+                  </Button>
+                }
               />
             )}
 
@@ -913,22 +962,53 @@ export const Form = (properties: TFormProperties) => {
                           ? money(entryTotal(entry), entry.currency)
                           : '',
                       ].filter(Boolean)
+                      const isSelected = selectedIds.includes(entry.id)
+                      const selectLabel = t(
+                        isSelected
+                          ? 'finances.selected.remove'
+                          : 'finances.selected.add',
+                        { name: entry.description || label },
+                      )
                       return (
                         <li
                           key={entry.id}
                           data-entry-id={entry.id}
-                          className="min-w-0"
+                          className={cn(
+                            'relative min-w-0',
+                            isSelected && 'bg-primary/10',
+                          )}
                         >
+                          {/* The icon ticks the entry for the selected sum.
+                              It sits over the row's button, as buttons can't
+                              be nested. */}
+                          <button
+                            type="button"
+                            aria-pressed={isSelected}
+                            aria-label={selectLabel}
+                            title={selectLabel}
+                            onClick={() => toggleSelected(entry.id)}
+                            className="absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                          >
+                            {isSelected ? (
+                              <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                                <Check className="size-4" />
+                              </span>
+                            ) : (
+                              <CategoryIcon
+                                category={entry.category}
+                                chip
+                              />
+                            )}
+                          </button>
                           <button
                             type="button"
                             disabled={isReadOnly}
                             onClick={() => openEntry(entry)}
                             className="motion-enter grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default sm:grid-cols-[auto_minmax(0,1fr)_auto]"
                           >
-                            <CategoryIcon
-                              category={entry.category}
-                              chip
-                              className="row-span-2 sm:row-span-1"
+                            <span
+                              aria-hidden="true"
+                              className="row-span-2 size-9 sm:row-span-1"
                             />
                             <span className="col-start-2 row-start-1 grid min-w-0">
                               <span className="truncate font-medium">
@@ -987,6 +1067,13 @@ export const Form = (properties: TFormProperties) => {
         </span>
         <SaveStatus status={saveStatus} />
       </span>
+      {calculation !== undefined && (
+        <Calculator
+          expression={calculation}
+          setExpression={setCalculation}
+          className="fixed right-3 bottom-[calc(4.5rem+var(--nav-bottom))] z-40 md:right-6 md:bottom-6"
+        />
+      )}
       <AddCurrency
         open={isAddingCurrency}
         setOpen={setIsAddingCurrency}

@@ -482,6 +482,23 @@
       "incomeExpense": "In <in>{{income}}</in> · Out <out>{{expense}}</out>",
       "byCategory": "Spending by category"
     },
+    "selected": {
+      "label_one": "{{count}} selected",
+      "label_other": "{{count}} selected",
+      "clear": "Clear selection",
+      "add": "Add {{name}} to the sum",
+      "remove": "Remove {{name}} from the sum",
+      "calculate": "Add to calculator"
+    },
+    "calculator": {
+      "label": "Calculator",
+      "open": "Calculator",
+      "close": "Close calculator",
+      "clear": "Clear",
+      "back": "Delete last",
+      "copy": "Copy result",
+      "copied": "Result copied"
+    },
     "accounts": {
       "title": "Your accounts",
       "name": {

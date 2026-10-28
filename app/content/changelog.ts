@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: "In a book, tap an entry's icon to add it to a sum, shown with the totals and in the bar at the top. A calculator beside Filter floats over the entries and can take that sum.",
+          id: 'Di buku, ketuk ikon transaksi untuk menambahkannya ke jumlah, yang tampil bersama total dan di bilah atas. Kalkulator di samping Filter melayang di atas daftar transaksi dan bisa memakai jumlah itu.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'In a book scrolled down, tap Balance or Difference in the bar at the top to jump back to the totals or the accounts.',

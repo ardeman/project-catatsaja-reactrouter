@@ -1,6 +1,8 @@
+import { Calculator, X } from 'lucide-react'
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceAccount, TFinanceCurrency } from '~/lib/types/finance'
 import { accountsDifference } from '~/lib/utils/finance'
@@ -20,16 +22,77 @@ type TProperties = {
   isCompact: boolean
   // Compact only: each part scrolls back to where it's shown in full.
   onSelect?: (part: TSummaryPart) => void
+  // The entries ticked by their icon: how many, and income less expenses.
+  selected?: TSelectedSum
+  onClearSelected?: () => void
+  // Adds the selected sum to the floating calculator.
+  onCalculate?: (total: number) => void
 }
+
+type TSelectedSum = { count: number; total: number }
 
 export type TSummaryPart = 'balance' | 'difference'
 
 // The book's totals, at the top of the summary card.
 export const Summary = (properties: TProperties) => {
-  const { book, income, expense, balance, accounts, isCompact, onSelect } =
-    properties
+  const {
+    book,
+    income,
+    expense,
+    balance,
+    accounts,
+    isCompact,
+    onSelect,
+    selected,
+    onClearSelected,
+    onCalculate,
+  } = properties
   const { t } = useTranslation()
   const money = useMoney()
+
+  const selectedSum = selected && selected.count > 0 && (
+    <div className="col-span-full flex min-w-0 items-center justify-between gap-2 border-t pt-1">
+      <dt className="flex min-w-0 items-center gap-1">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="size-7 shrink-0"
+          aria-label={t('finances.selected.clear')}
+          title={t('finances.selected.clear')}
+          onClick={onClearSelected}
+        >
+          <X className="size-4" />
+        </Button>
+        <span className="truncate text-xs text-muted-foreground">
+          {t('finances.selected.label', { count: selected.count })}
+        </span>
+      </dt>
+      <dd className="flex items-center gap-1">
+        <span
+          className={cn(
+            'text-sm font-semibold whitespace-nowrap tabular-nums',
+            selected.total < 0 ? 'text-expense' : 'text-income',
+          )}
+        >
+          {money(selected.total, book, true)}
+        </span>
+        {onCalculate && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="size-7 shrink-0"
+            aria-label={t('finances.selected.calculate')}
+            title={t('finances.selected.calculate')}
+            onClick={() => onCalculate(selected.total)}
+          >
+            <Calculator className="size-4" />
+          </Button>
+        )}
+      </dd>
+    </div>
+  )
 
   if (!isCompact)
     return (
@@ -63,6 +126,7 @@ export const Summary = (properties: TProperties) => {
             {money(expense, book)}
           </dd>
         </div>
+        {selectedSum}
       </dl>
     )
 
@@ -136,6 +200,7 @@ export const Summary = (properties: TProperties) => {
           </dd>
         </div>
       ))}
+      {selectedSum}
     </dl>
   )
 }
