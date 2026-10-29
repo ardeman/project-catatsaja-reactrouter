@@ -189,6 +189,21 @@ export const updateShared = async (
   return commit
 }
 
+// Content worked out from the rest (a book's summary), brought up to date
+// on its own. Doesn't touch `updatedAt`: it isn't an edit.
+export const refreshShared = async (
+  name: TCollection,
+  id: string,
+  changes: Record<string, unknown>,
+) => {
+  const { database } = requireUser()
+  const { commit } = await whilePreparingWrite(async () => {
+    const encoded = await encodeChanges(name, id, changes)
+    return { commit: updateDoc(doc(database, name, id), encoded) }
+  })
+  return commit
+}
+
 // Leaving an item shared with you: off its lists, and your sealed key gone.
 export const unlinkShared = async (name: TCollection, item: TShared) => {
   const { database, uid } = requireUser()

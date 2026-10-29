@@ -30,15 +30,22 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
-          en: "Search inside a book: the box above its entries looks through every entry's description and category, however old, and works together with the filters, with the totals of what it finds.",
-          id: 'Cari di dalam buku: kotak di atas entrinya mencari di keterangan dan kategori setiap entri, selama apa pun, dan bisa digabung dengan filter, lengkap dengan total hasilnya.',
+          en: "Search inside a book: Filter now has a search box that looks through every entry's description and category, however old, together with the other filters and with the totals of what it finds.",
+          id: 'Cari di dalam buku: Filter kini punya kotak pencarian yang mencari di keterangan dan kategori setiap entri, selama apa pun, bersama filter lainnya dan lengkap dengan total hasilnya.',
         },
       },
       {
         kind: 'improved',
         text: {
-          en: 'A book found by searching for one of its entries now opens right at that entry, lit up for a moment, instead of at the top.',
-          id: 'Buku yang ditemukan lewat pencarian salah satu entrinya kini langsung terbuka di entri itu, yang disorot sejenak, bukan di bagian atas.',
+          en: "While you scroll through a book, the bar with its balance at the top now shows the book's name too.",
+          id: 'Saat Anda menggulir sebuah buku, bilah saldo di bagian atas kini juga menampilkan nama bukunya.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Search now finds a book by any of its entries, not only its 50 newest, and opens it showing every entry that matches, so you can pick the one you meant. A book you can edit is brought up to date the first time you open it.',
+          id: 'Pencarian kini menemukan buku dari entri mana pun, bukan hanya 50 entri terbarunya, dan membukanya dengan menampilkan semua entri yang cocok, agar Anda bisa memilih yang dimaksud. Buku yang bisa Anda ubah diperbarui saat pertama kali Anda membukanya.',
         },
       },
       {

@@ -106,6 +106,9 @@ export type TFinanceSummary = {
   spending: TCategoryTotal[]
   // The newest entries by date.
   recent: TFinanceEntry[]
+  // Every entry's description, each wording once, so search finds a book by
+  // any of its entries. Missing on books not saved since it was added.
+  descriptions?: string[]
 }
 
 export type TPinFinanceRequest = {

@@ -42,6 +42,7 @@ import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useIsStuck } from '~/lib/hooks/use-is-stuck'
 import { useMoney } from '~/lib/hooks/use-money'
+import { useRefreshFinanceSummary } from '~/lib/hooks/use-refresh-finance-summary'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
@@ -148,6 +149,7 @@ export const Form = (properties: TFormProperties) => {
   const isOwner = finance?.owner === userData?.uid
   const isEditable = isOwner || canWrite
   const isReadOnly = !!finance && !isEditable
+  useRefreshFinanceSummary(finance, !!isEditable)
   const sharedCount = new Set(
     [
       ...(finance?.permissions?.read || []),
@@ -340,39 +342,24 @@ export const Form = (properties: TFormProperties) => {
   // New entries scroll into view just below the floating form (or the Add
   // buttons), so the person sees where they landed.
   const [addedIds, setAddedIds] = useState<string[]>([])
-  // A result of the navbar's search opens the book with `?entry=`: once that
-  // entry has loaded, it scrolls into view (clearing a filter that would hide
-  // it) and lights up for a moment.
-  const target = searchParameters.get('entry')
-  const [targetFor, setTargetFor] = useState<string | null>(null)
-  const [highlightId, setHighlightId] = useState<string>()
-  if (!target && targetFor) setTargetFor(null)
-  if (
-    target &&
-    target !== targetFor &&
-    entries.some(({ id }) => id === target)
-  ) {
-    setTargetFor(target)
-    setFilter(emptyEntryFilter)
-    setAddedIds([target])
-    setHighlightId(target)
+  // A result of the navbar's search opens the book with `?search=`: the
+  // words go in the book's search box, so every matching entry shows.
+  const searched = searchParameters.get('search')
+  const [searchedFor, setSearchedFor] = useState<string | null>(null)
+  if (searched !== searchedFor) {
+    setSearchedFor(searched)
+    if (searched) setFilter({ ...emptyEntryFilter, text: searched })
   }
   useEffect(() => {
-    if (!targetFor) return
+    if (!searchedFor) return
     setSearchParameters(
       (current) => {
-        current.delete('entry')
+        current.delete('search')
         return current
       },
-      // Not back to the top, away from the entry.
-      { replace: true, preventScrollReset: true },
+      { replace: true },
     )
-  }, [targetFor, setSearchParameters])
-  useEffect(() => {
-    if (!highlightId) return
-    const timer = setTimeout(() => setHighlightId(undefined), 2000)
-    return () => clearTimeout(timer)
-  }, [highlightId])
+  }, [searchedFor, setSearchParameters])
   useEffect(() => {
     if (addedIds.length === 0) return
     // The rows come in list order, so the first is the topmost.
@@ -825,6 +812,10 @@ export const Form = (properties: TFormProperties) => {
               ref={compactSummary}
               className="glass-surface glass-float rounded-xl border px-3 py-2 shadow-lg motion-safe:opacity-0 sm:px-4"
             >
+              {/* Which book this is, once its title has scrolled away. */}
+              <p className="truncate text-sm font-semibold">
+                {watchTitle || t('finances.untitled')}
+              </p>
               <Summary
                 book={book}
                 income={income}
@@ -998,8 +989,7 @@ export const Form = (properties: TFormProperties) => {
                           data-entry-id={entry.id}
                           className={cn(
                             'relative min-w-0 transition-colors duration-500',
-                            (isSelected || highlightId === entry.id) &&
-                              'bg-primary/10',
+                            isSelected && 'bg-primary/10',
                           )}
                         >
                           {/* The icon ticks the entry for the selected sum.

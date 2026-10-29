@@ -64,7 +64,8 @@ describe('sharing and finance storage', () => {
     await page.waitForTimeout(3000)
     assert.equal(await page.getByText('Protect your data').count(), 0)
 
-    // A book's summary (what its card shows) is saved with its entries.
+    // A book's summary (what its card and search show) is saved with its
+    // entries.
     await page.goto(`${APP}/finances/create`)
     await page.locator('textarea[name=title]').fill('Gita book')
     await page.getByRole('button', { name: 'Save' }).click()
@@ -91,6 +92,11 @@ describe('sharing and finance storage', () => {
       summary.recent.arrayValue.values[0].mapValue.fields.description
         .stringValue,
       'Gita lunch',
+    )
+    // Every description once, so search finds the book by older entries.
+    assert.deepEqual(
+      summary.descriptions.arrayValue.values.map((value) => value.stringValue),
+      ['Gita lunch'],
     )
     await page.goto(`${APP}/finances`)
     await page.getByText('Gita lunch').waitFor({ timeout: 15_000 })

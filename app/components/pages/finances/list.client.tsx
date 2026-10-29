@@ -64,6 +64,7 @@ export const List = () => {
               entry.description,
               t(`finances.form.category.${entry.category}.label`),
             ]),
+            ...(finance.summary?.descriptions ?? []),
           ].join(' ')
         }
         renderCard={(finance, className) => (

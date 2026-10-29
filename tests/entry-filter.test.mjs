@@ -27,7 +27,10 @@ const entry = (id, type, category, date) => ({
 
 const entries = [
   entry('salary', 'income', 'salary', '2026-10-01'),
-  { ...entry('lunch', 'expense', 'fnb', '2026-10-20'), description: 'Nasi Padang' },
+  {
+    ...entry('lunch', 'expense', 'fnb', '2026-10-20'),
+    description: 'Nasi Padang',
+  },
   entry('rice', 'expense', 'groceries', '2026-09-30'),
   entry('old', 'expense', 'fnb', '2025-12-31'),
 ]
@@ -114,7 +117,7 @@ describe('periodRange', () => {
 })
 
 describe('activeFilterCount', () => {
-  test('counts type, category and a period', () => {
+  test('counts words, type, category and a period', () => {
     assert.equal(activeFilterCount(emptyEntryFilter), 0)
     assert.equal(
       activeFilterCount({
@@ -125,8 +128,8 @@ describe('activeFilterCount', () => {
       }),
       3,
     )
-    // The words have their own box.
-    assert.equal(activeFilterCount({ ...emptyEntryFilter, text: 'rice' }), 0)
+    assert.equal(activeFilterCount({ ...emptyEntryFilter, text: 'rice' }), 1)
+    assert.equal(activeFilterCount({ ...emptyEntryFilter, text: '  ' }), 0)
     // A custom period with no dates filters nothing.
     assert.equal(
       activeFilterCount({ ...emptyEntryFilter, period: 'custom' }),

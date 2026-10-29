@@ -32,6 +32,7 @@ import { isSameJson } from '~/lib/utils/merge-stored'
 import {
   createShared,
   readMonths,
+  refreshShared,
   setSharedPermission,
   subscribeShared,
   subscribeSharedOne,
@@ -116,6 +117,11 @@ export const updateFinance = async (data: TUpdateFinanceRequest) => {
     },
   )
 }
+
+// The summary of an open book saved before it had every description, so
+// search finds it by any entry. Its entries don't change.
+export const refreshFinanceSummary = (id: string, content: TFinanceEntry[]) =>
+  refreshShared('finances', id, { summary: bookSummary(content) })
 
 // A book with all its entries, read when they aren't at hand (deleting or
 // copying from the list, which has only summaries).

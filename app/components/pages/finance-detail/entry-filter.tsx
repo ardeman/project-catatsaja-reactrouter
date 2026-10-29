@@ -91,6 +91,13 @@ export const EntryFilter = (properties: TProperties) => {
   const money = useMoney()
   const count = activeFilterCount(filter)
   const [isOpen, setIsOpen] = useState(count > 0)
+  // A filter set from outside (the navbar's search, `?search=`) opens the
+  // panel, so its words show.
+  const [seenFilter, setSeenFilter] = useState(filter)
+  if (filter !== seenFilter) {
+    setSeenFilter(filter)
+    if (count > 0) setIsOpen(true)
+  }
   const { income, expense } = summarize(shown)
   // Only categories the book uses, of the chosen type.
   const used = new Set(entries.map((entry) => entry.category))
@@ -102,30 +109,32 @@ export const EntryFilter = (properties: TProperties) => {
   const update = (next: Partial<TEntryFilter>) =>
     setFilter((current) => ({ ...current, ...next }))
 
-  // Searching shows the count and totals too, and Clear empties the box.
-  const isFiltering = count > 0 || filter.text.trim() !== ''
-
   return (
     <div className="grid gap-2">
-      <div className="flex items-center gap-2">
-        <div className="relative min-w-0 flex-1">
-          <Search
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
-          />
-          <Input
-            type="search"
-            value={filter.text}
-            onChange={(event) => update({ text: event.target.value })}
-            placeholder={t('finances.filter.search')}
-            aria-label={t('finances.filter.search')}
-            autoComplete="off"
-            className="h-8 pl-8"
-          />
-        </div>
-        <div className="flex shrink-0 gap-1">
+      <div className="flex flex-wrap items-center gap-2">
+        {count > 0 && (
+          <p className="min-w-0 flex-1 text-xs text-muted-foreground">
+            {t('finances.filter.shown', {
+              count: shown.length,
+              total: entries.length,
+            })}{' '}
+            ·{' '}
+            <Trans
+              i18nKey="finances.summary.incomeExpense"
+              values={{
+                income: money(income, book),
+                expense: money(expense, book),
+              }}
+              components={{
+                in: <span className="text-income" />,
+                out: <span className="text-expense" />,
+              }}
+            />
+          </p>
+        )}
+        <div className="ml-auto flex gap-1">
           {actions}
-          {isFiltering && (
+          {count > 0 && (
             <Button
               type="button"
               variant="ghost"
@@ -155,29 +164,24 @@ export const EntryFilter = (properties: TProperties) => {
           </Button>
         </div>
       </div>
-      {isFiltering && (
-        <p className="text-xs text-muted-foreground">
-          {t('finances.filter.shown', {
-            count: shown.length,
-            total: entries.length,
-          })}{' '}
-          ·{' '}
-          <Trans
-            i18nKey="finances.summary.incomeExpense"
-            values={{
-              income: money(income, book),
-              expense: money(expense, book),
-            }}
-            components={{
-              in: <span className="text-income" />,
-              out: <span className="text-expense" />,
-            }}
-          />
-        </p>
-      )}
 
       {isOpen && (
         <div className="glass-surface motion-fade grid gap-3 rounded-xl border p-3">
+          <div className="relative">
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+            />
+            <Input
+              type="search"
+              value={filter.text}
+              onChange={(event) => update({ text: event.target.value })}
+              placeholder={t('finances.filter.search')}
+              aria-label={t('finances.filter.search')}
+              autoComplete="off"
+              className="pl-8"
+            />
+          </div>
           <Segmented
             label={t('finances.form.type.label')}
             value={filter.type}

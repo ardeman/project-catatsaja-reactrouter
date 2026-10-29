@@ -207,8 +207,8 @@ const Results = (properties: TResultsProperties) => {
       items: T[] | undefined,
       untitled: string,
       getText: (item: T) => string,
-      // Where a match in the item's text leads, such as the entry found.
-      getHref: (item: T, href: string) => string = (_, href) => href,
+      // Where a match in the item's text leads, such as a search inside it.
+      getHref: (href: string) => string = (href) => href,
     ): TGroup => {
       const titleMatches: TOption[] = []
       const contentMatches: TOption[] = []
@@ -227,7 +227,7 @@ const Results = (properties: TResultsProperties) => {
         const href = `${nav.href}/${item.id}`
         target.push({
           id: href,
-          href: isTitleMatch ? href : getHref(item, href),
+          href: isTitleMatch ? href : getHref(href),
           kind: 'item',
           title: title || untitled,
           isUntitled: !title,
@@ -259,22 +259,18 @@ const Results = (properties: TResultsProperties) => {
         finances,
         t('finances.untitled'),
         (finance) =>
-          knownEntries(finance)
-            .flatMap((entry) => [
+          [
+            ...knownEntries(finance).flatMap((entry) => [
               entry.description,
               t(`finances.form.category.${entry.category}.label`),
-            ])
+            ]),
+            // Every entry's description, for entries older than those.
+            ...(finance.summary?.descriptions ?? []),
+          ]
             .filter(Boolean)
             .join(' · '),
-        // A book opens at the newest entry that matched.
-        (finance, href) => {
-          const entry = knownEntries(finance).find((item) =>
-            normalize(
-              `${item.description} ${t(`finances.form.category.${item.category}.label`)}`,
-            ).includes(normalizedQuery),
-          )
-          return entry ? `${href}?entry=${encodeURIComponent(entry.id)}` : href
-        },
+        // A book opens searching its entries, showing every match.
+        (href) => `${href}?search=${encodeURIComponent(query)}`,
       ),
       // Health logs by the person's name and their notes.
       toGroup(

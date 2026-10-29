@@ -308,6 +308,20 @@ export const formatPeriod = ({
 // and category suggestions in other books.
 const recentInSummary = 50
 
+// Each description once, newest first, ignoring case and spaces around.
+const uniqueDescriptions = (entries: TFinanceEntry[]) => {
+  const seen = new Set<string>()
+  const descriptions: string[] = []
+  for (const { description } of newestFirst(entries)) {
+    const text = description.trim()
+    const key = text.toLowerCase()
+    if (!text || seen.has(key)) continue
+    seen.add(key)
+    descriptions.push(text)
+  }
+  return descriptions
+}
+
 export const bookSummary = (entries: TFinanceEntry[]): TFinanceSummary => {
   const { income, expense } = summarize(entries)
   return {
@@ -316,6 +330,7 @@ export const bookSummary = (entries: TFinanceEntry[]): TFinanceSummary => {
     expense,
     spending: totalsByCategory(entries, 'expense'),
     recent: newestFirst(entries).slice(0, recentInSummary),
+    descriptions: uniqueDescriptions(entries),
   }
 }
 
@@ -328,6 +343,6 @@ export const summaryOf = (
 ) => (book.content ? bookSummary(book.content) : (book.summary ?? emptySummary))
 
 // The entries known without opening a book: its summary's newest ones. For
-// search and category suggestions.
+// search and category suggestions (search also looks in `descriptions`).
 export const knownEntries = (book: Pick<TFinanceResponse, 'summary'>) =>
   book.summary?.recent ?? []

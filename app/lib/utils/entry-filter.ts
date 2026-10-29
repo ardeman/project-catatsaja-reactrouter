@@ -87,13 +87,15 @@ export const periodRange = (
   }
 }
 
-// How many of the Filter panel's filters are in use, for its badge (the
-// words have their own box).
+// How many of the filters are in use, for the Filter button's badge.
 export const activeFilterCount = (filter: TEntryFilter) => {
   const { from, to } = periodRange(filter)
-  return [filter.type !== 'all', filter.category !== '', !!(from || to)].filter(
-    Boolean,
-  ).length
+  return [
+    filter.text.trim() !== '',
+    filter.type !== 'all',
+    filter.category !== '',
+    !!(from || to),
+  ].filter(Boolean).length
 }
 
 type TFilterOptions = {
