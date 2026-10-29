@@ -767,4 +767,71 @@ describe('sharing and finance storage', () => {
     await uli.context.close()
     await vino.context.close()
   })
+
+  test('a recurring entry waits to be added or skipped each month, encrypted', async () => {
+    const sari = await newDevice(browser)
+    await signUp(sari.page, 'Sari', 'sari@example.com')
+    await sari.page.getByText('Protect your data').waitFor({ timeout: 30_000 })
+    await setUpEncryption(sari.page, 'sari passphrase 1')
+    await sari.page.goto(`${APP}/finances/create`)
+    await sari.page.locator('textarea[name=title]').fill('Sari book')
+    await sari.page.getByRole('button', { name: 'Save' }).click()
+    await sari.page.waitForURL(/\/finances\/(?!create)/, { timeout: 30_000 })
+    const bookId = new URL(sari.page.url()).pathname.split('/').pop()
+    const sealed = (await dbGet(`finances/${bookId}`)).encrypted.mapValue.fields
+      .ct.stringValue
+
+    // Rent paid on the 1st two months ago, made to repeat: last month's is
+    // due, then this month's.
+    const now = new Date()
+    const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1)
+    const typed = `01-${String(twoMonthsAgo.getMonth() + 1).padStart(2, '0')}-${twoMonthsAgo.getFullYear()}`
+    await sari.page.getByRole('button', { name: 'Add entry' }).click()
+    await sari.page.getByRole('textbox', { name: 'Date' }).fill(typed)
+    await sari.page.locator('input[name=description]').fill('Sari rent')
+    await sari.page.locator('#finance-entry-amount').fill('2000000')
+    await sari.page.getByRole('combobox', { name: 'Category' }).click()
+    await sari.page.getByRole('option', { name: 'Food & drinks' }).click()
+    await sari.page
+      .getByRole('checkbox', { name: 'Repeat every month' })
+      .check()
+    await sari.page
+      .locator('form')
+      .getByRole('button', { name: 'Save' })
+      .last()
+      .click()
+    await sari.page.getByRole('button', { name: 'Cancel' }).click()
+
+    const card = sari.page.locator('section').filter({ hasText: 'Recurring' })
+    await card.getByText('Sari rent').waitFor({ timeout: 15_000 })
+    await card.getByLabel('Amount of Sari rent').fill('2100000')
+    await card.getByRole('button', { name: 'Add', exact: true }).click()
+    await sari.page
+      .getByRole('listitem')
+      .filter({ hasText: /2[.,]100[.,]000/ })
+      .first()
+      .waitFor({ timeout: 15_000 })
+    // This month's comes next, with the amount just added; skipped.
+    await card.getByText(/^Due /).waitFor()
+    await card
+      .getByRole('button', { name: 'Skip Sari rent this month' })
+      .click()
+    await card.getByText(/^Next: Sari rent on /).waitFor()
+
+    const saved = await dbGetWhen(
+      `finances/${bookId}`,
+      (fields) => fields?.encrypted.mapValue.fields.ct.stringValue !== sealed,
+    )
+    assert.ok(!saved.recurring, 'no readable recurring entries')
+    await sari.page.waitForTimeout(3000)
+    await sari.page.reload()
+    await card.getByText(/^Next: Sari rent on /).waitFor({ timeout: 30_000 })
+    assert.equal(
+      await sari.page
+        .locator('[data-entry-id]', { hasText: 'Sari rent' })
+        .count(),
+      2,
+    )
+    await sari.context.close()
+  })
 })

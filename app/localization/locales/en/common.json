@@ -846,6 +846,21 @@
         "thisYear": "This year",
         "custom": "Custom dates"
       }
+    },
+    "recurring": {
+      "title": "Recurring",
+      "repeat": "Repeat every month",
+      "edit": "Edit recurring entries",
+      "editHint": "Each is added on its day of the month once you confirm it. Make a new one with “Repeat every month” when adding an entry.",
+      "empty": "No recurring entries yet.",
+      "dueOn": "Due {{date}}",
+      "next": "Next: {{name}} on {{date}}",
+      "add": "Add",
+      "skip": "Skip {{name}} this month",
+      "remove": "Stop {{name}}",
+      "amountOf": "Amount of {{name}}",
+      "dayOf": "Day of the month for {{name}}",
+      "day": "Day {{day}}"
     }
   },
   "about": {

@@ -58,7 +58,6 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 **Planned**
 
-- [ ] Finances: recurring entries (salary, rent, bills) confirmed with one tap when due, instead of typed again.
 - [ ] Finances (Plus), savings goals later: yearly extra income (THR, 13th-month salary, bonus) taken off the shortfall, and savings counted across several books the person can read.
 - [ ] Finances analysis: compare books, a screen to pick several books and see income, expense and net per month for each. Books in other currencies are converted with the person's currency settings, so unlike a book's own totals these can change when a rate does.
 - [ ] Tasks: due dates with reminders, sent as push notifications like health reminders.
@@ -166,7 +165,7 @@ pnpm validate   # lint + typecheck + knip + unit tests
 **End-to-end tests** — `pnpm test:e2e` runs four suites sequentially against the Auth and Firestore emulators, using Playwright and the installed Google Chrome (needs Java 21 and port 5199 free):
 
 - `tests/e2e/encryption.test.mjs`: the dependent encryption lifecycle with Ana, Budi and Cici.
-- `tests/e2e/sharing.test.mjs`: independent accounts, sharing suggestions and invitations (with the title sealed for the invited person's push devices), read-only note editing, archiving, blocking, encrypted finance month storage, a book's groups of categories, budgets, savings goals and keywords (Plus, encrypted, seen by a reader), and a free writer using a Plus owner's book to set goals and link an expense to one.
+- `tests/e2e/sharing.test.mjs`: independent accounts, sharing suggestions and invitations (with the title sealed for the invited person's push devices), read-only note editing, archiving, blocking, encrypted finance month storage, a book's groups of categories, budgets, savings goals and keywords (Plus, encrypted, seen by a reader), recurring entries (made from an entry, added and skipped when due, encrypted), and a free writer using a Plus owner's book to set goals and link an expense to one.
 - `tests/e2e/ai.test.mjs`: receipt scanning, quick add, note and task list helpers, dictation (with Chrome's fake microphone) and taking back consent, with Gemini replaced by fixed answers, plus health reminders and medicines.
 - `tests/e2e/ui.test.mjs`: interface behaviour only: adding, editing and reordering tasks and keeping unfinished task input, subtasks (indenting, checking with their item, kept after a reload), touch cursor placement on mobile, note keyboard saving with and without encryption, button and right-click formatting (touch and hold left to the phone), undo and redo in task lists, books and health logs, and the one-time notifications step after encryption (as an iPhone outside the installed app, since the emulators have no push service).
 

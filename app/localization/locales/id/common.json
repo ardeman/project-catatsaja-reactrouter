@@ -846,6 +846,21 @@
         "thisYear": "Tahun ini",
         "custom": "Pilih tanggal"
       }
+    },
+    "recurring": {
+      "title": "Rutin",
+      "repeat": "Ulangi tiap bulan",
+      "edit": "Ubah catatan rutin",
+      "editHint": "Tiap catatan ditambahkan pada tanggalnya setiap bulan setelah kamu konfirmasi. Buat yang baru dengan “Ulangi tiap bulan” saat menambah catatan.",
+      "empty": "Belum ada catatan rutin.",
+      "dueOn": "Jatuh tempo {{date}}",
+      "next": "Berikutnya: {{name}} pada {{date}}",
+      "add": "Tambah",
+      "skip": "Lewati {{name}} bulan ini",
+      "remove": "Hentikan {{name}}",
+      "amountOf": "Jumlah {{name}}",
+      "dayOf": "Tanggal setiap bulan untuk {{name}}",
+      "day": "Tanggal {{day}}"
     }
   },
   "about": {

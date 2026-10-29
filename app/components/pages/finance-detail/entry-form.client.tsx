@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BanknoteArrowDown, BanknoteArrowUp, Plus } from 'lucide-react'
+import { BanknoteArrowDown, BanknoteArrowUp, Plus, Repeat } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/base/select'
+import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
 import { categoryKeywords } from '~/lib/constants/category-keywords'
 import { financeCategories } from '~/lib/constants/finance'
@@ -73,6 +74,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     draftKey,
     isPrivate = false,
     goals = [],
+    onRepeat,
   } = properties
   const { t } = useTranslation(['common', 'zod'])
   const { data: userData } = useUserData()
@@ -119,6 +121,8 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const [isSuggested, setIsSuggested] = useState(false)
   const [isAddingCurrency, setIsAddingCurrency] = useState(false)
   const [savedCount, setSavedCount] = useState(0)
+  // "Repeat every month", for this new entry only.
+  const [isRepeating, setIsRepeating] = useState(false)
   // Bumped after each reset: reset() drops the inputs' references until the
   // next render, so focusing has to wait for that render.
   const [focusRequest, setFocusRequest] = useState(0)
@@ -298,6 +302,8 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const onSubmit = handleSubmit(
     (data) => {
       onSave(linkGoal(data, data.goal))
+      if (isRepeating && !isEditing) onRepeat?.(data)
+      setIsRepeating(false)
       if (draftKey && !isEditing) clearDraft(draftKey)
       if (isEditing) {
         onClose()
@@ -602,6 +608,21 @@ export const EntryForm = (properties: TEntryFormProperties) => {
               value={goal}
               onChange={(next) => setValue('goal', next, { shouldDirty: true })}
             />
+          )}
+
+          {onRepeat && !isEditing && (
+            // Its own label: the entry form makes every Label a block.
+            <label className="flex w-fit cursor-pointer items-center gap-2 text-sm">
+              <Checkbox
+                checked={isRepeating}
+                onCheckedChange={(checked) => setIsRepeating(checked === true)}
+              />
+              <Repeat
+                aria-hidden="true"
+                className="size-3.5 text-muted-foreground"
+              />
+              {t('finances.recurring.repeat')}
+            </label>
           )}
 
           <div className="flex flex-wrap items-center gap-2">

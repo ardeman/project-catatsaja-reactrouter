@@ -67,6 +67,7 @@ import {
   entryBookTotal,
   entryTotal,
   groupByDate,
+  newEntryId,
   newestFirst,
   normalizeAccounts,
   summarize,
@@ -79,6 +80,11 @@ import {
   getDateLabel,
   getDefaultCurrencyFormat,
 } from '~/lib/utils/parser'
+import {
+  entryFromRecurring,
+  normalizeRecurring,
+  recurringFromEntry,
+} from '~/lib/utils/recurring'
 import {
   normalizeGoals,
   normalizePayday,
@@ -93,6 +99,7 @@ import { Calculator } from './calculator'
 import { EntryFilter } from './entry-filter'
 import { EntryForm } from './entry-form.client'
 import { QuickAdd } from './quick-add.client'
+import { Recurring } from './recurring'
 import { Summary, TSummaryPart } from './summary'
 import { TAnalysisOptions, TFormProperties } from './type'
 
@@ -191,10 +198,12 @@ export const Form = (properties: TFormProperties) => {
     goals: selectedFinance?.goals || [],
     payday: selectedFinance?.payday ?? null,
     keywords: selectedFinance?.keywords || [],
+    recurring: selectedFinance?.recurring || [],
   }
   const formMethods = useForm<TFinanceForm>({ defaultValues: stored })
-  // Entries, accounts, groups, budgets, goals and keywords merge one by
-  // one, so those added or deleted on two devices at once are all kept.
+  // Entries, accounts, groups, budgets, goals, keywords and recurring
+  // entries merge one by one, so those added or deleted on two devices at
+  // once are all kept.
   useStoredValues({
     form: formMethods,
     stored,
@@ -205,6 +214,7 @@ export const Form = (properties: TFormProperties) => {
       budgets: mergeById,
       goals: mergeById,
       keywords: mergeById,
+      recurring: mergeById,
     },
   })
   const {
@@ -224,6 +234,7 @@ export const Form = (properties: TFormProperties) => {
     goals,
     payday,
     keywords,
+    recurring,
   ] = useWatch({
     control,
     name: [
@@ -235,6 +246,7 @@ export const Form = (properties: TFormProperties) => {
       'goals',
       'payday',
       'keywords',
+      'recurring',
     ],
   })
   const isCurrencyLocked = !isReadOnly && entries.length > 0
@@ -458,6 +470,7 @@ export const Form = (properties: TFormProperties) => {
       goals: normalizeGoals(values.goals),
       payday: normalizePayday(values.payday),
       keywords: normalizeKeywords(values.keywords),
+      recurring: normalizeRecurring(values.recurring),
     }
     if (selectedFinance) {
       const changes: Partial<TFinanceForm> = {}
@@ -481,6 +494,8 @@ export const Form = (properties: TFormProperties) => {
         changes.payday = data.payday
       if (!isSameJson(data.keywords, selectedFinance.keywords || []))
         changes.keywords = data.keywords
+      if (!isSameJson(data.recurring, selectedFinance.recurring || []))
+        changes.recurring = data.recurring
       if (Object.keys(changes).length === 0) return
       setSaveStatus('saving')
       const isSaved = await mutateUpdateFinance({
@@ -521,13 +536,14 @@ export const Form = (properties: TFormProperties) => {
       JSON.stringify(goals),
       payday,
       JSON.stringify(keywords),
+      JSON.stringify(recurring),
     ],
     saveWhenIdle: !!selectedFinance,
   })
 
   // Undo and redo over the whole book (title, currency, entries, accounts,
-  // groups, budgets, goals, keywords), in steps (a pause in changes, or
-  // each entry saved).
+  // groups, budgets, goals, keywords, recurring entries), in steps (a pause
+  // in changes, or each entry saved).
   const current = useMemo(
     () => ({
       title: watchTitle,
@@ -539,6 +555,7 @@ export const Form = (properties: TFormProperties) => {
       goals,
       payday,
       keywords,
+      recurring,
     }),
     [
       watchTitle,
@@ -550,6 +567,7 @@ export const Form = (properties: TFormProperties) => {
       goals,
       payday,
       keywords,
+      recurring,
     ],
   )
   const undoHistory = useUndoHistory({
@@ -571,6 +589,7 @@ export const Form = (properties: TFormProperties) => {
       'goals',
       'payday',
       'keywords',
+      'recurring',
     ] as const)
       setValue(field, next[field], { shouldDirty: true })
   }
@@ -613,6 +632,41 @@ export const Form = (properties: TFormProperties) => {
       shouldDirty: true,
     })
     setAddedIds(added.map(({ id }) => id))
+  }
+
+  // A new entry made to repeat each month, its own month counted as added.
+  const handleRepeatEntry = (entry: TFinanceEntry) =>
+    setValue(
+      'recurring',
+      [
+        ...(getValues('recurring') ?? []),
+        recurringFromEntry(entry, crypto.randomUUID()),
+      ],
+      { shouldDirty: true },
+    )
+
+  // A due recurring entry added (on the day it was due) or skipped: either
+  // way its month is done, and the amount added is suggested next time.
+  const handleRecurringDue = (id: string, date: string, isAdded: boolean) => {
+    const list = normalizeRecurring(getValues('recurring'))
+    const item = list.find((recurringItem) => recurringItem.id === id)
+    if (!item) return
+    if (isAdded) {
+      const entry = entryFromRecurring(item, date, newEntryId())
+      setValue('content', [...getValues('content'), entry], {
+        shouldDirty: true,
+      })
+      setAddedIds([entry.id])
+    }
+    setValue(
+      'recurring',
+      list.map((recurringItem) =>
+        recurringItem.id === id
+          ? { ...recurringItem, last: date.slice(0, 7) }
+          : recurringItem,
+      ),
+      { shouldDirty: true },
+    )
   }
 
   const handleDeleteEntry = (id: string) => {
@@ -911,6 +965,7 @@ export const Form = (properties: TFormProperties) => {
                   draftKey={entryDraftKey}
                   isPrivate={isPrivate}
                   goals={goalChoices}
+                  onRepeat={handleRepeatEntry}
                 />
               ) : (
                 <div
@@ -938,6 +993,13 @@ export const Form = (properties: TFormProperties) => {
                   />
                 </div>
               ))}
+
+            {!isReadOnly && (recurring ?? []).length > 0 && (
+              <Recurring
+                book={book}
+                onDue={handleRecurringDue}
+              />
+            )}
 
             {entries.length > 0 && (
               <EntryFilter

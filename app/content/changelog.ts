@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Recurring entries in books: when adding an entry such as your salary, rent or a bill, tick “Repeat every month”. On its day each month it waits at the top of the book, so you check the amount and add it with one tap, or skip that month. Nothing is added until you do.',
+          id: 'Catatan rutin di buku: saat menambah catatan seperti gaji, sewa, atau tagihan, centang “Ulangi tiap bulan”. Setiap bulan pada tanggalnya, catatan itu menunggu di bagian atas buku, jadi kamu cukup cek jumlahnya lalu tambahkan dengan sekali ketuk, atau lewati bulan itu. Tidak ada yang ditambahkan sebelum kamu melakukannya.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Task lists can have subtasks. While editing an item, tap the indent button (or press Tab) to put it under the item above, or tap the add subtask button to start a new one under it. Checking an item checks its subtasks, and an item is checked by itself once all its subtasks are done.',
           id: 'Daftar tugas kini bisa punya subtugas. Saat mengedit item, ketuk tombol inden (atau tekan Tab) untuk menaruhnya di bawah item di atasnya, atau ketuk tombol tambah subtugas untuk membuat yang baru di bawahnya. Mencentang item ikut mencentang subtugasnya, dan item tercentang sendiri begitu semua subtugasnya selesai.',
         },

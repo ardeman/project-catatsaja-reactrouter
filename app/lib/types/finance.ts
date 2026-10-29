@@ -71,10 +71,27 @@ type TFinanceKeyword = {
   text: string
 }
 
+// An entry that comes back each month (salary, rent, a bill), added when
+// the person confirms it: one amount in its own currency (null while not
+// entered), on a day of the month, with the last month (YYYY-MM) it was
+// added or skipped.
+type TFinanceRecurring = {
+  id: string
+  type: TFinanceEntry['type']
+  category: string
+  description: string
+  amount: number | null
+  currency: TFinanceCurrency
+  rate: number
+  day: number
+  last: string
+}
+
 // A book: a title, the currency its totals are in, its entries, the
 // accounts it is checked against, its groups of categories, its budgets,
 // its savings goals and the payday (a day of the month) they are saved on,
-// and its keywords (missing on books made before them).
+// its keywords and its recurring entries (missing on books made before
+// them).
 export type TFinanceForm = z.infer<typeof bookSchema> & {
   content: TFinanceEntry[]
   accounts?: TFinanceAccount[]
@@ -83,6 +100,7 @@ export type TFinanceForm = z.infer<typeof bookSchema> & {
   goals?: TFinanceGoal[]
   payday?: number | null
   keywords?: TFinanceKeyword[]
+  recurring?: TFinanceRecurring[]
 }
 
 export type TCreateFinanceRequest = TFinanceForm

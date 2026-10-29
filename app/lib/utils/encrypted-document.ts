@@ -33,6 +33,7 @@ export const contentFields = {
     'goals',
     'payday',
     'keywords',
+    'recurring',
     'summary',
     'cardStyle',
   ],

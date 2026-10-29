@@ -36,6 +36,8 @@ export type TEntryFormProperties = {
   isPrivate?: boolean
   // The book's savings goals, to link an expense to.
   goals?: TGoalChoice[]
+  // Makes a new entry repeat each month; none, no "Repeat every month".
+  onRepeat?: (entry: TFinanceEntry) => void
 }
 
 export type TReceiptScanProperties = {

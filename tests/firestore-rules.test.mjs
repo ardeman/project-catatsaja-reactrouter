@@ -293,6 +293,7 @@ const collections = {
     goals: [],
     payday: 25,
     keywords: [],
+    recurring: [],
     summary: {},
     cardStyle: {},
   },
