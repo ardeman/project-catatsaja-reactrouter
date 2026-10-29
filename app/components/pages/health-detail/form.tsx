@@ -396,7 +396,7 @@ export const Form = (properties: TFormProperties) => {
 
   return (
     <FormProvider {...formMethods}>
-      {/* On wide screens the reminders, medicines and save date sit in a
+      {/* On wide screens the save date, reminders and medicines sit in a
           sticky column beside the log; narrower, they stay between the form
           and the sections. The bar stays a grid item so it sticks the whole
           way down. The column scrolls on its own, so it pads (and pulls back
@@ -540,6 +540,12 @@ export const Form = (properties: TFormProperties) => {
         </form>
 
         <aside className="grid gap-6 xl:sticky xl:top-4 xl:col-start-2 xl:row-span-4 xl:row-start-1 xl:-m-4 xl:max-h-[calc(100dvh-2rem)] xl:overflow-y-auto xl:p-4">
+          {dateWithPermission && (
+            <div className="glass-surface hidden gap-1 rounded-xl border p-4 text-xs text-muted-foreground xl:grid">
+              <span>{dateWithPermission}</span>
+              <SaveStatus status={saveStatus} />
+            </div>
+          )}
           <Reminders
             log={values}
             isOwner={!healthLog || isOwner}
@@ -561,10 +567,6 @@ export const Form = (properties: TFormProperties) => {
               setValue('doseLog', doses, { shouldDirty: true })
             }
           />
-          <span className="hidden gap-1 text-xs text-muted-foreground xl:grid">
-            <span>{dateWithPermission}</span>
-            <SaveStatus status={saveStatus} />
-          </span>
         </aside>
 
         <div className="-mx-4 overflow-x-auto px-4 xl:col-start-1">
