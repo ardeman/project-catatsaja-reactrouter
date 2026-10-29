@@ -279,7 +279,6 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
                     placeholder={t('finances.quickAdd.placeholder')}
                     hint={t('finances.quickAdd.hint')}
                     rows={3}
-                    autoFocus // eslint-disable-line jsx-a11y/no-autofocus -- opened by the person to type at once
                     onKeyDown={(event) => {
                       // Ctrl/⌘ + Enter reads it, like sending a message.
                       if (!(
