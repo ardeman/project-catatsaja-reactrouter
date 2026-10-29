@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 
 import { DrawerScroll } from '~/components/base/drawer-scroll'
 import { InstallApp } from '~/components/base/install-app'
+import { PlanBadge } from '~/components/base/plan-badge'
 import {
   NotificationCount,
   NotificationList,
@@ -109,6 +110,7 @@ export const AccountSheet = (properties: {
             <DrawerDescription className="truncate">
               {userData?.email}
             </DrawerDescription>
+            <PlanBadge className="mt-1.5" />
           </div>
           <div className="grid gap-4">
             <NotificationList

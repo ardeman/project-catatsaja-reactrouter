@@ -23,6 +23,20 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Your account menu now shows your plan: Free, or Plus and the date it runs until.',
+          id: 'Menu akunmu kini menampilkan paketmu: Gratis, atau Plus beserta tanggal berakhirnya.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Error messages, such as a wrong password, are now easy to read.',
+          id: 'Pesan kesalahan, seperti kata sandi yang salah, kini mudah dibaca.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: "Took cash out or topped up an e-wallet? In a book's accounts, Move takes the amount off one account and adds it to another in one step. The book's income and expenses stay as they are.",
           id: 'Tarik tunai atau isi saldo dompet digital? Di akun sebuah buku, Pindahkan mengurangi satu akun dan menambah akun lain sekaligus. Pemasukan dan pengeluaran buku tetap sama.',
         },

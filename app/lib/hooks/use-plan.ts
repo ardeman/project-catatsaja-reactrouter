@@ -11,5 +11,5 @@ export const usePlan = () => {
   const endsAt = data?.planEndsAt?.seconds
   const hasPlus =
     data?.plan === 'plus' && endsAt !== undefined && endsAt * 1000 > now
-  return { hasPlus }
+  return { hasPlus, endsAt: hasPlus ? new Date(endsAt * 1000) : undefined }
 }

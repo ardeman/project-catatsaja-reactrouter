@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router'
 import { useMediaQuery } from 'usehooks-ts'
 
 import { InstallApp } from '~/components/base/install-app'
+import { PlanBadge } from '~/components/base/plan-badge'
 import {
   Notifications,
   useNotifications,
@@ -150,6 +151,7 @@ export const Navbar = (properties: TProperties) => {
                   <span className="truncate text-xs text-muted-foreground">
                     {userData?.email}
                   </span>
+                  <PlanBadge className="mt-1.5" />
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {userMenus(t).map((menu) => (

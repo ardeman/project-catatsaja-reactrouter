@@ -2042,6 +2042,8 @@
     }
   },
   "plus": {
-    "soon": "Plus · coming soon"
+    "soon": "Plus · coming soon",
+    "free": "Free",
+    "until": "Plus · until {{date}}"
   }
 }

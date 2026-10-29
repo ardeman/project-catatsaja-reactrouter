@@ -2042,6 +2042,8 @@
     }
   },
   "plus": {
-    "soon": "Plus · segera hadir"
+    "soon": "Plus · segera hadir",
+    "free": "Gratis",
+    "until": "Plus · sampai {{date}}"
   }
 }
