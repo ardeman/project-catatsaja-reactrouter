@@ -9,13 +9,12 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
 
-import { Logo } from '~/components/base/logo'
-import { appName } from '~/lib/constants/metadata'
-import { navs, readStartPage } from '~/lib/constants/navigation'
+import { navs } from '~/lib/constants/navigation'
 import { useGetDueReminders } from '~/lib/hooks/use-get-due-reminders'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { cn } from '~/lib/utils/shadcn'
 
+import { sideItemClassName } from './constant'
 import { TProperties } from './type'
 
 // Movement before a press on the pill counts as a swipe, not a tap.
@@ -24,7 +23,12 @@ const SWIPE_THRESHOLD = 6
 type TBox = { left: number; width: number }
 
 export const Navigation = (properties: TProperties) => {
-  const { className, variant = 'bar', trailing } = properties
+  const {
+    className,
+    variant = 'side',
+    isCollapsed = false,
+    trailing,
+  } = properties
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -182,15 +186,6 @@ export const Navigation = (properties: TProperties) => {
           }}
         />
       )}
-      {!isBottom && (
-        <Link
-          to={`/${userData?.startPage ?? readStartPage()}`}
-          className="flex shrink-0 items-center gap-2 text-lg font-semibold whitespace-nowrap md:text-base"
-        >
-          <Logo className="size-6 object-contain" />
-          <span className="sr-only">{appName}</span>
-        </Link>
-      )}
       {items.map((nav, index) => {
         const isActive = index === activeIndex
         const Icon = nav.icon
@@ -203,17 +198,18 @@ export const Navigation = (properties: TProperties) => {
             to={nav.href}
             aria-current={isActive ? 'page' : undefined}
             draggable={false}
-            className={cn(
-              isBottom && '[-webkit-touch-callout:none]',
-              'flex items-center gap-2 whitespace-nowrap transition-colors hover:text-foreground',
-              isActive ? 'text-primary' : 'text-muted-foreground',
-              isBottom &&
-                'relative h-14 min-w-0 flex-1 basis-0 flex-col justify-center gap-0.5 rounded-full text-[0.625rem] tracking-tight focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
-              isBottom &&
-                (index === highlighted
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'),
-            )}
+            // The folded side menu shows only icons.
+            title={isCollapsed ? nav.name : undefined}
+            className={
+              isBottom
+                ? cn(
+                    'relative flex h-14 min-w-0 flex-1 basis-0 flex-col items-center justify-center gap-0.5 rounded-full text-[0.625rem] tracking-tight whitespace-nowrap transition-colors [-webkit-touch-callout:none] hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden',
+                    index === highlighted
+                      ? 'text-foreground'
+                      : 'text-muted-foreground',
+                  )
+                : sideItemClassName(isActive, isCollapsed)
+            }
           >
             {Icon && (
               <span className="relative">
@@ -232,7 +228,7 @@ export const Navigation = (properties: TProperties) => {
             {isBottom ? (
               <span className="max-w-full truncate">{nav.name}</span>
             ) : (
-              nav.name
+              <span className={cn(isCollapsed && 'sr-only')}>{nav.name}</span>
             )}
             {nav.href === '/health' && dueCount > 0 && (
               <span className="sr-only">
@@ -242,7 +238,7 @@ export const Navigation = (properties: TProperties) => {
           </Link>
         )
       })}
-      {isBottom && trailing}
+      {trailing}
     </nav>
   )
 }

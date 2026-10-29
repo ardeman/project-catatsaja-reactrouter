@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { TNavPage } from '~/lib/constants/navigation'
+import { TMenuSide, TNavPage } from '~/lib/constants/navigation'
 import { Theme, Size } from '~/lib/contexts/theme'
 import { TBmiStandard, TLabUnits } from '~/lib/types/health'
 import {
@@ -22,6 +22,7 @@ export type TUpdateAppearanceRequest = {
 export type TUpdateNavigationRequest = {
   navOrder: TNavPage[]
   startPage: TNavPage
+  menuSide: TMenuSide
 }
 
 export type TUpdateHealthSettingsRequest = {

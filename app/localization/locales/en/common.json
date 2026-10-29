@@ -25,6 +25,10 @@
     "currency": "Currency",
     "userMenu": "Account menu",
     "menu": "Menu",
+    "sideMenu": {
+      "collapse": "Collapse menu",
+      "expand": "Expand menu"
+    },
     "health": "Health"
   },
   "form": {
@@ -944,7 +948,7 @@
       "title": "Search",
       "description": "Find anything you wrote, across notes, tasks, finances and health logs.",
       "steps": [
-        "Use the search box at the top, or press Ctrl K (⌘ K on a Mac) or / from any page.",
+        "Choose Search in the side menu (the Search button on a phone), or press Ctrl K (⌘ K on a Mac) or / from any page.",
         "Search looks at titles and content. Choose See all to filter a list by what you typed."
       ]
     },
@@ -953,7 +957,7 @@
       "description": "Share any note, task list, finance book or health log with other people who use Catat Saja.",
       "steps": [
         "Choose Share in the icon bar, find someone by their email, and give them read-only or edit access. They get an invitation, and the item is added to their list once they accept.",
-        "Something shared with you shows as an invitation at the top of your lists and under the bell next to search: Accept to add it to your list, Decline, or Block to also stop that person inviting you (unblock them in Settings → Account).",
+        "Something shared with you shows as an invitation at the top of your lists and under the bell beside your photo: Accept to add it to your list, Decline, or Block to also stop that person inviting you (unblock them in Settings → Account).",
         "Changes show up for everyone straight away. People with read-only access can't change anything.",
         "You can copy a link to the item, and undo removing someone.",
         "Something shared with you can be taken off your own list with Remove from my list; it stays for everyone else."
@@ -981,7 +985,7 @@
     },
     "settings": {
       "title": "Settings",
-      "description": "Open Settings from the account menu (your photo at the top).",
+      "description": "Open Settings from the side menu, or from the account menu (your photo) on a phone.",
       "steps": [
         "General: your name and photo; light, dark or system theme; text size and language; the menu order and the page the app opens on.",
         "Account: your email, linking Google, encryption and passkeys, and the AI features.",
@@ -1217,7 +1221,13 @@
       "description": "Arrange the menu and choose the page the app opens on.",
       "order": "Menu order",
       "startPage": "Opens on",
-      "startPageHint": "The page shown when you open the app or sign in."
+      "startPageHint": "The page shown when you open the app or sign in.",
+      "menuSide": "Menu side",
+      "menuSideHint": "Where the menu sits on a computer.",
+      "sides": {
+        "left": "Left",
+        "right": "Right"
+      }
     },
     "health": {
       "title": "Health",

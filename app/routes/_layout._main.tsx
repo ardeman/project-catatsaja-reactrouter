@@ -51,16 +51,18 @@ const Main = () => {
   }, [savedStartPage])
 
   return (
-    <main className="app-background isolate flex min-h-dvh w-full flex-col pt-(--top-inset) pb-[calc(5rem+var(--nav-bottom))] md:pt-0 md:pb-0">
+    <main className="app-background isolate flex min-h-dvh w-full flex-col pt-(--top-inset) pb-[calc(5rem+var(--nav-bottom))] md:flex-row md:pt-0 md:pb-0">
       <Navbar />
-      <PullToRefresh />
-      <MaintenanceGate>
-        <EncryptionGate>
-          <PushPrompt>
-            <Outlet />
-          </PushPrompt>
-        </EncryptionGate>
-      </MaintenanceGate>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <PullToRefresh />
+        <MaintenanceGate>
+          <EncryptionGate>
+            <PushPrompt>
+              <Outlet />
+            </PushPrompt>
+          </EncryptionGate>
+        </MaintenanceGate>
+      </div>
     </main>
   )
 }

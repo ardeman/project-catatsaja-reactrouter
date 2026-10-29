@@ -52,12 +52,17 @@ type TSearchProperties = {
   // for the keyboard to open).
   inputReference?: RefObject<HTMLInputElement | null>
   onFocusChange?: (isFocused: boolean) => void
+  // On desktop: a button in the side menu that opens the search as a box
+  // in the middle of the screen, the results under it.
+  isPalette?: boolean
+  // The folded side menu: the button shows only its icon.
+  isCompact?: boolean
 }
 
 // Searches notes, tasks, finances and health logs at once. Typing shows the best matches
 // of each; Enter opens the highlighted one, "See all" filters that list.
 export const Search = (properties: TSearchProperties) => {
-  const { onFocusChange } = properties
+  const { onFocusChange, isPalette = false, isCompact = false } = properties
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -65,6 +70,7 @@ export const Search = (properties: TSearchProperties) => {
   const listQuery = searchParameters.get('q') || ''
   const [query, setQuery] = useState(listQuery)
   const [isOpen, setIsOpen] = useState(false)
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false)
   const ownInputReference = useRef<HTMLInputElement>(null)
   const inputReference = properties.inputReference ?? ownInputReference
   const listId = useId()
@@ -97,12 +103,20 @@ export const Search = (properties: TSearchProperties) => {
         (event.key === '/' && !isTyping)
       if (!isShortcut) return
       event.preventDefault()
+      if (isPalette) setIsPaletteOpen(true)
       inputReference.current?.focus()
       inputReference.current?.select()
     }
     addEventListener('keydown', handleKeyDown)
     return () => removeEventListener('keydown', handleKeyDown)
-  }, [inputReference])
+  }, [inputReference, isPalette])
+
+  // The palette's box exists only while open: focus it once it is there.
+  useEffect(() => {
+    if (!isPaletteOpen) return
+    inputReference.current?.focus()
+    inputReference.current?.select()
+  }, [isPaletteOpen, inputReference])
 
   const handleOpen = (option: TOption) => {
     // A single result opens on its own; "See all" keeps the words in the box.
@@ -113,60 +127,128 @@ export const Search = (properties: TSearchProperties) => {
   }
 
   const isShowingResults = isOpen && query.trim() !== ''
+  const shortcut = (
+    <kbd className="pointer-events-none rounded border bg-muted px-1.5 py-0.5 font-sans text-[0.7rem] text-muted-foreground">
+      {isMac ? '⌘' : 'Ctrl'} K
+    </kbd>
+  )
+
+  const form = (
+    <form
+      role="search"
+      onSubmit={(event) => event.preventDefault()}
+      className="relative flex items-center"
+    >
+      <SearchIcon className="pointer-events-none absolute left-3.5 size-4 text-muted-foreground" />
+      <Input
+        ref={inputReference}
+        type="search"
+        value={query}
+        onChange={(event) => {
+          setQuery(event.target.value)
+          setIsOpen(true)
+        }}
+        onFocus={() => {
+          setIsOpen(true)
+          onFocusChange?.(true)
+        }}
+        onBlur={() => {
+          setIsOpen(false)
+          setIsPaletteOpen(false)
+          onFocusChange?.(false)
+        }}
+        onKeyDown={(event) => {
+          // The results' own Escape only hides them; this closes the box.
+          if (isPalette && event.key === 'Escape') event.currentTarget.blur()
+        }}
+        placeholder={t('navigation.search.placeholder')}
+        aria-label={t('navigation.search.placeholder')}
+        role="combobox"
+        aria-expanded={isShowingResults}
+        aria-controls={listId}
+        aria-autocomplete="list"
+        aria-activedescendant={isShowingResults ? activeDescendant : undefined}
+        autoComplete="off"
+        className={cn(
+          'w-full pl-10',
+          // On phones the bar's glass pill is the field; in the palette,
+          // the box is.
+          isPalette
+            ? 'h-12 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent'
+            : 'max-md:h-14 max-md:rounded-full max-md:border-0 max-md:shadow-none max-md:focus-visible:ring-0 md:pr-16',
+        )}
+      />
+      {!query && !isPalette && (
+        <span className="absolute right-3 hidden md:block">{shortcut}</span>
+      )}
+    </form>
+  )
+
+  const results = isShowingResults && (
+    <Results
+      query={query.trim()}
+      listId={listId}
+      inputReference={inputReference}
+      isPalette={isPalette}
+      onOpen={handleOpen}
+      onClose={() => setIsOpen(false)}
+      onActiveChange={setActiveDescendant}
+    />
+  )
+
+  if (isPalette) {
+    const label = t('navigation.search.placeholder')
+    return (
+      <>
+        <button
+          type="button"
+          aria-label={label}
+          title={label}
+          onClick={() => setIsPaletteOpen(true)}
+          className={cn(
+            'flex h-9 w-full items-center gap-3 rounded-md border bg-background/60 px-3 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden dark:bg-input/30',
+            isCompact && 'size-10 justify-center px-0',
+          )}
+        >
+          <SearchIcon
+            aria-hidden="true"
+            className="size-4 shrink-0"
+          />
+          {!isCompact && (
+            <>
+              <span className="flex-1 text-left">{label}</span>
+              {shortcut}
+            </>
+          )}
+        </button>
+        {isPaletteOpen && (
+          <>
+            <div
+              aria-hidden="true"
+              // Pressing outside the box blurs it, which closes it.
+              className="fixed inset-0 z-50 bg-background/40 backdrop-blur-xs"
+            />
+            <div
+              // Keep focus in the box when pressing its edges or the list.
+              onMouseDown={(event) => {
+                if (event.target !== inputReference.current)
+                  event.preventDefault()
+              }}
+              className="glass-surface glass-float fixed inset-x-4 top-[15vh] z-50 mx-auto max-w-2xl overflow-hidden rounded-xl border shadow-lg"
+            >
+              {form}
+              {results}
+            </div>
+          </>
+        )}
+      </>
+    )
+  }
 
   return (
     <div className="relative ml-auto flex-1">
-      <form
-        role="search"
-        onSubmit={(event) => event.preventDefault()}
-        className="relative flex items-center"
-      >
-        <SearchIcon className="pointer-events-none absolute left-3.5 size-4 text-muted-foreground" />
-        <Input
-          ref={inputReference}
-          type="search"
-          value={query}
-          onChange={(event) => {
-            setQuery(event.target.value)
-            setIsOpen(true)
-          }}
-          onFocus={() => {
-            setIsOpen(true)
-            onFocusChange?.(true)
-          }}
-          onBlur={() => {
-            setIsOpen(false)
-            onFocusChange?.(false)
-          }}
-          placeholder={t('navigation.search.placeholder')}
-          aria-label={t('navigation.search.placeholder')}
-          role="combobox"
-          aria-expanded={isShowingResults}
-          aria-controls={listId}
-          aria-autocomplete="list"
-          aria-activedescendant={
-            isShowingResults ? activeDescendant : undefined
-          }
-          autoComplete="off"
-          // On phones the bar's glass pill is the field.
-          className="w-full pl-10 max-md:h-14 max-md:rounded-full max-md:border-0 max-md:shadow-none max-md:focus-visible:ring-0 md:pr-16"
-        />
-        {!query && (
-          <kbd className="pointer-events-none absolute right-3 hidden rounded border bg-muted px-1.5 py-0.5 font-sans text-[0.7rem] text-muted-foreground md:block">
-            {isMac ? '⌘' : 'Ctrl'} K
-          </kbd>
-        )}
-      </form>
-      {isShowingResults && (
-        <Results
-          query={query.trim()}
-          listId={listId}
-          inputReference={inputReference}
-          onOpen={handleOpen}
-          onClose={() => setIsOpen(false)}
-          onActiveChange={setActiveDescendant}
-        />
-      )}
+      {form}
+      {results}
     </div>
   )
 }
@@ -175,6 +257,7 @@ type TResultsProperties = {
   query: string
   listId: string
   inputReference: RefObject<HTMLInputElement | null>
+  isPalette: boolean
   onOpen: (option: TOption) => void
   onClose: () => void
   onActiveChange: (id?: string) => void
@@ -182,8 +265,15 @@ type TResultsProperties = {
 
 // Mounted only while results show, so the lists are loaded on demand.
 const Results = (properties: TResultsProperties) => {
-  const { query, listId, inputReference, onOpen, onClose, onActiveChange } =
-    properties
+  const {
+    query,
+    listId,
+    inputReference,
+    isPalette,
+    onOpen,
+    onClose,
+    onActiveChange,
+  } = properties
   const { t } = useTranslation()
   const { data: notes, isLoading: isLoadingNotes } = useGetNotes()
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks()
@@ -414,7 +504,12 @@ const Results = (properties: TResultsProperties) => {
       // Keep focus in the box so a click doesn't close the list first. On
       // phones the list opens upward from the search box in the bottom row.
       onMouseDown={(event) => event.preventDefault()}
-      className="glass-surface fixed inset-x-4 z-50 max-h-[min(70vh,calc(var(--keyboard-height)-6rem-var(--top-inset)))] overflow-y-auto rounded-xl border p-2 text-popover-foreground max-md:bottom-[calc(var(--row-bottom)+4.5rem+2px)] md:absolute md:inset-x-0 md:top-full md:mt-2"
+      className={cn(
+        'overflow-y-auto p-2 text-popover-foreground',
+        isPalette
+          ? 'max-h-[min(60vh,32rem)] border-t'
+          : 'glass-surface fixed inset-x-4 z-50 max-h-[min(70vh,calc(var(--keyboard-height)-6rem-var(--top-inset)))] rounded-xl border max-md:bottom-[calc(var(--row-bottom)+4.5rem+2px)] md:absolute md:inset-x-0 md:top-full md:mt-2',
+      )}
     >
       {renderBody()}
     </ul>

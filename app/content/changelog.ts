@@ -16,10 +16,24 @@ export const releases: TRelease[] = [
   {
     date: '2026-10-30',
     title: {
-      en: 'A tidier entry form',
-      id: 'Formulir entri lebih rapi',
+      en: 'A side menu on computers',
+      id: 'Menu samping di komputer',
     },
     changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'On a computer the menu now runs down the left side, so your notes, tasks, finances and health get the full height of the screen. Your account, notifications and the Settings sections are in it too. You can fold it to icons, and move it to the right side in Settings.',
+          id: 'Di komputer, menu kini berada di sisi kiri, sehingga catatan, tugas, keuangan, dan kesehatanmu mendapat tinggi layar penuh. Akun, notifikasi, dan bagian Pengaturan juga ada di sana. Menu bisa diciutkan menjadi ikon saja, dan dipindah ke sisi kanan di Pengaturan.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Search on a computer opens in the middle of the screen, with the results right under what you type.',
+          id: 'Pencarian di komputer terbuka di tengah layar, dengan hasil tepat di bawah yang kamu ketik.',
+        },
+      },
       {
         kind: 'fixed',
         text: {

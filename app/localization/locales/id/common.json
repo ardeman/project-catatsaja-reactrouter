@@ -25,6 +25,10 @@
     "currency": "Mata uang",
     "userMenu": "Menu akun",
     "menu": "Menu",
+    "sideMenu": {
+      "collapse": "Ciutkan menu",
+      "expand": "Lebarkan menu"
+    },
     "health": "Kesehatan"
   },
   "form": {
@@ -944,7 +948,7 @@
       "title": "Pencarian",
       "description": "Temukan apa pun yang kamu tulis, di catatan, tugas, keuangan, dan catatan kesehatan.",
       "steps": [
-        "Gunakan kotak pencarian di atas, atau tekan Ctrl K (⌘ K di Mac) atau / dari halaman mana pun.",
+        "Pilih Cari di menu samping (tombol Cari di ponsel), atau tekan Ctrl K (⌘ K di Mac) atau / dari halaman mana pun.",
         "Pencarian melihat judul dan isi. Pilih Lihat semua untuk menyaring daftar dengan kata yang kamu ketik."
       ]
     },
@@ -953,7 +957,7 @@
       "description": "Bagikan catatan, daftar tugas, buku keuangan, atau catatan kesehatan dengan orang lain yang memakai Catat Saja.",
       "steps": [
         "Pilih Bagikan di bilah ikon, cari seseorang dengan emailnya, lalu beri akses hanya baca atau bisa mengubah. Mereka mendapat undangan, dan item masuk ke daftar mereka setelah diterima.",
-        "Item yang dibagikan kepadamu muncul sebagai undangan di bagian atas daftarmu dan di lonceng di samping pencarian: Terima untuk menambahkannya ke daftarmu, Tolak, atau Blokir agar orang itu juga tidak bisa mengundangmu lagi (buka blokir di Pengaturan → Akun).",
+        "Item yang dibagikan kepadamu muncul sebagai undangan di bagian atas daftarmu dan di lonceng di samping fotomu: Terima untuk menambahkannya ke daftarmu, Tolak, atau Blokir agar orang itu juga tidak bisa mengundangmu lagi (buka blokir di Pengaturan → Akun).",
         "Perubahan langsung terlihat oleh semua orang. Orang dengan akses hanya baca tidak bisa mengubah apa pun.",
         "Kamu bisa menyalin tautan ke item, dan mengurungkan saat menghapus seseorang.",
         "Item yang dibagikan kepadamu bisa dihapus dari daftarmu sendiri dengan Hapus dari daftar saya; item tetap ada untuk yang lain."
@@ -981,7 +985,7 @@
     },
     "settings": {
       "title": "Pengaturan",
-      "description": "Buka Pengaturan dari menu akun (fotomu di bagian atas).",
+      "description": "Buka Pengaturan dari menu samping, atau dari menu akun (fotomu) di ponsel.",
       "steps": [
         "Umum: nama dan foto; tema terang, gelap, atau sistem; ukuran teks dan bahasa; urutan menu dan halaman pembuka aplikasi.",
         "Akun: email, menautkan Google, enkripsi dan passkey, serta fitur AI.",
@@ -1217,7 +1221,13 @@
       "description": "Atur urutan menu dan pilih halaman yang dibuka saat aplikasi dibuka.",
       "order": "Urutan menu",
       "startPage": "Dibuka di",
-      "startPageHint": "Halaman yang tampil saat kamu membuka aplikasi atau masuk."
+      "startPageHint": "Halaman yang tampil saat kamu membuka aplikasi atau masuk.",
+      "menuSide": "Sisi menu",
+      "menuSideHint": "Letak menu di komputer.",
+      "sides": {
+        "left": "Kiri",
+        "right": "Kanan"
+      }
     },
     "health": {
       "title": "Kesehatan",

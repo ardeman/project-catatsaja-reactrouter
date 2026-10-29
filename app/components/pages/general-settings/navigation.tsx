@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, PanelLeft, PanelRight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -13,16 +13,18 @@ import { ChoiceCards } from '~/components/base/choice-cards'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
 import { Button } from '~/components/ui/button'
 import {
+  menuSides,
   navs,
   orderNavPages,
   readStartPage,
+  TMenuSide,
   TNavPage,
 } from '~/lib/constants/navigation'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useUpdateNavigation } from '~/lib/hooks/use-update-navigation'
 import { TUpdateNavigationRequest } from '~/lib/types/settings'
 
-// The menu's order and the page the app opens on. Each change applies and
+// The menu's order, its side on desktop and the page the app opens on. Each change applies and
 // saves right away, like the appearance settings.
 export const Navigation = () => {
   const { t } = useTranslation()
@@ -32,6 +34,7 @@ export const Navigation = () => {
   const [choice, setChoice] = useState<TUpdateNavigationRequest>(() => ({
     navOrder: orderNavPages(userData?.navOrder),
     startPage: userData?.startPage ?? readStartPage(),
+    menuSide: userData?.menuSide ?? 'left',
   }))
   // The latest choice, so quick changes in a row each save both.
   const latest = useRef(choice)
@@ -41,6 +44,7 @@ export const Navigation = () => {
     const next = {
       navOrder: orderNavPages(userData.navOrder ?? latest.current.navOrder),
       startPage: userData.startPage ?? latest.current.startPage,
+      menuSide: userData.menuSide ?? latest.current.menuSide,
     }
     latest.current = next
     setChoice(next)
@@ -141,6 +145,23 @@ export const Navigation = () => {
             }
           })}
         />
+        {/* Phones have bottom tabs, not the side menu. */}
+        <div className="max-md:hidden">
+          <ChoiceCards<TMenuSide>
+            label={t('settings.navigation.menuSide')}
+            hint={t('settings.navigation.menuSideHint')}
+            value={choice.menuSide}
+            onChange={(value) => void save({ menuSide: value })}
+            options={menuSides.map((side) => {
+              const Icon = side === 'left' ? PanelLeft : PanelRight
+              return {
+                value: side,
+                label: t(`settings.navigation.sides.${side}`),
+                visual: <Icon className="size-5" />,
+              }
+            })}
+          />
+        </div>
       </CardContent>
     </Card>
   )

@@ -44,8 +44,9 @@ export const ChoiceCards = <T extends string>(properties: TProperties<T>) => {
         className={cn(
           'grid grid-cols-2 gap-2',
           // Full rows: four as 2 × 2 on phones and one row of four wider
-          // up, not three and one left over.
-          options.length === 4 ? 'sm:grid-cols-4' : 'sm:grid-cols-3',
+          // up, not three and one left over; two side by side.
+          options.length === 4 && 'sm:grid-cols-4',
+          options.length > 2 && options.length !== 4 && 'sm:grid-cols-3',
           className,
         )}
       >

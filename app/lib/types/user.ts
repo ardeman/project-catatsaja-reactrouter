@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { TNavPage } from '~/lib/constants/navigation'
+import { TMenuSide, TNavPage } from '~/lib/constants/navigation'
 import { Theme, Size } from '~/lib/contexts/theme'
 import { TDateFormat } from '~/lib/types/date'
 import { TBmiStandard, TLabUnits } from '~/lib/types/health'
@@ -30,6 +30,8 @@ export type TUserResponse = {
   // Main pages in the person's order, and the one the app opens on.
   navOrder?: TNavPage[]
   startPage?: TNavPage
+  // The edge the desktop side menu sits on (left when unset).
+  menuSide?: TMenuSide
   // How health values are judged and shown.
   // End-to-end encryption: the public key once it is turned on, and whether
   // the account must set it up (new accounts).

@@ -339,10 +339,10 @@ export const EntryForm = (properties: TEntryFormProperties) => {
         isEditing
           ? // Clears the floating totals and Add button (h-9) above, and the bottom
             // menu on phones, with a gap.
-            'scroll-mt-[calc(3.5rem+var(--summary-height,0px)+3.25rem)] scroll-mb-[calc(5.5rem+var(--nav-bottom,0px))] p-3 sm:p-4 md:scroll-mt-[calc(8.5rem+var(--summary-height,0px)+3.25rem)] md:scroll-mb-4'
+            'scroll-mt-[calc(3.5rem+var(--summary-height,0px)+3.25rem)] scroll-mb-[calc(5.5rem+var(--nav-bottom,0px))] p-3 sm:p-4 md:scroll-mt-[calc(4.5rem+var(--summary-height,0px)+3.25rem)] md:scroll-mb-4'
           : // Adding floats under the book's totals, compact and see-through,
             // so the entries scrolling under it can be checked while typing.
-            'glass-surface glass-float sticky top-[calc(3.5rem+var(--top-inset)+var(--summary-height,0px)+0.5rem)] z-20 max-h-[calc(100dvh-10.5rem-var(--top-inset)-var(--summary-height,0px))] scroll-mt-[calc(3.5rem+var(--top-inset)+var(--summary-height,0px)+0.5rem)] overflow-y-auto rounded-xl border p-2.5 shadow-lg sm:p-3 md:top-[calc(8.5rem+var(--summary-height,0px)+0.5rem)] md:max-h-[calc(100dvh-10.5rem-var(--summary-height,0px))] md:scroll-mt-[calc(8.5rem+var(--summary-height,0px)+0.5rem)] [&_[role=combobox]]:bg-background [&_input]:bg-background',
+            'glass-surface glass-float sticky top-[calc(3.5rem+var(--top-inset)+var(--summary-height,0px)+0.5rem)] z-20 max-h-[calc(100dvh-10.5rem-var(--top-inset)-var(--summary-height,0px))] scroll-mt-[calc(3.5rem+var(--top-inset)+var(--summary-height,0px)+0.5rem)] overflow-y-auto rounded-xl border p-2.5 shadow-lg sm:p-3 md:top-[calc(4.5rem+var(--summary-height,0px)+0.5rem)] md:max-h-[calc(100dvh-6.5rem-var(--summary-height,0px))] md:scroll-mt-[calc(4.5rem+var(--summary-height,0px)+0.5rem)] [&_[role=combobox]]:bg-background [&_input]:bg-background',
       )}
     >
       <div

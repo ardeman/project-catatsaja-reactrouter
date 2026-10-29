@@ -1,78 +1,26 @@
-import {
-  CircleUser,
-  ExternalLink,
-  Lock,
-  LogOut,
-  Search as SearchIcon,
-  X,
-} from 'lucide-react'
+import { Search as SearchIcon, X } from 'lucide-react'
 import { CSSProperties, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { useMediaQuery } from 'usehooks-ts'
 
-import { InstallApp } from '~/components/base/install-app'
-import { PlanBadge } from '~/components/base/plan-badge'
 import { PlusInfo } from '~/components/base/plus-info'
-import {
-  Notifications,
-  useNotifications,
-} from '~/components/layouts/notifications'
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
-import { Button } from '~/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
-import { appName } from '~/lib/constants/metadata'
-import { useEncryptionSession } from '~/lib/hooks/use-encryption-session'
-import { useUserData } from '~/lib/hooks/use-get-user'
+import { useNotifications } from '~/components/layouts/notifications'
 import { useKeyboardInset } from '~/lib/hooks/use-keyboard-inset'
 import { useLogout } from '~/lib/hooks/use-logout'
-import { TMenu } from '~/lib/types/common'
-import { lockSession } from '~/lib/utils/encryption-session'
 import { cn } from '~/lib/utils/shadcn'
 
 import { AccountSheet } from './account-sheet'
-import { aboutMenus, isExternal, userMenus } from './constant'
 import { Navigation } from './navigation'
 import { Search } from './search'
+import { SideMenu } from './side-menu'
 import { TProperties } from './type'
 export { aboutMenus } from './constant'
-
-const MenuLink = (properties: { menu: TMenu }) => {
-  const { menu } = properties
-  const Icon = menu.icon
-  return (
-    <DropdownMenuItem
-      asChild
-      className="cursor-pointer gap-2"
-    >
-      <Link
-        to={menu.href}
-        rel={isExternal(menu.href) ? 'noopener noreferrer' : undefined}
-        target={isExternal(menu.href) ? '_blank' : undefined}
-      >
-        {Icon && <Icon className="size-4 text-muted-foreground" />}
-        {menu.name}
-        {isExternal(menu.href) && (
-          <ExternalLink className="ml-auto size-3.5 text-muted-foreground" />
-        )}
-      </Link>
-    </DropdownMenuItem>
-  )
-}
 
 export const Navbar = (properties: TProperties) => {
   const { className } = properties
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const { data: userData } = useUserData()
-  const encryption = useEncryptionSession()
   const handleLogout = () => {
     mutateLogout()
     navigate('/', { replace: true })
@@ -80,9 +28,9 @@ export const Navbar = (properties: TProperties) => {
 
   const { mutate: mutateLogout } = useLogout()
   const notifications = useNotifications()
-  // Phones have no top bar: the pages are bottom tabs, beside an account tab
-  // and a Search button that turns the tabs' pill into the search box, the
-  // row rising above the keyboard while it's open.
+  // Desktop has a side menu. Phones have the pages as bottom tabs, beside an
+  // account tab and a Search button that turns the tabs' pill into the
+  // search box, the row rising above the keyboard while it's open.
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const searchReference = useRef<HTMLInputElement>(null)
   const [isSearching, setIsSearching] = useState(false)
@@ -102,116 +50,33 @@ export const Navbar = (properties: TProperties) => {
 
   return (
     <>
-      <header
-        className={cn(
-          'z-50 flex h-16 w-full items-center gap-4 px-4 md:sticky md:top-0 md:px-6',
-          // In the tabs' pill: as tall, and clear of the Search button.
-          'max-md:fixed max-md:right-[calc(1rem+4rem+2px+0.375rem)] max-md:bottom-(--row-bottom) max-md:left-4 max-md:z-51 max-md:h-[calc(4rem+2px)] max-md:w-auto max-md:px-1 max-md:motion-safe:transition-opacity max-md:motion-safe:duration-200',
-          !isSearching && 'max-md:pointer-events-none max-md:opacity-0',
-          className,
-        )}
-        style={rowStyle}
-      >
-        {/* Keep blur off the ancestor so search can blur the page behind it. */}
-        <div
-          aria-hidden="true"
-          className="glass-surface pointer-events-none absolute inset-0 -z-10 max-md:rounded-full max-md:border md:border-b"
+      {isDesktop ? (
+        <SideMenu
+          notifications={notifications}
+          onOpenPlus={() => setIsPlusOpen(true)}
+          onSignOut={handleLogout}
         />
-        <Navigation className="hidden shrink-0 flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
-        <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+      ) : (
+        <header
+          className={cn(
+            // In the tabs' pill: as tall, and clear of the Search button.
+            'fixed right-[calc(1rem+4rem+2px+0.375rem)] bottom-(--row-bottom) left-4 z-51 flex h-[calc(4rem+2px)] items-center px-1 motion-safe:transition-opacity motion-safe:duration-200',
+            !isSearching && 'pointer-events-none opacity-0',
+            className,
+          )}
+          style={rowStyle}
+        >
+          {/* Keep blur off the ancestor so search can blur the page behind it. */}
+          <div
+            aria-hidden="true"
+            className="glass-surface pointer-events-none absolute inset-0 -z-10 rounded-full border"
+          />
           <Search
             inputReference={searchReference}
             onFocusChange={setIsSearching}
           />
-          {isDesktop && <Notifications notifications={notifications} />}
-          {isDesktop && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="shrink-0 rounded-full [&_svg]:size-6"
-                >
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={userData?.photoURL || ''} />
-                    <AvatarFallback>
-                      <CircleUser />
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="sr-only">{t('navigation.userMenu')}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="glass-surface w-60"
-              >
-                <DropdownMenuLabel className="grid font-normal">
-                  {userData?.displayName && (
-                    <span className="truncate font-medium">
-                      {userData.displayName}
-                    </span>
-                  )}
-                  <span className="truncate text-xs text-muted-foreground">
-                    {userData?.email}
-                  </span>
-                  <DropdownMenuItem
-                    title={t('plus.info.open')}
-                    className="mt-1.5 w-fit cursor-pointer rounded-full p-0"
-                    onSelect={() => setIsPlusOpen(true)}
-                  >
-                    <PlanBadge />
-                  </DropdownMenuItem>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {userMenus(t).map((menu) => (
-                  <MenuLink
-                    key={menu.href}
-                    menu={menu}
-                  />
-                ))}
-                <InstallApp>
-                  {({ onClick, label, icon }) => (
-                    <DropdownMenuItem
-                      onClick={onClick}
-                      className="cursor-pointer gap-2 [&_svg]:text-muted-foreground"
-                    >
-                      {icon}
-                      {label}
-                    </DropdownMenuItem>
-                  )}
-                </InstallApp>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                  {appName}
-                </DropdownMenuLabel>
-                {aboutMenus(t).map((menu) => (
-                  <MenuLink
-                    key={menu.href}
-                    menu={menu}
-                  />
-                ))}
-                <DropdownMenuSeparator />
-                {userData?.publicKey && encryption.status === 'unlocked' && (
-                  <DropdownMenuItem
-                    onClick={() => void lockSession()}
-                    className="cursor-pointer gap-2"
-                  >
-                    <Lock className="size-4 text-muted-foreground" />
-                    {t('encryption.settings.lock')}
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem
-                  onClick={handleLogout}
-                  className="cursor-pointer gap-2"
-                >
-                  <LogOut className="size-4 text-muted-foreground" />
-                  {t('navigation.signOut')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-      </header>
+        </header>
+      )}
       {!isDesktop && (
         <div
           className="fixed inset-x-4 bottom-(--row-bottom) z-50 flex gap-1.5"

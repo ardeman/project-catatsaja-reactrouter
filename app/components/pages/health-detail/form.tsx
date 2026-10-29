@@ -394,7 +394,7 @@ export const Form = (properties: TFormProperties) => {
           isPage
           cardStyle={toCardStyle(healthLog?.cardStyle)}
         />
-        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-24">
+        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-8">
           {healthLog ? (
             <Action
               className="w-full"

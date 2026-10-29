@@ -294,11 +294,12 @@ export const NotificationList = (properties: {
   )
 }
 
-// The bell, on wide screens.
+// The bell, in the desktop side menu.
 export const Notifications = (properties: {
   notifications: TNotifications
+  side?: 'left' | 'right' | 'bottom'
 }) => {
-  const { notifications } = properties
+  const { notifications, side = 'bottom' } = properties
   const [open, setOpen] = useState(false)
 
   return (
@@ -319,6 +320,7 @@ export const Notifications = (properties: {
         </Button>
       </PopoverTrigger>
       <PopoverContent
+        side={side}
         align="end"
         collisionPadding={16}
         className="glass-surface grid max-h-[min(32rem,calc(100dvh-5rem))] w-[min(26rem,calc(100vw-2rem))] gap-4 overflow-y-auto rounded-xl p-4"

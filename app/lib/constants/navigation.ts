@@ -9,6 +9,11 @@ export const navPages = ['notes', 'tasks', 'finances', 'health'] as const
 
 export type TNavPage = (typeof navPages)[number]
 
+// The edge the desktop side menu sits on.
+export const menuSides = ['left', 'right'] as const
+
+export type TMenuSide = (typeof menuSides)[number]
+
 const isNavPage = (value: unknown): value is TNavPage =>
   navPages.includes(value as TNavPage)
 
