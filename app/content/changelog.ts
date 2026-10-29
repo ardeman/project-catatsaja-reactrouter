@@ -63,6 +63,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'fixed',
+        text: {
+          en: 'In a book’s analysis, small shares read <1% again instead of &lt;1%.',
+          id: 'Di analisis buku, bagian kecil kembali tertulis <1%, bukan &lt;1%.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Delete and Archive are now one button: deleting a note, task, book or health log asks whether to archive it instead, so it leaves your list without being lost. Archived items still have their button to move them back.',

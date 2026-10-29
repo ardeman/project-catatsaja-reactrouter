@@ -665,6 +665,8 @@ export const Analysis = ({
                 summary={t('finances.analysis.summary.categories', {
                   category: categoryLabel(categories[0].category),
                   share: formatShare(share, categories[0].share),
+                  // React escapes text: "<1%" and "Food & drinks" stay.
+                  interpolation: { escapeValue: false },
                 })}
               >
                 <CategoryBreakdown

@@ -257,6 +257,8 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
                       >
                         {t(`finances.analysis.keywords.shareOf.${type}`, {
                           share: formatShare(percent, share),
+                          // React escapes text: "<1%" stays.
+                          interpolation: { escapeValue: false },
                         })}
                       </span>
                     ))
@@ -271,6 +273,7 @@ export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
                           {amountOf(type, total)} ·{' '}
                           {t(`finances.analysis.keywords.shareOf.${type}`, {
                             share: formatShare(percent, share),
+                            interpolation: { escapeValue: false },
                           })}
                         </span>
                       ))}
