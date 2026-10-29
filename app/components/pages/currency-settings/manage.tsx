@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Coins, Pencil, Plus, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm, FormProvider, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
@@ -84,8 +84,8 @@ export const ManageCurrencies = () => {
     },
   })
 
-  const { handleSubmit, reset, formState, watch, setValue } = formMethods
-  const isDefault = watch('isDefault')
+  const { handleSubmit, reset, formState, control, setValue } = formMethods
+  const isDefault = useWatch({ control, name: 'isDefault' })
 
   // Set latest rate to 1 when default is checked
   React.useEffect(() => {

@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 
@@ -202,21 +202,35 @@ export const Form = (properties: TFormProperties) => {
     },
   })
   const {
-    watch,
+    control,
     getValues,
     setValue,
     formState: { isDirty },
   } = formMethods
-  const watchTitle = watch('title')
+  const watchTitle = useWatch({ control, name: 'title' })
   useDocumentTitle(watchTitle || t('navigation.finances'))
-  const book = watch('currency')
-  const entries = watch('content')
-  const accounts = watch('accounts')
-  const categoryGroups = watch('categoryGroups')
-  const budgets = watch('budgets')
-  const goals = watch('goals')
-  const payday = watch('payday')
-  const keywords = watch('keywords')
+  const [
+    book,
+    entries,
+    accounts,
+    categoryGroups,
+    budgets,
+    goals,
+    payday,
+    keywords,
+  ] = useWatch({
+    control,
+    name: [
+      'currency',
+      'content',
+      'accounts',
+      'categoryGroups',
+      'budgets',
+      'goals',
+      'payday',
+      'keywords',
+    ],
+  })
   const isCurrencyLocked = !isReadOnly && entries.length > 0
   // Read-only people see accounts only when there are some.
   const hasAccounts = !isReadOnly || (accounts ?? []).length > 0
@@ -368,6 +382,8 @@ export const Form = (properties: TFormProperties) => {
     )
     if (!row) {
       // Wait for the list to catch up, unless the filter hides the entries.
+      // Only the rendered list tells, so this can't happen while rendering.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (entries.some(({ id }) => addedIds.includes(id))) setAddedIds([])
       return
     }

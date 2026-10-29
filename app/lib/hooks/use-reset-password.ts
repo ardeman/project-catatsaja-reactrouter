@@ -11,13 +11,9 @@ export const useResetPassword = () => {
   const { revalidate } = useRevalidator()
   const { t } = useTranslation()
   const [isPending, setIsPending] = useState(false)
-  const [isError, setIsError] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
 
   const mutate = async () => {
     setIsPending(true)
-    setIsError(false)
-    setIsSuccess(false)
     try {
       if (!auth?.currentUser?.email) {
         throw new Error('No user is currently signed in.')
@@ -26,19 +22,19 @@ export const useResetPassword = () => {
       toast({
         description: t('auth.toast.resetPassword'),
       })
-      setIsSuccess(true)
       revalidate()
+      return true
     } catch (error: unknown) {
-      setIsError(true)
       const message = getErrorMessage(error)
       toast({
         variant: 'destructive',
         description: message,
       })
+      return false
     } finally {
       setIsPending(false)
     }
   }
 
-  return { mutate, isPending, isError, isSuccess }
+  return { mutate, isPending }
 }

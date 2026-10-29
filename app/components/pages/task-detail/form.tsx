@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronDown, ChevronUp, Plus, Trash } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
@@ -154,7 +154,6 @@ export const Form = (properties: TFormProperties) => {
   })
   useStoredValues({ form: formMethods, stored: storedValues })
   const {
-    watch,
     getValues,
     formState: { isDirty },
     setFocus,
@@ -170,13 +169,13 @@ export const Form = (properties: TFormProperties) => {
     append,
     replace,
   } = useFieldArray({
-    control: control,
+    control,
     name: 'content',
   })
-  const watchTitle = watch('title')
+  const watchTitle = useWatch({ control, name: 'title' })
   useDocumentTitle(watchTitle || t('navigation.tasks'))
-  const watchItem = watch('item')
-  const watchContent = watch('content')
+  const watchItem = useWatch({ control, name: 'item' })
+  const watchContent = useWatch({ control, name: 'content' })
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
 

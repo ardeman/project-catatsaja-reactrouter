@@ -1,6 +1,6 @@
 import { ScanText } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { AiNotice } from '~/components/base/ai-notice'
@@ -61,7 +61,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
   const dateForm = useForm<{ date: string }>({
     defaultValues: { date: today() },
   })
-  const date = dateForm.watch('date')
+  const date = useWatch({ control: dateForm.control, name: 'date' })
   // The date as read, and why it is worth checking, if it is.
   const readDate = useMemo(
     () => (receipt ? receiptDate(receipt.date, today()) : undefined),

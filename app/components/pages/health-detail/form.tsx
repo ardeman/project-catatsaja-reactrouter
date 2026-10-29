@@ -1,5 +1,5 @@
 import { useId, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router'
 
@@ -124,12 +124,43 @@ export const Form = (properties: TFormProperties) => {
     },
   })
   const {
-    watch,
+    control,
     getValues,
     setValue,
     formState: { isDirty },
   } = formMethods
-  const values = watch()
+  const [
+    name,
+    birthDate,
+    sex,
+    calorieTarget,
+    content,
+    reminders,
+    medications,
+    doseLog,
+  ] = useWatch({
+    control,
+    name: [
+      'name',
+      'birthDate',
+      'sex',
+      'calorieTarget',
+      'content',
+      'reminders',
+      'medications',
+      'doseLog',
+    ],
+  })
+  const values: THealthLogForm = {
+    name,
+    birthDate,
+    sex,
+    calorieTarget,
+    content,
+    reminders,
+    medications,
+    doseLog,
+  }
   useDocumentTitle(values.name || t('navigation.health'))
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
@@ -250,7 +281,7 @@ export const Form = (properties: TFormProperties) => {
   }
   const undoHistory = useUndoHistory({
     key: selectedHealthLog?.id ?? 'create',
-    // As text, so the value only changes when the log does (`watch()` gives
+    // As text, so the value only changes when the log does (`useWatch()` gives
     // a new object every render).
     value: JSON.stringify(current),
     stored: JSON.stringify(stored),

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BanknoteArrowDown, BanknoteArrowUp, Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
@@ -95,8 +95,15 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     resolver: zodResolver(entrySchema(t)),
     defaultValues: empty,
   })
-  const { handleSubmit, watch, setValue, reset, getValues, setFocus } =
-    formMethods
+  const {
+    handleSubmit,
+    control,
+    subscribe,
+    setValue,
+    reset,
+    getValues,
+    setFocus,
+  } = formMethods
 
   // Fresh values when starting or switching the entry being edited.
   const categoryByType = useRef<Partial<Record<TFinanceEntry['type'], string>>>(
@@ -116,6 +123,9 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   const pastEntries = history.filter((item) => item.id !== entry?.id)
 
   useEffect(() => {
+    // Here and not while rendering: the focus request has to come after the
+    // reset() below, in the render that follows it.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSavedCount(0)
     setFocusRequest((count) => count + 1)
     categoryByType.current = {}
@@ -144,26 +154,27 @@ export const EntryForm = (properties: TEntryFormProperties) => {
   // or an amount; saving or cancelling clears it, closing the page doesn't.
   useEffect(() => {
     if (isEditing || !draftKey) return
-    const subscription = watch((values) => {
-      const hasContent =
-        String(values.description ?? '').trim() !== '' ||
-        String(values.amount ?? '').trim() !== ''
-      if (hasContent) writeDraft(draftKey, values, isPrivate)
-      else clearDraft(draftKey)
+    return subscribe({
+      formState: { values: true },
+      callback: ({ values }) => {
+        const hasContent =
+          String(values.description ?? '').trim() !== '' ||
+          String(values.amount ?? '').trim() !== ''
+        if (hasContent) writeDraft(draftKey, values, isPrivate)
+        else clearDraft(draftKey)
+      },
     })
-    return () => subscription.unsubscribe()
-  }, [watch, isEditing, draftKey, isPrivate])
+  }, [subscribe, isEditing, draftKey, isPrivate])
 
   const handleCancel = () => {
     if (!isEditing && draftKey) clearDraft(draftKey)
     onClose()
   }
 
-  const type = watch('type')
-  const currency = watch('currency')
-  const category = watch('category')
-  const rate = watch('rate')
-  const description = watch('description')
+  const [type, currency, category, rate, description] = useWatch({
+    control,
+    name: ['type', 'currency', 'category', 'rate', 'description'],
+  })
   const isForeign = currency.code !== book.code
 
   // Every currency the person can pick: their own, the book's, and the
@@ -234,6 +245,9 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       shouldDirty: true,
       shouldValidate: true,
     })
+    // Follows the form's text, which a reset or a draft also changes, so
+    // it can't move into the input's change handler.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsSuggested(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description])

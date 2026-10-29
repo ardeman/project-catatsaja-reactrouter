@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useRevalidator } from 'react-router'
 
@@ -48,106 +48,73 @@ export const Email = () => {
   const userPasswordProvider = authData?.providerData.find(
     (provider) => provider.providerId === 'password',
   )
-  const { handleSubmit, watch, formState } = formMethods
-  const watchEmail = watch('email')
+  const { handleSubmit, control, formState } = formMethods
+  const watchEmail = useWatch({ control, name: 'email' })
 
-  const {
-    mutate: mutateUpdateEmail,
-    isPending: isUpdateEmailPending,
-    isSuccess: isUpdateEmailSuccess,
-    isError: isUpdateEmailError,
-  } = useUpdateEmail()
+  const { mutate: mutateUpdateEmail, isPending: isUpdateEmailPending } =
+    useUpdateEmail()
 
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateUpdateEmail(data)
+    const isSent = await mutateUpdateEmail(data)
+    setDisabled(false)
+    if (isSent) setTimerUpdateEmail(30)
   })
 
   useEffect(() => {
-    if (isUpdateEmailSuccess || isUpdateEmailError) {
-      setDisabled(false)
-    }
-    if (isUpdateEmailSuccess) {
-      setTimerUpdateEmail(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdateEmailSuccess, isUpdateEmailError])
-
-  useEffect(() => {
-    if (timerUpdateEmail === 0) {
-      setTimerUpdateEmail(undefined)
-      revalidate()
-    } else if (timerUpdateEmail) {
-      const timer = setTimeout(() => {
-        setTimerUpdateEmail((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
+    if (!timerUpdateEmail) return
+    const timer = setTimeout(() => {
+      if (timerUpdateEmail === 1) {
+        setTimerUpdateEmail(undefined)
+        revalidate()
+      } else setTimerUpdateEmail(timerUpdateEmail - 1)
+    }, 1000)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerUpdateEmail])
 
   const {
     mutate: mutateSendEmailVerification,
     isPending: isSendEmailVerificationPending,
-    isSuccess: isSendEmailVerificationSuccess,
-    isError: isSendEmailVerificationError,
   } = useEmailVerification()
 
-  const handleSendEmailVerification = () => {
-    mutateSendEmailVerification()
+  const handleSendEmailVerification = async () => {
     setDisabled(true)
+    const isSent = await mutateSendEmailVerification()
+    setDisabled(false)
+    if (isSent) setTimerEmailVerify(30)
   }
 
   useEffect(() => {
-    if (isSendEmailVerificationSuccess || isSendEmailVerificationError) {
-      setDisabled(false)
-    }
-    if (isSendEmailVerificationSuccess) {
-      setTimerEmailVerify(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSendEmailVerificationSuccess, isSendEmailVerificationError])
-
-  useEffect(() => {
-    if (timerEmailVerify === 0) {
-      setTimerEmailVerify(undefined)
-      revalidate()
-    } else if (timerEmailVerify) {
-      const timer = setTimeout(() => {
-        setTimerEmailVerify((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
+    if (!timerEmailVerify) return
+    const timer = setTimeout(() => {
+      if (timerEmailVerify === 1) {
+        setTimerEmailVerify(undefined)
+        revalidate()
+      } else setTimerEmailVerify(timerEmailVerify - 1)
+    }, 1000)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerEmailVerify])
 
-  const {
-    mutate: mutateSetPassword,
-    isPending: isSetPasswordPending,
-    isSuccess: isSetPasswordSuccess,
-    isError: isSetPasswordError,
-  } = useResetPassword()
+  const { mutate: mutateSetPassword, isPending: isSetPasswordPending } =
+    useResetPassword()
+
+  const handleSetPassword = async () => {
+    const isSent = await mutateSetPassword()
+    setDisabled(false)
+    if (isSent) setTimerSetPassword(30)
+  }
 
   useEffect(() => {
-    if (isSetPasswordSuccess || isSetPasswordError) {
-      setDisabled(false)
-    }
-    if (isSetPasswordSuccess) {
-      setTimerSetPassword(30)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSetPasswordSuccess, isSetPasswordError])
-
-  useEffect(() => {
-    if (timerSetPassword === 0) {
-      setTimerSetPassword(undefined)
-      revalidate()
-    } else if (timerSetPassword) {
-      const timer = setTimeout(() => {
-        setTimerSetPassword((previous) => previous! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
+    if (!timerSetPassword) return
+    const timer = setTimeout(() => {
+      if (timerSetPassword === 1) {
+        setTimerSetPassword(undefined)
+        revalidate()
+      } else setTimerSetPassword(timerSetPassword - 1)
+    }, 1000)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerSetPassword])
 
@@ -219,7 +186,7 @@ export const Email = () => {
                 disabled={disabled || !!timerSetPassword}
                 type="button"
                 isLoading={isSetPasswordPending}
-                onClick={() => mutateSetPassword()}
+                onClick={handleSetPassword}
               >
                 {t('settings.email.button.setPassword')}{' '}
                 {timerSetPassword && `(${timerSetPassword})`}

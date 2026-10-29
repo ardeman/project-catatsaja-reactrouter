@@ -67,11 +67,9 @@ export default tseslint.config(
       // Components are arrow functions, so a default export is a separate
       // `const X = () => ...` followed by `export default X`.
       'unicorn/default-export-style': ['error', { functions: 'separate' }],
-      // Only says the React Compiler would skip forms that call
-      // react-hook-form's `watch()`; the app doesn't use the compiler.
-      // Moving them to `useWatch` changes when the forms (field arrays,
-      // autosave) re-render, which needs testing in the browser first.
-      'react-hooks/incompatible-library': 'off',
+      // Forms read values with `useWatch` and `subscribe`, not `watch()`,
+      // which would make the React Compiler checks skip the component.
+      'react-hooks/incompatible-library': 'error',
       'jsx-a11y/no-static-element-interactions': 'off',
       'jsx-a11y/click-events-have-key-events': 'off',
       'no-console': 'error',

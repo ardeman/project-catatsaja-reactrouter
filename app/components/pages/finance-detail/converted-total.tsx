@@ -34,7 +34,7 @@ export const ConvertedTotal = (
   properties: Pick<TEntryFormProperties, 'book' | 'currencies'>,
 ) => {
   const { book, currencies } = properties
-  const { control, getValues, setValue, watch } =
+  const { control, getValues, setValue, subscribe } =
     useFormContext<TFinanceEntryForm>()
   const [currency, amount, quantity, rate] = useWatch({
     control,
@@ -98,29 +98,33 @@ export const ConvertedTotal = (
   // What the person types in amount or rate; a reset (after saving, or
   // another entry) starts over.
   useEffect(() => {
-    const subscription = watch((_, { name, type }) => {
-      if (name === undefined) {
-        // Worked out from the new values, so it is right however often a
-        // reset is reported.
-        order.current = initialOrder
-        recompute()
-        return
-      }
-      if (type === 'change' && (name === 'amount' || name === 'rate'))
-        touch(name)
+    return subscribe({
+      formState: { values: true },
+      callback: ({ name, type }) => {
+        if (name === undefined) {
+          // Worked out from the new values, so it is right however often a
+          // reset is reported.
+          order.current = initialOrder
+          recompute()
+          return
+        }
+        if (type === 'change' && (name === 'amount' || name === 'rate'))
+          touch(name)
+      },
     })
-    return () => subscription.unsubscribe()
     // recompute reads the latest values through getValues.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watch, totalForm])
+  }, [subscribe, totalForm])
 
   useEffect(() => {
-    const subscription = totalForm.watch((_, { type }) => {
-      if (type !== 'change') return
-      touch('total')
-      recompute()
+    return totalForm.subscribe({
+      formState: { values: true },
+      callback: ({ type }) => {
+        if (type !== 'change') return
+        touch('total')
+        recompute()
+      },
     })
-    return () => subscription.unsubscribe()
     // recompute reads the latest values through getValues.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalForm])

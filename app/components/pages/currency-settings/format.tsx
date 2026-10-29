@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SlidersHorizontal } from 'lucide-react'
 import React, { useState } from 'react'
-import { FormProvider, useForm, Controller } from 'react-hook-form'
+import { FormProvider, useForm, Controller, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
@@ -70,12 +70,31 @@ export const CurrencyFormat = () => {
     values: defaultValues,
   })
 
-  const { handleSubmit, watch, formState, setValue } = formMethods
-  const watchAll = watch()
+  const { handleSubmit, control, formState, setValue } = formMethods
+  const [
+    thousandSeparator,
+    decimalSeparator,
+    minimumFractionDigits,
+    currencyPlacement,
+    currencyType,
+    addSpace,
+  ] = useWatch({
+    control,
+    name: [
+      'thousandSeparator',
+      'decimalSeparator',
+      'minimumFractionDigits',
+      'currencyPlacement',
+      'currencyType',
+      'addSpace',
+    ],
+  })
 
   // "Custom" stays open once chosen, even if it matches a common style.
   const [isCustom, setIsCustom] = useState(false)
-  const numberStyle = isCustom ? 'custom' : styleOf(watchAll)
+  const numberStyle = isCustom
+    ? 'custom'
+    : styleOf({ thousandSeparator, decimalSeparator })
 
   const handleNumberStyle = (key: TNumberStyle) => {
     setIsCustom(key === 'custom')
@@ -175,7 +194,7 @@ export const CurrencyFormat = () => {
                 hint={t(
                   'settings.currencyFormat.form.minimumFractionDigits.hint',
                   {
-                    example: `1${watchAll.thousandSeparator}000${watchAll.decimalSeparator}00`,
+                    example: `1${thousandSeparator}000${decimalSeparator}00`,
                   },
                 )}
                 name="minimumFractionDigits"
@@ -195,7 +214,7 @@ export const CurrencyFormat = () => {
 
             <div className="grid gap-6">
               <Controller
-                control={formMethods.control}
+                control={control}
                 name="currencyPlacement"
                 render={({ field }) => (
                   <ChoiceCards
@@ -215,7 +234,7 @@ export const CurrencyFormat = () => {
                 )}
               />
               <Controller
-                control={formMethods.control}
+                control={control}
                 name="currencyType"
                 render={({ field }) => (
                   <ChoiceCards
@@ -233,7 +252,7 @@ export const CurrencyFormat = () => {
                 )}
               />
               <Controller
-                control={formMethods.control}
+                control={control}
                 name="addSpace"
                 render={({ field }) => (
                   <ChoiceCards
@@ -262,10 +281,12 @@ export const CurrencyFormat = () => {
                 {formatCurrency({
                   amount: previewAmount,
                   format: {
-                    ...watchAll,
-                    minimumFractionDigits: Number(
-                      watchAll.minimumFractionDigits,
-                    ),
+                    thousandSeparator,
+                    decimalSeparator,
+                    minimumFractionDigits: Number(minimumFractionDigits),
+                    currencyPlacement,
+                    currencyType,
+                    addSpace,
                   },
                   currencies,
                 })}

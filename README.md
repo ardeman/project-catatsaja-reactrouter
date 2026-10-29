@@ -80,7 +80,6 @@ An optional Catat Saja Plus subscription pays for what costs money to run; the c
 
 - [ ] Find why copying a book from the list sometimes never saves on the CI runner (rarely locally), then check copy, delete and Undo from the list again in `tests/e2e/sharing.test.mjs` ("month documents"). Known: the months are read, then nothing is written: no write is queued (Firestore's IndexedDB shows one primary tab, network on, no pending writes), no toast, no browser error; it didn't happen with Firestore's debug log on. Next: log each step of `handleDuplicateFinance` → `createFinance` → `createShared` on a draft pull request (checked by CI, not deployed).
 - [ ] More end-to-end tests (today they cover encryption, sharing, month documents, the AI features, health reminders and medicines; archiving, blocking and offline drafts have none yet; the rules have their own tests).
-- [ ] Read form values with `useWatch` instead of react-hook-form's `watch()`, then turn on `react-hooks/incompatible-library` (`eslint.config.mjs`).
 - [ ] Drop the `@eslint/compat` wrapper once `eslint-plugin-react`, `-import` and `-jsx-a11y` support ESLint 10.
 - [ ] TypeScript 7, once typescript-eslint supports it.
 

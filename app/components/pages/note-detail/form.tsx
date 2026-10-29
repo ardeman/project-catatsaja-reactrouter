@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback, useMemo, useRef, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { useEventListener } from 'usehooks-ts'
@@ -83,15 +83,15 @@ export const Form = (properties: TFormProperties) => {
   })
   useStoredValues({ form: formMethods, stored: storedValues })
   const {
-    watch,
+    control,
     getValues,
     setValue,
     formState: { isDirty },
     setFocus,
   } = formMethods
-  const watchTitle = watch('title')
+  const watchTitle = useWatch({ control, name: 'title' })
   useDocumentTitle(watchTitle || t('navigation.notes'))
-  const watchContent = watch('content')
+  const watchContent = useWatch({ control, name: 'content' })
   const syncEditor = useRef<(() => void) | null>(null)
   const registerSync = useCallback((sync: (() => void) | null) => {
     syncEditor.current = sync

@@ -1,6 +1,6 @@
 import { Sparkles } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { AiNotice } from '~/components/base/ai-notice'
@@ -58,7 +58,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
   const textForm = useForm<{ text: string }>({
     defaultValues: { text: draft ?? '' },
   })
-  const text = textForm.watch('text')
+  const text = useWatch({ control: textForm.control, name: 'text' })
 
   useEffect(() => {
     if (!draftKey) return
