@@ -22,5 +22,6 @@ export type TSidePanelProperties = {
   // The note's card; the outline reads the editor's headings from it.
   contentReference: RefObject<HTMLDivElement | null>
   dateLabel: string
+  isReadOnly: boolean
   saveStatus: TSaveStatus
 }

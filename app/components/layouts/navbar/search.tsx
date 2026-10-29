@@ -7,7 +7,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
@@ -18,6 +17,7 @@ import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useGetHealthLogs } from '~/lib/hooks/use-get-health-logs'
 import { useGetNotes } from '~/lib/hooks/use-get-notes'
 import { useGetTasks } from '~/lib/hooks/use-get-tasks'
+import { useIsMac } from '~/lib/hooks/use-is-mac'
 import { TMenu } from '~/lib/types/common'
 import { knownEntries } from '~/lib/utils/finance-analysis'
 import { toPlainText } from '~/lib/utils/parser'
@@ -26,9 +26,6 @@ import { cn } from '~/lib/utils/shadcn'
 
 // Results shown per section; the rest are one "See all" away.
 const LIMIT = 5
-
-const noSubscribe = () => () => {}
-const isMacSnapshot = () => /mac|iphone|ipad/i.test(navigator.userAgent)
 
 type TOption = {
   id: string
@@ -74,8 +71,7 @@ export const Search = (properties: TSearchProperties) => {
   const ownInputReference = useRef<HTMLInputElement>(null)
   const inputReference = properties.inputReference ?? ownInputReference
   const listId = useId()
-  // Pages rendered at build time show the Ctrl shortcut until hydrated.
-  const isMac = useSyncExternalStore(noSubscribe, isMacSnapshot, () => false)
+  const isMac = useIsMac()
   const [activeDescendant, setActiveDescendant] = useState<string>()
 
   // Follow the list's own search (back, forward, "Clear search"), and close

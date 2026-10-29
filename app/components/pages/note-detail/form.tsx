@@ -20,6 +20,7 @@ import { useAutosave } from '~/lib/hooks/use-autosave'
 import { useCreateNote } from '~/lib/hooks/use-create-note'
 import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useIsMac } from '~/lib/hooks/use-is-mac'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { toast } from '~/lib/hooks/use-toast'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
@@ -43,6 +44,7 @@ const isSameNote = (a: TNoteForm, b: TNoteForm) =>
 export const Form = (properties: TFormProperties) => {
   const { note } = properties
   const { t, i18n } = useTranslation()
+  const isMac = useIsMac()
   const { mutate: archive } = useUpdateArchive()
   const { mutate: updateCardStyle } = useUpdateCardStyle()
   const {
@@ -325,14 +327,15 @@ export const Form = (properties: TFormProperties) => {
             )}
           </div>
           {!isReadOnly && (
-            <p className="text-center text-xs text-muted-foreground">
-              {t('notes.form.saveShortcut')}
+            <p className="text-center text-xs text-muted-foreground xl:hidden">
+              {t('notes.form.saveShortcut', { key: isMac ? '⌘S' : 'Ctrl+S' })}
             </p>
           )}
         </form>
         <SidePanel
           contentReference={contentElement}
           dateLabel={dateWithPermission}
+          isReadOnly={isReadOnly}
           saveStatus={saveStatus}
         />
       </div>

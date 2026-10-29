@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SaveStatus } from '~/components/base/save-status'
+import { useIsMac } from '~/lib/hooks/use-is-mac'
 
 import { TSidePanelProperties } from './type'
 
@@ -23,12 +24,14 @@ const isSameOutline = (a: THeading[], b: THeading[]) =>
       heading.level === b[index].level && heading.text === b[index].text,
   )
 
-// Shown beside the note on wide screens: when it was saved, and an outline of
+// Shown beside the note on wide screens: when it was saved (and the save
+// shortcut), and an outline of
 // its headings to jump between. The editor renders asynchronously, so the
 // outline follows the editor's DOM instead of parsing the markdown.
 export const SidePanel = (properties: TSidePanelProperties) => {
-  const { contentReference, dateLabel, saveStatus } = properties
+  const { contentReference, dateLabel, isReadOnly, saveStatus } = properties
   const { t } = useTranslation()
+  const isMac = useIsMac()
   const [headings, setHeadings] = useState<THeading[]>([])
 
   useEffect(() => {
@@ -68,10 +71,19 @@ export const SidePanel = (properties: TSidePanelProperties) => {
 
   return (
     <aside className="glass-surface sticky top-8 hidden max-h-[calc(100dvh-4rem)] flex-col gap-4 overflow-y-auto rounded-xl border p-4 xl:flex">
-      {dateLabel && (
+      {(dateLabel || !isReadOnly) && (
         <div className="grid gap-1 text-xs text-muted-foreground">
-          <span>{dateLabel}</span>
-          <SaveStatus status={saveStatus} />
+          {dateLabel && (
+            <>
+              <span>{dateLabel}</span>
+              <SaveStatus status={saveStatus} />
+            </>
+          )}
+          {!isReadOnly && (
+            <span>
+              {t('notes.form.saveShortcut', { key: isMac ? '⌘S' : 'Ctrl+S' })}
+            </span>
+          )}
         </div>
       )}
       <nav
