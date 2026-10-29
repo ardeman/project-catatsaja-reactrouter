@@ -207,6 +207,8 @@ const Results = (properties: TResultsProperties) => {
       items: T[] | undefined,
       untitled: string,
       getText: (item: T) => string,
+      // Where a match in the item's text leads, such as the entry found.
+      getHref: (item: T, href: string) => string = (_, href) => href,
     ): TGroup => {
       const titleMatches: TOption[] = []
       const contentMatches: TOption[] = []
@@ -222,9 +224,10 @@ const Results = (properties: TResultsProperties) => {
         const isTitleMatch = normalize(title).includes(normalizedQuery)
         const target = isTitleMatch ? titleMatches : contentMatches
         if (target.length === LIMIT) continue
+        const href = `${nav.href}/${item.id}`
         target.push({
-          id: `${nav.href}/${item.id}`,
-          href: `${nav.href}/${item.id}`,
+          id: href,
+          href: isTitleMatch ? href : getHref(item, href),
           kind: 'item',
           title: title || untitled,
           isUntitled: !title,
@@ -251,14 +254,27 @@ const Results = (properties: TResultsProperties) => {
       toGroup(taskNav, tasks, t('tasks.untitled'), (task) =>
         (task.content || []).map((item) => item.item).join(' · '),
       ),
-      toGroup(financeNav, finances, t('finances.untitled'), (finance) =>
-        knownEntries(finance)
-          .flatMap((entry) => [
-            entry.description,
-            t(`finances.form.category.${entry.category}.label`),
-          ])
-          .filter(Boolean)
-          .join(' · '),
+      toGroup(
+        financeNav,
+        finances,
+        t('finances.untitled'),
+        (finance) =>
+          knownEntries(finance)
+            .flatMap((entry) => [
+              entry.description,
+              t(`finances.form.category.${entry.category}.label`),
+            ])
+            .filter(Boolean)
+            .join(' · '),
+        // A book opens at the newest entry that matched.
+        (finance, href) => {
+          const entry = knownEntries(finance).find((item) =>
+            normalize(
+              `${item.description} ${t(`finances.form.category.${item.category}.label`)}`,
+            ).includes(normalizedQuery),
+          )
+          return entry ? `${href}?entry=${encodeURIComponent(entry.id)}` : href
+        },
       ),
       // Health logs by the person's name and their notes.
       toGroup(

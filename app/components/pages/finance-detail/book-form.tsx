@@ -336,6 +336,39 @@ export const Form = (properties: TFormProperties) => {
   // New entries scroll into view just below the floating form (or the Add
   // buttons), so the person sees where they landed.
   const [addedIds, setAddedIds] = useState<string[]>([])
+  // A result of the navbar's search opens the book with `?entry=`: once that
+  // entry has loaded, it scrolls into view (clearing a filter that would hide
+  // it) and lights up for a moment.
+  const target = searchParameters.get('entry')
+  const [targetFor, setTargetFor] = useState<string | null>(null)
+  const [highlightId, setHighlightId] = useState<string>()
+  if (!target && targetFor) setTargetFor(null)
+  if (
+    target &&
+    target !== targetFor &&
+    entries.some(({ id }) => id === target)
+  ) {
+    setTargetFor(target)
+    setFilter(emptyEntryFilter)
+    setAddedIds([target])
+    setHighlightId(target)
+  }
+  useEffect(() => {
+    if (!targetFor) return
+    setSearchParameters(
+      (current) => {
+        current.delete('entry')
+        return current
+      },
+      // Not back to the top, away from the entry.
+      { replace: true, preventScrollReset: true },
+    )
+  }, [targetFor, setSearchParameters])
+  useEffect(() => {
+    if (!highlightId) return
+    const timer = setTimeout(() => setHighlightId(undefined), 2000)
+    return () => clearTimeout(timer)
+  }, [highlightId])
   useEffect(() => {
     if (addedIds.length === 0) return
     // The rows come in list order, so the first is the topmost.
@@ -960,8 +993,9 @@ export const Form = (properties: TFormProperties) => {
                           key={entry.id}
                           data-entry-id={entry.id}
                           className={cn(
-                            'relative min-w-0',
-                            isSelected && 'bg-primary/10',
+                            'relative min-w-0 transition-colors duration-500',
+                            (isSelected || highlightId === entry.id) &&
+                              'bg-primary/10',
                           )}
                         >
                           {/* The icon ticks the entry for the selected sum.

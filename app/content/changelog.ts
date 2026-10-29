@@ -30,6 +30,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'A book found by searching for one of its entries now opens right at that entry, lit up for a moment, instead of at the top.',
+          id: 'Buku yang ditemukan lewat pencarian salah satu entrinya kini langsung terbuka di entri itu, yang disorot sejenak, bukan di bagian atas.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'Delete and Archive are now one button: deleting a note, task, book or health log asks whether to archive it instead, so it leaves your list without being lost. Archived items still have their button to move them back.',
           id: 'Hapus dan Arsipkan kini satu tombol: menghapus catatan, tugas, buku, atau log kesehatan akan menanyakan apakah Anda ingin mengarsipkannya saja, agar hilang dari daftar tanpa terhapus. Item yang diarsipkan tetap punya tombol untuk mengembalikannya.',
         },
