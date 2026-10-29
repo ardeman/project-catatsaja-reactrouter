@@ -38,8 +38,10 @@ if (typeof window !== 'undefined') {
     }
     syncAuthLanguage(i18next.language)
     i18next.on('languageChanged', syncAuthLanguage)
+    // On the host the page came from, so a phone on the same network can
+    // test against this computer's emulators too.
     if (useEmulators)
-      connectAuthEmulator(auth, 'http://127.0.0.1:9099', {
+      connectAuthEmulator(auth, `http://${location.hostname}:9099`, {
         disableWarnings: true,
       })
 

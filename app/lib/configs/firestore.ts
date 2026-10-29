@@ -24,7 +24,8 @@ if (firebase) {
         tabManager: persistentMultipleTabManager(),
       }),
     })
-    if (useEmulators) connectFirestoreEmulator(firestore, '127.0.0.1', 8080)
+    if (useEmulators)
+      connectFirestoreEmulator(firestore, location.hostname, 8080)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error initializing Firestore:', error)
