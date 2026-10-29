@@ -161,7 +161,7 @@ const Drawer = (parameters: TParameters) => {
         if (!isOpen) handleClose() // Trigger handleClose when closing
       }}
     >
-      <DrawerContent className="glass-surface glass-thick max-h-[calc(100dvh-env(safe-area-inset-top))] rounded-t-lg [&>:first-child]:bg-foreground/20">
+      <DrawerContent className="glass-surface glass-thick max-h-[calc(100dvh-var(--top-inset))] rounded-t-lg [&>:first-child]:bg-foreground/20">
         <div className="overflow-y-auto">
           <DrawerHeader
             className={cn(title || description ? '' : 'hidden', 'text-left')}

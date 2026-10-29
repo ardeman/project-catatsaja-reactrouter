@@ -402,7 +402,7 @@ const Results = (properties: TResultsProperties) => {
       // Keep focus in the box so a click doesn't close the list first. On
       // phones the list opens upward from the search box in the bottom row.
       onMouseDown={(event) => event.preventDefault()}
-      className="glass-surface fixed inset-x-4 z-50 max-h-[min(70vh,calc(var(--keyboard-height)-6rem-env(safe-area-inset-top)))] overflow-y-auto rounded-xl border p-2 text-popover-foreground max-md:bottom-[calc(var(--row-bottom)+4.5rem+2px)] md:absolute md:inset-x-0 md:top-full md:mt-2"
+      className="glass-surface fixed inset-x-4 z-50 max-h-[min(70vh,calc(var(--keyboard-height)-6rem-var(--top-inset)))] overflow-y-auto rounded-xl border p-2 text-popover-foreground max-md:bottom-[calc(var(--row-bottom)+4.5rem+2px)] md:absolute md:inset-x-0 md:top-full md:mt-2"
     >
       {renderBody()}
     </ul>

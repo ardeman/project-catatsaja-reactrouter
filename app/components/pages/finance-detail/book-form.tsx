@@ -600,7 +600,7 @@ export const Form = (properties: TFormProperties) => {
           isPage
           cardStyle={toCardStyle(finance?.cardStyle)}
         />
-        <div className="sticky top-[calc(1rem+env(safe-area-inset-top))] z-40 flex justify-center md:top-24">
+        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-24">
           {finance ? (
             <Action
               className="w-full"
@@ -781,7 +781,7 @@ export const Form = (properties: TFormProperties) => {
         />
         <div
           ref={summaryReference}
-          className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-30 h-0 md:top-[8.5rem]"
+          className="sticky top-[calc(3.5rem+var(--top-inset))] z-30 h-0 md:top-[8.5rem]"
         >
           {isSummaryStuck && (
             <div
@@ -848,7 +848,7 @@ export const Form = (properties: TFormProperties) => {
                   // Floats under the book's totals, like the entry form, so
                   // adding is always one tap away while scrolling.
                   data-entry-dock
-                  className="motion-fade sticky top-[calc(3.5rem+env(safe-area-inset-top)+var(--summary-height,0px)+0.5rem)] z-20 flex flex-wrap gap-2 md:top-[calc(8.5rem+var(--summary-height,0px)+0.5rem)]"
+                  className="motion-fade sticky top-[calc(3.5rem+var(--top-inset)+var(--summary-height,0px)+0.5rem)] z-20 flex flex-wrap gap-2 md:top-[calc(8.5rem+var(--summary-height,0px)+0.5rem)]"
                 >
                   <Button
                     type="button"

@@ -76,6 +76,13 @@ export const releases: TRelease[] = [
           id: 'Di iPhone, mengetuk kolom untuk mengetik tidak lagi memperbesar halaman.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'In the app installed on an iPhone, the top of each page is sharp again: headings and buttons no longer sit in the soft blur under the status bar, and pulling the page down shows its own colour instead of white.',
+          id: 'Di aplikasi yang terpasang di iPhone, bagian atas setiap halaman kembali tajam: judul dan tombol tidak lagi berada di bawah efek buram bilah status, dan menarik halaman ke bawah menampilkan warnanya sendiri, bukan putih.',
+        },
+      },
     ],
   },
   {

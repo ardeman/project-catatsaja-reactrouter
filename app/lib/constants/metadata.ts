@@ -36,7 +36,8 @@ const appMeta: MetaDescriptor[] = [
   { name: 'apple-mobile-web-app-capable', content: 'yes' },
   { name: 'apple-mobile-web-app-title', content: appName },
   // The status bar is see-through in both themes, so the page runs under it
-  // and fades into it (StatusBarFade). iOS reads this only from the page's
+  // and iOS blurs it softly there (content starts below that, `--top-inset`
+  // in tailwind.css). iOS reads this only from the page's
   // first HTML, never from a tag a script adds.
   {
     name: 'apple-mobile-web-app-status-bar-style',

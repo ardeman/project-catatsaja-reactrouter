@@ -7,7 +7,6 @@ import { EncryptionGate } from '~/components/layouts/encryption-gate'
 import { MaintenanceGate } from '~/components/layouts/maintenance-gate'
 import { Navbar } from '~/components/layouts/navbar'
 import { PushPrompt } from '~/components/layouts/push-prompt'
-import { StatusBarFade } from '~/components/layouts/status-bar-fade'
 import { rememberStartPage } from '~/lib/constants/navigation'
 import { useTheme } from '~/lib/contexts/theme'
 import { useUserData } from '~/lib/hooks/use-get-user'
@@ -51,8 +50,7 @@ const Main = () => {
   }, [savedStartPage])
 
   return (
-    <main className="app-background isolate flex min-h-dvh w-full flex-col pt-[env(safe-area-inset-top)] pb-[calc(5rem+var(--nav-bottom))] md:pt-0 md:pb-0">
-      <StatusBarFade />
+    <main className="app-background isolate flex min-h-dvh w-full flex-col pt-(--top-inset) pb-[calc(5rem+var(--nav-bottom))] md:pt-0 md:pb-0">
       <Navbar />
       <MaintenanceGate>
         <EncryptionGate>

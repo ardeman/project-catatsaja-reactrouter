@@ -101,7 +101,7 @@
   }
 
   .app-background {
-    background-color: hsl(var(--muted) / 0.4);
+    background-color: var(--page);
     background-image: radial-gradient(
       ellipse at top right,
       hsl(var(--primary) / 0.12),
@@ -157,45 +157,7 @@
     }
   }
 
-  /* Behind the installed app's see-through status bar on iPhone: what
-     scrolls under it blurs, fading out downwards. It has no tint and covers
-     only the status bar, so at rest it matches the page and blurs nothing
-     below. Its height is 0 wherever there is no top safe area. At the top of
-     the page it is hidden: at the screen's edge the blur has nothing above
-     to take in and showed the canvas colour as a band, so it fades in over
-     the first scroll. */
-  .status-bar-fade {
-    height: env(safe-area-inset-top);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    mask-image: linear-gradient(to bottom, black 50%, transparent);
-
-    @supports (animation-timeline: scroll()) {
-      animation: status-bar-fade-in linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 2rem;
-    }
-  }
-
-  @keyframes status-bar-fade-in {
-    from {
-      opacity: 0;
-    }
-  }
-
   @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
-    .status-bar-fade {
-      /* The page's colour under .app-background. */
-      background-color: color-mix(
-        in srgb,
-        hsl(var(--muted)) 40%,
-        hsl(var(--background))
-      );
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-      mask-image: none;
-    }
-
     .glass-surface {
       background-color: hsl(var(--background));
       background-image: none;
@@ -272,6 +234,13 @@
     --ring: 20 14.3% 4.1%;
     --radius: 1rem;
     --glass-tint: hsl(var(--background) / 0.62);
+    /* The colour of app pages (.app-background), also around them. */
+    --page: color-mix(in srgb, hsl(var(--muted)) 40%, hsl(var(--background)));
+    /* Where content starts below the installed app's see-through status bar
+       on iPhone: iOS blurs the page's top edge under it, about half as far
+       again below, so content stays clear of that at rest. 0 wherever there
+       is no top safe area (browser tabs, desktops). */
+    --top-inset: calc(env(safe-area-inset-top) * 1.5);
     --glass-float-tint: hsl(var(--background) / 0.72);
     --glass-thick-tint: hsl(var(--background) / 0.9);
     --glass-sheen:
@@ -424,15 +393,19 @@
 
   html,
   body {
-    @apply bg-white dark:bg-gray-950;
-
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;
     }
   }
 
+  /* The page's colour, so pulling past the top or bottom on a phone, or the
+     strip by the home bar, shows the page, not a white band. */
+  html {
+    background-color: var(--page);
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-(--page) text-foreground;
   }
 }
 
