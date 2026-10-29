@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { DrawerScroll } from '~/components/base/drawer-scroll'
 import { InstallApp } from '~/components/base/install-app'
 import {
   NotificationCount,
@@ -100,7 +101,7 @@ export const AccountSheet = (properties: {
         </button>
       </DrawerTrigger>
       <DrawerContent className="glass-surface glass-thick max-h-[85dvh] rounded-t-3xl [&>:first-child]:bg-foreground/20">
-        <div className="grid gap-6 overflow-y-auto p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <DrawerScroll className="grid gap-6 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           <div className="grid gap-0.5 px-1">
             <DrawerTitle className="truncate text-base">
               {userData?.displayName || t('navigation.userMenu')}
@@ -164,7 +165,7 @@ export const AccountSheet = (properties: {
             <p className="px-3 text-xs text-muted-foreground">{appName}</p>
             {aboutMenus(t).map((menu) => menuLink(menu))}
           </nav>
-        </div>
+        </DrawerScroll>
       </DrawerContent>
     </Drawer>
   )

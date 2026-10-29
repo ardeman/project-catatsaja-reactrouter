@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useMediaQuery } from 'usehooks-ts'
 
 import { Button } from '~/components/base/button'
+import { DrawerScroll } from '~/components/base/drawer-scroll'
 import {
   Dialog as UIDialog,
   DialogContent,
@@ -162,7 +163,7 @@ const Drawer = (parameters: TParameters) => {
       }}
     >
       <DrawerContent className="glass-surface glass-thick max-h-[calc(100dvh-var(--top-inset))] rounded-t-lg [&>:first-child]:bg-foreground/20">
-        <div className="overflow-y-auto">
+        <DrawerScroll>
           <DrawerHeader
             className={cn(title || description ? '' : 'hidden', 'text-left')}
           >
@@ -193,7 +194,7 @@ const Drawer = (parameters: TParameters) => {
               <Button variant="outline">{t('actions.close')}</Button>
             </DrawerClose>
           </DrawerFooter>
-        </div>
+        </DrawerScroll>
       </DrawerContent>
     </UIDrawer>
   )
