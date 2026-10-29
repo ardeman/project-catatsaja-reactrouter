@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-10-30',
+    title: {
+      en: 'A tidier entry form',
+      id: 'Formulir entri lebih rapi',
+    },
+    changes: [
+      {
+        kind: 'fixed',
+        text: {
+          en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again.',
+          id: '“Ulangi tiap bulan” pada entri keuangan baru kembali sebaris dengan kotak centangnya.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-29',
     title: {
       en: 'Everything at the bottom on phones',

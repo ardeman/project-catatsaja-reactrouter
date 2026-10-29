@@ -611,9 +611,11 @@ export const EntryForm = (properties: TEntryFormProperties) => {
           )}
 
           {onRepeat && !isEditing && (
-            // Its own label: the entry form makes every Label a block.
-            <label className="flex w-fit cursor-pointer items-center gap-2 text-sm">
+            // A row of its own, with the label beside the box: the entry form
+            // makes every label a block.
+            <div className="flex w-fit items-center gap-2">
               <Checkbox
+                id="finance-entry-repeat"
                 checked={isRepeating}
                 onCheckedChange={(checked) => setIsRepeating(checked === true)}
               />
@@ -621,8 +623,13 @@ export const EntryForm = (properties: TEntryFormProperties) => {
                 aria-hidden="true"
                 className="size-3.5 text-muted-foreground"
               />
-              {t('finances.recurring.repeat')}
-            </label>
+              <Label
+                htmlFor="finance-entry-repeat"
+                className="cursor-pointer font-normal"
+              >
+                {t('finances.recurring.repeat')}
+              </Label>
+            </div>
           )}
 
           <div className="flex flex-wrap items-center gap-2">
