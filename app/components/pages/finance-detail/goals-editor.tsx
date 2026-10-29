@@ -65,12 +65,12 @@ export const GoalsEditor = ({
   const linked = useMemo(() => linkedTotals(entries), [entries])
   const realized = useMemo(() => realizeGoals(goals, entries), [goals, entries])
 
-  // Five years ahead, and any earlier month a goal is still due in.
+  // Ten years ahead, and any earlier month a goal is still due in.
   const monthName = new Intl.DateTimeFormat(i18n.language, {
     month: 'long',
     year: 'numeric',
   })
-  const months = Array.from({ length: 60 }, (_, index) =>
+  const months = Array.from({ length: 120 }, (_, index) =>
     addMonths(month, index),
   )
   const monthsFor = (due: string) =>

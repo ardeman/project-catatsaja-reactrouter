@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'A savings goal can now be due up to ten years ahead, instead of five.',
+          id: 'Target tabungan kini bisa jatuh tempo hingga sepuluh tahun ke depan, bukan lima.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'In a book’s analysis, amounts by keyword and savings goal no longer break across two lines, and a goal shows its full name with what was already realized underneath.',
           id: 'Di analisis buku, jumlah per kata kunci dan target tabungan tidak lagi terpotong ke dua baris, dan target menampilkan namanya dengan jelas beserta yang sudah terealisasi di bawahnya.',
         },
