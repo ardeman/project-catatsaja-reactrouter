@@ -223,6 +223,13 @@ export const releases: TRelease[] = [
           id: 'Tombol kalkulator di buku kini ada di bilah atas, jadi sudah tersedia bahkan sebelum buku punya catatan.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Savings goals are more compact to edit, and each has a Realized amount: filling it in marks the goal done.',
+          id: 'Target tabungan kini lebih ringkas saat diubah, dan setiap target punya jumlah Terealisasi: mengisinya menandai target selesai.',
+        },
+      },
     ],
   },
   {
