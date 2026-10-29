@@ -1467,6 +1467,9 @@
       "title": "Install Catat Saja"
     },
     "steps": {
+      "safariIphone": {
+        "share": "Tap the ≡ button in the address bar, then Share."
+      },
       "appleMobile": {
         "share": "Tap the Share button in your browser.",
         "add": "Choose \"Add to Home Screen\", then tap Add."

@@ -1467,6 +1467,9 @@
       "title": "Pasang Catat Saja"
     },
     "steps": {
+      "safariIphone": {
+        "share": "Ketuk tombol ≡ di bilah alamat, lalu Bagikan."
+      },
       "appleMobile": {
         "share": "Ketuk tombol Bagikan di browser.",
         "add": "Pilih \"Tambahkan ke Layar Utama\", lalu ketuk Tambah."

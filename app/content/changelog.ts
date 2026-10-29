@@ -83,6 +83,13 @@ export const releases: TRelease[] = [
           id: 'Di aplikasi yang terpasang di iPhone, bagian atas setiap halaman kembali tajam: judul dan tombol tidak lagi berada di bawah efek buram bilah status, dan menarik halaman ke bawah menampilkan warnanya sendiri, bukan putih.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'In Safari on iPhone, the steps to install the app now say where its Share button is: in the menu behind the ≡ button in the address bar.',
+          id: 'Di Safari pada iPhone, langkah memasang aplikasi kini menyebutkan letak tombol Bagikan: di menu di balik tombol ≡ di bilah alamat.',
+        },
+      },
     ],
   },
   {

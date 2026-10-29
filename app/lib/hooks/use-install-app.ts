@@ -7,7 +7,7 @@ import { useSyncExternalStore } from 'react'
 
 // Which steps to show when there is no install prompt.
 export type TInstallSteps =
-  'appleMobile' | 'safariMac' | 'chromium' | 'firefoxAndroid'
+  'safariIphone' | 'appleMobile' | 'safariMac' | 'chromium' | 'firefoxAndroid'
 
 type TBeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>
@@ -53,7 +53,14 @@ const detectSteps = (): TInstallSteps | null => {
   const isAppleMobile =
     /iphone|ipad|ipod/i.test(agent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-  if (isAppleMobile) return 'appleMobile'
+  if (isAppleMobile) {
+    // Safari on iPhone keeps Share in the menu behind its address bar's
+    // button; other iPhone browsers and iPad show it in the toolbar.
+    const isOtherBrowser = /crios|fxios|edgios|opios|gsa\//i.test(agent)
+    return !isOtherBrowser && /iphone|ipod/i.test(agent)
+      ? 'safariIphone'
+      : 'appleMobile'
+  }
   if (/firefox/i.test(agent)) {
     return /android/i.test(agent) ? 'firefoxAndroid' : null
   }

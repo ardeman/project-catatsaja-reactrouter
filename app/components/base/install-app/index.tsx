@@ -17,6 +17,10 @@ const stepsByBrowser: Record<
   TInstallSteps,
   { icon: LucideIcon; key: string }[]
 > = {
+  safariIphone: [
+    { icon: Share, key: 'safariIphone.share' },
+    { icon: SquarePlus, key: 'appleMobile.add' },
+  ],
   appleMobile: [
     { icon: Share, key: 'appleMobile.share' },
     { icon: SquarePlus, key: 'appleMobile.add' },
