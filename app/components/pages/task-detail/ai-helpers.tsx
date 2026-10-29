@@ -26,6 +26,7 @@ import { Textarea } from '~/components/ui/textarea'
 import { useAiConsent } from '~/lib/hooks/use-ai-consent'
 import { useTaskHelper } from '~/lib/hooks/use-task-helper'
 import { TTaskHelper } from '~/lib/types/task'
+import { getSections } from '~/lib/utils/task-items'
 
 import { TAiHelpersProperties, TTaskList } from './type'
 
@@ -65,7 +66,8 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
       const { title, content } = getList()
       const answer = await runHelper({ helper, title, content, text })
       if (!answer) return
-      const done = content.filter((item) => item.checked)
+      // Completed items with their subtasks.
+      const done = getSections(content).done.map((index) => content[index])
       const list: TTaskList =
         helper === 'fromText'
           ? {

@@ -6,6 +6,8 @@ export const taskSchema = (t: TFunction) => {
     item: z.string().min(1, {
       error: t('zod:errors.invalid_type_received_null'),
     }),
+    // A subtask of the item before it (`~/lib/utils/task-items`).
+    level: z.literal(1).optional(),
   })
   return z.object({
     title: z.string(),

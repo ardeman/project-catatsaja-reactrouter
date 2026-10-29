@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Task lists can have subtasks. While editing an item, tap the indent button (or press Tab) to put it under the item above. Checking an item checks its subtasks, and an item is checked by itself once all its subtasks are done.',
+          id: 'Daftar tugas kini bisa punya subtugas. Saat mengedit item, ketuk tombol inden (atau tekan Tab) untuk menaruhnya di bawah item di atasnya. Mencentang item ikut mencentang subtugasnya, dan item tercentang sendiri begitu semua subtugasnya selesai.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Forgot your passphrase and lost your recovery code? If you added a passkey, Settings → Account → Security lets you sign in to your account again, then use the passkey to choose a new passphrase and recovery code.',
           id: 'Lupa frasa sandi dan kehilangan kode pemulihan? Jika kamu sudah menambahkan passkey, Pengaturan → Akun → Keamanan memungkinkanmu masuk lagi ke akunmu, lalu memakai passkey untuk memilih frasa sandi serta kode pemulihan baru.',
         },

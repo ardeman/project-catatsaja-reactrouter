@@ -1,5 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, ChevronDown, ChevronUp, Plus, Trash } from 'lucide-react'
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  ListIndentDecrease,
+  ListIndentIncrease,
+  Plus,
+  Trash,
+} from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
@@ -25,10 +33,23 @@ import { useUndoHistory } from '~/lib/hooks/use-undo-history'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
 import { useUpdateTask } from '~/lib/hooks/use-update-task'
-import { TTaskForm } from '~/lib/types/task'
+import { TTaskForm, TTaskItem } from '~/lib/types/task'
 import { toCardStyle } from '~/lib/utils/card-style'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
+import {
+  TArrangement,
+  canIndentItem,
+  getBlocks,
+  getSections,
+  getSiblings,
+  indentItem,
+  isSubtask,
+  moveItem,
+  outdentItem,
+  settleItems,
+  toggleItem,
+} from '~/lib/utils/task-items'
 import { taskSchema } from '~/lib/validations/task'
 
 import { AiHelpers } from './ai-helpers'
@@ -36,16 +57,19 @@ import { getClickedCaret } from './click-caret.client'
 import { ReorderHandle } from './reorder-handle'
 import { TDragPreview, TFormProperties, TTaskList } from './type'
 
-type TItem = TTaskForm['content'][number]
+type TItem = TTaskItem
 
 const inputClassName =
   'border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none px-0 py-1 focus-visible:shadow-none focus:outline-hidden resize-none min-h-7'
 
-// Items as stored: empty ones are dropped.
+// Items as stored: empty ones are dropped, and `level` is kept only on
+// subtasks.
 const toStoredContent = (content: TItem[]) =>
   content
     .filter((item) => item.item.trim().length > 0)
-    .map(({ checked, item }) => ({ checked, item }))
+    .map(({ checked, item, level }, index) =>
+      level === 1 && index > 0 ? { checked, item, level } : { checked, item },
+    )
 
 // Keep native navigation inside wrapped text; cross items only from the
 // first or last visual line, preserving the character column.
@@ -179,11 +203,9 @@ export const Form = (properties: TFormProperties) => {
   const isCreating = useRef(false)
   const [saveStatus, setSaveStatus] = useState<TSaveStatus>('idle')
 
-  // Unchecked items first, then the completed ones; indexes stay those of
-  // the stored list.
-  const indexes = watchContent.map((_, index) => index)
-  const openIndexes = indexes.filter((index) => !watchContent[index].checked)
-  const doneIndexes = indexes.filter((index) => watchContent[index].checked)
+  // Open items first, then the completed ones, each with its subtasks;
+  // indexes stay those of the stored list.
+  const { open: openIndexes, done: doneIndexes } = getSections(watchContent)
 
   const checkedAll =
     watchContent.length > 0
@@ -310,17 +332,56 @@ export const Form = (properties: TFormProperties) => {
     }
   }
 
-  const handleRemoveItem = (index: number) => {
-    const item = getValues(`content.${index}`)
+  // Applies a change from `~/lib/utils/task-items`: rows are moved, so they
+  // keep their state, and only what changed is set. Returns where an item
+  // went.
+  const arrange = (arrangement?: TArrangement) => {
+    if (!arrangement) return
+    const positions = getValues('content').map((_, index) => index)
+    for (const [to, from] of arrangement.order.entries()) {
+      const at = positions.indexOf(from)
+      if (at === to) continue
+      move(at, to)
+      positions.splice(to, 0, ...positions.splice(at, 1))
+    }
+    for (const [index, next] of arrangement.content.entries()) {
+      const item = getValues(`content.${index}`)
+      if (item.checked !== next.checked)
+        setValue(`content.${index}.checked`, next.checked, {
+          shouldDirty: true,
+        })
+      if (item.level !== next.level)
+        setValue(`content.${index}.level`, next.level, { shouldDirty: true })
+    }
+    return (index: number) => arrangement.order.indexOf(index)
+  }
+
+  // An item goes with its subtasks, unless they are kept (an emptied item
+  // removed from the keyboard): they then become items of their own.
+  const handleRemoveItem = (index: number, shouldKeepSubtasks = false) => {
+    const content = getValues('content')
+    const block = isSubtask(content, index)
+      ? [index]
+      : (getBlocks(content).find((block) => block[0] === index) ?? [index])
+    if (shouldKeepSubtasks)
+      for (const at of block.slice(1))
+        setValue(`content.${at}.level`, undefined, { shouldDirty: true })
+    const removed = shouldKeepSubtasks ? [index] : block
+    const items = removed.map((at) => content[at])
     setSelectedEdit(undefined)
-    remove(index)
-    if (item.item.trim().length === 0) return
+    remove(removed)
+    arrange(settleItems(getValues('content')))
+    if (items.every((item) => item.item.trim().length === 0)) return
     toast({
-      description: t('toast.itemDeleted', { item: item.item }),
+      description: t('toast.itemDeleted', { item: items[0].item }),
       action: (
         <ToastAction
           altText={t('form.undo')}
-          onClick={() => insert(index, item)}
+          onClick={() => {
+            setSelectedEdit(undefined)
+            insert(Math.min(index, getValues('content').length), items)
+            arrange(settleItems(getValues('content')))
+          }}
         >
           {t('form.undo')}
         </ToastAction>
@@ -354,32 +415,47 @@ export const Form = (properties: TFormProperties) => {
     })
   }
 
-  const moveItem = (index: number, target: number) => {
-    move(index, target)
+  const handleDrop = (index: number, target: number) => {
     setSelectedEdit(undefined)
+    arrange(moveItem(getValues('content'), index, target))
   }
 
-  // A checked item goes to the top of the completed ones, an unchecked one
-  // to the bottom of the open ones.
+  // A completed item (with its subtasks) goes to the top of the completed
+  // ones, a reopened one to the bottom of the open ones.
   const handleToggleItem = (index: number, isChecked: boolean) => {
-    update(index, { ...watchContent[index], checked: isChecked })
-    const others = indexes.filter((other) => other !== index)
-    const target = isChecked
-      ? others.find((other) => watchContent[other].checked)
-      : others.findLast((other) => !watchContent[other].checked)
     if (selectedEdit !== undefined) setSelectedEdit(undefined)
-    if (target === undefined) return
-    if (isChecked) move(index, target > index ? target - 1 : target)
-    else move(index, target > index ? target : target + 1)
+    arrange(toggleItem(getValues('content'), index, isChecked))
   }
 
-  // Move within its own group (open or completed).
+  // Move among its siblings: the items of its section, or the other
+  // subtasks of its item.
   const handleMove = (index: number, direction: -1 | 1) => {
-    const group = watchContent[index].checked ? doneIndexes : openIndexes
-    const target = group[group.indexOf(index) + direction]
+    const siblings = getSiblings(getValues('content'), index)
+    const target = siblings[siblings.indexOf(index) + direction]
     if (target === undefined) return
-    move(index, target)
-    if (selectedEdit === index) setSelectedEdit(target)
+    const placeOf = arrange(moveItem(getValues('content'), index, target))
+    if (placeOf && selectedEdit === index) setSelectedEdit(placeOf(index))
+  }
+
+  // Indenting makes an item a subtask of the one above it; outdenting
+  // makes a subtask an item of its own. Editing continues where it went.
+  const handleIndent = (index: number, isIndenting: boolean) => {
+    const content = getValues('content')
+    const placeOf = arrange(
+      isIndenting ? indentItem(content, index) : outdentItem(content, index),
+    )
+    if (!placeOf) return false
+    const place = placeOf(index)
+    if (selectedEdit === index) {
+      const input = formElement.current?.elements.namedItem(
+        `content.${index}.item`,
+      )
+      startEditing(
+        place,
+        input instanceof HTMLTextAreaElement ? input.selectionStart : undefined,
+      )
+    }
+    return true
   }
 
   const focusItem = (
@@ -458,30 +534,50 @@ export const Form = (properties: TFormProperties) => {
     index: number,
   ) => {
     const item = getValues(`content.${index}.item`)
+    const content = getValues('content')
+    const isSubitem = isSubtask(content, index)
     switch (event.key) {
       case 'Enter': {
         if (event.shiftKey || event.nativeEvent.isComposing) return
         event.preventDefault()
-        if (item.trim().length === 0) {
-          handleRemoveItem(index)
+        // An empty subtask becomes an item of its own, as in other lists.
+        if (isSubitem && item.trim().length === 0) {
+          handleIndent(index, false)
+        } else if (item.trim().length === 0) {
+          handleRemoveItem(index, true)
           focusNextOpen(index - 1)
         } else if (getValues(`content.${index}.checked`)) {
           focusNextOpen(index)
         } else {
-          // Split at the caret: the text after it becomes a new item below.
+          // Split at the caret: the text after it becomes a new item below,
+          // a subtask when it lands among subtasks.
           const { selectionStart, selectionEnd } = event.currentTarget
+          const isNextSubtask = isSubitem || isSubtask(content, index + 1)
           setValue(`content.${index}.item`, item.slice(0, selectionStart), {
             shouldDirty: true,
           })
           flushSync(() =>
             insert(
               index + 1,
-              { checked: false, item: item.slice(selectionEnd) },
+              {
+                checked: false,
+                item: item.slice(selectionEnd),
+                ...(isNextSubtask && { level: 1 as const }),
+              },
               { shouldFocus: false },
             ),
           )
           startEditing(index + 1, 0)
         }
+        break
+      }
+      case 'Tab': {
+        if (event.nativeEvent.isComposing) return
+        // Only when it changes something, so Tab still leaves the field.
+        const isIndenting = !event.shiftKey
+        if (isIndenting ? !canIndentItem(content, index) : !isSubitem) return
+        event.preventDefault()
+        handleIndent(index, isIndenting)
         break
       }
       case 'Escape': {
@@ -492,7 +588,11 @@ export const Form = (properties: TFormProperties) => {
       case 'Backspace': {
         if (item.length > 0) break
         event.preventDefault()
-        handleRemoveItem(index)
+        if (isSubitem) {
+          handleIndent(index, false)
+          break
+        }
+        handleRemoveItem(index, true)
         // Removing an item shifts the indexes after it, but not the previous one.
         focusPreviousOpen(index, true)
         break
@@ -569,30 +669,51 @@ export const Form = (properties: TFormProperties) => {
     })
   }
 
+  const blocks = getBlocks(watchContent)
+  // Where a dragged row would land: after an item with subtasks is after
+  // its last one.
+  const drop =
+    dragPreview && dragPreview.source !== dragPreview.target
+      ? dragPreview.source < dragPreview.target
+        ? {
+            index:
+              blocks.find((block) => block[0] === dragPreview.target)?.at(-1) ??
+              dragPreview.target,
+            side: 'after' as const,
+          }
+        : { index: dragPreview.target, side: 'before' as const }
+      : undefined
+
   const renderItem = (index: number) => {
     const field = fieldsContent[index]
     const item = watchContent[index]
     if (!field || !item) return null
     const isEditing = selectedEdit === index
-    const group = item.checked ? doneIndexes : openIndexes
-    const position = group.indexOf(index)
+    const isSubitem = isSubtask(watchContent, index)
+    const siblings = getSiblings(watchContent, index)
+    const position = siblings.indexOf(index)
+    // Rows a drag can land on: the items of a section, or the subtasks of
+    // one item.
+    const group = isSubitem
+      ? `subtasks-${blocks.find((block) => block.includes(index))?.[0]}`
+      : item.checked
+        ? 'done'
+        : 'open'
     const isDragging = dragPreview?.source === index
-    const dropSide =
-      dragPreview?.target === index && dragPreview.source !== index
-        ? dragPreview.source < index
-          ? 'after'
-          : 'before'
-        : undefined
+    const dropSide = drop?.index === index ? drop.side : undefined
 
     return (
       <div
         key={field.id}
         data-task-index={index}
         data-task-checked={item.checked}
+        data-task-group={group}
+        data-task-subtask={isSubitem || undefined}
         data-task-dragging={isDragging || undefined}
         data-task-drop={dropSide}
         className={cn(
           'relative flex min-h-10 items-center gap-2 rounded-md sm:min-h-8',
+          isSubitem && 'ml-7 sm:ml-8',
           isEditing && 'items-start sm:items-center',
           isDragging && 'bg-primary/5 opacity-50',
           dropSide && 'bg-primary/5',
@@ -611,8 +732,8 @@ export const Form = (properties: TFormProperties) => {
         {!isReadOnly && (
           <ReorderHandle
             index={index}
-            checked={item.checked}
-            onMove={(target) => moveItem(index, target)}
+            group={group}
+            onMove={(target) => handleDrop(index, target)}
             onPreview={setDragPreview}
           />
         )}
@@ -695,6 +816,27 @@ export const Form = (properties: TFormProperties) => {
                     size="icon"
                     className="size-11 sm:size-8 [&_svg]:size-3.5"
                     type="button"
+                    aria-label={t(
+                      isSubitem ? 'tasks.form.outdent' : 'tasks.form.indent',
+                    )}
+                    title={t(
+                      isSubitem ? 'tasks.form.outdent' : 'tasks.form.indent',
+                    )}
+                    disabled={!isSubitem && !canIndentItem(watchContent, index)}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => handleIndent(index, !isSubitem)}
+                  >
+                    {isSubitem ? (
+                      <ListIndentDecrease />
+                    ) : (
+                      <ListIndentIncrease />
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="size-11 sm:size-8 [&_svg]:size-3.5"
+                    type="button"
                     aria-label={t('actions.moveUp')}
                     title={t('actions.moveUp')}
                     disabled={position <= 0}
@@ -710,7 +852,7 @@ export const Form = (properties: TFormProperties) => {
                     type="button"
                     aria-label={t('actions.moveDown')}
                     title={t('actions.moveDown')}
-                    disabled={position === group.length - 1}
+                    disabled={position === siblings.length - 1}
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={() => handleMove(index, 1)}
                   >
@@ -823,7 +965,7 @@ export const Form = (properties: TFormProperties) => {
           {watchContent.length > 0 && (
             <p className="text-sm text-muted-foreground">
               {t('tasks.progress', {
-                done: doneIndexes.length,
+                done: watchContent.filter((item) => item.checked).length,
                 total: watchContent.length,
               })}
             </p>

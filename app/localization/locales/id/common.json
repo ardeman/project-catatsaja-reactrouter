@@ -234,9 +234,11 @@
       },
       "addItem": "Tambah",
       "doneEditing": "Selesai mengedit",
-      "editHint": "Centang lingkaran untuk menyelesaikan item. Ketuk teksnya untuk mengedit. Tekan lama lalu seret pegangannya untuk mengurutkan item.",
+      "editHint": "Centang lingkaran untuk menyelesaikan item. Ketuk teksnya untuk mengedit. Tekan lama lalu seret pegangannya untuk mengurutkan item. Saat mengedit, tombol inden (atau Tab) menjadikan item subtugas dari item di atasnya.",
       "addHint": "Tekan Enter atau Tambah. Tempel beberapa baris untuk menambah beberapa item. Teks yang belum ditambahkan tetap disimpan saat menyimpan atau keluar.",
       "arrange": "Tekan lama lalu seret untuk mengurutkan",
+      "indent": "Jadikan subtugas",
+      "outdent": "Jadikan item utama",
       "deleteCompleted": "Hapus yang selesai",
       "completedDeleted": "{{count}} item yang selesai dihapus."
     },

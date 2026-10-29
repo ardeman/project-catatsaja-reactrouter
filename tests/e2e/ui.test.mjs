@@ -400,6 +400,70 @@ for (const encrypted of [false, true]) {
     )
     await context.close()
   })
+
+  test(`subtasks indent, check with their item and are kept (${encrypted ? 'encrypted' : 'plain'})`, async () => {
+    const { page, context } = await newDevice(browser)
+    const email = `subtasks-${encrypted}-${Date.now()}@example.com`
+    await signUp(page, 'Subtask tester', email)
+    if (encrypted) await setUpEncryption(page, 'subtasks passphrase 1')
+    else await skipEncryptionSetup(page)
+    await page.goto(`${APP}/tasks/create`)
+    await page.locator('textarea[name=item]').fill('Pack\nTent\nStove')
+    await page.getByRole('button', { name: 'Add', exact: true }).click()
+    await page.getByRole('button', { name: 'Save', exact: true }).click()
+    await page.waitForURL(/\/tasks\/(?!create)/)
+    const id = page.url().split('/').pop()
+    const row = (index) => page.locator(`[data-task-index="${index}"]`)
+    const checkbox = (name) =>
+      page.getByRole('checkbox', { name, exact: true })
+    // Tab indents the item being edited; the button does the same.
+    await row(1).locator('button.cursor-text').click()
+    await page.locator('textarea[name="content.1.item"]').press('Tab')
+    await page.locator('[data-task-index="1"][data-task-subtask]').waitFor()
+    await page
+      .getByRole('button', { name: 'Done editing', exact: true })
+      .click()
+    await row(2).locator('button.cursor-text').click()
+    await page
+      .getByRole('button', { name: 'Make it a subtask', exact: true })
+      .click()
+    await page.locator('[data-task-index="2"][data-task-subtask]').waitFor()
+    await page
+      .getByRole('button', { name: 'Done editing', exact: true })
+      .click()
+    // The item is done once all its subtasks are, and reopens with one.
+    await checkbox('Tent').click()
+    await page.getByText('1 of 3 done', { exact: true }).waitFor()
+    assert.equal(await checkbox('Pack').isChecked(), false)
+    await checkbox('Stove').click()
+    await page.getByRole('heading', { name: 'Completed (3 of 3)' }).waitFor()
+    assert.equal(await checkbox('Pack').isChecked(), true)
+    await checkbox('Stove').click()
+    await page
+      .getByRole('heading', { name: 'Completed (3 of 3)' })
+      .waitFor({ state: 'detached' })
+    assert.equal(await checkbox('Pack').isChecked(), false)
+    assert.equal(await checkbox('Tent').isChecked(), true)
+    const stored = await dbGetWhen(`tasks/${id}`, (fields) =>
+      encrypted
+        ? fields?.encrypted
+        : fields?.content?.arrayValue?.values?.[2]?.mapValue?.fields?.level,
+    )
+    if (encrypted) assert.ok(!JSON.stringify(stored).includes('Tent'))
+    else
+      assert.deepEqual(
+        stored.content.arrayValue.values.map(
+          ({ mapValue: { fields } }) => fields.level?.integerValue,
+        ),
+        [undefined, '1', '1'],
+      )
+    // Kept after a reload, unlocked again when encrypted.
+    await page.waitForTimeout(1500)
+    await page.reload()
+    await checkbox('Stove').waitFor({ timeout: 30_000 })
+    assert.equal(await page.locator('[data-task-subtask]').count(), 2)
+    await context.close()
+  })
 }
 
 test('mobile taps preserve the caret and focus within the tap event', async () => {

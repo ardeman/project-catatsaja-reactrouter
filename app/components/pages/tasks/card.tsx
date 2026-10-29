@@ -18,6 +18,7 @@ import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
 import { toCardStyle } from '~/lib/utils/card-style'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
+import { getSections, isSubtask } from '~/lib/utils/task-items'
 
 import { useTask } from './context'
 import { TCardProperties } from './type'
@@ -41,10 +42,12 @@ export const Card = (properties: TCardProperties) => {
     t,
     locale: i18n.language,
   })
-  const preview = [
-    ...(task.content || []).filter((item) => !item.checked),
-    ...(task.content || []).filter((item) => item.checked),
-  ].slice(0, 3)
+  const content = task.content || []
+  const { open, done } = getSections(content)
+  const preview = [...open, ...done].slice(0, 3).map((index) => ({
+    ...content[index],
+    isSubtask: isSubtask(content, index),
+  }))
   const sharedCount = new Set(
     [
       ...(task.permissions?.read || []),
@@ -109,7 +112,10 @@ export const Card = (properties: TCardProperties) => {
           {preview.map((item, index) => (
             <div
               key={index}
-              className="flex items-start gap-2 text-sm"
+              className={cn(
+                'flex items-start gap-2 text-sm',
+                item.isSubtask && 'ml-6',
+              )}
             >
               {item.checked ? (
                 <CircleCheck className="mt-0.5 size-4 shrink-0 text-primary" />

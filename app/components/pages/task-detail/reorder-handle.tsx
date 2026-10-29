@@ -9,14 +9,15 @@ import { TDragPreview } from './type'
 
 type TProperties = {
   index: number
-  checked: boolean
+  // Rows sharing it are the ones it can be dropped on.
+  group: string
   onMove: (target: number) => void
   onPreview: (preview?: TDragPreview) => void
 }
 
 export const ReorderHandle = ({
   index,
-  checked,
+  group,
   onMove,
   onPreview,
 }: TProperties) => {
@@ -85,7 +86,7 @@ export const ReorderHandle = ({
         const row = document
           .elementFromPoint(event.clientX, event.clientY)
           ?.closest<HTMLElement>('[data-task-index]')
-        if (row?.dataset.taskChecked !== String(checked)) return
+        if (row?.dataset.taskGroup !== group) return
         const target = Number(row.dataset.taskIndex)
         if (target === current.target) return
         current.target = target

@@ -12,6 +12,8 @@ import {
 
 export type TTaskForm = z.infer<ReturnType<typeof taskSchema>>
 
+export type TTaskItem = TTaskForm['content'][number]
+
 export type TCreateTaskRequest = Omit<TTaskForm, 'item'>
 
 export type TUpdateTaskRequest = { id: string } & Partial<

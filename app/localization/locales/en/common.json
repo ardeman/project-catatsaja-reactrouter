@@ -234,9 +234,11 @@
       },
       "addItem": "Add",
       "doneEditing": "Done editing",
-      "editHint": "Check the circle to complete an item. Tap its text to edit. Hold and drag the grip to arrange items.",
+      "editHint": "Check the circle to complete an item. Tap its text to edit. Hold and drag the grip to arrange items. While editing, the indent button (or Tab) makes an item a subtask of the one above it.",
       "addHint": "Press Enter or Add. Paste multiple lines to add several items. Unfinished text is kept when you save or leave.",
       "arrange": "Hold and drag to arrange",
+      "indent": "Make it a subtask",
+      "outdent": "Make it a main item",
       "deleteCompleted": "Delete completed",
       "completedDeleted": "Deleted {{count}} completed items."
     },
