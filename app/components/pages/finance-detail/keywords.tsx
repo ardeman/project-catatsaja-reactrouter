@@ -1,5 +1,5 @@
 import { Pencil, Sparkles } from 'lucide-react'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -176,25 +176,24 @@ export const Keywords = ({
                       </span>
                     </span>
                     {net === undefined ? (
+                      // The label sits beside the amount, not in it:
+                      // Safari wraps the amount when it holds sr-only text.
                       totals.map(({ type, total }) => (
-                        <span
-                          key={type}
-                          className="shrink-0 tabular-nums"
-                        >
+                        <Fragment key={type}>
                           {isBoth && (
                             <span className="sr-only">
                               {t(`finances.summary.${type}`)}:{' '}
                             </span>
                           )}
-                          <span className="font-medium">
+                          <span className="shrink-0 font-medium whitespace-nowrap tabular-nums">
                             {amountOf(type, total)}
                           </span>
-                        </span>
+                        </Fragment>
                       ))
                     ) : (
                       <span
                         className={cn(
-                          'shrink-0 font-medium tabular-nums',
+                          'shrink-0 font-medium whitespace-nowrap tabular-nums',
                           net > 0 && 'text-income',
                           net < 0 && 'text-expense',
                         )}

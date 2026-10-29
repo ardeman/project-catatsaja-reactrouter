@@ -168,32 +168,29 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
                     <h3 className="font-medium">
                       {monthName.format(new Date(`${due}-01T00:00:00`))}
                     </h3>
-                    <span className="font-medium tabular-nums">
+                    <span className="shrink-0 font-medium whitespace-nowrap tabular-nums">
                       {money(total, book)}
                     </span>
                   </div>
                   <ul className="grid gap-0.5 text-muted-foreground">
                     {monthGoals.map((goal) => (
-                      <li
-                        key={goal.id}
-                        className="flex justify-between gap-2"
-                      >
-                        <span className="truncate">{goal.name}</span>
-                        {/* A month's only goal is its total, unless part of
-                            it was paid already. */}
-                        {goal.realized > 0 ? (
-                          <span className="tabular-nums">
-                            {t('finances.analysis.goals.realizedOf', {
-                              spent: money(goal.realized, book),
-                              amount: money(goal.amount ?? 0, book),
-                            })}
-                          </span>
-                        ) : (
-                          monthGoals.length > 1 && (
-                            <span className="tabular-nums">
+                      <li key={goal.id}>
+                        <div className="flex justify-between gap-2">
+                          <span className="truncate">{goal.name}</span>
+                          {/* A month's only goal is its total, unless part
+                              of it was paid already. */}
+                          {(goal.realized > 0 || monthGoals.length > 1) && (
+                            <span className="shrink-0 whitespace-nowrap tabular-nums">
                               {money(goal.amount ?? 0, book)}
                             </span>
-                          )
+                          )}
+                        </div>
+                        {goal.realized > 0 && (
+                          <p className="text-xs tabular-nums">
+                            {t('finances.analysis.goals.realized', {
+                              spent: money(goal.realized, book),
+                            })}
+                          </p>
                         )}
                       </li>
                     ))}
@@ -251,7 +248,7 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
                   {goal.name} ·{' '}
                   {monthName.format(new Date(`${goal.due}-01T00:00:00`))}
                 </span>
-                <span className="text-muted-foreground tabular-nums">
+                <span className="shrink-0 whitespace-nowrap text-muted-foreground tabular-nums">
                   {goal.realized === 0
                     ? money(goal.amount ?? 0, book)
                     : t('finances.analysis.goals.spentOf', {

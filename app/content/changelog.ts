@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'improved',
+        text: {
+          en: 'In a book’s analysis, amounts by keyword and savings goal no longer break across two lines, and a goal shows its full name with what was already realized underneath.',
+          id: 'Di analisis buku, jumlah per kata kunci dan target tabungan tidak lagi terpotong ke dua baris, dan target menampilkan namanya dengan jelas beserta yang sudah terealisasi di bawahnya.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'In the installed app, pull down at the top of a page to refresh it.',
