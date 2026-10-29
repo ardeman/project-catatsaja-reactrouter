@@ -13,13 +13,14 @@ import {
 import { CardStyleLayer } from '~/components/base/card-style'
 import { CategoryBar } from '~/components/base/category-bar'
 import { CategoryIcon } from '~/components/base/category-icon'
+import { Difference, differenceClassName } from '~/components/base/difference'
 import { auth } from '~/lib/configs/firebase'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useMoney } from '~/lib/hooks/use-money'
 import { useUpdateArchive } from '~/lib/hooks/use-update-archive'
 import { useUpdateCardStyle } from '~/lib/hooks/use-update-card-style'
 import { toCardStyle } from '~/lib/utils/card-style'
-import { entryBookTotal } from '~/lib/utils/finance'
+import { accountsDifference, entryBookTotal } from '~/lib/utils/finance'
 import { summaryOf } from '~/lib/utils/finance-analysis'
 import { getDateLabel } from '~/lib/utils/parser'
 import { cn } from '~/lib/utils/shadcn'
@@ -60,6 +61,14 @@ export const Card = (properties: TCardProperties) => {
   ).size
   const { count, income, expense, spending, recent } = summaryOf(finance)
   const balance = income - expense
+  // Only when the accounts don't match the book, as a nudge to check it.
+  const difference = finance.accounts?.length
+    ? accountsDifference(
+        finance.accounts,
+        balance,
+        finance.currency.maximumFractionDigits,
+      )
+    : 0
   // The latest by date (as in the book), not the last ones typed in.
   const latest = recent.slice(0, 3)
 
@@ -122,17 +131,39 @@ export const Card = (properties: TCardProperties) => {
       </CardHeader>
       <CardContent className="grid gap-3 sm:pb-8">
         <div>
-          <p className="text-xs text-muted-foreground">
-            {t('finances.summary.balance')}
-          </p>
-          <p
-            className={cn(
-              'text-lg font-semibold',
-              balance < 0 && 'text-destructive-text',
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">
+                {t('finances.summary.balance')}
+              </p>
+              <p
+                className={cn(
+                  'text-lg font-semibold',
+                  balance < 0 && 'text-destructive-text',
+                )}
+              >
+                {money(balance, finance.currency, balance < 0)}
+              </p>
+            </div>
+            {difference !== 0 && (
+              <div className="shrink-0 text-right">
+                <p className="text-xs text-muted-foreground">
+                  {t('finances.summary.difference')}
+                </p>
+                <p
+                  className={cn(
+                    'text-sm leading-7 font-medium tabular-nums',
+                    differenceClassName(difference),
+                  )}
+                >
+                  <Difference
+                    difference={difference}
+                    book={finance.currency}
+                  />
+                </p>
+              </div>
             )}
-          >
-            {money(balance, finance.currency, balance < 0)}
-          </p>
+          </div>
           <p className="text-xs text-muted-foreground">
             <Trans
               i18nKey="finances.summary.incomeExpense"

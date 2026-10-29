@@ -2,13 +2,12 @@ import { Calculator, X } from 'lucide-react'
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Difference, differenceClassName } from '~/components/base/difference'
 import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
 import { TFinanceAccount, TFinanceCurrency } from '~/lib/types/finance'
 import { accountsDifference } from '~/lib/utils/finance'
 import { cn } from '~/lib/utils/shadcn'
-
-import { Difference, differenceClassName } from './difference'
 
 type TProperties = {
   book: TFinanceCurrency

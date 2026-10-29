@@ -37,6 +37,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: "A book's card in your list now shows the difference from its accounts when they don't match, so you can see which book needs checking without opening it.",
+          id: 'Kartu buku di daftarmu kini menampilkan selisih dengan akunnya saat tidak cocok, jadi kamu bisa melihat buku mana yang perlu dicek tanpa membukanya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: "While you scroll through a book, the bar with its balance at the top now shows the book's name too.",
           id: 'Saat Anda menggulir sebuah buku, bilah saldo di bagian atas kini juga menampilkan nama bukunya.',
         },

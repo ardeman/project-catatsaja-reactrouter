@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { Difference, differenceClassName } from '~/components/base/difference'
 import { Input } from '~/components/base/input'
 import { NumberInput } from '~/components/base/number-input'
 import {
@@ -21,7 +22,6 @@ import {
 } from '~/lib/utils/finance'
 import { cn } from '~/lib/utils/shadcn'
 
-import { Difference, differenceClassName } from './difference'
 import { MoveMoney } from './move-money'
 
 type TProperties = {
