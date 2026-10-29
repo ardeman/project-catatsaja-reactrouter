@@ -5,6 +5,7 @@ import {
   ChevronUp,
   ListIndentDecrease,
   ListIndentIncrease,
+  ListPlus,
   Plus,
   Trash,
 } from 'lucide-react'
@@ -458,6 +459,23 @@ export const Form = (properties: TFormProperties) => {
     return true
   }
 
+  // A new subtask goes after the item's last one.
+  const handleAddSubtask = (index: number) => {
+    const content = getValues('content')
+    const block = getBlocks(content).find((block) => block[0] === index)
+    if (!block) return
+    const at = (block.at(-1) ?? index) + 1
+    flushSync(() =>
+      insert(
+        at,
+        { checked: false, item: '', level: 1 },
+        { shouldFocus: false },
+      ),
+    )
+    const placeOf = arrange(settleItems(getValues('content')))
+    startEditing(placeOf ? placeOf(at) : at)
+  }
+
   const focusItem = (
     name: 'title' | 'item' | `content.${number}.item`,
     caret?: number,
@@ -832,6 +850,20 @@ export const Form = (properties: TFormProperties) => {
                       <ListIndentIncrease />
                     )}
                   </Button>
+                  {!isSubitem && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-11 sm:size-8 [&_svg]:size-3.5"
+                      type="button"
+                      aria-label={t('tasks.form.addSubtask')}
+                      title={t('tasks.form.addSubtask')}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => handleAddSubtask(index)}
+                    >
+                      <ListPlus />
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="icon"
