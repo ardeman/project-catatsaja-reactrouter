@@ -68,7 +68,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 **Revenue**
 
-An optional Catat Saja Plus subscription pays for what costs money to run; the core stays free (AGENTS.md → Decisions). In order:
+An optional Catat Saja Plus subscription pays for what costs money to run; the core stays free (`docs/decisions.md`). In order:
 
 - [ ] Measure: a tracked link per promo video (`utm_campaign` per story: `rina`, `couple`, `adit`, `maya`, `nadia`, `wulan`, `hendra`) and sign-ups by source in Analytics.
 - [ ] Find who pays: post the per-person stories videos, then a small paid test per person for a week; the cheapest active sign-ups pick which Plus features come first.
@@ -269,13 +269,16 @@ firestore.indexes.json
 
 Each topic has one home. Update that file instead of copying its content somewhere else.
 
-| File                                                                 | Audience                                         | Owns                                                              |
-| -------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------- |
-| `README.md`                                                          | Everyone                                         | Objective, features, roadmap, setup, commands, deployment, layout |
-| `AGENTS.md`                                                          | AI coding agents (and humans who want the rules) | Definition of done, conventions, guardrails, decisions            |
-| `CLAUDE.md`, `GEMINI.md`                                             | Claude Code, Gemini CLI                          | Only an import of `AGENTS.md`                                     |
-| `LICENSE`                                                            | Everyone                                         | Terms for using the code (MIT)                                    |
-| `video_marketing.readme` in `external-projects.json` (separate repo) | Whoever makes the promo videos                   | Promo and stories videos, their scripts and uploads               |
+| File                                                                                                    | Audience                                         | Owns                                                              |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------- |
+| `README.md`                                                                                             | Everyone                                         | Objective, features, roadmap, setup, commands, deployment, layout |
+| `AGENTS.md`                                                                                             | AI coding agents (and humans who want the rules) | Definition of done, general conventions, guardrails               |
+| `docs/sharing-and-encryption.md`, `docs/ui-patterns.md`, `docs/installed-app.md`, `docs/ai-features.md` | AI coding agents (and humans who want the rules) | Conventions for one area each, linked from `AGENTS.md`            |
+| `docs/decisions.md`                                                                                     | Everyone                                         | Architectural decisions, one line each with its reason            |
+| `docs/marketing-videos.md`                                                                              | Whoever makes the promo videos                   | Rules for working with the video project from this repo           |
+| `CLAUDE.md`, `GEMINI.md`                                                                                | Claude Code, Gemini CLI                          | Only an import of `AGENTS.md`                                     |
+| `LICENSE`                                                                                               | Everyone                                         | Terms for using the code (MIT)                                    |
+| `video_marketing.readme` in `external-projects.json` (separate repo)                                    | Whoever makes the promo videos                   | Promo and stories videos, their scripts and uploads               |
 
 Codex, Cursor, GitHub Copilot and other agents that follow the [AGENTS.md](https://agents.md) convention read `AGENTS.md` directly.
 
