@@ -1,4 +1,4 @@
-import { CalculatorIcon, Check, Plus } from 'lucide-react'
+import { Check, Plus } from 'lucide-react'
 import {
   type CSSProperties,
   useEffect,
@@ -660,6 +660,12 @@ export const Form = (properties: TFormProperties) => {
                 updateCardStyle('finances', finance.id, next)
               }
               handleBack={handleBackFinance}
+              handleToggleCalculator={() =>
+                setCalculation((current) =>
+                  current === undefined ? '' : undefined,
+                )
+              }
+              isCalculating={calculation !== undefined}
               {...historyActions}
             />
           ) : (
@@ -920,24 +926,6 @@ export const Form = (properties: TFormProperties) => {
                 entries={entries}
                 shown={shownEntries}
                 book={book}
-                actions={
-                  <Button
-                    type="button"
-                    variant={calculation === undefined ? 'ghost' : 'secondary'}
-                    size="icon"
-                    className="size-8"
-                    aria-label={t('finances.calculator.open')}
-                    title={t('finances.calculator.open')}
-                    aria-pressed={calculation !== undefined}
-                    onClick={() =>
-                      setCalculation((current) =>
-                        current === undefined ? '' : undefined,
-                      )
-                    }
-                  >
-                    <CalculatorIcon className="size-4" />
-                  </Button>
-                }
               />
             )}
 

@@ -5,7 +5,7 @@ import {
   Search,
   X,
 } from 'lucide-react'
-import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 
@@ -43,8 +43,6 @@ type TProperties = {
   // The entries the filter keeps.
   shown: TFinanceEntry[]
   book: TFinanceCurrency
-  // More buttons beside Filter.
-  actions?: ReactNode
 }
 
 // The custom period's dates, in a small form of their own so they can use
@@ -86,7 +84,7 @@ export const CustomDates = ({
 }
 
 export const EntryFilter = (properties: TProperties) => {
-  const { filter, setFilter, entries, shown, book, actions } = properties
+  const { filter, setFilter, entries, shown, book } = properties
   const { t } = useTranslation()
   const money = useMoney()
   const count = activeFilterCount(filter)
@@ -133,7 +131,6 @@ export const EntryFilter = (properties: TProperties) => {
           </p>
         )}
         <div className="ml-auto flex gap-1">
-          {actions}
           {count > 0 && (
             <Button
               type="button"

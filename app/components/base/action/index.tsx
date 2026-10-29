@@ -2,6 +2,7 @@ import {
   Archive,
   ArchiveRestore,
   ArrowLeft,
+  Calculator,
   Copy,
   EyeOff,
   Forward,
@@ -53,6 +54,8 @@ export const Action = (properties: TActionProperties) => {
     canRedo = false,
     handleToggleFormat,
     isFormatting = false,
+    handleToggleCalculator,
+    isCalculating = false,
     extra,
     cardStyle,
     handleCardStyle,
@@ -230,6 +233,22 @@ export const Action = (properties: TActionProperties) => {
           className={cn(buttonClassName, isFormatting && 'text-primary')}
         >
           <Type />
+        </Button>
+      )}
+      {handleToggleCalculator && (
+        <Button
+          variant="outline"
+          aria-label={t('finances.calculator.open')}
+          title={t('finances.calculator.open')}
+          aria-pressed={isCalculating}
+          onClick={(event) => {
+            event.stopPropagation()
+            handleToggleCalculator()
+          }}
+          containerClassName="flex-1 flex items-center"
+          className={cn(buttonClassName, isCalculating && 'text-primary')}
+        >
+          <Calculator />
         </Button>
       )}
       {extra && (

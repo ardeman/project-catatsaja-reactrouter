@@ -216,6 +216,13 @@ export const releases: TRelease[] = [
           id: 'Pindai struk kini memberikan baris voucher atau diskon ke barang di atasnya, bukan barang sesudahnya.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'A book’s calculator button is now in the bar at the top, so it’s there even before the book has entries.',
+          id: 'Tombol kalkulator di buku kini ada di bilah atas, jadi sudah tersedia bahkan sebelum buku punya catatan.',
+        },
+      },
     ],
   },
   {

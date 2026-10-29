@@ -87,6 +87,9 @@ export type TActionProperties = {
   // Shows or hides the text formatting row (notes).
   handleToggleFormat?: () => void
   isFormatting?: boolean
+  // Opens or closes the floating calculator (finance books).
+  handleToggleCalculator?: () => void
+  isCalculating?: boolean
   // More buttons (such as a menu), drawn with the bar's button style.
   extra?: (buttonClassName: string) => ReactNode
   // The card's colour and emoji; with `handleCardStyle`, shows the picker
