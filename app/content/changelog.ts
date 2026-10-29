@@ -77,6 +77,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'The About, How to use, Changelog, privacy and terms pages have a back button beside their title.',
+          id: 'Halaman Tentang aplikasi, Cara pakai, Catatan perubahan, privasi, dan ketentuan punya tombol kembali di samping judulnya.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again, beside Cancel and Save.',
