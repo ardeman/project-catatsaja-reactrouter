@@ -49,6 +49,20 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'fixed',
+        text: {
+          en: 'The account menu and other sheets on phones now follow your finger when you pull them down slowly, not only with a quick flick.',
+          id: 'Menu akun dan lembar lain di ponsel kini mengikuti jari Anda saat ditarik ke bawah perlahan, tidak hanya dengan usapan cepat.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Pulling up or down from the bottom bar no longer switches to another tab by mistake.',
+          id: 'Menarik ke atas atau ke bawah dari bilah bawah tidak lagi berpindah ke tab lain secara tidak sengaja.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'Delete and Archive are now one button: deleting a note, task, book or health log asks whether to archive it instead, so it leaves your list without being lost. Archived items still have their button to move them back.',

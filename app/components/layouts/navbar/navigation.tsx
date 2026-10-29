@@ -42,7 +42,7 @@ export const Navigation = (properties: TProperties) => {
   const navReference = useRef<HTMLElement>(null)
   const itemReferences = useRef<(HTMLAnchorElement | null)[]>([])
   const [boxes, setBoxes] = useState<TBox[]>([])
-  const press = useRef<{ x: number; isSwipe: boolean }>(undefined)
+  const press = useRef<{ x: number; y: number; isSwipe: boolean }>(undefined)
   const wasSwipe = useRef(false)
   const [drag, setDrag] = useState<{ x: number; index: number }>()
 
@@ -79,19 +79,23 @@ export const Navigation = (properties: TProperties) => {
   const handlePointerDown = (event: PointerEvent<HTMLElement>) => {
     // A swipe released outside a link leaves no click to swallow.
     wasSwipe.current = false
-    press.current = { x: event.clientX, isSwipe: false }
+    press.current = { x: event.clientX, y: event.clientY, isSwipe: false }
   }
 
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
     const current = press.current
     const nav = navReference.current
     if (!current || !nav) return
-    if (
-      !current.isSwipe &&
-      Math.abs(event.clientX - current.x) < SWIPE_THRESHOLD
-    )
-      return
     if (!current.isSwipe) {
+      const dx = Math.abs(event.clientX - current.x)
+      const dy = Math.abs(event.clientY - current.y)
+      // Mostly up or down, such as pulling the page: not a swipe along the
+      // tabs, which would jump to whichever tab the finger drifted over.
+      if (dy >= SWIPE_THRESHOLD && dy > dx) {
+        press.current = undefined
+        return
+      }
+      if (dx < SWIPE_THRESHOLD) return
       current.isSwipe = true
       nav.setPointerCapture(event.pointerId)
       measure()
