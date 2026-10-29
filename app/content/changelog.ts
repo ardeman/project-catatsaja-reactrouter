@@ -153,6 +153,13 @@ export const releases: TRelease[] = [
           id: 'Pindai struk kini menerima foto HEIC, format yang disimpan iPhone, di semua peramban.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Scanning a receipt now gives a voucher or discount line to the item printed above it, not the one after it.',
+          id: 'Pindai struk kini memberikan baris voucher atau diskon ke barang di atasnya, bukan barang sesudahnya.',
+        },
+      },
     ],
   },
   {
