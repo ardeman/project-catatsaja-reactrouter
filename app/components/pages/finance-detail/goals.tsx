@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { PlusNote } from '~/components/base/plus-note'
 import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
-import { usePlan } from '~/lib/hooks/use-plan'
 import {
   TFinanceCurrency,
   TFinanceEntry,
@@ -25,6 +24,8 @@ type TProperties = {
   entries: TFinanceEntry[]
   book: TFinanceCurrency
   isReadOnly: boolean
+  // Whether the book's Plus features can be changed (`useBookPlan`).
+  hasPlus: boolean
 }
 
 // The book's savings goals (a Plus feature): what to put aside on each
@@ -32,10 +33,9 @@ type TProperties = {
 // already holds. Everyone the book is shared with sees them; only a writer
 // with Plus changes them. Someone without Plus and without goals is told
 // what Plus would add.
-export const Goals = ({ entries, book, isReadOnly }: TProperties) => {
+export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
   const { t, i18n } = useTranslation()
   const money = useMoney()
-  const { hasPlus } = usePlan()
   const { control } = useFormContext<TFinanceForm>()
   const goals = useWatch({ control, name: 'goals' }) ?? []
   const payday = useWatch({ control, name: 'payday' }) ?? null
@@ -52,6 +52,7 @@ export const Goals = ({ entries, book, isReadOnly }: TProperties) => {
   const savings = bookSavings(accounts, summarize(entries).balance)
   const plan = savingsPlan({
     goals,
+    entries,
     savings: savings.amount,
     payday,
     today: date,
@@ -178,11 +179,21 @@ export const Goals = ({ entries, book, isReadOnly }: TProperties) => {
                         className="flex justify-between gap-2"
                       >
                         <span className="truncate">{goal.name}</span>
-                        {/* A month's only goal is its total. */}
-                        {monthGoals.length > 1 && (
+                        {/* A month's only goal is its total, unless part of
+                            it was paid already. */}
+                        {goal.realized > 0 ? (
                           <span className="tabular-nums">
-                            {money(goal.amount ?? 0, book)}
+                            {t('finances.analysis.goals.realizedOf', {
+                              spent: money(goal.realized, book),
+                              amount: money(goal.amount ?? 0, book),
+                            })}
                           </span>
+                        ) : (
+                          monthGoals.length > 1 && (
+                            <span className="tabular-nums">
+                              {money(goal.amount ?? 0, book)}
+                            </span>
+                          )
                         )}
                       </li>
                     ))}
@@ -241,10 +252,10 @@ export const Goals = ({ entries, book, isReadOnly }: TProperties) => {
                   {monthName.format(new Date(`${goal.due}-01T00:00:00`))}
                 </span>
                 <span className="text-muted-foreground tabular-nums">
-                  {goal.spent === null
+                  {goal.realized === 0
                     ? money(goal.amount ?? 0, book)
                     : t('finances.analysis.goals.spentOf', {
-                        spent: money(goal.spent, book),
+                        spent: money(goal.realized, book),
                         amount: money(goal.amount ?? 0, book),
                       })}
                 </span>

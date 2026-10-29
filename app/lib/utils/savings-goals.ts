@@ -11,6 +11,8 @@ type TEntryLike = {
   quantity: number
   amount: number
   rate: number
+  // The savings goal an expense was paid toward.
+  goal?: string
 }
 
 type TAccountLike = { balance: number | null }
@@ -21,14 +23,24 @@ type TGoal = {
   amount: number | null
   // The month it is needed in, as YYYY-MM.
   due: string
-  // Once done, what it actually cost.
+  // Marked done by hand; a goal is also done once realized covers it.
   done: boolean
+  // What was paid toward it outside the book's linked expenses, such as
+  // before linking them.
   spent: number | null
+}
+
+// A goal with what was paid toward it: `spent` plus its linked expenses.
+type TRealizedGoal<T extends TGoal = TGoal> = T & {
+  realized: number
+  // What is still to pay.
+  remaining: number
 }
 
 type TGoalMonth<T extends TGoal = TGoal> = {
   due: string
-  goals: T[]
+  goals: TRealizedGoal<T>[]
+  // What is still to pay for them.
   total: number
   // This month's goals and every earlier one's.
   cumulative: number
@@ -52,8 +64,49 @@ export const normalizeGoals = <T extends TGoal>(goals: T[] = []): T[] =>
   goals.map((goal) => ({
     ...goal,
     amount: toAmount(goal.amount),
-    spent: goal.done ? toAmount(goal.spent) : null,
+    spent: toAmount(goal.spent),
   }))
+
+// The entry linked to `goal`, or to none: only expenses are, and an entry
+// without a goal has no `goal` key (Firestore refuses undefined).
+export const linkGoal = <
+  T extends { type: 'income' | 'expense'; goal?: string },
+>(
+  { goal: _previous, ...entry }: T,
+  goal?: string,
+) => (goal && entry.type === 'expense' ? { ...entry, goal } : entry) as T
+
+// In the book's currency, by goal id: what its linked expenses add up to.
+export const linkedTotals = (entries: TEntryLike[] = []) => {
+  const totals = new Map<string, number>()
+  for (const entry of entries)
+    if (entry.type === 'expense' && entry.goal)
+      totals.set(
+        entry.goal,
+        (totals.get(entry.goal) ?? 0) +
+          entry.quantity * entry.amount * entry.rate,
+      )
+  return totals
+}
+
+// Each goal with what was realized; a goal is done when marked so or once
+// realized covers its amount.
+export const realizeGoals = <T extends TGoal>(
+  goals: T[] = [],
+  entries: TEntryLike[] = [],
+): TRealizedGoal<T>[] => {
+  const linked = linkedTotals(entries)
+  return normalizeGoals(goals).map((goal) => {
+    const amount = goal.amount ?? 0
+    const realized = (goal.spent ?? 0) + (linked.get(goal.id) ?? 0)
+    return {
+      ...goal,
+      done: goal.done || (amount > 0 && realized >= amount),
+      realized,
+      remaining: Math.max(0, amount - realized),
+    }
+  })
+}
 
 // A day of the month from 1 to 31, or null when not set.
 export const normalizePayday = (value: unknown) => {
@@ -103,18 +156,22 @@ export const bookSavings = (accounts: TAccountLike[] = [], balance: number) => {
 }
 
 // The plan for the goals not done yet: grouped by due month, earliest
-// first, each with what is still short and what each payday until then
+// first, each with what is still to pay (less what was realized), what is
+// short and what each payday until then
 // must put aside. The highest of those is what to save a month; anything
 // short in a month with no payday left is needed now. Amounts to save are
 // rounded up to the book's smallest unit.
 export const savingsPlan = <T extends TGoal>({
   goals = [],
+  entries = [],
   savings,
   payday,
   today,
   fractionDigits = 0,
 }: {
   goals?: T[]
+  // The book's entries, for the expenses linked to goals.
+  entries?: TEntryLike[]
   savings: number
   payday: number | null
   today: string
@@ -122,14 +179,15 @@ export const savingsPlan = <T extends TGoal>({
 }) => {
   const unit = 10 ** fractionDigits
   const roundUp = (value: number) => Math.ceil(value * unit - 1e-9) / unit
-  const open = normalizeGoals(goals)
-    .filter((goal) => !goal.done && (goal.amount ?? 0) > 0)
+  const realized = realizeGoals(goals, entries)
+  const open = realized
+    .filter((goal) => !goal.done && goal.remaining > 0)
     .toSorted((a, b) => a.due.localeCompare(b.due))
 
   const months: TGoalMonth<T>[] = []
   let cumulative = 0
   for (const goal of open) {
-    const amount = goal.amount ?? 0
+    const amount = goal.remaining
     cumulative += amount
     const last = months.at(-1)
     if (last?.due === goal.due) {
@@ -163,7 +221,7 @@ export const savingsPlan = <T extends TGoal>({
     total: cumulative,
     monthly,
     neededNow,
-    done: normalizeGoals(goals).filter((goal) => goal.done),
+    done: realized.filter((goal) => goal.done),
   }
 }
 

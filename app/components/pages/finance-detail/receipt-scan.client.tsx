@@ -31,8 +31,10 @@ import {
   receiptToEntries,
   receiptTotal,
 } from '~/lib/utils/receipt'
+import { linkGoal } from '~/lib/utils/savings-goals'
 import { cn } from '~/lib/utils/shadcn'
 
+import { GoalPicker } from './goal-picker'
 import { TReceiptScanProperties } from './type'
 
 // Whether text is a YYYY-MM-DD date that can be shown as a day.
@@ -44,13 +46,22 @@ const isRealDayText = (text: string) =>
 // person checks before they are added. The photo goes to Google only when
 // they choose one, after agreeing once to a notice saying so (`AiNotice`).
 export const ReceiptScan = (properties: TReceiptScanProperties) => {
-  const { book, currencies, history, onAdd, onActiveChange } = properties
+  const {
+    book,
+    currencies,
+    history,
+    onAdd,
+    onActiveChange,
+    goals = [],
+  } = properties
   const { t, i18n } = useTranslation()
   const money = useMoney()
   const { mutate: scan, isPending } = useScanReceipt()
   const { run, notice } = useAiConsent()
   const fileInput = useRef<HTMLInputElement>(null)
   const [receipt, setReceipt] = useState<TReceipt>()
+  // The savings goal the expenses are linked to.
+  const [goal, setGoal] = useState<string>()
   useEffect(() => {
     onActiveChange?.(isPending || !!receipt)
   }, [isPending, receipt, onActiveChange])
@@ -156,8 +167,9 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
   }
 
   const handleAdd = () => {
-    onAdd(chosen)
+    onAdd(chosen.map((entry) => linkGoal(entry, goal)))
     setReceipt(undefined)
+    setGoal(undefined)
   }
 
   return (
@@ -324,6 +336,11 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
               })}
             </p>
           )}
+          <GoalPicker
+            goals={goals}
+            value={goal}
+            onChange={setGoal}
+          />
           <p className="text-xs text-muted-foreground">
             {t('finances.receipt.check')}
           </p>

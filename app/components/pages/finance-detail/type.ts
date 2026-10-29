@@ -34,6 +34,8 @@ export type TEntryFormProperties = {
   draftKey?: string
   // An encrypted book: the draft is kept for this tab only.
   isPrivate?: boolean
+  // The book's savings goals, to link an expense to.
+  goals?: TGoalChoice[]
 }
 
 export type TReceiptScanProperties = {
@@ -47,4 +49,14 @@ export type TReceiptScanProperties = {
   // Quick add's unsaved text (lib/utils/drafts); none, no draft.
   draftKey?: string
   isPrivate?: boolean
+  // The book's savings goals, to link the expenses to.
+  goals?: TGoalChoice[]
+}
+
+// A savings goal an expense can be linked to.
+export type TGoalChoice = {
+  id: string
+  name: string
+  // Done ones are offered only to an entry already linked to them.
+  done: boolean
 }

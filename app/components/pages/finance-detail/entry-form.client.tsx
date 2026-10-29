@@ -39,12 +39,14 @@ import {
   formatExchangeRate,
   getDefaultCurrencyFormat,
 } from '~/lib/utils/parser'
+import { linkGoal } from '~/lib/utils/savings-goals'
 import { cn } from '~/lib/utils/shadcn'
 import { entrySchema } from '~/lib/validations/finance'
 
 import { AddCurrency } from './add-currency'
 import { ConvertedTotal } from './converted-total'
 import { EditableValue } from './editable-value'
+import { GoalPicker } from './goal-picker'
 import { TEntryFormProperties } from './type'
 
 // The currency list item that opens "Add currency".
@@ -70,6 +72,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     onDelete,
     draftKey,
     isPrivate = false,
+    goals = [],
   } = properties
   const { t } = useTranslation(['common', 'zod'])
   const { data: userData } = useUserData()
@@ -171,9 +174,9 @@ export const EntryForm = (properties: TEntryFormProperties) => {
     onClose()
   }
 
-  const [type, currency, category, rate, description] = useWatch({
+  const [type, currency, category, rate, description, goal] = useWatch({
     control,
-    name: ['type', 'currency', 'category', 'rate', 'description'],
+    name: ['type', 'currency', 'category', 'rate', 'description', 'goal'],
   })
   const isForeign = currency.code !== book.code
 
@@ -294,7 +297,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
 
   const onSubmit = handleSubmit(
     (data) => {
-      onSave(data)
+      onSave(linkGoal(data, data.goal))
       if (draftKey && !isEditing) clearDraft(draftKey)
       if (isEditing) {
         onClose()
@@ -303,6 +306,7 @@ export const EntryForm = (properties: TEntryFormProperties) => {
       // Keep the date, currency, rate, type and category for quick batch entry.
       reset({
         ...data,
+        goal: undefined,
         id: newEntryId(),
         amount: '',
         quantity: 1,
@@ -591,6 +595,14 @@ export const EntryForm = (properties: TEntryFormProperties) => {
             book={book}
             currencies={currencies}
           />
+
+          {type === 'expense' && (
+            <GoalPicker
+              goals={goals}
+              value={goal}
+              onChange={(next) => setValue('goal', next, { shouldDirty: true })}
+            />
+          )}
 
           <div className="flex flex-wrap items-center gap-2">
             {isEditing && (

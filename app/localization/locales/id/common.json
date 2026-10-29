@@ -317,6 +317,11 @@
       "currency": {
         "label": "Mata uang"
       },
+      "goal": {
+        "label": "Target tabungan",
+        "none": "Tanpa target",
+        "hint": "Dihitung ke jumlah terealisasi target itu."
+      },
       "rate": {
         "label": "1 {{from}} → {{to}}",
         "hint": "Dari pengaturanmu. Ubah jika perlu."
@@ -632,7 +637,7 @@
         "hint": "Tambahkan yang sedang kamu tabung, misalnya uang sekolah di bulan Juli, untuk melihat berapa yang perlu disisihkan setiap gajian.",
         "edit": "Ubah target",
         "create": "Tambah target",
-        "editHint": "Yang sedang kamu tabung dan bulan kamu membutuhkannya, dalam mata uang buku. Isi yang terealisasi untuk menandainya selesai. Perubahan tersimpan bersama buku.",
+        "editHint": "Yang sedang kamu tabung dan bulan kamu membutuhkannya, dalam mata uang buku. Pengeluaran yang ditautkan ke target dihitung terealisasi; isi yang sudah dibayar sebelum ditautkan. Target selesai begitu yang terealisasi menutupinya. Perubahan tersimpan bersama buku.",
         "payday": "Tanggal gajian",
         "paydayNone": "Belum diatur",
         "day": "Tanggal {{day}}",
@@ -658,6 +663,9 @@
         "paydays_other": "{{count}} kali gajian lagi · {{amount}} tiap kali",
         "noPaydays": "Tidak ada gajian lagi",
         "doneTitle": "Selesai ({{count}})",
+        "realizedOf": "{{spent}} dari {{amount}} terealisasi",
+        "doneRealized": "Selesai: yang terealisasi sudah menutupinya",
+        "linked": "{{amount}} dari pengeluaran yang ditautkan",
         "spentOf": "{{spent}} dari {{amount}}",
         "plusToEdit": "Mengubah target memerlukan Catat Saja Plus."
       },

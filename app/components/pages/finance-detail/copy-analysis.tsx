@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from '~/components/base/select'
 import { Button } from '~/components/ui/button'
-import { usePlan } from '~/lib/hooks/use-plan'
 import { toast } from '~/lib/hooks/use-toast'
 import { TFinanceForm, TFinanceResponse } from '~/lib/types/finance'
 import { TCurrency } from '~/lib/types/settings'
@@ -24,6 +23,8 @@ type TProperties = {
   books: TFinanceResponse[]
   currencies: TCurrency[]
   isReadOnly: boolean
+  // Whether the book's Plus features can be changed (`useBookPlan`).
+  hasPlus: boolean
 }
 
 // Units of `to` for 1 unit of `from`, from the person's own rates (each the
@@ -47,9 +48,9 @@ export const CopyAnalysis = ({
   books,
   currencies,
   isReadOnly,
+  hasPlus,
 }: TProperties) => {
   const { t } = useTranslation()
-  const { hasPlus } = usePlan()
   const { getValues, setValue } = useFormContext<TFinanceForm>()
   const [isOpen, setIsOpen] = useState(false)
   const [sourceId, setSourceId] = useState<string>()

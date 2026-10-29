@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { PlusNote } from '~/components/base/plus-note'
 import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
-import { usePlan } from '~/lib/hooks/use-plan'
 import {
   TFinanceCurrency,
   TFinanceEntry,
@@ -26,16 +25,22 @@ type TProperties = {
   entries: TFinanceEntry[]
   book: TFinanceCurrency
   isReadOnly: boolean
+  // Whether the book's Plus features can be changed (`useBookPlan`).
+  hasPlus: boolean
 }
 
 // The book's budgets (a Plus feature): the limit on all of its spending and
 // on each category, for this month or the whole book, and what is left. Everyone the book is shared with sees
 // them; only a writer with Plus changes them. Someone without Plus and
 // without budgets is told what Plus would add.
-export const Budgets = ({ entries, book, isReadOnly }: TProperties) => {
+export const Budgets = ({
+  entries,
+  book,
+  isReadOnly,
+  hasPlus,
+}: TProperties) => {
   const { t, i18n } = useTranslation()
   const money = useMoney()
-  const { hasPlus } = usePlan()
   const { control } = useFormContext<TFinanceForm>()
   const budgets = useWatch({ control, name: 'budgets' }) ?? []
   const [isEditing, setIsEditing] = useState(false)

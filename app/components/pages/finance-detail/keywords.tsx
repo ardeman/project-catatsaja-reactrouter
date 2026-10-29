@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { PlusNote } from '~/components/base/plus-note'
 import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
-import { usePlan } from '~/lib/hooks/use-plan'
 import {
   TFinanceCurrency,
   TFinanceEntry,
@@ -31,16 +30,23 @@ type TProperties = {
   types: TFinanceEntry['type'][]
   book: TFinanceCurrency
   isReadOnly: boolean
+  // Whether the book's Plus features can be changed (`useBookPlan`).
+  hasPlus: boolean
 }
 
 // The book's keywords (a Plus feature) with what the entries whose
 // description has them add up to. Everyone the book is shared with sees
 // them; only a writer with Plus changes them. Someone without Plus and
 // without keywords is told what Plus would add.
-export const Keywords = ({ entries, types, book, isReadOnly }: TProperties) => {
+export const Keywords = ({
+  entries,
+  types,
+  book,
+  isReadOnly,
+  hasPlus,
+}: TProperties) => {
   const { t, i18n } = useTranslation()
   const money = useMoney()
-  const { hasPlus } = usePlan()
   const { control } = useFormContext<TFinanceForm>()
   const keywords = useWatch({ control, name: 'keywords' }) ?? []
   const [isEditing, setIsEditing] = useState(false)

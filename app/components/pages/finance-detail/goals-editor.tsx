@@ -1,12 +1,5 @@
 import { Plus, X } from 'lucide-react'
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -22,12 +15,19 @@ import {
   SelectValue,
 } from '~/components/base/select'
 import { Button } from '~/components/ui/button'
+import { Checkbox as PlainCheckbox } from '~/components/ui/checkbox'
+import { useMoney } from '~/lib/hooks/use-money'
 import {
   TFinanceCurrency,
   TFinanceEntry,
   TFinanceForm,
 } from '~/lib/types/finance'
-import { addMonths, suggestPayday } from '~/lib/utils/savings-goals'
+import {
+  addMonths,
+  linkedTotals,
+  realizeGoals,
+  suggestPayday,
+} from '~/lib/utils/savings-goals'
 import { cn } from '~/lib/utils/shadcn'
 
 type TProperties = {
@@ -59,24 +59,11 @@ export const GoalsEditor = ({
   const [addedId, setAddedId] = useState<string>()
   const suggestion = payday === null ? suggestPayday(entries) : undefined
 
-  // Filling in what was realized marks a goal done and clearing it opens
-  // the goal again; unticking done clears what was realized. Only changes
-  // count, so goals marked done before this keep their mark.
-  const previous = useRef(
-    new Map<string, { isFilled: boolean; done: boolean }>(),
-  )
-  useEffect(() => {
-    for (const [index, goal] of goals.entries()) {
-      const isFilled = String(goal.spent ?? '') !== ''
-      const before = previous.current.get(goal.id)
-      previous.current.set(goal.id, { isFilled, done: goal.done })
-      if (!before) continue
-      if (isFilled !== before.isFilled && goal.done !== isFilled)
-        setValue(`goals.${index}.done`, isFilled, { shouldDirty: true })
-      else if (isFilled && before.done && !goal.done)
-        setValue(`goals.${index}.spent`, null, { shouldDirty: true })
-    }
-  }, [goals, setValue])
+  // A goal is done once what was realized (typed here plus its linked
+  // expenses) covers it; the box can still mark it done before that.
+  const money = useMoney()
+  const linked = useMemo(() => linkedTotals(entries), [entries])
+  const realized = useMemo(() => realizeGoals(goals, entries), [goals, entries])
 
   // Five years ahead, and any earlier month a goal is still due in.
   const monthName = new Intl.DateTimeFormat(i18n.language, {
@@ -248,12 +235,32 @@ export const GoalsEditor = ({
                   placeholder={t('finances.analysis.goals.spent')}
                   className="[&_input]:text-right [&_input]:tabular-nums"
                 />
-                <Checkbox<TFinanceForm>
-                  name={`goals.${index}.done`}
-                  label={t('finances.analysis.goals.done')}
-                  labelClassName="sr-only"
-                  containerClassName="h-8 w-8 justify-center"
-                />
+                {!goal.done && realized[index]?.done ? (
+                  <span
+                    className="flex h-8 w-8 items-center justify-center"
+                    title={t('finances.analysis.goals.doneRealized')}
+                  >
+                    <PlainCheckbox
+                      checked
+                      disabled
+                      aria-label={t('finances.analysis.goals.done')}
+                    />
+                  </span>
+                ) : (
+                  <Checkbox<TFinanceForm>
+                    name={`goals.${index}.done`}
+                    label={t('finances.analysis.goals.done')}
+                    labelClassName="sr-only"
+                    containerClassName="h-8 w-8 justify-center"
+                  />
+                )}
+                {linked.has(goal.id) && (
+                  <p className="col-span-3 px-1 text-xs text-muted-foreground">
+                    {t('finances.analysis.goals.linked', {
+                      amount: money(linked.get(goal.id) ?? 0, book),
+                    })}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

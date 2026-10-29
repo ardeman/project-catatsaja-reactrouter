@@ -31,6 +31,8 @@ export const entrySchema = (t: TFunction) =>
     rate: z.coerce.number().positive({
       error: t('zod:errors.too_small.number.not_inclusive', { minimum: 0 }),
     }),
+    // The book's savings goal an expense was paid toward; never on income.
+    goal: z.string().optional(),
   })
 
 // Money moved from one of a book's accounts to another: both balances

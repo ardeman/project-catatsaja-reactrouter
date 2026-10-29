@@ -74,6 +74,8 @@ type TProperties = {
   options: TAnalysisOptions
   setOptions: Dispatch<SetStateAction<TAnalysisOptions>>
   isReadOnly: boolean
+  // Whether the book's Plus features can be changed (`useBookPlan`).
+  hasPlus: boolean
   // The person's other books, to copy the analysis setup from.
   books: TFinanceResponse[]
   currencies: TCurrency[]
@@ -175,6 +177,7 @@ export const Analysis = ({
   options,
   setOptions,
   isReadOnly,
+  hasPlus,
   books,
   currencies,
 }: TProperties) => {
@@ -712,18 +715,21 @@ export const Analysis = ({
         types={shownTypes}
         book={book}
         isReadOnly={isReadOnly}
+        hasPlus={hasPlus}
       />
 
       <Budgets
         entries={entries}
         book={book}
         isReadOnly={isReadOnly}
+        hasPlus={hasPlus}
       />
 
       <Goals
         entries={entries}
         book={book}
         isReadOnly={isReadOnly}
+        hasPlus={hasPlus}
       />
 
       {groupBy !== 'item' && (
@@ -732,6 +738,7 @@ export const Analysis = ({
           types={shownTypes}
           book={book}
           isReadOnly={isReadOnly}
+          hasPlus={hasPlus}
         />
       )}
 
@@ -739,6 +746,7 @@ export const Analysis = ({
         books={books}
         currencies={currencies}
         isReadOnly={isReadOnly}
+        hasPlus={hasPlus}
       />
     </div>
   )

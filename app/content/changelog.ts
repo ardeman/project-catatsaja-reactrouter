@@ -226,8 +226,22 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
-          en: 'Savings goals are more compact to edit, and each has a Realized amount: filling it in marks the goal done.',
-          id: 'Target tabungan kini lebih ringkas saat diubah, dan setiap target punya jumlah Terealisasi: mengisinya menandai target selesai.',
+          en: 'Savings goals are more compact to edit, and each has a Realized amount for what was already paid: the plan saves only for the rest, and the goal is done once Realized covers it.',
+          id: 'Target tabungan kini lebih ringkas saat diubah, dan setiap target punya jumlah Terealisasi untuk yang sudah dibayar: rencana hanya menabung sisanya, dan target selesai begitu Terealisasi menutupinya.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
+          en: 'Link an expense to a savings goal when you add it, by hand, from quick add or from a scanned receipt. What linked expenses add up to counts as realized.',
+          id: 'Tautkan pengeluaran ke target tabungan saat menambahkannya, secara manual, lewat tambah cepat, atau dari struk yang dipindai. Jumlah pengeluaran yang ditautkan dihitung sebagai terealisasi.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Everyone who can edit a book owned by a Plus member can now change its groups, budgets, savings goals and keywords, even without Plus of their own.',
+          id: 'Semua yang bisa mengubah buku milik anggota Plus kini bisa mengubah grup, anggaran, target tabungan, dan kata kuncinya, meski tanpa Plus sendiri.',
         },
       },
     ],

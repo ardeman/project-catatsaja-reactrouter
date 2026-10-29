@@ -684,4 +684,87 @@ describe('sharing and finance storage', () => {
     await rani.context.close()
     await sari.context.close()
   })
+
+  test("a Plus owner's book lets a free writer set goals and link expenses to them", async () => {
+    const uli = await newDevice(browser)
+    await signUp(uli.page, 'Uli', 'uli@example.com')
+    await skipEncryptionSetup(uli.page)
+    await dbPatch(`users/${await uidOf('uli@example.com')}`, {
+      plan: { stringValue: 'plus' },
+      planEndsAt: { timestampValue: '2099-01-01T00:00:00Z' },
+    })
+    await uli.page.goto(`${APP}/finances/create`)
+    await uli.page.locator('textarea[name=title]').fill('Uli book')
+    await uli.page.getByRole('button', { name: 'Save' }).click()
+    await uli.page.waitForURL(/\/finances\/(?!create)/, { timeout: 30_000 })
+    const bookId = new URL(uli.page.url()).pathname.split('/').pop()
+
+    // Vino has no Plus; Uli's Plus covers the book.
+    const vino = await newDevice(browser)
+    await signUp(vino.page, 'Vino', 'vino@example.com')
+    await skipEncryptionSetup(vino.page)
+    await shareWith(uli.page, 'vino@example.com', 'Read and write')
+    await uli.page.keyboard.press('Escape')
+    await acceptInvitation(vino.page, 'Uli book', 'finances')
+
+    // The analysis shows once the book has an entry.
+    const addEntry = async (description, amount, goal) => {
+      // After a save the form stays open for the next entry.
+      const add = vino.page.getByRole('button', { name: 'Add entry' })
+      if (await add.isVisible()) await add.click()
+      await vino.page.locator('input[name=description]').fill(description)
+      await vino.page.locator('#finance-entry-amount').fill(amount)
+      await vino.page.getByRole('combobox', { name: 'Category' }).click()
+      await vino.page.getByRole('option', { name: 'Food & drinks' }).click()
+      if (goal) {
+        await vino.page.getByRole('combobox', { name: 'Savings goal' }).click()
+        await vino.page.getByRole('option', { name: goal }).click()
+      }
+      await vino.page
+        .locator('form')
+        .getByRole('button', { name: 'Save' })
+        .last()
+        .click()
+    }
+    await vino.page.goto(`${APP}/finances/${bookId}`)
+    await vino.page
+      .getByRole('button', { name: 'Add entry' })
+      .waitFor({ timeout: 30_000 })
+    await addEntry('Vino lunch', '50000')
+    await vino.page.waitForTimeout(3000)
+    await vino.page
+      .getByRole('button', { name: 'Analysis', exact: true })
+      .click({ timeout: 30_000 })
+    await vino.page
+      .getByRole('button', { name: 'Add goals' })
+      .click({ timeout: 15_000 })
+    const goalEditor = vino.page.getByRole('dialog')
+    await goalEditor.getByRole('button', { name: 'Add goal' }).click()
+    await goalEditor.getByLabel('Goal', { exact: true }).fill('Uli fridge')
+    await goalEditor.getByLabel('Amount', { exact: true }).fill('1000000')
+    await vino.page.keyboard.press('Escape')
+    await dbGetWhen(`finances/${bookId}`, (fields) =>
+      JSON.stringify(fields?.goals ?? '').includes('Uli fridge'),
+    )
+
+    // An expense paid toward the goal counts as realized.
+    await vino.page
+      .getByRole('button', { name: 'Entries', exact: true })
+      .click()
+    await addEntry('Fridge deposit', '400000', 'Uli fridge')
+    const months = await dbListWhen(`finances/${bookId}/months`, (docs) =>
+      JSON.stringify(docs).includes('Fridge deposit'),
+    )
+    assert.ok(JSON.stringify(months).includes('"goal"'), 'linked')
+
+    await uli.page.goto(`${APP}/finances/${bookId}`)
+    await uli.page
+      .getByRole('button', { name: 'Analysis', exact: true })
+      .click({ timeout: 30_000 })
+    await uli.page
+      .getByText(/400[.,]000 of .*1[.,]000[.,]000 realized/)
+      .waitFor({ timeout: 15_000 })
+    await uli.context.close()
+    await vino.context.close()
+  })
 })

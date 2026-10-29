@@ -25,8 +25,10 @@ import {
   today,
 } from '~/lib/utils/finance'
 import { typedToEntries } from '~/lib/utils/receipt'
+import { linkGoal } from '~/lib/utils/savings-goals'
 import { cn } from '~/lib/utils/shadcn'
 
+import { GoalPicker } from './goal-picker'
 import { ReceiptScan } from './receipt-scan.client'
 import { TReceiptScanProperties } from './type'
 
@@ -41,6 +43,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
     onAdd,
     draftKey,
     isPrivate = false,
+    goals = [],
   } = properties
   const { t, i18n } = useTranslation()
   const money = useMoney()
@@ -55,6 +58,8 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
   const [typed, setTyped] = useState<TTypedEntries>()
   // Entries left out, by their place in the list.
   const [skipped, setSkipped] = useState<Set<number>>(new Set())
+  // The savings goal the expenses are linked to.
+  const [goal, setGoal] = useState<string>()
   const textForm = useForm<{ text: string }>({
     defaultValues: { text: draft ?? '' },
   })
@@ -93,7 +98,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
   }, [typed, currency, book, currencies, history])
   const chosen = rows
     .filter((_, index) => !skipped.has(index))
-    .map(({ entry }) => entry)
+    .map(({ entry }) => linkGoal(entry, goal))
   const { income, expense } = summarize(chosen)
 
   const formatDay = (day: string) =>
@@ -109,6 +114,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
     setIsOpen(false)
     setIsScanning(false)
     setTyped(undefined)
+    setGoal(undefined)
     textForm.reset({ text: '' })
   }
 
@@ -252,6 +258,13 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
                         book: book.code,
                       })}
                     </p>
+                  )}
+                  {chosen.some((entry) => entry.type === 'expense') && (
+                    <GoalPicker
+                      goals={goals}
+                      value={goal}
+                      onChange={setGoal}
+                    />
                   )}
                   <p className="text-xs text-muted-foreground">
                     {t('finances.quickAdd.check')}

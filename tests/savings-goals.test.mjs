@@ -7,6 +7,7 @@ import { describe, test } from 'node:test'
 
 import {
   bookSavings,
+  linkGoal,
   normalizeGoals,
   normalizePayday,
   paydaysBefore,
@@ -29,6 +30,17 @@ const income = (date, amount, overrides = {}) => ({
   type: 'income',
   category: 'income',
   description: 'Salary',
+  quantity: 1,
+  amount,
+  rate: 1,
+  ...overrides,
+})
+
+const expense = (amount, overrides = {}) => ({
+  date: '2026-10-01',
+  type: 'expense',
+  category: 'shopping',
+  description: '',
   quantity: 1,
   amount,
   rate: 1,
@@ -163,9 +175,49 @@ describe('savings plan', () => {
       [['a']],
     )
     assert.deepEqual(
-      plan.done.map(({ id, spent }) => [id, spent]),
+      plan.done.map(({ id, realized }) => [id, realized]),
       [['done', 450]],
     )
+  })
+
+  test('what was realized is taken off; covering the amount makes it done', () => {
+    const plan = savingsPlan({
+      goals: [
+        goal('car', 1000, '2027-01', { spent: '250' }),
+        goal('paid', 300, '2027-01'),
+      ],
+      entries: [
+        expense(100, { goal: 'car' }),
+        expense(300, { goal: 'paid' }),
+        // Income never counts toward a goal.
+        income('2026-10-01', 500, { goal: 'car' }),
+      ],
+      savings: 0,
+      payday: null,
+      today: '2026-10-15',
+    })
+    const [month] = plan.months
+    assert.deepEqual(
+      month.goals.map(({ id, realized, remaining }) => [
+        id,
+        realized,
+        remaining,
+      ]),
+      [['car', 350, 650]],
+    )
+    assert.equal(month.total, 650)
+    assert.deepEqual(
+      plan.done.map(({ id }) => id),
+      ['paid'],
+    )
+  })
+})
+
+describe('linking an entry to a goal', () => {
+  test('only an expense keeps a goal, and no goal leaves no key', () => {
+    assert.equal(linkGoal(expense(1), 'car').goal, 'car')
+    assert.equal('goal' in linkGoal(expense(1, { goal: 'car' })), false)
+    assert.equal('goal' in linkGoal(income('2026-10-01', 1), 'car'), false)
   })
 })
 
@@ -212,14 +264,14 @@ describe('suggesting a payday', () => {
 })
 
 describe('normalizing', () => {
-  test('typed amounts become numbers; spent only once done', () => {
+  test('typed amounts become numbers', () => {
     assert.deepEqual(
       normalizeGoals([
         goal('a', '1500', '2027-01', { spent: '9' }),
         goal('b', '', '2027-01', { done: true, spent: '' }),
       ]).map(({ amount, spent }) => [amount, spent]),
       [
-        [1500, null],
+        [1500, 9],
         [null, null],
       ],
     )

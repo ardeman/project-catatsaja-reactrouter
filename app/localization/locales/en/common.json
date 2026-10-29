@@ -317,6 +317,11 @@
       "currency": {
         "label": "Currency"
       },
+      "goal": {
+        "label": "Savings goal",
+        "none": "No goal",
+        "hint": "Counts toward the goal’s realized amount."
+      },
       "rate": {
         "label": "1 {{from}} → {{to}}",
         "hint": "From your settings. Adjust if needed."
@@ -632,7 +637,7 @@
         "hint": "Add what you are saving for, such as school fees in July, to see how much to put aside on each payday.",
         "edit": "Edit goals",
         "create": "Add goals",
-        "editHint": "What you are saving for and the month you need it, in the book’s currency. Fill in what was realized to mark it done. Changes save with the book.",
+        "editHint": "What you are saving for and the month you need it, in the book’s currency. Expenses linked to a goal count as realized; fill in what was paid before linking. A goal is done once realized covers it. Changes save with the book.",
         "payday": "Payday",
         "paydayNone": "Not set",
         "day": "Day {{day}}",
@@ -658,6 +663,9 @@
         "paydays_other": "{{count}} paydays left · {{amount}} each",
         "noPaydays": "No payday left",
         "doneTitle": "Done ({{count}})",
+        "realizedOf": "{{spent}} of {{amount}} realized",
+        "doneRealized": "Done: what was realized covers it",
+        "linked": "{{amount}} from linked expenses",
         "spentOf": "{{spent}} of {{amount}}",
         "plusToEdit": "Changing goals needs Catat Saja Plus."
       },

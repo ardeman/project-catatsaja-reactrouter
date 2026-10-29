@@ -42,6 +42,7 @@ import { useGetFinances } from '~/lib/hooks/use-get-finances'
 import { useUserData } from '~/lib/hooks/use-get-user'
 import { useIsStuck } from '~/lib/hooks/use-is-stuck'
 import { useMoney } from '~/lib/hooks/use-money'
+import { useBookPlan } from '~/lib/hooks/use-plan'
 import { useRefreshFinanceSummary } from '~/lib/hooks/use-refresh-finance-summary'
 import { useStoredValues } from '~/lib/hooks/use-stored-values'
 import { useUndoHistory } from '~/lib/hooks/use-undo-history'
@@ -78,7 +79,11 @@ import {
   getDateLabel,
   getDefaultCurrencyFormat,
 } from '~/lib/utils/parser'
-import { normalizeGoals, normalizePayday } from '~/lib/utils/savings-goals'
+import {
+  normalizeGoals,
+  normalizePayday,
+  realizeGoals,
+} from '~/lib/utils/savings-goals'
 import { cn } from '~/lib/utils/shadcn'
 
 import { Accounts } from './accounts'
@@ -147,6 +152,7 @@ export const Form = (properties: TFormProperties) => {
   const { mutate: mutateUpdateFinance } = useUpdateFinance()
   const canWrite = finance?.permissions?.write.includes(userData?.uid || '')
   const isOwner = finance?.owner === userData?.uid
+  const { hasPlus } = useBookPlan(finance?.owner)
   const isEditable = isOwner || canWrite
   const isReadOnly = !!finance && !isEditable
   useRefreshFinanceSummary(finance, !!isEditable)
@@ -232,6 +238,17 @@ export const Form = (properties: TFormProperties) => {
     ],
   })
   const isCurrencyLocked = !isReadOnly && entries.length > 0
+  // The goals an expense can be linked to, and their names for the list.
+  const goalChoices = useMemo(
+    () =>
+      realizeGoals(goals, entries).map(({ id, name, done }) => ({
+        id,
+        name,
+        done,
+      })),
+    [goals, entries],
+  )
+  const goalNames = new Map(goalChoices.map((goal) => [goal.id, goal.name]))
   // Read-only people see accounts only when there are some.
   const hasAccounts = !isReadOnly || (accounts ?? []).length > 0
   const {
@@ -875,6 +892,7 @@ export const Form = (properties: TFormProperties) => {
             options={analysisOptions}
             setOptions={setAnalysisOptions}
             isReadOnly={isReadOnly}
+            hasPlus={hasPlus}
             books={books.filter((item) => item.id !== finance?.id)}
             currencies={currencies}
           />
@@ -892,6 +910,7 @@ export const Form = (properties: TFormProperties) => {
                   onDelete={handleDeleteEntry}
                   draftKey={entryDraftKey}
                   isPrivate={isPrivate}
+                  goals={goalChoices}
                 />
               ) : (
                 <div
@@ -915,6 +934,7 @@ export const Form = (properties: TFormProperties) => {
                     onAdd={handleAddEntries}
                     draftKey={quickAddDraftKey}
                     isPrivate={isPrivate}
+                    goals={goalChoices}
                   />
                 </div>
               ))}
@@ -963,6 +983,7 @@ export const Form = (properties: TFormProperties) => {
                               history={history}
                               onSave={handleSaveEntry}
                               onDelete={handleDeleteEntry}
+                              goals={goalChoices}
                             />
                           </li>
                         )
@@ -979,6 +1000,7 @@ export const Form = (properties: TFormProperties) => {
                         isForeign
                           ? money(entryTotal(entry), entry.currency)
                           : '',
+                        entry.goal ? (goalNames.get(entry.goal) ?? '') : '',
                       ].filter(Boolean)
                       const isSelected = selectedIds.includes(entry.id)
                       const selectLabel = t(
