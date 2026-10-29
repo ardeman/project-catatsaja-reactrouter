@@ -121,14 +121,14 @@ export const MedicationForm = ({
       aria-label={t(
         medication ? 'health.medications.edit' : 'health.medications.add',
       )}
-      className="motion-enter rounded-lg border p-3 [&_[role=combobox]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight"
+      className="motion-enter @container rounded-lg border p-3 [&_[role=combobox]]:h-8 [&_input]:h-8 [&_label]:text-xs [&_label]:leading-tight"
     >
       <FormProvider {...formMethods}>
         <form
           onSubmit={onSubmit}
           className="grid gap-3"
         >
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid gap-2.5 @xs:grid-cols-2">
             <Input
               name="name"
               label={t('health.medications.form.name')}
@@ -211,7 +211,7 @@ export const MedicationForm = ({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid gap-2.5 @xs:grid-cols-2">
             <Input
               name="everyDays"
               type="number"
@@ -227,7 +227,7 @@ export const MedicationForm = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid gap-2.5 @xs:grid-cols-2">
             <div className="grid gap-1">
               <Label>{t('health.medications.form.course')}</Label>
               <Select

@@ -1,5 +1,5 @@
-import { BellRing, Plus, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { BellRing, ChevronDown, Plus, Trash2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/base/button'
@@ -24,9 +24,69 @@ import {
   isReminderFor,
   reminderStatus,
 } from '~/lib/utils/health-reminders'
+import { cn } from '~/lib/utils/shadcn'
 
 import { SectionInfo } from './section-info'
 import { TRemindersProperties } from './type'
+
+// A reminder's details on one line; when they don't fit (as in the side
+// column on wide screens), tapping them shows the rest.
+const ReminderDetail = ({ text }: { text: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isClipped, setIsClipped] = useState(false)
+  const element = useRef<HTMLSpanElement>(null)
+
+  // Runs again when the text switches between plain and tappable, so it
+  // watches the element on screen, not the one that was just replaced.
+  useEffect(() => {
+    const current = element.current
+    if (!current || isExpanded) {
+      return
+    }
+
+    const measure = () =>
+      setIsClipped(current.scrollWidth > current.clientWidth)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(current)
+
+    return () => observer.disconnect()
+  }, [text, isExpanded, isClipped])
+
+  if (!isClipped && !isExpanded) {
+    return (
+      <span
+        ref={element}
+        className="truncate text-xs text-muted-foreground"
+      >
+        {text}
+      </span>
+    )
+  }
+
+  return (
+    <button
+      type="button"
+      aria-expanded={isExpanded}
+      className="flex min-w-0 items-start gap-1 rounded-sm text-left text-xs text-muted-foreground hover:text-foreground"
+      onClick={() => setIsExpanded((value) => !value)}
+    >
+      <span
+        ref={element}
+        className={cn('min-w-0 flex-1', !isExpanded && 'truncate')}
+      >
+        {text}
+      </span>
+      <ChevronDown
+        aria-hidden
+        className={cn(
+          'mt-px size-3.5 shrink-0 transition-transform',
+          isExpanded && 'rotate-180',
+        )}
+      />
+    </button>
+  )
+}
 
 type TReminderKind = THealthReminder['kind']
 
@@ -231,8 +291,8 @@ export const Reminders = (properties: TRemindersProperties) => {
                   <span className="truncate text-sm font-medium">
                     {kindLabel(reminder.kind)}
                   </span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {[
+                  <ReminderDetail
+                    text={[
                       describe(reminder),
                       status.dueDate && !status.isDue
                         ? t('health.reminders.next', {
@@ -242,7 +302,7 @@ export const Reminders = (properties: TRemindersProperties) => {
                     ]
                       .filter(Boolean)
                       .join(' · ')}
-                  </span>
+                  />
                 </span>
                 {!isReadOnly && (
                   <UIButton
@@ -267,8 +327,8 @@ export const Reminders = (properties: TRemindersProperties) => {
       )}
 
       {isAdding && (
-        <div className="grid gap-3 rounded-lg border p-3 [&_label]:text-xs">
-          <div className="grid gap-3 sm:grid-cols-3">
+        <div className="@container grid gap-3 rounded-lg border p-3 [&_label]:text-xs">
+          <div className="grid gap-3 @md:grid-cols-3">
             <div className="grid gap-1">
               <Label>{t('health.reminders.kind')}</Label>
               <Select

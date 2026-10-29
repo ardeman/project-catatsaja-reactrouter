@@ -97,6 +97,13 @@ export const Form = (properties: TFormProperties) => {
         locale: i18n.language,
       })
     : ''
+  const permissionLabel = isEditable
+    ? !isOwner && t('form.permissions.shared')
+    : t('form.permissions.readOnly')
+  const dateWithPermission =
+    healthLog && permissionLabel
+      ? `${dateLabel} (${permissionLabel})`
+      : dateLabel
 
   const storedValues: THealthLogForm = {
     name: selectedHealthLog?.name ?? '',
@@ -389,12 +396,17 @@ export const Form = (properties: TFormProperties) => {
 
   return (
     <FormProvider {...formMethods}>
-      <div className="group/form is-shown mx-auto w-full max-w-3xl space-y-6">
+      {/* On wide screens the reminders, medicines and save date sit in a
+          sticky column beside the log; narrower, they stay between the form
+          and the sections. The bar stays a grid item so it sticks the whole
+          way down. The column scrolls on its own, so it pads (and pulls back
+          by) 1rem to keep the cards' shadows from being cut off. */}
+      <div className="group/form is-shown mx-auto grid w-full max-w-3xl items-start gap-6 xl:max-w-6xl xl:grid-cols-[minmax(0,1fr)_20rem] xl:grid-rows-[auto_auto_auto_1fr]">
         <CardStyleLayer
           isPage
           cardStyle={toCardStyle(healthLog?.cardStyle)}
         />
-        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-8">
+        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-8 xl:col-start-1">
           {healthLog ? (
             <Action
               className="w-full"
@@ -433,7 +445,7 @@ export const Form = (properties: TFormProperties) => {
         <form
           id={formId}
           onSubmit={handleCreate}
-          className="grid gap-3"
+          className="grid gap-3 xl:col-start-1"
         >
           <Textarea
             name="name"
@@ -527,29 +539,35 @@ export const Form = (properties: TFormProperties) => {
           )}
         </form>
 
-        <Reminders
-          log={values}
-          isOwner={!healthLog || isOwner}
-          isReadOnly={isReadOnly}
-          showPeriod={shouldShowPeriod}
-          onChange={(reminders) =>
-            setValue('reminders', reminders, { shouldDirty: true })
-          }
-          onOpen={openTab}
-        />
+        <aside className="grid gap-6 xl:sticky xl:top-4 xl:col-start-2 xl:row-span-4 xl:row-start-1 xl:-m-4 xl:max-h-[calc(100dvh-2rem)] xl:overflow-y-auto xl:p-4">
+          <Reminders
+            log={values}
+            isOwner={!healthLog || isOwner}
+            isReadOnly={isReadOnly}
+            showPeriod={shouldShowPeriod}
+            onChange={(reminders) =>
+              setValue('reminders', reminders, { shouldDirty: true })
+            }
+            onOpen={openTab}
+          />
 
-        <Medications
-          log={values}
-          isReadOnly={isReadOnly}
-          onChangeMedications={(medications) =>
-            setValue('medications', medications, { shouldDirty: true })
-          }
-          onChangeDoses={(doses) =>
-            setValue('doseLog', doses, { shouldDirty: true })
-          }
-        />
+          <Medications
+            log={values}
+            isReadOnly={isReadOnly}
+            onChangeMedications={(medications) =>
+              setValue('medications', medications, { shouldDirty: true })
+            }
+            onChangeDoses={(doses) =>
+              setValue('doseLog', doses, { shouldDirty: true })
+            }
+          />
+          <span className="hidden gap-1 text-xs text-muted-foreground xl:grid">
+            <span>{dateWithPermission}</span>
+            <SaveStatus status={saveStatus} />
+          </span>
+        </aside>
 
-        <div className="-mx-4 overflow-x-auto px-4">
+        <div className="-mx-4 overflow-x-auto px-4 xl:col-start-1">
           <Segmented
             label={t('health.sections')}
             value={tab}
@@ -565,31 +583,27 @@ export const Form = (properties: TFormProperties) => {
           />
         </div>
 
-        {tab === 'overview' && (
-          <Overview
-            {...sectionProperties}
-            onOpen={openTab}
-          />
-        )}
-        {tab === 'body' && <BodySection {...sectionProperties} />}
-        {labKind && (
-          <LabSection
-            {...sectionProperties}
-            key={labKind}
-            kind={labKind}
-          />
-        )}
-        {tab === 'calories' && <CaloriesSection {...sectionProperties} />}
-        {tab === 'period' && <PeriodSection {...sectionProperties} />}
+        <div className="grid gap-6 xl:col-start-1">
+          {tab === 'overview' && (
+            <Overview
+              {...sectionProperties}
+              onOpen={openTab}
+            />
+          )}
+          {tab === 'body' && <BodySection {...sectionProperties} />}
+          {labKind && (
+            <LabSection
+              {...sectionProperties}
+              key={labKind}
+              kind={labKind}
+            />
+          )}
+          {tab === 'calories' && <CaloriesSection {...sectionProperties} />}
+          {tab === 'period' && <PeriodSection {...sectionProperties} />}
+        </div>
       </div>
-      <span className="flex justify-center gap-2 text-xs text-muted-foreground">
-        <span>
-          {dateLabel}{' '}
-          {healthLog &&
-            (isEditable
-              ? !isOwner && `(${t('form.permissions.shared')})`
-              : `(${t('form.permissions.readOnly')})`)}
-        </span>
+      <span className="flex justify-center gap-2 text-xs text-muted-foreground xl:hidden">
+        <span>{dateWithPermission}</span>
         <SaveStatus status={saveStatus} />
       </span>
     </FormProvider>

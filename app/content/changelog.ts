@@ -42,6 +42,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'On a wide screen a health log puts its reminders and medicines in a column beside the measurements, so both stay in view. Tap the details of a reminder to read them in full when they do not fit.',
+          id: 'Di layar lebar, catatan kesehatan menaruh pengingat dan obatnya di kolom samping pengukuran, jadi keduanya tetap terlihat. Ketuk keterangan pengingat untuk membacanya utuh jika tidak muat.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again, beside Cancel and Save.',
