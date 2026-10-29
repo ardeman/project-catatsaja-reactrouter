@@ -249,6 +249,8 @@ describe('sharing and finance storage', () => {
       .click()
     // Deleting offers archiving instead; there is no separate Archive button.
     await hana.page.getByRole('button', { name: 'Archive instead' }).click()
+    // The closing dialog's title names the note until it is gone.
+    await hana.page.getByRole('dialog').waitFor({ state: 'hidden' })
     await hana.page.getByText('Archived (1)').waitFor({ timeout: 15_000 })
     assert.equal(
       await hana.page.getByText('Hana old idea').count(),
