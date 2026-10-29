@@ -33,7 +33,7 @@ export const readTypedEntries = async ({
   if (!firebase) {
     throw new Error('Firebase is not initialized.')
   }
-  const { getAI, getGenerativeModel, GoogleAIBackend, Schema } =
+  const { getAI, getGenerativeModel, AgentPlatformBackend, Schema } =
     await import('firebase/ai')
   const entry = Schema.object({
     properties: {
@@ -50,7 +50,7 @@ export const readTypedEntries = async ({
       entries: Schema.array({ items: entry }),
     },
   })
-  const ai = getAI(firebase, { backend: new GoogleAIBackend() })
+  const ai = getAI(firebase, { backend: new AgentPlatformBackend() })
   const model = getGenerativeModel(ai, {
     model: geminiModel,
     generationConfig: { responseMimeType: 'application/json', responseSchema },

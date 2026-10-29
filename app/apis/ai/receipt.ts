@@ -23,9 +23,9 @@ export const readReceipt = async (image: {
   if (!firebase) {
     throw new Error('Firebase is not initialized.')
   }
-  const { getAI, getGenerativeModel, GoogleAIBackend, Schema } =
+  const { getAI, getGenerativeModel, AgentPlatformBackend, Schema } =
     await import('firebase/ai')
-  const ai = getAI(firebase, { backend: new GoogleAIBackend() })
+  const ai = getAI(firebase, { backend: new AgentPlatformBackend() })
   const itemSchema = Schema.object({
     properties: {
       description: Schema.string(),
