@@ -146,6 +146,13 @@ export const releases: TRelease[] = [
           id: 'Di Safari pada iPhone, langkah memasang aplikasi kini menyebutkan letak tombol Bagikan: di menu di balik tombol ≡ di bilah alamat.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Scanning a receipt now accepts HEIC photos, the format iPhones save in, in every browser.',
+          id: 'Pindai struk kini menerima foto HEIC, format yang disimpan iPhone, di semua peramban.',
+        },
+      },
     ],
   },
   {

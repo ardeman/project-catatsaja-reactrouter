@@ -165,7 +165,7 @@ export const ReceiptScan = (properties: TReceiptScanProperties) => {
       <input
         ref={fileInput}
         type="file"
-        accept="image/*"
+        accept="image/*,.heic,.heif"
         className="hidden"
         onChange={handleFile}
         aria-hidden="true"
