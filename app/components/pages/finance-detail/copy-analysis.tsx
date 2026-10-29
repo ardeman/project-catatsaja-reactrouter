@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Modal } from '~/components/base/modal'
+import { PlusNote } from '~/components/base/plus-note'
 import {
   Select,
   SelectContent,
@@ -41,6 +42,7 @@ const knownRate = (from: string, to: string, currencies: TCurrency[]) => {
 // Copies another book's groups, budgets, keywords, savings goals and payday
 // into this one (a Plus feature, for writers), adding only what it lacks.
 // The copy goes into the book's form, so it saves and undoes like any edit.
+// Free accounts see the button turned off, with what Plus is.
 export const CopyAnalysis = ({
   books,
   currencies,
@@ -54,7 +56,7 @@ export const CopyAnalysis = ({
   const labelId = useId()
 
   const sources = books.filter((book) => setupSize(book) > 0)
-  if (isReadOnly || !hasPlus || sources.length === 0) return
+  if (isReadOnly || sources.length === 0) return
 
   const source = sources.find((book) => book.id === sourceId) ?? sources[0]
   const currency = getValues('currency')
@@ -91,16 +93,20 @@ export const CopyAnalysis = ({
 
   return (
     <>
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        className="justify-self-start"
-        onClick={() => setIsOpen(true)}
-      >
-        <Copy className="size-3.5" />
-        {t('finances.analysis.copy.open')}
-      </Button>
+      <div className="grid gap-1.5">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="justify-self-start"
+          disabled={!hasPlus}
+          onClick={() => setIsOpen(true)}
+        >
+          <Copy className="size-3.5" />
+          {t('finances.analysis.copy.open')}
+        </Button>
+        {!hasPlus && <PlusNote>{t('finances.analysis.copy.plus')}</PlusNote>}
+      </div>
       <Modal
         open={isOpen}
         setOpen={setIsOpen}

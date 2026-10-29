@@ -29,6 +29,7 @@ const errorKeys: Record<string, string> = {
   'encryption/locked': 'errors.encryptionLocked',
   'encryption/not-set-up': 'errors.encryptionNotSetUp',
   // Firebase AI Logic (Gemini), and what the app throws for its answers.
+  'ai/limit': 'errors.aiLimit',
   'fetch-error': 'errors.aiUnavailable',
   'api-not-enabled': 'errors.aiUnavailable',
   'response-error': 'errors.receiptUnreadable',
@@ -66,7 +67,7 @@ const codeOf = (error: unknown) => {
     const { customErrorData } = error as {
       customErrorData?: { status?: number }
     }
-    return customErrorData?.status === 429 ? 'resource-exhausted' : error.code
+    return customErrorData?.status === 429 ? 'ai/limit' : error.code
   }
   if (error instanceof DOMException) return error.name
   return error instanceof Error &&

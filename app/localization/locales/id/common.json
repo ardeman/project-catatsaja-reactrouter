@@ -710,6 +710,7 @@
       },
       "copy": {
         "open": "Salin dari buku lain",
+        "plus": "Menyalin dari buku lain memerlukan Catat Saja Plus.",
         "title": "Salin dari buku lain",
         "description": "Menambahkan kelompok kategori, anggaran, kata kunci, target tabungan yang belum tercapai, dan tanggal gajian dari buku lain. Yang sudah ada di buku ini tetap seperti semula. Perubahan tersimpan bersama buku.",
         "from": "Buku sumber",
@@ -1291,6 +1292,7 @@
     "encryptionLocked": "Buka perangkat ini untuk mengubah item terenkripsi",
     "encryptionNotSetUp": "Enkripsi belum diatur untuk akun ini",
     "aiUnavailable": "Pembaca struk sedang tidak tersedia. Coba lagi nanti.",
+    "aiLimit": "Gemini sudah mencapai batasnya untuk saat ini. Coba lagi nanti.",
     "receiptUnreadable": "Struk ini tidak terbaca. Coba foto seluruh struk yang lebih tajam dan terang.",
     "receiptEmpty": "Tidak ada struk di foto ini.",
     "imageUnreadable": "Gambar ini tidak bisa dibuka. Coba foto JPEG atau PNG.",
@@ -2053,6 +2055,33 @@
   "plus": {
     "soon": "Plus · segera hadir",
     "free": "Gratis",
-    "until": "Plus · sampai {{date}}"
+    "until": "Plus · sampai {{date}}",
+    "info": {
+      "open": "Apa itu Plus?",
+      "title": "Catat Saja Plus",
+      "description": "Langganan opsional untuk membiayai bagian yang perlu biaya untuk berjalan. Semua yang kamu pakai sekarang tetap gratis.",
+      "adds": {
+        "title": "Yang ditambahkan Plus",
+        "items": [
+          "Grup kategori milik buku itu sendiri, seperti Kebutuhan dan Keinginan",
+          "Anggaran, untuk semua pengeluaran atau per kategori, bulanan atau untuk seluruh buku",
+          "Target tabungan, dengan jumlah yang perlu disisihkan tiap gajian",
+          "Kata kunci, untuk menjumlahkan catatan yang keterangannya memuatnya",
+          "Menyalin semua itu dari buku lain",
+          "Nanti: lebih banyak pemakaian Gemini, laporan kesehatan dalam PDF, ekspor dan laporan keuangan tahunan, serta paket keluarga"
+        ]
+      },
+      "free": {
+        "title": "Yang tetap gratis",
+        "items": [
+          "Catatan, tugas, buku keuangan, dan log kesehatan, sebanyak yang kamu mau",
+          "Berbagi, dan enkripsi end-to-end",
+          "Analisis keuangan: grafik, kategori, perbandingan, dan akun",
+          "Bantuan Gemini, dalam batas tertentu",
+          "Melihat grup, anggaran, target, dan kata kunci buku yang ditambahkan orang dengan Plus"
+        ]
+      },
+      "payments": "Plus belum bisa dibeli. Begitu bisa, kamu akan menemukannya di sini."
+    }
   }
 }

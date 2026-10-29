@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { PlusNote } from '~/components/base/plus-note'
 import { Button } from '~/components/ui/button'
 import { useMoney } from '~/lib/hooks/use-money'
 import { usePlan } from '~/lib/hooks/use-plan'
@@ -171,9 +172,7 @@ export const CategoryGroups = ({
         </p>
       )}
       {!isReadOnly && !hasPlus && (
-        <p className="text-xs text-muted-foreground">
-          {t('finances.analysis.groups.plusToEdit')}
-        </p>
+        <PlusNote>{t('finances.analysis.groups.plusToEdit')}</PlusNote>
       )}
       {canEdit && (
         <CategoryGroupsEditor

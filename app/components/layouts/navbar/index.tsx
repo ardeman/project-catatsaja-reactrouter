@@ -13,6 +13,7 @@ import { useMediaQuery } from 'usehooks-ts'
 
 import { InstallApp } from '~/components/base/install-app'
 import { PlanBadge } from '~/components/base/plan-badge'
+import { PlusInfo } from '~/components/base/plus-info'
 import {
   Notifications,
   useNotifications,
@@ -85,6 +86,8 @@ export const Navbar = (properties: TProperties) => {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const searchReference = useRef<HTMLInputElement>(null)
   const [isSearching, setIsSearching] = useState(false)
+  // Outside the account menu, which closes as it opens.
+  const [isPlusOpen, setIsPlusOpen] = useState(false)
   const keyboard = useKeyboardInset(!isDesktop && isSearching)
   // The bottom row's place, shared by the tabs, the Search button and the box.
   const rowStyle = {
@@ -151,7 +154,13 @@ export const Navbar = (properties: TProperties) => {
                   <span className="truncate text-xs text-muted-foreground">
                     {userData?.email}
                   </span>
-                  <PlanBadge className="mt-1.5" />
+                  <DropdownMenuItem
+                    title={t('plus.info.open')}
+                    className="mt-1.5 w-fit cursor-pointer rounded-full p-0"
+                    onSelect={() => setIsPlusOpen(true)}
+                  >
+                    <PlanBadge />
+                  </DropdownMenuItem>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {userMenus(t).map((menu) => (
@@ -256,6 +265,10 @@ export const Navbar = (properties: TProperties) => {
           </button>
         </div>
       )}
+      <PlusInfo
+        open={isPlusOpen}
+        setOpen={setIsPlusOpen}
+      />
     </>
   )
 }

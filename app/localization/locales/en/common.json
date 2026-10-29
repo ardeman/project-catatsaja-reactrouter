@@ -710,6 +710,7 @@
       },
       "copy": {
         "open": "Copy from another book",
+        "plus": "Copying from another book needs Catat Saja Plus.",
         "title": "Copy from another book",
         "description": "Adds the other book's groups of categories, budgets, keywords, savings goals still to reach, and payday. What this book already has stays as it is. Changes save with the book.",
         "from": "Book to copy from",
@@ -1291,6 +1292,7 @@
     "encryptionLocked": "Unlock this device to change encrypted items",
     "encryptionNotSetUp": "Encryption isn't set up for this account",
     "aiUnavailable": "The receipt reader isn’t available right now. Try again later.",
+    "aiLimit": "Gemini has reached its limit for now. Try again later.",
     "receiptUnreadable": "This receipt couldn’t be read. Try a sharper, well-lit photo of the whole receipt.",
     "receiptEmpty": "No receipt was found in this photo.",
     "imageUnreadable": "This image can’t be opened. Try a JPEG or PNG photo.",
@@ -2053,6 +2055,33 @@
   "plus": {
     "soon": "Plus · coming soon",
     "free": "Free",
-    "until": "Plus · until {{date}}"
+    "until": "Plus · until {{date}}",
+    "info": {
+      "open": "What is Plus?",
+      "title": "Catat Saja Plus",
+      "description": "An optional subscription that pays for what costs money to run. Everything you use now stays free.",
+      "adds": {
+        "title": "What Plus adds",
+        "items": [
+          "A book's own groups of categories, such as Needs and Wants",
+          "Budgets, on all spending or per category, monthly or for the whole book",
+          "Savings goals, with what to put aside each payday",
+          "Keywords, to total the entries whose description has them",
+          "Copying these from another book",
+          "Later: more Gemini uses, health reports as PDF, finance exports and yearly reports, and a family plan"
+        ]
+      },
+      "free": {
+        "title": "What stays free",
+        "items": [
+          "Notes, tasks, finance books and health logs, as many as you like",
+          "Sharing, and end-to-end encryption",
+          "Finance analysis: charts, categories, comparisons and accounts",
+          "Gemini helpers, within a limit",
+          "Seeing a book's groups, budgets, goals and keywords someone with Plus added"
+        ]
+      },
+      "payments": "Plus can't be bought yet. When it can, you'll find it here."
+    }
   }
 }

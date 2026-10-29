@@ -42,6 +42,27 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'new',
+        text: {
+          en: 'Wondering what Plus is? Tap your plan in the account menu, or "What is Plus?" next to anything that needs it, to see what Plus adds, what stays free, and that it can’t be bought yet.',
+          id: 'Penasaran apa itu Plus? Ketuk paketmu di menu akun, atau "Apa itu Plus?" di samping hal yang memerlukannya, untuk melihat apa yang ditambahkan Plus, apa yang tetap gratis, dan bahwa Plus belum bisa dibeli.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Copy from another book now shows in a book’s analysis on free accounts too, saying it needs Plus, instead of not showing at all.',
+          id: 'Salin dari buku lain kini juga tampil di analisis buku pada akun gratis, dengan keterangan bahwa fitur ini memerlukan Plus, alih-alih tidak tampil sama sekali.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'When Gemini reaches its limit, it now says so, instead of the general "Too many attempts".',
+          id: 'Saat Gemini mencapai batasnya, kini muncul pesan tentang hal itu, bukan pesan umum "Terlalu banyak percobaan".',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: 'Error messages, such as a wrong password, are now easy to read.',
