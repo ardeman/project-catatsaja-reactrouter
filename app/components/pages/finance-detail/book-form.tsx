@@ -302,8 +302,12 @@ export const Form = (properties: TFormProperties) => {
     range: emptyEntryFilter,
   })
   const shownEntries = useMemo(
-    () => filterEntries(entries, filter),
-    [entries, filter],
+    () =>
+      filterEntries(entries, filter, {
+        categoryLabel: (category) =>
+          t(`finances.form.category.${category}.label`),
+      }),
+    [entries, filter, t],
   )
   const groupedEntries = useMemo(
     () => groupByDate(shownEntries),

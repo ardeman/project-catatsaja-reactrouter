@@ -28,6 +28,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'new',
+        text: {
+          en: "Search inside a book: the box above its entries looks through every entry's description and category, however old, and works together with the filters, with the totals of what it finds.",
+          id: 'Cari di dalam buku: kotak di atas entrinya mencari di keterangan dan kategori setiap entri, selama apa pun, dan bisa digabung dengan filter, lengkap dengan total hasilnya.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'A book found by searching for one of its entries now opens right at that entry, lit up for a moment, instead of at the top.',

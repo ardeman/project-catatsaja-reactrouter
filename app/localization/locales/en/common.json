@@ -815,6 +815,7 @@
     },
     "filter": {
       "label": "Filter",
+      "search": "Search entries",
       "clear": "Clear",
       "allTypes": "All",
       "allCategories": "All categories",

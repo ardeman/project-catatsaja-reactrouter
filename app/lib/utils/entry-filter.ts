@@ -1,4 +1,4 @@
-// Filtering a book's entries by type, category and date. No app imports
+// Filtering a book's entries by words, type, category and date. No app imports
 // (types only), so `pnpm test:unit` runs it directly.
 import type { TFinanceEntry } from '~/lib/types/finance'
 
@@ -14,6 +14,8 @@ export const entryPeriods = [
 export type TEntryPeriod = (typeof entryPeriods)[number]
 
 export type TEntryFilter = {
+  // Words looked for in the description and category name; empty for all.
+  text: string
   type: 'all' | TFinanceEntry['type']
   // Empty for every category.
   category: string
@@ -24,6 +26,7 @@ export type TEntryFilter = {
 }
 
 export const emptyEntryFilter: TEntryFilter = {
+  text: '',
   type: 'all',
   category: '',
   period: 'all',
@@ -84,7 +87,8 @@ export const periodRange = (
   }
 }
 
-// How many of the filters are in use, for the Filter button's badge.
+// How many of the Filter panel's filters are in use, for its badge (the
+// words have their own box).
 export const activeFilterCount = (filter: TEntryFilter) => {
   const { from, to } = periodRange(filter)
   return [filter.type !== 'all', filter.category !== '', !!(from || to)].filter(
@@ -92,14 +96,28 @@ export const activeFilterCount = (filter: TEntryFilter) => {
   ).length
 }
 
+type TFilterOptions = {
+  today?: Date
+  // The category's name in the person's language, so it can be searched.
+  categoryLabel?: (category: string) => string
+}
+
 export const filterEntries = (
   entries: TFinanceEntry[],
   filter: TEntryFilter,
-  today = new Date(),
+  {
+    today = new Date(),
+    categoryLabel = (category) => category,
+  }: TFilterOptions = {},
 ) => {
   const { from, to } = periodRange(filter, today)
+  const text = filter.text.trim().toLowerCase()
   return entries.filter(
     (entry) =>
+      (!text ||
+        `${entry.description} ${categoryLabel(entry.category)}`
+          .toLowerCase()
+          .includes(text)) &&
       (filter.type === 'all' || entry.type === filter.type) &&
       (!filter.category || entry.category === filter.category) &&
       (!from || entry.date >= from) &&

@@ -1,4 +1,4 @@
-// Tests for filtering a book's entries by type, category and date:
+// Tests for filtering a book's entries by words, type, category and date:
 //   pnpm test:unit
 // Plain Node (it runs the TypeScript directly): no emulators, no browser.
 
@@ -27,13 +27,13 @@ const entry = (id, type, category, date) => ({
 
 const entries = [
   entry('salary', 'income', 'salary', '2026-10-01'),
-  entry('lunch', 'expense', 'fnb', '2026-10-20'),
+  { ...entry('lunch', 'expense', 'fnb', '2026-10-20'), description: 'Nasi Padang' },
   entry('rice', 'expense', 'groceries', '2026-09-30'),
   entry('old', 'expense', 'fnb', '2025-12-31'),
 ]
 const today = new Date(2026, 9, 27)
 const ids = (filter) =>
-  filterEntries(entries, { ...emptyEntryFilter, ...filter }, today).map(
+  filterEntries(entries, { ...emptyEntryFilter, ...filter }, { today }).map(
     (item) => item.id,
   )
 
@@ -46,6 +46,20 @@ describe('filterEntries', () => {
     assert.deepEqual(ids({ type: 'expense' }), ['lunch', 'rice', 'old'])
     assert.deepEqual(ids({ category: 'fnb' }), ['lunch', 'old'])
     assert.deepEqual(ids({ type: 'income', category: 'fnb' }), [])
+  })
+
+  test('by words in the description or the category name', () => {
+    assert.deepEqual(ids({ text: '  padang ' }), ['lunch'])
+    assert.deepEqual(ids({ text: 'fnb' }), ['lunch', 'old'])
+    assert.deepEqual(
+      filterEntries(
+        entries,
+        { ...emptyEntryFilter, text: 'groc' },
+        { categoryLabel: (category) => `${category} label` },
+      ).map((item) => item.id),
+      ['rice'],
+    )
+    assert.deepEqual(ids({ text: 'padang', period: 'lastMonth' }), [])
   })
 
   test('by period', () => {
@@ -111,6 +125,8 @@ describe('activeFilterCount', () => {
       }),
       3,
     )
+    // The words have their own box.
+    assert.equal(activeFilterCount({ ...emptyEntryFilter, text: 'rice' }), 0)
     // A custom period with no dates filters nothing.
     assert.equal(
       activeFilterCount({ ...emptyEntryFilter, period: 'custom' }),
