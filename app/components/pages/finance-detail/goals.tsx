@@ -186,7 +186,7 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
                           )}
                         </div>
                         {goal.realized > 0 && (
-                          <p className="text-xs tabular-nums">
+                          <p className="text-xs text-viz-balance tabular-nums">
                             {t('finances.analysis.goals.realized', {
                               spent: money(goal.realized, book),
                             })}
@@ -198,9 +198,11 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
                   <p
                     className={cn(
                       'text-xs',
-                      paydays === 0 && shortfall > 0
-                        ? 'text-destructive-text'
-                        : 'text-muted-foreground',
+                      shortfall === 0
+                        ? 'text-income'
+                        : paydays === 0
+                          ? 'text-destructive-text'
+                          : 'text-expense',
                     )}
                   >
                     {shortfall > 0

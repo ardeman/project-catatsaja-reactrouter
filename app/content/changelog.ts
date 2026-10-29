@@ -23,6 +23,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'Savings goals in a book’s analysis use color: what was realized in blue, a covered month in green, and what is still short in orange.',
+          id: 'Target tabungan di analisis buku kini berwarna: yang terealisasi biru, bulan yang sudah cukup hijau, dan yang masih kurang oranye.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'A savings goal can now be due up to ten years ahead, instead of five.',
           id: 'Target tabungan kini bisa jatuh tempo hingga sepuluh tahun ke depan, bukan lima.',
         },
