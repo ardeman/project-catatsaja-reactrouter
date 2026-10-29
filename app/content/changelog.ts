@@ -70,6 +70,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'On a wide screen Settings shows its sections in two columns, so more of them fit without scrolling.',
+          id: 'Di layar lebar, Pengaturan menampilkan bagiannya dalam dua kolom, sehingga lebih banyak yang terlihat tanpa menggulir.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again, beside Cancel and Save.',

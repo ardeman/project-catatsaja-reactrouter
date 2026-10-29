@@ -1,3 +1,5 @@
+import { CardColumns } from '~/components/base/card-columns'
+
 import { Appearance } from './appearance'
 import { DateFormat } from './date-format'
 import { Navigation } from './navigation'
@@ -6,12 +8,14 @@ import { Push } from './push'
 
 export const GeneralSettingsPage = () => {
   return (
-    <div className="grid gap-6">
-      <Profile />
-      <Appearance />
-      <DateFormat />
-      <Navigation />
-      <Push />
-    </div>
+    <CardColumns
+      cards={[
+        { key: 'profile', column: 0, node: <Profile /> },
+        { key: 'appearance', column: 1, node: <Appearance /> },
+        { key: 'date-format', column: 0, node: <DateFormat /> },
+        { key: 'navigation', column: 1, node: <Navigation /> },
+        { key: 'push', column: 0, node: <Push /> },
+      ]}
+    />
   )
 }

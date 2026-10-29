@@ -48,7 +48,7 @@ export const Health = () => {
   }
 
   return (
-    <Card>
+    <Card className="xl:col-span-2">
       <CardHeader>
         <CardTitle className="flex items-center justify-between gap-2">
           {t('settings.health.title')}

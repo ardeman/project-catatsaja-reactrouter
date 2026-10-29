@@ -5,7 +5,7 @@ import { ManageCurrencies } from './manage'
 export const CurrencySettingsPage = () => {
   return (
     <CurrencySettingsProvider>
-      <div className="grid gap-6">
+      <div className="grid items-start gap-6 xl:grid-cols-2">
         <CurrencyFormat />
         <ManageCurrencies />
       </div>
