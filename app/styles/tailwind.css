@@ -237,10 +237,10 @@
     /* The colour of app pages (.app-background), also around them. */
     --page: color-mix(in srgb, hsl(var(--muted)) 40%, hsl(var(--background)));
     /* Where content starts below the installed app's see-through status bar
-       on iPhone: iOS blurs the page's top edge under it, about half as far
-       again below, so content stays clear of that at rest. 0 wherever there
-       is no top safe area (browser tabs, desktops). */
-    --top-inset: calc(env(safe-area-inset-top) * 1.5);
+       on iPhone: iOS blurs the page's top edge under it, about a quarter as
+       far again below, so content stays clear of that at rest. 0 wherever
+       there is no top safe area (browser tabs, desktops). */
+    --top-inset: calc(env(safe-area-inset-top) * 1.25);
     --glass-float-tint: hsl(var(--background) / 0.72);
     --glass-thick-tint: hsl(var(--background) / 0.9);
     --glass-sheen:

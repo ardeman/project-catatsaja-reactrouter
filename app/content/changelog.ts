@@ -30,6 +30,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'On iPhone, pages in the installed app start a little higher, so more fits on the screen.',
+          id: 'Di iPhone, halaman di aplikasi yang terpasang kini mulai sedikit lebih atas, jadi lebih banyak yang muat di layar.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'The period calendar turns months up and down: swipe up for the next month and down for the one before (or scroll over it), and the arrows slide it the same way.',
           id: 'Kalender haid kini berganti bulan ke atas dan ke bawah: geser ke atas untuk bulan berikutnya dan ke bawah untuk bulan sebelumnya (atau gulir di atasnya), dan tombol panah menggesernya dengan cara yang sama.',
         },
