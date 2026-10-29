@@ -158,7 +158,11 @@
         "placeholder": "Start writing here…",
         "hint": "Choose Format (T) in the bar or right-click to format your note."
       },
-      "saveShortcut": "⌘S / Ctrl+S to save"
+      "saveShortcut": "⌘S / Ctrl+S to save",
+      "outline": {
+        "title": "Outline",
+        "empty": "Headings you add show up here, so you can jump to them."
+      }
     },
     "toast": {
       "deleted": "Note deleted",

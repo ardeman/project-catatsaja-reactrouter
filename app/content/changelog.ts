@@ -35,6 +35,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'On a wide screen a note gets more room, with a panel beside it showing when it was saved and an outline of its headings that you can click to jump to.',
+          id: 'Di layar lebar, catatan mendapat ruang lebih, dengan panel di sampingnya yang menunjukkan kapan disimpan dan kerangka judul bagiannya yang bisa diklik untuk langsung menuju ke sana.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again, beside Cancel and Save.',

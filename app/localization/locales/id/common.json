@@ -158,7 +158,11 @@
         "placeholder": "Mulai menulis di sini…",
         "hint": "Pilih Format (T) di bilah atau klik kanan untuk memformat catatan."
       },
-      "saveShortcut": "⌘S / Ctrl+S untuk menyimpan"
+      "saveShortcut": "⌘S / Ctrl+S untuk menyimpan",
+      "outline": {
+        "title": "Kerangka",
+        "empty": "Judul bagian yang kamu tambahkan muncul di sini, agar bisa langsung dituju."
+      }
     },
     "toast": {
       "deleted": "Catatan dihapus",

@@ -34,6 +34,7 @@ import { cn } from '~/lib/utils/shadcn'
 import { noteSchema } from '~/lib/validations/note'
 
 import { AiHelpers } from './ai-helpers'
+import { SidePanel } from './side-panel'
 import { TFormProperties } from './type'
 
 const isSameNote = (a: TNoteForm, b: TNoteForm) =>
@@ -63,6 +64,11 @@ export const Form = (properties: TFormProperties) => {
   const isOwner = note?.owner === userData?.uid
   const isEditable = isOwner || canWrite
   const isReadOnly = !!note && !isEditable
+  const permissionLabel = isEditable
+    ? !isOwner && t('form.permissions.shared')
+    : t('form.permissions.readOnly')
+  const dateWithPermission =
+    note && permissionLabel ? `${dateLabel} (${permissionLabel})` : dateLabel
   const sharedCount = new Set(
     [
       ...(note?.permissions?.read || []),
@@ -107,6 +113,7 @@ export const Form = (properties: TFormProperties) => {
   const [activeFormats, setActiveFormats] = useState<TEditorFormat[]>([])
   const isCreating = useRef(false)
   const formElement = useRef<HTMLFormElement>(null)
+  const contentElement = useRef<HTMLDivElement>(null)
   // Bumped to start the editor again from the form, after an AI helper
   // changed the note (the editor only takes outside changes when idle).
   const [editorVersion, setEditorVersion] = useState(0)
@@ -229,103 +236,108 @@ export const Form = (properties: TFormProperties) => {
 
   return (
     <FormProvider {...formMethods}>
-      <form
-        ref={formElement}
-        onSubmit={handleCreate}
-        className="group/form is-shown mx-auto w-full max-w-3xl space-y-4"
-      >
-        <CardStyleLayer
-          isPage
-          cardStyle={toCardStyle(note?.cardStyle)}
-        />
-        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex flex-col gap-1 md:top-8">
-          <Action
-            className="w-full"
-            buttonClassName="glass-surface"
-            isLoading={isCreatePending}
-            isCreate={!note}
-            disabled={!note && !isDirty}
-            handleBack={handleBackNote}
-            {...(note && {
-              isOwner,
-              isEditable,
-              handleDelete: () => handleDeleteNote({ note }),
-              isArchived: note.isArchived,
-              handleArchive: () => archive('notes', note.id, !note.isArchived),
-              handleShare: () => handleShareNote({ note }),
-              handleUnlink: () => handleUnlinkNote({ note }),
-              sharedCount,
-              cardStyle: toCardStyle(note.cardStyle),
-              handleCardStyle: (next: TCardStyle) =>
-                updateCardStyle('notes', note.id, next),
-            })}
-            {...historyActions}
-            {...(!isReadOnly && {
-              handleToggleFormat: () => setIsFormatting((value) => !value),
-              isFormatting,
-            })}
-            extra={aiMenu}
+      <div className="mx-auto grid w-full max-w-4xl items-start gap-6 xl:max-w-6xl xl:grid-cols-[minmax(0,1fr)_16rem]">
+        <form
+          ref={formElement}
+          onSubmit={handleCreate}
+          className="group/form is-shown w-full space-y-4"
+        >
+          <CardStyleLayer
+            isPage
+            cardStyle={toCardStyle(note?.cardStyle)}
           />
-          {isFormatting && !isReadOnly && (
-            <FormattingBar
-              buttonClassName={cn(actionButtonClassName, 'glass-surface')}
-              active={activeFormats}
-              onFormat={(value) => formatEditor.current?.(value)}
+          <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex flex-col gap-1 md:top-8">
+            <Action
+              className="w-full"
+              buttonClassName="glass-surface"
+              isLoading={isCreatePending}
+              isCreate={!note}
+              disabled={!note && !isDirty}
+              handleBack={handleBackNote}
+              {...(note && {
+                isOwner,
+                isEditable,
+                handleDelete: () => handleDeleteNote({ note }),
+                isArchived: note.isArchived,
+                handleArchive: () =>
+                  archive('notes', note.id, !note.isArchived),
+                handleShare: () => handleShareNote({ note }),
+                handleUnlink: () => handleUnlinkNote({ note }),
+                sharedCount,
+                cardStyle: toCardStyle(note.cardStyle),
+                handleCardStyle: (next: TCardStyle) =>
+                  updateCardStyle('notes', note.id, next),
+              })}
+              {...historyActions}
+              {...(!isReadOnly && {
+                handleToggleFormat: () => setIsFormatting((value) => !value),
+                isFormatting,
+              })}
+              extra={aiMenu}
             />
-          )}
-        </div>
-        <div className="glass-surface rounded-xl border p-4 sm:p-6 md:p-8">
-          <Textarea
-            name="title"
-            aria-label={t('notes.form.title.label')}
-            placeholder={t('notes.form.title.label')}
-            inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
-            autoFocus={!note} // eslint-disable-line jsx-a11y/no-autofocus -- new notes only; `note` is set from the first render
-            rows={1}
-            onKeyDown={(event) => {
-              if (event.key !== 'Enter' && event.key !== 'ArrowDown') {
-                return
-              }
-
-              event.preventDefault()
-              setFocus('content')
-            }}
-            readOnly={isReadOnly}
-          />
-          <div className="mt-5">
-            <MilkdownEditor
-              key={`${note?.id ?? 'create'}-${editorVersion}`}
-              name="content"
-              label={t('notes.form.content.label')}
-              placeholder={t('notes.form.content.placeholder')}
-              previousName="title"
-              readOnly={isReadOnly}
-              value={note?.content}
-              registerSync={registerSync}
-              registerFormat={registerFormat}
-              onActiveFormatsChange={setActiveFormats}
-            />
+            {isFormatting && !isReadOnly && (
+              <FormattingBar
+                buttonClassName={cn(actionButtonClassName, 'glass-surface')}
+                active={activeFormats}
+                onFormat={(value) => formatEditor.current?.(value)}
+              />
+            )}
           </div>
-          {!isReadOnly && !watchContent.trim() && (
-            <p className="mt-4 text-xs text-muted-foreground">
-              {t('notes.form.content.hint')}
+          <div
+            ref={contentElement}
+            className="glass-surface rounded-xl border p-4 sm:p-6 md:p-8 [&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-28"
+          >
+            <Textarea
+              name="title"
+              aria-label={t('notes.form.title.label')}
+              placeholder={t('notes.form.title.label')}
+              inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
+              autoFocus={!note} // eslint-disable-line jsx-a11y/no-autofocus -- new notes only; `note` is set from the first render
+              rows={1}
+              onKeyDown={(event) => {
+                if (event.key !== 'Enter' && event.key !== 'ArrowDown') {
+                  return
+                }
+
+                event.preventDefault()
+                setFocus('content')
+              }}
+              readOnly={isReadOnly}
+            />
+            <div className="mt-5">
+              <MilkdownEditor
+                key={`${note?.id ?? 'create'}-${editorVersion}`}
+                name="content"
+                label={t('notes.form.content.label')}
+                placeholder={t('notes.form.content.placeholder')}
+                previousName="title"
+                readOnly={isReadOnly}
+                value={note?.content}
+                registerSync={registerSync}
+                registerFormat={registerFormat}
+                onActiveFormatsChange={setActiveFormats}
+              />
+            </div>
+            {!isReadOnly && !watchContent.trim() && (
+              <p className="mt-4 text-xs text-muted-foreground">
+                {t('notes.form.content.hint')}
+              </p>
+            )}
+          </div>
+          {!isReadOnly && (
+            <p className="text-center text-xs text-muted-foreground">
+              {t('notes.form.saveShortcut')}
             </p>
           )}
-        </div>
-        {!isReadOnly && (
-          <p className="text-center text-xs text-muted-foreground">
-            {t('notes.form.saveShortcut')}
-          </p>
-        )}
-      </form>
-      <span className="flex justify-center gap-2 text-xs text-muted-foreground">
-        <span>
-          {dateLabel}{' '}
-          {note &&
-            (isEditable
-              ? !isOwner && `(${t('form.permissions.shared')})`
-              : `(${t('form.permissions.readOnly')})`)}
-        </span>
+        </form>
+        <SidePanel
+          contentReference={contentElement}
+          dateLabel={dateWithPermission}
+          saveStatus={saveStatus}
+        />
+      </div>
+      <span className="flex justify-center gap-2 text-xs text-muted-foreground xl:hidden">
+        <span>{dateWithPermission}</span>
         <SaveStatus status={saveStatus} />
       </span>
     </FormProvider>

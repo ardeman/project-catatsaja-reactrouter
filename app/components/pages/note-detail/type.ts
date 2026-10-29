@@ -1,3 +1,6 @@
+import { RefObject } from 'react'
+
+import { TSaveStatus } from '~/components/base/save-status'
 import { TNoteResponse } from '~/lib/types/note'
 
 export type TFormProperties = {
@@ -13,4 +16,11 @@ export type TAiHelpersProperties = {
   onApply: (note: { title: string; content: string }) => void
   // The icon bar's button style.
   triggerClassName: string
+}
+
+export type TSidePanelProperties = {
+  // The note's card; the outline reads the editor's headings from it.
+  contentReference: RefObject<HTMLDivElement | null>
+  dateLabel: string
+  saveStatus: TSaveStatus
 }
