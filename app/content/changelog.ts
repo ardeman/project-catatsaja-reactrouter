@@ -107,6 +107,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: "Drag a book's calculator by its top bar to move it anywhere on the screen.",
+          id: 'Seret kalkulator di buku pada bilah atasnya untuk memindahkannya ke mana saja di layar.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'In Safari on iPhone, the steps to install the app now say where its Share button is: in the menu behind the ≡ button in the address bar.',
           id: 'Di Safari pada iPhone, langkah memasang aplikasi kini menyebutkan letak tombol Bagikan: di menu di balik tombol ≡ di bilah alamat.',
         },

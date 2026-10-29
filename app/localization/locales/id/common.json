@@ -502,7 +502,8 @@
       "clear": "Hapus",
       "back": "Hapus terakhir",
       "copy": "Salin hasil",
-      "copied": "Hasil disalin"
+      "copied": "Hasil disalin",
+      "move": "Seret untuk memindahkan"
     },
     "accounts": {
       "title": "Akunmu",

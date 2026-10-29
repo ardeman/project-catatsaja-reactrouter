@@ -1,5 +1,13 @@
 import { Copy, Delete, X } from 'lucide-react'
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef } from 'react'
+import {
+  Dispatch,
+  PointerEvent,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '~/components/ui/button'
@@ -38,8 +46,21 @@ const appendKey = (expression: string, key: string) => {
   return `${expression}${key}`
 }
 
+// Keeps a box moved by (x, y) inside the window, a small margin from its
+// edges.
+const clampOffset = (rect: DOMRect, x: number, y: number) => {
+  const margin = 8
+  const clamp = (value: number, min: number, max: number) =>
+    Math.min(Math.max(value, min), Math.max(min, max))
+  return {
+    x: clamp(x, margin - rect.left, innerWidth - margin - rect.right),
+    y: clamp(y, margin - rect.top, innerHeight - margin - rect.bottom),
+  }
+}
+
 // A floating calculator for quick sums beside a book's entries. It stays
-// open while scrolling and takes the sum of selected entries.
+// open while scrolling, takes the sum of selected entries, and can be
+// dragged by its header anywhere on the screen.
 export const Calculator = ({
   expression,
   setExpression,
@@ -52,6 +73,51 @@ export const Calculator = ({
   // After "=", a digit starts a new calculation and an operator goes on
   // from the result.
   const isResult = useRef(false)
+  const panel = useRef<HTMLElement>(null)
+  // How far it was dragged from where it opens.
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const drag = useRef<{ x: number; y: number; rect: DOMRect }>(undefined)
+
+  const startDrag = (event: PointerEvent<HTMLDivElement>) => {
+    if (!panel.current || (event.target as HTMLElement).closest('button'))
+      return
+    event.currentTarget.setPointerCapture(event.pointerId)
+    const box = panel.current.getBoundingClientRect()
+    drag.current = {
+      x: event.clientX - offset.x,
+      y: event.clientY - offset.y,
+      // Where it would be without the offset, so moves are measured
+      // from there.
+      rect: new DOMRect(
+        box.x - offset.x,
+        box.y - offset.y,
+        box.width,
+        box.height,
+      ),
+    }
+  }
+  const moveDrag = (event: PointerEvent<HTMLDivElement>) => {
+    if (!drag.current) return
+    const { x, y, rect } = drag.current
+    setOffset(clampOffset(rect, event.clientX - x, event.clientY - y))
+  }
+  const endDrag = () => {
+    drag.current = undefined
+  }
+
+  // A window of a new width (turning a phone) puts it back where it
+  // opens, which is always in view. Height alone changes when a phone's
+  // address bar hides while scrolling.
+  useEffect(() => {
+    let width: number | undefined
+    const observer = new ResizeObserver(([entry]) => {
+      const next = entry.contentRect.width
+      if (width !== undefined && next !== width) setOffset({ x: 0, y: 0 })
+      width = next
+    })
+    observer.observe(document.documentElement)
+    return () => observer.disconnect()
+  }, [])
 
   const format = (text: string) =>
     text.replaceAll(/\d+(?:\.\d*)?/g, (number) => {
@@ -157,13 +223,22 @@ export const Calculator = ({
 
   return (
     <section
+      ref={panel}
       aria-label={t('finances.calculator.label')}
+      style={{ translate: `${offset.x}px ${offset.y}px` }}
       className={cn(
         'glass-surface glass-float motion-fade grid w-64 gap-2 rounded-xl border p-3 shadow-lg',
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div
+        className="-m-1 flex cursor-grab touch-none items-center justify-between gap-2 rounded-lg p-1 select-none active:cursor-grabbing"
+        title={t('finances.calculator.move')}
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+      >
         <h2 className="text-sm font-medium">
           {t('finances.calculator.label')}
         </h2>

@@ -502,7 +502,8 @@
       "clear": "Clear",
       "back": "Delete last",
       "copy": "Copy result",
-      "copied": "Result copied"
+      "copied": "Result copied",
+      "move": "Drag to move"
     },
     "accounts": {
       "title": "Your accounts",
