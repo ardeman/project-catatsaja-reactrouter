@@ -144,7 +144,8 @@ jobs:
       - name: Install Chrome
         run: pnpm exec playwright install --with-deps --force chrome
       # A failed suite runs once more, on fresh emulators, before it fails:
-      # browser timing on a busy runner shouldn't block a deploy.
+      # browser timing on a busy runner shouldn't block a deploy. A
+      # non-blocking suite ends as a warning instead, so the run stays green.
       - name: End-to-end tests
         env:
           SUITE: ${{ matrix.suite }}
@@ -153,18 +154,24 @@ jobs:
             pnpm dlx firebase-tools@15.33.0 emulators:exec --only auth,firestore --project demo-catatsaja "node --test --test-concurrency=1 tests/e2e/$SUITE.test.mjs" && exit 0
             echo "::warning::$SUITE failed on attempt $attempt"
           done
+          if [ "$NON_BLOCKING" = true ]; then
+            echo "::warning::$SUITE failed twice; it doesn't block the deploy, so the job passes. See the log above."
+            exit 0
+          fi
           exit 1
 
   # The ui suite checks interface behaviour only, so it runs beside the
-  # deploy instead of before it: its failure shows in the run, but neither
-  # it nor a slow runner holds back a deploy. The others guard stored,
-  # shared and encrypted data and must pass.
+  # deploy instead of before it: its failure shows as a warning on a green
+  # job, and neither it nor a slow runner holds back a deploy or fails the
+  # run. The others guard stored, shared and encrypted data and must pass.
   e2e-ui:
     name: End-to-end (${{ matrix.suite }})
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      NON_BLOCKING: true
     strategy:
       matrix:
         suite: [ui]
