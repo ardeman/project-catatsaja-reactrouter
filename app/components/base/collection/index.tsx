@@ -164,7 +164,9 @@ export const Collection = <T extends TCollectionItem>(
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pb-24 md:gap-8 md:p-8">
       <Button
-        containerClassName="flex fixed bottom-[calc(4.5rem+var(--nav-bottom))] md:bottom-auto md:top-0 z-40 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8"
+        // Sticky in the page column from md up, so it centers over the
+        // cards beside the side menu rather than on the whole window.
+        containerClassName="flex fixed bottom-[calc(4.5rem+var(--nav-bottom))] md:sticky md:bottom-auto md:top-0 md:-my-8 z-40 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8"
         className="glass-surface glass-primary w-full border hover:bg-primary"
         // Toasts keep clear of it (app/styles/tailwind.css).
         data-floating-create
@@ -172,8 +174,8 @@ export const Collection = <T extends TCollectionItem>(
       >
         {createLabel}
       </Button>
-      <div className={cn('flex flex-1 flex-col gap-6 md:mt-16')}>
-        {/* Below the floating create button, so it never covers them. */}
+      <div className="flex flex-1 flex-col gap-6">
+        {/* Below the create button, so it never covers them. */}
         <Invitations collection={collection} />
         {renderContent()}
       </div>
