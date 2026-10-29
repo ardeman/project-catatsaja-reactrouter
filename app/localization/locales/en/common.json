@@ -243,7 +243,7 @@
       "addItem": "Add",
       "addSubtask": "Add a subtask",
       "doneEditing": "Done editing",
-      "editHint": "Check the circle to complete an item. Tap its text to edit. Hold and drag the grip to arrange items. While editing, the indent button (or Tab) makes an item a subtask of the one above it.",
+      "editHint": "Check the circle to complete an item. Tap its text to edit. Hold and drag the grip to arrange items. While editing, the indent button (or Tab) makes an item a subtask of the one above it. Uncheck a completed item to edit or move it again.",
       "addHint": "Press Enter or Add. Paste multiple lines to add several items. Unfinished text is kept when you save or leave.",
       "arrange": "Hold and drag to arrange",
       "indent": "Make it a subtask",
@@ -258,7 +258,7 @@
       "notFound": "This task doesn't exist or isn't shared with you"
     },
     "untitled": "Untitled task",
-    "completed": "Completed ({{count}} of {{total}})",
+    "completed": "Completed ({{count}})",
     "progress": "{{done}} of {{total}} done",
     "empty": {
       "title": "No tasks yet",

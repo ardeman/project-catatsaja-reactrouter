@@ -1,7 +1,15 @@
+import { TSaveStatus } from '~/components/base/save-status'
 import { TTaskForm, TTaskResponse } from '~/lib/types/task'
 
 export type TFormProperties = {
   task?: TTaskResponse
+}
+
+export type TSidePanelProperties = {
+  dateLabel: string
+  saveStatus: TSaveStatus
+  done: number
+  total: number
 }
 
 export type TDragPreview = {

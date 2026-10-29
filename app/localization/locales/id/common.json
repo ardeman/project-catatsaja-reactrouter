@@ -243,7 +243,7 @@
       "addItem": "Tambah",
       "addSubtask": "Tambah subtugas",
       "doneEditing": "Selesai mengedit",
-      "editHint": "Centang lingkaran untuk menyelesaikan item. Ketuk teksnya untuk mengedit. Tekan lama lalu seret pegangannya untuk mengurutkan item. Saat mengedit, tombol inden (atau Tab) menjadikan item subtugas dari item di atasnya.",
+      "editHint": "Centang lingkaran untuk menyelesaikan item. Ketuk teksnya untuk mengedit. Tekan lama lalu seret pegangannya untuk mengurutkan item. Saat mengedit, tombol inden (atau Tab) menjadikan item subtugas dari item di atasnya. Hapus centang item yang selesai untuk mengedit atau memindahkannya lagi.",
       "addHint": "Tekan Enter atau Tambah. Tempel beberapa baris untuk menambah beberapa item. Teks yang belum ditambahkan tetap disimpan saat menyimpan atau keluar.",
       "arrange": "Tekan lama lalu seret untuk mengurutkan",
       "indent": "Jadikan subtugas",
@@ -258,7 +258,7 @@
       "notFound": "Tugas ini tidak ada atau tidak dibagikan denganmu"
     },
     "untitled": "Tugas tanpa judul",
-    "completed": "Selesai ({{count}} dari {{total}})",
+    "completed": "Selesai ({{count}})",
     "progress": "{{done}} dari {{total}} selesai",
     "empty": {
       "title": "Belum ada tugas",

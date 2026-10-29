@@ -56,6 +56,7 @@ import { taskSchema } from '~/lib/validations/task'
 import { AiHelpers } from './ai-helpers'
 import { getClickedCaret } from './click-caret.client'
 import { ReorderHandle } from './reorder-handle'
+import { SidePanel } from './side-panel'
 import { TDragPreview, TFormProperties, TTaskList } from './type'
 
 type TItem = TTaskItem
@@ -702,11 +703,13 @@ export const Form = (properties: TFormProperties) => {
         : { index: dragPreview.target, side: 'before' as const }
       : undefined
 
-  const renderItem = (index: number) => {
+  // Items in the Completed section can only be unchecked or deleted: no
+  // editing, arranging or nesting.
+  const renderItem = (index: number, isDone = false) => {
     const field = fieldsContent[index]
     const item = watchContent[index]
     if (!field || !item) return null
-    const isEditing = selectedEdit === index
+    const isEditing = !isDone && selectedEdit === index
     const isSubitem = isSubtask(watchContent, index)
     const siblings = getSiblings(watchContent, index)
     const position = siblings.indexOf(index)
@@ -747,7 +750,21 @@ export const Form = (properties: TFormProperties) => {
             )}
           />
         )}
-        {!isReadOnly && (
+        {/* In the drag handle's place, so done items line up with open ones. */}
+        {!isReadOnly && isDone && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-10 w-7 shrink-0 text-muted-foreground hover:text-destructive sm:size-8 [&_svg]:size-3.5"
+            type="button"
+            aria-label={t('actions.deleteItem')}
+            title={t('actions.deleteItem')}
+            onClick={() => handleRemoveItem(index)}
+          >
+            <Trash />
+          </Button>
+        )}
+        {!isReadOnly && !isDone && (
           <ReorderHandle
             index={index}
             group={group}
@@ -782,6 +799,10 @@ export const Form = (properties: TFormProperties) => {
                   aria-label={t('tasks.form.item.label')}
                   onKeyDown={(event) => handleContentKeyDown(event, index)}
                 />
+              ) : isDone ? (
+                <span className="min-w-0 flex-1 py-1 text-sm wrap-break-word whitespace-pre-wrap text-muted-foreground line-through">
+                  {item.item}
+                </span>
               ) : (
                 <button
                   type="button"
@@ -923,155 +944,163 @@ export const Form = (properties: TFormProperties) => {
     )
   }
 
+  const permissionLabel = isEditable
+    ? !isOwner && t('form.permissions.shared')
+    : t('form.permissions.readOnly')
+  const dateWithPermission =
+    task && permissionLabel ? `${dateLabel} (${permissionLabel})` : dateLabel
+  const doneCount = watchContent.filter((item) => item.checked).length
+
   return (
     <FormProvider {...formMethods}>
-      <form
-        ref={formElement}
-        onSubmit={handleCreate}
-        className="group/form is-shown mx-auto w-full max-w-6xl space-y-4"
-      >
-        <CardStyleLayer
-          isPage
-          cardStyle={toCardStyle(task?.cardStyle)}
-        />
-        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-8">
-          {task ? (
-            <Action
-              className="w-full"
-              buttonClassName="glass-surface"
-              isOwner={isOwner}
-              isEditable={isEditable}
-              handleDelete={() => handleDeleteTask({ task })}
-              isArchived={task.isArchived}
-              handleArchive={() => archive('tasks', task.id, !task.isArchived)}
-              handleShare={() => handleShareTask({ task })}
-              handleUnlink={() => handleUnlinkTask({ task })}
-              sharedCount={sharedCount}
-              cardStyle={toCardStyle(task.cardStyle)}
-              handleCardStyle={(next) =>
-                updateCardStyle('tasks', task.id, next)
-              }
-              handleBack={handleBackTask}
-              handleToggleCheckAll={
-                isReadOnly ? undefined : handleToggleCheckAll
-              }
-              checkedAll={checkedAll}
-              extra={aiMenu}
-              {...historyActions}
-            />
-          ) : (
-            <Action
-              className="w-full"
-              buttonClassName="glass-surface"
-              isLoading={isCreatePending || isCreatingTask}
-              isCreate={true}
-              handleBack={handleBackTask}
-              disabled={!isDirty}
-              handleToggleCheckAll={
-                isReadOnly ? undefined : handleToggleCheckAll
-              }
-              checkedAll={checkedAll}
-              extra={aiMenu}
-              {...historyActions}
-            />
-          )}
-        </div>
-        <Textarea
-          name="title"
-          placeholder={t('tasks.form.title.label')}
-          inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
-          autoFocus={!task} // eslint-disable-line jsx-a11y/no-autofocus -- new lists only; `task` is set from the first render
-          rows={1}
-          onKeyDown={(event) => {
-            if (event.key !== 'Enter' && event.key !== 'ArrowDown') {
-              return
-            }
-
-            event.preventDefault()
-            setFocus('item')
-          }}
-          onFocus={() => setSelectedEdit(undefined)}
-          readOnly={isReadOnly}
-        />
-        <div className="space-y-1">
-          {watchContent.length > 0 && (
-            <p className="text-sm text-muted-foreground">
-              {t('tasks.progress', {
-                done: watchContent.filter((item) => item.checked).length,
-                total: watchContent.length,
-              })}
-            </p>
-          )}
-          {!isReadOnly && (
-            <p className="pb-2 text-xs text-muted-foreground">
-              {t('tasks.form.editHint')}
-            </p>
-          )}
-          {openIndexes.map((index) => renderItem(index))}
-        </div>
-        {!isReadOnly && (
-          <div className="pl-15 sm:pl-16">
-            <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
-              <Textarea
-                name="item"
-                aria-label={t('tasks.form.placeholder.label')}
-                placeholder={t('tasks.form.placeholder.label')}
-                className="w-full min-w-0 sm:flex-1"
-                inputClassName={inputClassName}
-                rows={1}
-                readOnly={isReadOnly}
-                onKeyDown={handleNewItemKeyDown}
-                onPaste={handleNewItemPaste}
-                onFocus={() => setSelectedEdit(undefined)}
+      <div className="mx-auto grid w-full max-w-6xl items-start gap-6 xl:grid-cols-[minmax(0,1fr)_16rem]">
+        <form
+          ref={formElement}
+          onSubmit={handleCreate}
+          className="group/form is-shown w-full space-y-4"
+        >
+          <CardStyleLayer
+            isPage
+            cardStyle={toCardStyle(task?.cardStyle)}
+          />
+          <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-8">
+            {task ? (
+              <Action
+                className="w-full"
+                buttonClassName="glass-surface"
+                isOwner={isOwner}
+                isEditable={isEditable}
+                handleDelete={() => handleDeleteTask({ task })}
+                isArchived={task.isArchived}
+                handleArchive={() =>
+                  archive('tasks', task.id, !task.isArchived)
+                }
+                handleShare={() => handleShareTask({ task })}
+                handleUnlink={() => handleUnlinkTask({ task })}
+                sharedCount={sharedCount}
+                cardStyle={toCardStyle(task.cardStyle)}
+                handleCardStyle={(next) =>
+                  updateCardStyle('tasks', task.id, next)
+                }
+                handleBack={handleBackTask}
+                handleToggleCheckAll={
+                  isReadOnly ? undefined : handleToggleCheckAll
+                }
+                checkedAll={checkedAll}
+                extra={aiMenu}
+                {...historyActions}
               />
-              <Button
-                type="button"
-                className="min-h-11 self-end sm:self-auto"
-                disabled={!watchItem.trim()}
-                onClick={() => addPendingItems()}
-              >
-                <Plus />
-                {t('tasks.form.addItem')}
-              </Button>
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t('tasks.form.addHint')}
-            </p>
+            ) : (
+              <Action
+                className="w-full"
+                buttonClassName="glass-surface"
+                isLoading={isCreatePending || isCreatingTask}
+                isCreate={true}
+                handleBack={handleBackTask}
+                disabled={!isDirty}
+                handleToggleCheckAll={
+                  isReadOnly ? undefined : handleToggleCheckAll
+                }
+                checkedAll={checkedAll}
+                extra={aiMenu}
+                {...historyActions}
+              />
+            )}
           </div>
-        )}
-        {doneIndexes.length > 0 && (
-          <section className="space-y-1 border-t pt-4">
-            <div className="flex items-center justify-between gap-2">
-              <h2 className="text-xs font-medium text-muted-foreground">
-                {t('tasks.completed', {
-                  count: doneIndexes.length,
+          <Textarea
+            name="title"
+            placeholder={t('tasks.form.title.label')}
+            inputClassName="border-none ring-0 text-xl md:text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-hidden resize-none min-h-0"
+            autoFocus={!task} // eslint-disable-line jsx-a11y/no-autofocus -- new lists only; `task` is set from the first render
+            rows={1}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter' && event.key !== 'ArrowDown') {
+                return
+              }
+
+              event.preventDefault()
+              setFocus('item')
+            }}
+            onFocus={() => setSelectedEdit(undefined)}
+            readOnly={isReadOnly}
+          />
+          <div className="space-y-1">
+            {watchContent.length > 0 && (
+              <p className="text-sm text-muted-foreground xl:hidden">
+                {t('tasks.progress', {
+                  done: doneCount,
                   total: watchContent.length,
                 })}
-              </h2>
-              {!isReadOnly && (
+              </p>
+            )}
+            {!isReadOnly && (
+              <p className="pb-2 text-xs text-muted-foreground">
+                {t('tasks.form.editHint')}
+              </p>
+            )}
+            {openIndexes.map((index) => renderItem(index))}
+          </div>
+          {!isReadOnly && (
+            <div className="pl-15 sm:pl-16">
+              <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+                <Textarea
+                  name="item"
+                  aria-label={t('tasks.form.placeholder.label')}
+                  placeholder={t('tasks.form.placeholder.label')}
+                  className="w-full min-w-0 sm:flex-1"
+                  inputClassName={inputClassName}
+                  rows={1}
+                  readOnly={isReadOnly}
+                  onKeyDown={handleNewItemKeyDown}
+                  onPaste={handleNewItemPaste}
+                  onFocus={() => setSelectedEdit(undefined)}
+                />
                 <Button
                   type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDeleteCompleted}
+                  className="min-h-11 self-end sm:self-auto"
+                  disabled={!watchItem.trim()}
+                  onClick={() => addPendingItems()}
                 >
-                  <Trash />
-                  {t('tasks.form.deleteCompleted')}
+                  <Plus />
+                  {t('tasks.form.addItem')}
                 </Button>
-              )}
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t('tasks.form.addHint')}
+              </p>
             </div>
-            {doneIndexes.map((index) => renderItem(index))}
-          </section>
-        )}
-      </form>
-      <span className="flex justify-center gap-2 text-xs text-muted-foreground">
-        <span>
-          {dateLabel}{' '}
-          {task &&
-            (isEditable
-              ? !isOwner && `(${t('form.permissions.shared')})`
-              : `(${t('form.permissions.readOnly')})`)}
-        </span>
+          )}
+          {doneIndexes.length > 0 && (
+            <section className="space-y-1 border-t pt-4">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="text-xs font-medium text-muted-foreground">
+                  {t('tasks.completed', { count: doneIndexes.length })}
+                </h2>
+                {!isReadOnly && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDeleteCompleted}
+                  >
+                    <Trash />
+                    {t('tasks.form.deleteCompleted')}
+                  </Button>
+                )}
+              </div>
+              {doneIndexes.map((index) => renderItem(index, true))}
+            </section>
+          )}
+        </form>
+        <SidePanel
+          dateLabel={dateWithPermission}
+          saveStatus={saveStatus}
+          done={doneCount}
+          total={watchContent.length}
+        />
+      </div>
+      <span className="flex justify-center gap-2 text-xs text-muted-foreground xl:hidden">
+        <span>{dateWithPermission}</span>
         <SaveStatus status={saveStatus} />
       </span>
     </FormProvider>

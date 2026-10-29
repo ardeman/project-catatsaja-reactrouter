@@ -49,6 +49,20 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'On a wide screen a task list has a panel beside it showing when it was saved and how much of it is done, with a bar that fills as you check items off.',
+          id: 'Di layar lebar, daftar tugas punya panel di sampingnya yang menunjukkan kapan disimpan dan berapa yang sudah selesai, dengan bilah yang terisi saat kamu mencentang item.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Completed tasks can no longer be edited or moved by accident: uncheck one to change it, or delete it with its own button.',
+          id: 'Tugas yang sudah selesai tidak bisa lagi teredit atau terpindah tanpa sengaja: hapus centangnya untuk mengubahnya, atau hapus dengan tombolnya sendiri.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again, beside Cancel and Save.',
