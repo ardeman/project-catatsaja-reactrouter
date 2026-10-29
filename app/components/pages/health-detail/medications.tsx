@@ -191,31 +191,79 @@ export const Medications = (properties: TMedicationsProperties) => {
         key={medication.id}
         className="rounded-lg border"
       >
-        <div className="flex items-start gap-2 px-3 py-2">
-          <span className="grid min-w-0 flex-1 gap-0.5">
-            <span className="truncate text-sm font-medium">
-              {title(medication)}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {[
-                schedule(medication),
-                progress(medication),
-                next && next.date !== today
-                  ? t('health.reminders.next', {
-                      date: `${formatDay(next.date)} ${next.time}`,
-                    })
-                  : '',
-              ]
-                .filter(Boolean)
-                .join(' · ')}
-            </span>
-            {medication.note && (
-              <span className="text-xs text-muted-foreground">
-                {medication.note}
-              </span>
-            )}
+        <div className="grid gap-0.5 px-3 pt-2">
+          <span className="truncate text-sm font-medium">
+            {title(medication)}
           </span>
-          <div className="flex shrink-0">
+          <span className="text-xs text-muted-foreground">
+            {[
+              schedule(medication),
+              progress(medication),
+              next && next.date !== today
+                ? t('health.reminders.next', {
+                    date: `${formatDay(next.date)} ${next.time}`,
+                  })
+                : '',
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+          </span>
+          {medication.note && (
+            <span className="text-xs text-muted-foreground">
+              {medication.note}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2 py-1 pr-1 pl-3">
+          {todays.length > 0 && (
+            <div
+              role="group"
+              aria-label={t('health.medications.todaysDoses', {
+                name: medication.name,
+              })}
+              className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5"
+            >
+              <span className="text-xs text-muted-foreground">
+                {t('health.medications.today')}
+              </span>
+              {todays.map((dose) => (
+                <UIButton
+                  key={dose.time}
+                  type="button"
+                  size="sm"
+                  variant={dose.status === 'taken' ? 'default' : 'outline'}
+                  className={cn(
+                    'h-7 gap-1 px-2 tabular-nums',
+                    dose.status === 'skipped' &&
+                      'text-muted-foreground line-through',
+                  )}
+                  aria-pressed={dose.status === 'taken'}
+                  aria-label={t('health.medications.doseAt', {
+                    time: dose.time,
+                    status: t(
+                      dose.status
+                        ? `health.medications.status.${dose.status}`
+                        : 'health.medications.status.none',
+                    ),
+                  })}
+                  title={t('health.medications.toggle')}
+                  disabled={isReadOnly}
+                  onClick={() =>
+                    mark(
+                      medication,
+                      today,
+                      dose.time,
+                      dose.status ? undefined : 'taken',
+                    )
+                  }
+                >
+                  {dose.status === 'taken' && <Check className="size-3.5" />}
+                  {dose.time}
+                </UIButton>
+              ))}
+            </div>
+          )}
+          <div className="ml-auto flex shrink-0">
             <UIButton
               type="button"
               variant="ghost"
@@ -257,54 +305,6 @@ export const Medications = (properties: TMedicationsProperties) => {
             )}
           </div>
         </div>
-        {todays.length > 0 && (
-          <div
-            role="group"
-            aria-label={t('health.medications.todaysDoses', {
-              name: medication.name,
-            })}
-            className="flex flex-wrap items-center gap-1.5 px-3 pb-2"
-          >
-            <span className="text-xs text-muted-foreground">
-              {t('health.medications.today')}
-            </span>
-            {todays.map((dose) => (
-              <UIButton
-                key={dose.time}
-                type="button"
-                size="sm"
-                variant={dose.status === 'taken' ? 'default' : 'outline'}
-                className={cn(
-                  'h-7 gap-1 px-2 tabular-nums',
-                  dose.status === 'skipped' &&
-                    'text-muted-foreground line-through',
-                )}
-                aria-pressed={dose.status === 'taken'}
-                aria-label={t('health.medications.doseAt', {
-                  time: dose.time,
-                  status: t(
-                    dose.status
-                      ? `health.medications.status.${dose.status}`
-                      : 'health.medications.status.none',
-                  ),
-                })}
-                title={t('health.medications.toggle')}
-                disabled={isReadOnly}
-                onClick={() =>
-                  mark(
-                    medication,
-                    today,
-                    dose.time,
-                    dose.status ? undefined : 'taken',
-                  )
-                }
-              >
-                {dose.status === 'taken' && <Check className="size-3.5" />}
-                {dose.time}
-              </UIButton>
-            ))}
-          </div>
-        )}
         {historyOf === medication.id && history(medication)}
       </li>
     )
