@@ -209,6 +209,33 @@ export const replaceRecoveryCode = async (
 
 // --- Passkeys -------------------------------------------------------------
 
+// A forgotten passphrase, reset with a passkey: the passkey opens the key
+// once, and a new passphrase and recovery code are sealed with it (the old
+// code may be lost too).
+export const resetWithPasskeySecret = async (
+  seal: TPasskeySeal,
+  secret: TBytes,
+  newPassphrase: string,
+  recoveryCode: string,
+) => {
+  let extractable: CryptoKey
+  try {
+    extractable = await openPrivateKeyForResealing(
+      seal,
+      await deriveFromSecret(secret, fromBase64(seal.salt)),
+    )
+  } catch {
+    throw new Error('encryption/passkey-failed')
+  }
+  await updateDoc(keyringReference(), {
+    passphrase: await sealWithPassword(extractable, newPassphrase),
+    recovery: await sealWithPassword(
+      extractable,
+      normalizeRecoveryCode(recoveryCode),
+    ),
+  })
+}
+
 // The private key opened with the passphrase, readable once to seal it
 // another way (a passkey). Checks the passphrase before anything else.
 export const openForResealing = async (passphrase: string) => {

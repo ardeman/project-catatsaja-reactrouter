@@ -302,6 +302,33 @@ describe('end-to-end encryption', () => {
       .getByText('Unlock your data')
       .waitFor({ state: 'hidden', timeout: 30_000 })
 
+    // Passphrase and recovery code both forgotten: the passkey resets them.
+    await page.goto(`${APP}/settings/account`)
+    await page.getByRole('button', { name: 'Forgot your passphrase?' }).click()
+    const reset = page.getByRole('dialog')
+    // Not without signing in to the account again.
+    await reset.locator('input[name=password]').fill('wrong password')
+    await reset.locator('input[name=passphrase]').fill('ana passphrase 3')
+    await reset.locator('input[name=confirm]').fill('ana passphrase 3')
+    await reset.getByLabel(/saved my recovery code/).click()
+    await reset.getByRole('button', { name: 'Reset with a passkey' }).click()
+    await reset.getByRole('alert').waitFor({ timeout: 15_000 })
+    assert.match(await reset.getByRole('alert').textContent(), /incorrect/)
+    await reset.locator('input[name=password]').fill('password123')
+    await reset.getByRole('button', { name: 'Reset with a passkey' }).click()
+    await page
+      .getByText('New passphrase and recovery code saved', { exact: true })
+      .waitFor({ timeout: 30_000 })
+    const resetKeyring = await dbGet(`users/${anaUid}/keys/main`)
+    assert.notEqual(
+      resetKeyring.recovery.mapValue.fields.salt.stringValue,
+      keyring.recovery.mapValue.fields.salt.stringValue,
+      'recovery code replaced',
+    )
+    await page.getByRole('button', { name: 'Account menu' }).click()
+    await page.getByRole('menuitem', { name: 'Lock this device' }).click()
+    await unlock(page, 'ana passphrase 3')
+
     await page.goto(`${APP}/finances/create`)
     await page.locator('textarea[name=title]').fill('Ana secret book')
     await page.getByRole('button', { name: 'Save' }).click()
@@ -395,7 +422,7 @@ describe('end-to-end encryption', () => {
   })
 
   test('turning encryption off, sharing both ways, and turning it on again', async () => {
-    const ana = await signInAndUnlock(browser, ANA, 'ana passphrase 2')
+    const ana = await signInAndUnlock(browser, ANA, 'ana passphrase 3')
     const budi = await signInAndUnlock(browser, BUDI, 'budi passphrase 1')
     const anaUid = await uidOf(ANA)
     const budiUid = await uidOf(BUDI)

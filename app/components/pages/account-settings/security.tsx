@@ -38,13 +38,24 @@ import { generateRecoveryCode } from '~/lib/utils/crypto'
 import { canUsePasskeys } from '~/lib/utils/passkey'
 import {
   changePassphraseSchema,
+  resetPassphraseSchema,
+  signInAgainSchema,
   TChangePassphraseForm,
+  TResetPassphraseForm,
+  TSignInAgainForm,
   TUnlockForm,
   unlockSchema,
 } from '~/lib/validations/encryption'
 
 type TDialog =
-  'setup' | 'passphrase' | 'recovery' | 'passkey' | 'off' | undefined
+  | 'setup'
+  | 'passphrase'
+  | 'recovery'
+  | 'reset'
+  | 'passkey'
+  | 'removePasskeys'
+  | 'off'
+  | undefined
 
 const Action = ({
   icon: Icon,
@@ -65,6 +76,46 @@ const Action = ({
     {label}
   </Button>
 )
+
+// Signing in to the account again before a change that someone holding an
+// unlocked device shouldn't make alone: the password, or Google's popup.
+const SignInAgain = ({
+  update,
+}: {
+  update: ReturnType<typeof useUpdateEncryption>
+}) => {
+  const { t } = useTranslation()
+  if (update.needsPassword)
+    return (
+      <Input
+        name="password"
+        type="password"
+        label={t('encryption.settings.accountPassword')}
+        autoComplete="current-password"
+        required
+      />
+    )
+  return (
+    <div className="grid gap-2">
+      <p className="text-sm text-muted-foreground">
+        {t('encryption.settings.signInAgainHint')}
+      </p>
+      {update.hasSignedInAgain ? (
+        <p className="text-sm">{t('encryption.settings.signedInAgain')}</p>
+      ) : (
+        <Button
+          type="button"
+          variant="outline"
+          className="w-fit"
+          disabled={update.isPending}
+          onClick={() => void update.signInAgain()}
+        >
+          {t('encryption.settings.signInAgain')}
+        </Button>
+      )}
+    </div>
+  )
+}
 
 // A passphrase field for confirming an action (no show/hide needed here:
 // one field, typed once).
@@ -107,6 +158,15 @@ export const Security = () => {
     resolver: zodResolver(changePassphraseSchema(t)),
     defaultValues: { current: '', passphrase: '', confirm: '' },
   })
+  const resetForm = useForm<TResetPassphraseForm>({
+    resolver: zodResolver(resetPassphraseSchema(t)),
+    defaultValues: { password: '', passphrase: '', confirm: '' },
+  })
+  const signInForm = useForm<TSignInAgainForm>({
+    resolver: zodResolver(signInAgainSchema()),
+    defaultValues: { password: '' },
+  })
+  const isSignedIn = update.needsPassword || update.hasSignedInAgain
   const checkForm = useForm<TUnlockForm>({
     resolver: zodResolver(unlockSchema(t)),
     defaultValues: { passphrase: '' },
@@ -117,6 +177,8 @@ export const Security = () => {
     update.clearError()
     turnOff.clearError()
     passphraseForm.reset()
+    resetForm.reset()
+    signInForm.reset()
     checkForm.reset()
     setHasSavedCode(false)
   }
@@ -131,7 +193,8 @@ export const Security = () => {
 
   const open = (next: TDialog) => {
     close()
-    if (next === 'recovery') setNewCode(generateRecoveryCode())
+    if (next === 'recovery' || next === 'reset')
+      setNewCode(generateRecoveryCode())
     else if (next === 'off') {
       setFromOthers(undefined)
       void loadFromOthers()
@@ -198,13 +261,22 @@ export const Security = () => {
                   <button
                     type="button"
                     className="underline underline-offset-4"
-                    onClick={async () => {
-                      if (await update.removePasskeys())
-                        setReloadKeyring((value) => value + 1)
-                    }}
+                    onClick={() => open('removePasskeys')}
                   >
                     {t('encryption.settings.removePasskeys')}
                   </button>
+                  {canUsePasskeys() && (
+                    <>
+                      {' · '}
+                      <button
+                        type="button"
+                        className="underline underline-offset-4"
+                        onClick={() => open('reset')}
+                      >
+                        {t('encryption.unlock.forgot')}
+                      </button>
+                    </>
+                  )}
                 </>
               )}
             </p>
@@ -323,6 +395,105 @@ export const Security = () => {
               disabled={update.isPending}
             >
               {t('actions.save')}
+            </Button>
+          </form>
+        </FormProvider>
+      </Modal>
+
+      <Modal
+        open={dialog === 'reset'}
+        setOpen={(value) => (value ? setDialog('reset') : close())}
+        title={t('encryption.settings.resetTitle')}
+      >
+        <FormProvider {...resetForm}>
+          <form
+            className="grid gap-3"
+            onSubmit={resetForm.handleSubmit(async (values) => {
+              if (
+                !(await update.resetWithPasskey(
+                  values.password,
+                  values.passphrase,
+                  newCode,
+                ))
+              ) {
+                return
+              }
+
+              toast({ description: t('encryption.settings.resetDone') })
+              close()
+            })}
+          >
+            <p className="text-sm text-muted-foreground">
+              {t('encryption.settings.resetDescription')}
+            </p>
+            <SignInAgain update={update} />
+            <Input
+              name="passphrase"
+              type="password"
+              label={t('encryption.form.newPassphrase')}
+              autoComplete="new-password"
+              required
+            />
+            <Input
+              name="confirm"
+              type="password"
+              label={t('encryption.form.confirm')}
+              autoComplete="new-password"
+              required
+            />
+            <RecoveryCode code={newCode} />
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id="encryption-reset-code-saved"
+                checked={hasSavedCode}
+                onCheckedChange={(checked) => setHasSavedCode(checked === true)}
+              />
+              <Label
+                htmlFor="encryption-reset-code-saved"
+                className="text-sm leading-snug font-normal"
+              >
+                {t('encryption.recovery.confirm')}
+              </Label>
+            </div>
+            {error}
+            <Button
+              type="submit"
+              className="gap-2"
+              disabled={!hasSavedCode || !isSignedIn || update.isPending}
+            >
+              <Fingerprint className="size-4" />
+              {t('encryption.settings.reset')}
+            </Button>
+          </form>
+        </FormProvider>
+      </Modal>
+
+      <Modal
+        open={dialog === 'removePasskeys'}
+        setOpen={(value) => (value ? setDialog('removePasskeys') : close())}
+        title={t('encryption.settings.removePasskeys')}
+      >
+        <FormProvider {...signInForm}>
+          <form
+            className="grid gap-3"
+            onSubmit={signInForm.handleSubmit(async (values) => {
+              if (!(await update.removePasskeys(values.password))) return
+
+              setReloadKeyring((value) => value + 1)
+              close()
+            })}
+          >
+            <p className="text-sm text-muted-foreground">
+              {t('encryption.settings.removePasskeysDescription')}
+            </p>
+            <SignInAgain update={update} />
+            {error}
+            <Button
+              type="submit"
+              variant="destructive"
+              disabled={!isSignedIn || update.isPending}
+            >
+              {t('encryption.settings.removePasskeys')}
             </Button>
           </form>
         </FormProvider>

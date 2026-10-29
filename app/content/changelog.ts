@@ -23,6 +23,20 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'Forgot your passphrase and lost your recovery code? If you added a passkey, Settings → Account → Security lets you sign in to your account again, then use the passkey to choose a new passphrase and recovery code.',
+          id: 'Lupa frasa sandi dan kehilangan kode pemulihan? Jika kamu sudah menambahkan passkey, Pengaturan → Akun → Keamanan memungkinkanmu masuk lagi ke akunmu, lalu memakai passkey untuk memilih frasa sandi serta kode pemulihan baru.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Removing your passkeys now asks you to sign in to your account again, so someone holding your unlocked phone can’t do it.',
+          id: 'Menghapus passkey kini memintamu masuk lagi ke akunmu, jadi orang yang memegang ponselmu yang terbuka tidak bisa melakukannya.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Your account menu now shows your plan: Free, or Plus and the date it runs until.',
           id: 'Menu akunmu kini menampilkan paketmu: Gratis, atau Plus beserta tanggal berakhirnya.',
         },

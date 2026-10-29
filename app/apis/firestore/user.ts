@@ -1,7 +1,10 @@
 import {
   createUserWithEmailAndPassword,
+  EmailAuthProvider,
   getAdditionalUserInfo,
   GoogleAuthProvider,
+  reauthenticateWithCredential,
+  reauthenticateWithPopup,
   sendEmailVerification,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -251,6 +254,26 @@ export const loginWithGoogle = async () => {
     await updateDoc(doc(firestore, 'users', user.uid), {
       encryptionRequired: true,
     })
+}
+
+// Whether the account signs in with a password (otherwise only Google).
+export const hasPasswordSignIn = () =>
+  !!auth?.currentUser?.providerData.some(
+    (provider) => provider.providerId === 'password',
+  )
+
+// Signing in again before a change that someone holding an unlocked device
+// shouldn't make alone: with the account password, or Google's popup for an
+// account without one.
+export const reauthenticate = async (password?: string) => {
+  const user = auth?.currentUser
+  if (!user) throw new Error('No user is currently signed in.')
+  await (password === undefined
+    ? reauthenticateWithPopup(user, new GoogleAuthProvider())
+    : reauthenticateWithCredential(
+        user,
+        EmailAuthProvider.credential(user.email ?? '', password),
+      ))
 }
 
 export const register = async (userData: TSignUpRequest) => {

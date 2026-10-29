@@ -31,6 +31,25 @@ export const setUpPassphraseSchema = (t: TFunction) => {
     .refine(rule.check, rule.issue)
 }
 
+// A forgotten passphrase reset with a passkey, after signing in again (the
+// password is empty for an account that signs in with Google).
+export const resetPassphraseSchema = (t: TFunction) => {
+  const rule = matching<{
+    password: string
+    passphrase: string
+    confirm: string
+  }>(t)
+  return z
+    .object({
+      password: z.string(),
+      passphrase: newPassphrase(t),
+      confirm: z.string(),
+    })
+    .refine(rule.check, rule.issue)
+}
+
+export const signInAgainSchema = () => z.object({ password: z.string() })
+
 export const unlockSchema = (t: TFunction) =>
   z.object({ passphrase: required(t) })
 
@@ -65,6 +84,10 @@ export const changePassphraseSchema = (t: TFunction) => {
 export type TSetUpPassphraseForm = z.infer<
   ReturnType<typeof setUpPassphraseSchema>
 >
+export type TResetPassphraseForm = z.infer<
+  ReturnType<typeof resetPassphraseSchema>
+>
+export type TSignInAgainForm = z.infer<ReturnType<typeof signInAgainSchema>>
 export type TUnlockForm = z.infer<ReturnType<typeof unlockSchema>>
 export type TRecoverForm = z.infer<ReturnType<typeof recoverSchema>>
 export type TChangePassphraseForm = z.infer<
