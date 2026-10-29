@@ -23,8 +23,8 @@ export const releases: TRelease[] = [
       {
         kind: 'fixed',
         text: {
-          en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again.',
-          id: '“Ulangi tiap bulan” pada entri keuangan baru kembali sebaris dengan kotak centangnya.',
+          en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again, beside Cancel and Save.',
+          id: '“Ulangi tiap bulan” pada entri keuangan baru kembali sebaris dengan kotak centangnya, di samping Batal dan Simpan.',
         },
       },
     ],
