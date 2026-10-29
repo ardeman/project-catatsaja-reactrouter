@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { enUS, id as indonesian } from 'react-day-picker/locale'
 import { useTranslation } from 'react-i18next'
 
@@ -19,6 +20,7 @@ import { periodStats } from '~/lib/utils/health'
 import { cn } from '~/lib/utils/shadcn'
 
 import { HealthEntryForm } from './entry-form'
+import { listenForMonthSwipe, slideMonth } from './month-motion.client'
 import { TSectionProperties } from './type'
 
 type TProperties = Pick<
@@ -64,6 +66,20 @@ const intimacyLegend: TIntimacyDay[] = ['protected', 'unprotected']
 
 type TMode = 'period' | 'intimacy'
 
+// Months turn up and down, so the arrows point that way.
+const MonthChevron = ({
+  orientation,
+}: {
+  orientation?: 'up' | 'down' | 'left' | 'right'
+}) =>
+  orientation === 'left' ? (
+    <ChevronUp className="size-4" />
+  ) : (
+    <ChevronDown className="size-4" />
+  )
+
+const monthIndex = (date: Date) => date.getFullYear() * 12 + date.getMonth()
+
 const toValue = (date: Date) =>
   [
     date.getFullYear(),
@@ -93,6 +109,27 @@ export const PeriodCalendar = ({
   const [mode, setMode] = useState<TMode>('period')
   // The day's logged sex being edited; a new one when undefined.
   const [intimacyId, setIntimacyId] = useState<string>()
+  const calendarReference = useRef<HTMLDivElement>(null)
+  const shownMonth = useRef(month)
+
+  useEffect(
+    () =>
+      listenForMonthSwipe(calendarReference.current, (step) =>
+        setMonth(
+          (current) =>
+            new Date(current.getFullYear(), current.getMonth() + step),
+        ),
+      ),
+    [],
+  )
+
+  // Before paint, so the new month doesn't flash in place first.
+  useLayoutEffect(() => {
+    const step = monthIndex(month) - monthIndex(shownMonth.current)
+    shownMonth.current = month
+    if (step === 0) return
+    return slideMonth(calendarReference.current, step > 0 ? 1 : -1)
+  }, [month])
   const periodLength = stats?.periodLength ?? 5
   const tapOf = (date: Date) =>
     periodTap(periods, toValue(date), today, periodLength)
@@ -107,10 +144,10 @@ export const PeriodCalendar = ({
     setIsEnd(!!end && (end.isEnd || end.isNext))
   }
   const close = () => setSelected(undefined)
-  // From the week before the month to the end of the week after it, for
-  // the days shown around it.
+  // From the week before the month to the end of the two weeks after it,
+  // for the days shown around it (always six weeks).
   const since = toValue(new Date(month.getFullYear(), month.getMonth(), -6))
-  const until = toValue(new Date(month.getFullYear(), month.getMonth() + 1, 7))
+  const until = toValue(new Date(month.getFullYear(), month.getMonth() + 1, 14))
   const days = cycleCalendar(periods, stats, today, until, since)
   const kindOf = (date: Date) => days.get(toValue(date))
   const sexDays = intimacyDays(intimacy)
@@ -139,6 +176,9 @@ export const PeriodCalendar = ({
   const calendarProperties = {
     month,
     onMonthChange: setMonth,
+    // Six weeks in every month, so the calendar keeps its height as it turns.
+    fixedWeeks: true,
+    components: { Chevron: MonthChevron },
     locale: i18n.language === 'id' ? indonesian : enUS,
     modifiers,
     modifiersClassNames: { ...cycleDayClassName, ...intimacyDayClassName },
@@ -197,16 +237,24 @@ export const PeriodCalendar = ({
       >
         {t('datePicker.today')}
       </Button>
-      {isReadOnly ? (
-        <Calendar {...calendarProperties} />
-      ) : (
-        <Calendar
-          {...calendarProperties}
-          mode="single"
-          selected={selected}
-          onSelect={handleSelect}
-        />
-      )}
+      <div
+        ref={calendarReference}
+        // Swiped up and down for months, so the page doesn't scroll here
+        // (or pull to refresh).
+        data-own-swipe
+        className="touch-pan-x overflow-hidden select-none"
+      >
+        {isReadOnly ? (
+          <Calendar {...calendarProperties} />
+        ) : (
+          <Calendar
+            {...calendarProperties}
+            mode="single"
+            selected={selected}
+            onSelect={handleSelect}
+          />
+        )}
+      </div>
       {selected && (
         <div className="grid w-full gap-2 border-t pt-3">
           <p className="text-center text-sm font-medium">

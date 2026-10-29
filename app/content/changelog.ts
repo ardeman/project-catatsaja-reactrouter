@@ -23,6 +23,20 @@ export const releases: TRelease[] = [
       {
         kind: 'new',
         text: {
+          en: 'In the installed app, pull down at the top of a page to refresh it.',
+          id: 'Di aplikasi yang terpasang, tarik ke bawah di bagian atas halaman untuk memuat ulang.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
+          en: 'The period calendar turns months up and down: swipe up for the next month and down for the one before (or scroll over it), and the arrows slide it the same way.',
+          id: 'Kalender haid kini berganti bulan ke atas dan ke bawah: geser ke atas untuk bulan berikutnya dan ke bawah untuk bulan sebelumnya (atau gulir di atasnya), dan tombol panah menggesernya dengan cara yang sama.',
+        },
+      },
+      {
+        kind: 'new',
+        text: {
           en: 'Recurring entries in books: when adding an entry such as your salary, rent or a bill, tick “Repeat every month”. On its day each month it waits at the top of the book, so you check the amount and add it with one tap, or skip that month. Nothing is added until you do.',
           id: 'Catatan rutin di buku: saat menambah catatan seperti gaji, sewa, atau tagihan, centang “Ulangi tiap bulan”. Setiap bulan pada tanggalnya, catatan itu menunggu di bagian atas buku, jadi kamu cukup cek jumlahnya lalu tambahkan dengan sekali ketuk, atau lewati bulan itu. Tidak ada yang ditambahkan sebelum kamu melakukannya.',
         },
