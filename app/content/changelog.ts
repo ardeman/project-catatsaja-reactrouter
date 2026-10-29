@@ -42,6 +42,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'Swiping or scrolling the period calendar feels smoother: the month follows your finger, a quick flick is enough, and the next month slides in after the old one leaves.',
+          id: 'Menggeser atau menggulir kalender haid kini terasa lebih halus: bulan mengikuti jari Anda, sentuhan cepat sudah cukup, dan bulan berikutnya masuk setelah bulan sebelumnya bergeser keluar.',
+        },
+      },
+      {
         kind: 'new',
         text: {
           en: 'Recurring entries in books: when adding an entry such as your salary, rent or a bill, tick “Repeat every month”. On its day each month it waits at the top of the book, so you check the amount and add it with one tap, or skip that month. Nothing is added until you do.',
