@@ -10,6 +10,7 @@ import {
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
+import { useMediaQuery } from 'usehooks-ts'
 
 import { Action } from '~/components/base/action'
 import { CardStyleLayer } from '~/components/base/card-style'
@@ -272,6 +273,25 @@ export const Form = (properties: TFormProperties) => {
   // floats below them.
   const compactSummary = useRef<HTMLDivElement>(null)
   const totalsCard = useRef<HTMLDivElement>(null)
+  // Where Analysis puts its side parts on wide screens (Tailwind's `xl`).
+  const isWide = useMediaQuery('(min-width: 80rem)')
+  const [analysisSide, setAnalysisSide] = useState<HTMLDivElement | null>(null)
+  // Whether the title has scrolled under the toolbar, so the side column of
+  // wide screens can name the book, as the floating totals do on phones.
+  const titleBlock = useRef<HTMLFormElement>(null)
+  const [isTitleHidden, setIsTitleHidden] = useState(false)
+  useEffect(() => {
+    const element = titleBlock.current
+    if (!element) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsTitleHidden(!!entry && !entry.isIntersecting),
+      // The toolbar's bottom edge on wide screens (5rem; rootMargin takes
+      // only px or %).
+      { rootMargin: '-80px 0px 0px 0px' },
+    )
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
   const accountsCard = useRef<HTMLDivElement>(null)
   // A part of the floating totals scrolls back to where it's shown in full.
   const handleSummarySelect = (part: TSummaryPart) => {
@@ -701,17 +721,33 @@ export const Form = (properties: TFormProperties) => {
       all.findIndex((other) => other.code === option.code) === index,
   )
 
+  const permissionLabel = isEditable
+    ? !isOwner && t('form.permissions.shared')
+    : t('form.permissions.readOnly')
+  const dateWithPermission =
+    finance && permissionLabel ? `${dateLabel} (${permissionLabel})` : dateLabel
+
   return (
     <FormProvider {...formMethods}>
+      {/* On wide screens the totals and accounts sit in a column beside the
+          entries, with when the book was saved. In Analysis the column also
+          holds its numbers at a glance, budgets and goals. The
+          bar stays a grid item so it sticks the whole way down. */}
       <div
-        className="group/form is-shown mx-auto w-full max-w-3xl space-y-6"
+        className={cn(
+          'group/form is-shown mx-auto grid w-full max-w-3xl items-start gap-6 xl:max-w-6xl',
+          'xl:grid-cols-[minmax(0,1fr)_20rem]',
+          finance
+            ? 'xl:grid-rows-[auto_auto_auto_1fr]'
+            : 'xl:grid-rows-[auto_auto_1fr]',
+        )}
         style={{ '--summary-height': `${summaryHeight}px` } as CSSProperties}
       >
         <CardStyleLayer
           isPage
           cardStyle={toCardStyle(finance?.cardStyle)}
         />
-        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-8">
+        <div className="sticky top-[calc(1rem+var(--top-inset))] z-40 flex justify-center md:top-8 xl:col-start-1">
           {finance ? (
             <Action
               className="w-full"
@@ -754,9 +790,10 @@ export const Form = (properties: TFormProperties) => {
         </div>
 
         <form
+          ref={titleBlock}
           id={bookFormId}
           onSubmit={handleCreate}
-          className="space-y-6"
+          className="space-y-6 xl:col-start-1"
         >
           <div className="grid gap-3">
             <Textarea
@@ -851,82 +888,70 @@ export const Form = (properties: TFormProperties) => {
           </div>
         </form>
 
-        {/* The totals and the accounts look like one card. `!mb-0` undoes
-            the stack's spacing between the parts. */}
-        <div
-          ref={totalsCard}
-          className={cn(
-            'glass-surface scroll-mt-[4.5rem] md:scroll-mt-[9.5rem]',
-            hasAccounts
-              ? '!mb-0 rounded-t-xl border border-b-0 bg-none px-4 pt-4 pb-3 [clip-path:inset(-2rem_-2rem_0_-2rem)]'
-              : '!mb-0 rounded-xl border p-4',
+        <aside className="grid gap-6 xl:sticky xl:top-4 xl:col-start-2 xl:row-span-4 xl:row-start-1 xl:-m-4 xl:max-h-[calc(100dvh-2rem)] xl:overflow-y-auto xl:p-4">
+          {finance && (
+            <div className="glass-surface hidden gap-1 rounded-xl border p-4 text-xs text-muted-foreground xl:grid">
+              {isTitleHidden && (
+                <p className="motion-fade truncate text-sm font-semibold text-foreground">
+                  {watchTitle || t('finances.untitled')}
+                </p>
+              )}
+              <span>{dateWithPermission}</span>
+              <SaveStatus status={saveStatus} />
+            </div>
           )}
-        >
-          <Summary
-            book={book}
-            income={income}
-            expense={expense}
-            balance={balance}
-            accounts={accounts ?? []}
-            isCompact={false}
-            selected={selected}
-            onClearSelected={() => setSelectedIds([])}
-            onCalculate={addToCalculation}
-          />
-        </div>
-        {hasAccounts && (
-          <div
-            ref={accountsCard}
-            // The shadow is cut at the top, so the join with the totals
-            // doesn't show.
-            className="glass-surface !mb-0 scroll-mt-[4.5rem] rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)] md:scroll-mt-[9.5rem]"
-          >
-            <Accounts
-              book={book}
-              balance={balance}
-              isReadOnly={isReadOnly}
-            />
-          </div>
-        )}
-        {/* Once the whole card has scrolled under the toolbar, a compact
-            copy of the totals floats there. It sticks at the card's bottom
-            edge and takes no height, so showing it doesn't move the page. */}
-        <div
-          ref={summarySentinel}
-          aria-hidden="true"
-          className="!mb-0 h-0"
-        />
-        <div
-          ref={summaryReference}
-          className="sticky top-[calc(3.5rem+var(--top-inset))] z-30 h-0 md:top-[4.5rem]"
-        >
-          {isSummaryStuck && (
+          {/* The totals and the accounts look like one card. */}
+          <div>
             <div
-              ref={compactSummary}
-              className="glass-surface glass-float rounded-xl border px-3 py-2 shadow-lg motion-safe:opacity-0 sm:px-4"
+              ref={totalsCard}
+              className={cn(
+                'glass-surface @container scroll-mt-[4.5rem] md:scroll-mt-[9.5rem]',
+                hasAccounts
+                  ? 'rounded-t-xl border border-b-0 bg-none px-4 pt-4 pb-3 [clip-path:inset(-2rem_-2rem_0_-2rem)]'
+                  : 'rounded-xl border p-4',
+              )}
             >
-              {/* Which book this is, once its title has scrolled away. */}
-              <p className="truncate text-sm font-semibold">
-                {watchTitle || t('finances.untitled')}
-              </p>
               <Summary
                 book={book}
                 income={income}
                 expense={expense}
                 balance={balance}
                 accounts={accounts ?? []}
-                isCompact
-                onSelect={handleSummarySelect}
+                isCompact={false}
                 selected={selected}
                 onClearSelected={() => setSelectedIds([])}
                 onCalculate={addToCalculation}
               />
             </div>
+            {hasAccounts && (
+              <div
+                ref={accountsCard}
+                // The shadow is cut at the top, so the join with the totals
+                // doesn't show.
+                className="glass-surface scroll-mt-[4.5rem] rounded-b-xl border border-t-0 bg-none px-4 pb-4 [clip-path:inset(0_-2rem_-2rem_-2rem)] md:scroll-mt-[9.5rem]"
+              >
+                <Accounts
+                  book={book}
+                  balance={balance}
+                  isReadOnly={isReadOnly}
+                />
+              </div>
+            )}
+            <div
+              ref={summarySentinel}
+              aria-hidden="true"
+            />
+          </div>
+          {view === 'analysis' && (
+            <div
+              ref={setAnalysisSide}
+              className="hidden gap-4 xl:grid"
+            />
           )}
-        </div>
+        </aside>
 
         {finance && (
-          <div className="flex justify-center">
+          <div className="flex justify-center xl:col-start-1">
             <Segmented
               label={t('finances.view.label')}
               value={view}
@@ -939,234 +964,274 @@ export const Form = (properties: TFormProperties) => {
           </div>
         )}
 
-        {view === 'analysis' ? (
-          <Analysis
-            entries={entries}
-            book={book}
-            options={analysisOptions}
-            setOptions={setAnalysisOptions}
-            isReadOnly={isReadOnly}
-            hasPlus={hasPlus}
-            books={books.filter((item) => item.id !== finance?.id)}
-            currencies={currencies}
-          />
-        ) : (
-          <>
-            {!isReadOnly &&
-              (isEntryOpen ? (
-                <EntryForm
-                  onClose={closeEntry}
-                  date={entryDate}
+        <div className={cn('space-y-6', 'xl:col-start-1')}>
+          {/* Once the whole card has scrolled under the toolbar, a compact
+            copy of the totals floats there. It sticks at the card's bottom
+            edge (the marker at its end) and takes no height, so showing it
+            doesn't move the page. Wide screens keep the full card in view
+            beside the entries. `!mb-0` undoes the stack's spacing after
+            it. */}
+          <div
+            ref={summaryReference}
+            className={cn(
+              'sticky top-[calc(3.5rem+var(--top-inset))] z-30 !mb-0 h-0 md:top-[4.5rem]',
+              'xl:hidden',
+            )}
+          >
+            {isSummaryStuck && (
+              <div
+                ref={compactSummary}
+                className="glass-surface glass-float rounded-xl border px-3 py-2 shadow-lg motion-safe:opacity-0 sm:px-4"
+              >
+                {/* Which book this is, once its title has scrolled away. */}
+                <p className="truncate text-sm font-semibold">
+                  {watchTitle || t('finances.untitled')}
+                </p>
+                <Summary
                   book={book}
-                  currencies={currencies}
-                  history={history}
-                  onSave={handleSaveEntry}
-                  onDelete={handleDeleteEntry}
-                  draftKey={entryDraftKey}
-                  isPrivate={isPrivate}
-                  goals={goalChoices}
-                  onRepeat={handleRepeatEntry}
+                  income={income}
+                  expense={expense}
+                  balance={balance}
+                  accounts={accounts ?? []}
+                  isCompact
+                  onSelect={handleSummarySelect}
+                  selected={selected}
+                  onClearSelected={() => setSelectedIds([])}
+                  onCalculate={addToCalculation}
                 />
-              ) : (
-                <div
-                  // Floats under the book's totals, like the entry form, so
-                  // adding is always one tap away while scrolling.
-                  data-entry-dock
-                  className="motion-fade sticky top-[calc(3.5rem+var(--top-inset)+var(--summary-height,0px)+0.5rem)] z-20 flex flex-wrap gap-2 md:top-[calc(4.5rem+var(--summary-height,0px)+0.5rem)]"
-                >
-                  <Button
-                    type="button"
-                    className="min-w-0 flex-1 gap-2"
-                    onClick={() => openEntry()}
-                  >
-                    <Plus className="size-4" />
-                    {t('finances.entry.add')}
-                  </Button>
-                  <QuickAdd
+              </div>
+            )}
+          </div>
+
+          {view === 'analysis' ? (
+            <Analysis
+              entries={entries}
+              book={book}
+              options={analysisOptions}
+              setOptions={setAnalysisOptions}
+              isReadOnly={isReadOnly}
+              hasPlus={hasPlus}
+              books={books.filter((item) => item.id !== finance?.id)}
+              currencies={currencies}
+              side={isWide ? analysisSide : undefined}
+            />
+          ) : (
+            <>
+              {!isReadOnly &&
+                (isEntryOpen ? (
+                  <EntryForm
+                    onClose={closeEntry}
+                    date={entryDate}
                     book={book}
                     currencies={currencies}
                     history={history}
-                    onAdd={handleAddEntries}
-                    draftKey={quickAddDraftKey}
+                    onSave={handleSaveEntry}
+                    onDelete={handleDeleteEntry}
+                    draftKey={entryDraftKey}
                     isPrivate={isPrivate}
                     goals={goalChoices}
+                    onRepeat={handleRepeatEntry}
                   />
-                </div>
-              ))}
+                ) : (
+                  <div
+                    // Floats under the book's totals, like the entry form, so
+                    // adding is always one tap away while scrolling.
+                    data-entry-dock
+                    className="motion-fade sticky top-[calc(3.5rem+var(--top-inset)+var(--summary-height,0px)+0.5rem)] z-20 flex flex-wrap gap-2 md:top-[calc(4.5rem+var(--summary-height,0px)+0.5rem)]"
+                  >
+                    <Button
+                      type="button"
+                      className="min-w-0 flex-1 gap-2"
+                      onClick={() => openEntry()}
+                    >
+                      <Plus className="size-4" />
+                      {t('finances.entry.add')}
+                    </Button>
+                    <QuickAdd
+                      book={book}
+                      currencies={currencies}
+                      history={history}
+                      onAdd={handleAddEntries}
+                      draftKey={quickAddDraftKey}
+                      isPrivate={isPrivate}
+                      goals={goalChoices}
+                    />
+                  </div>
+                ))}
 
-            {!isReadOnly && (recurring ?? []).length > 0 && (
-              <Recurring
-                book={book}
-                onDue={handleRecurringDue}
-              />
-            )}
+              {!isReadOnly && (recurring ?? []).length > 0 && (
+                <Recurring
+                  book={book}
+                  onDue={handleRecurringDue}
+                />
+              )}
 
-            {entries.length > 0 && (
-              <EntryFilter
-                filter={filter}
-                setFilter={setFilter}
-                entries={entries}
-                shown={shownEntries}
-                book={book}
-              />
-            )}
+              {entries.length > 0 && (
+                <EntryFilter
+                  filter={filter}
+                  setFilter={setFilter}
+                  entries={entries}
+                  shown={shownEntries}
+                  book={book}
+                />
+              )}
 
-            {shownEntries.length === 0 ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">
-                {t(
-                  entries.length === 0
-                    ? 'finances.entry.empty'
-                    : 'finances.filter.empty',
-                )}
-              </p>
-            ) : (
-              groupedEntries.map(([date, dayEntries]) => (
-                <section
-                  key={date}
-                  data-entry-date={date}
-                  className="grid gap-1"
-                >
-                  <h2 className="text-xs font-medium text-muted-foreground">
-                    {formatDay(date)}
-                  </h2>
-                  <ul className="glass-surface grid divide-y rounded-xl border">
-                    {dayEntries.map((entry) => {
-                      if (!isReadOnly && editing?.id === entry.id)
+              {shownEntries.length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  {t(
+                    entries.length === 0
+                      ? 'finances.entry.empty'
+                      : 'finances.filter.empty',
+                  )}
+                </p>
+              ) : (
+                groupedEntries.map(([date, dayEntries]) => (
+                  <section
+                    key={date}
+                    data-entry-date={date}
+                    className="grid gap-1"
+                  >
+                    <h2 className="text-xs font-medium text-muted-foreground">
+                      {formatDay(date)}
+                    </h2>
+                    <ul className="glass-surface grid divide-y rounded-xl border">
+                      {dayEntries.map((entry) => {
+                        if (!isReadOnly && editing?.id === entry.id)
+                          return (
+                            <li
+                              key={entry.id}
+                              className="min-w-0"
+                            >
+                              <EntryForm
+                                onClose={closeEntry}
+                                entry={editing}
+                                book={book}
+                                currencies={currencies}
+                                history={history}
+                                onSave={handleSaveEntry}
+                                onDelete={handleDeleteEntry}
+                                goals={goalChoices}
+                              />
+                            </li>
+                          )
+                        const isIncome = entry.type === 'income'
+                        const isForeign = entry.currency.code !== book.code
+                        const label = t(
+                          `finances.form.category.${entry.category}.label`,
+                        )
+                        const details = [
+                          entry.description ? label : '',
+                          entry.quantity === 1
+                            ? ''
+                            : `${entry.quantity} × ${money(entry.amount, entry.currency)}`,
+                          isForeign
+                            ? money(entryTotal(entry), entry.currency)
+                            : '',
+                          entry.goal ? (goalNames.get(entry.goal) ?? '') : '',
+                        ].filter(Boolean)
+                        const isSelected = selectedIds.includes(entry.id)
+                        const selectLabel = t(
+                          isSelected
+                            ? 'finances.selected.remove'
+                            : 'finances.selected.add',
+                          { name: entry.description || label },
+                        )
                         return (
                           <li
                             key={entry.id}
-                            className="min-w-0"
+                            data-entry-id={entry.id}
+                            className={cn(
+                              'relative min-w-0 transition-colors duration-500',
+                              isSelected && 'bg-primary/10',
+                            )}
                           >
-                            <EntryForm
-                              onClose={closeEntry}
-                              entry={editing}
-                              book={book}
-                              currencies={currencies}
-                              history={history}
-                              onSave={handleSaveEntry}
-                              onDelete={handleDeleteEntry}
-                              goals={goalChoices}
-                            />
-                          </li>
-                        )
-                      const isIncome = entry.type === 'income'
-                      const isForeign = entry.currency.code !== book.code
-                      const label = t(
-                        `finances.form.category.${entry.category}.label`,
-                      )
-                      const details = [
-                        entry.description ? label : '',
-                        entry.quantity === 1
-                          ? ''
-                          : `${entry.quantity} × ${money(entry.amount, entry.currency)}`,
-                        isForeign
-                          ? money(entryTotal(entry), entry.currency)
-                          : '',
-                        entry.goal ? (goalNames.get(entry.goal) ?? '') : '',
-                      ].filter(Boolean)
-                      const isSelected = selectedIds.includes(entry.id)
-                      const selectLabel = t(
-                        isSelected
-                          ? 'finances.selected.remove'
-                          : 'finances.selected.add',
-                        { name: entry.description || label },
-                      )
-                      return (
-                        <li
-                          key={entry.id}
-                          data-entry-id={entry.id}
-                          className={cn(
-                            'relative min-w-0 transition-colors duration-500',
-                            isSelected && 'bg-primary/10',
-                          )}
-                        >
-                          {/* The icon ticks the entry for the selected sum.
+                            {/* The icon ticks the entry for the selected sum.
                               It sits over the row's button, as buttons can't
                               be nested. */}
-                          <button
-                            type="button"
-                            aria-pressed={isSelected}
-                            aria-label={selectLabel}
-                            title={selectLabel}
-                            onClick={() => toggleSelected(entry.id)}
-                            className="absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                          >
-                            {isSelected ? (
-                              <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                                <Check className="size-4" />
-                              </span>
-                            ) : (
-                              <CategoryIcon
-                                category={entry.category}
-                                chip
-                              />
-                            )}
-                          </button>
-                          <button
-                            type="button"
-                            disabled={isReadOnly}
-                            onClick={() => openEntry(entry)}
-                            className="motion-enter grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default sm:grid-cols-[auto_minmax(0,1fr)_auto]"
-                          >
-                            <span
-                              aria-hidden="true"
-                              className="row-span-2 size-9 sm:row-span-1"
-                            />
-                            <span className="col-start-2 row-start-1 grid min-w-0">
-                              <span className="truncate font-medium">
-                                {entry.description || label}
-                              </span>
-                              {details.length > 0 && (
-                                <span className="truncate text-xs text-muted-foreground">
-                                  {details.join(' · ')}
-                                </span>
-                              )}
-                              {isForeign && (
-                                <span className="text-xs wrap-break-word text-muted-foreground">
-                                  {t('finances.entry.rateUsed', {
-                                    from: entry.currency.code,
-                                    to: book.code,
-                                    rate: formatExchangeRate(
-                                      entry.rate,
-                                      currencyFormat,
-                                    ),
-                                  })}
-                                </span>
-                              )}
-                            </span>
-                            <span
-                              className={cn(
-                                'col-start-2 row-start-2 min-w-0 text-right font-medium wrap-break-word tabular-nums sm:col-start-3 sm:row-start-1',
-                                isIncome ? 'text-income' : 'text-expense',
-                              )}
+                            <button
+                              type="button"
+                              aria-pressed={isSelected}
+                              aria-label={selectLabel}
+                              title={selectLabel}
+                              onClick={() => toggleSelected(entry.id)}
+                              className="absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                             >
-                              {money(
-                                isIncome
-                                  ? entryBookTotal(entry)
-                                  : -entryBookTotal(entry),
-                                book,
-                                true,
+                              {isSelected ? (
+                                <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                                  <Check className="size-4" />
+                                </span>
+                              ) : (
+                                <CategoryIcon
+                                  category={entry.category}
+                                  chip
+                                />
                               )}
-                            </span>
-                          </button>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </section>
-              ))
-            )}
-          </>
-        )}
+                            </button>
+                            <button
+                              type="button"
+                              disabled={isReadOnly}
+                              onClick={() => openEntry(entry)}
+                              className="motion-enter grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-1 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+                            >
+                              <span
+                                aria-hidden="true"
+                                className="row-span-2 size-9 sm:row-span-1"
+                              />
+                              <span className="col-start-2 row-start-1 grid min-w-0">
+                                <span className="truncate font-medium">
+                                  {entry.description || label}
+                                </span>
+                                {details.length > 0 && (
+                                  <span className="truncate text-xs text-muted-foreground">
+                                    {details.join(' · ')}
+                                  </span>
+                                )}
+                                {isForeign && (
+                                  <span className="text-xs wrap-break-word text-muted-foreground">
+                                    {t('finances.entry.rateUsed', {
+                                      from: entry.currency.code,
+                                      to: book.code,
+                                      rate: formatExchangeRate(
+                                        entry.rate,
+                                        currencyFormat,
+                                      ),
+                                    })}
+                                  </span>
+                                )}
+                              </span>
+                              <span
+                                className={cn(
+                                  'col-start-2 row-start-2 min-w-0 text-right font-medium wrap-break-word tabular-nums sm:col-start-3 sm:row-start-1',
+                                  isIncome ? 'text-income' : 'text-expense',
+                                )}
+                              >
+                                {money(
+                                  isIncome
+                                    ? entryBookTotal(entry)
+                                    : -entryBookTotal(entry),
+                                  book,
+                                  true,
+                                )}
+                              </span>
+                            </button>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </section>
+                ))
+              )}
+            </>
+          )}
+        </div>
       </div>
-      <span className="flex justify-center gap-2 text-xs text-muted-foreground">
-        <span>
-          {dateLabel}{' '}
-          {finance &&
-            (isEditable
-              ? !isOwner && `(${t('form.permissions.shared')})`
-              : `(${t('form.permissions.readOnly')})`)}
-        </span>
+      <span
+        className={cn(
+          'flex justify-center gap-2 text-xs text-muted-foreground',
+          'xl:hidden',
+        )}
+      >
+        <span>{dateWithPermission}</span>
         <SaveStatus status={saveStatus} />
       </span>
       {calculation !== undefined && (

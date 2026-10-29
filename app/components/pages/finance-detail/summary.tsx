@@ -95,8 +95,10 @@ export const Summary = (properties: TProperties) => {
 
   if (!isCompact)
     return (
-      <dl className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-3">
-        <div className="col-span-2 sm:col-span-1">
+      // Sized by its card (`@container`), so the narrow side column of wide
+      // screens gets two columns, as a phone does.
+      <dl className="grid grid-cols-2 gap-x-2 gap-y-3 @sm:grid-cols-3">
+        <div className="col-span-2 @sm:col-span-1">
           <dt className="text-xs text-muted-foreground">
             {t('finances.summary.balance')}
           </dt>

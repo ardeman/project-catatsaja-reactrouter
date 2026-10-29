@@ -63,6 +63,13 @@ export const releases: TRelease[] = [
         },
       },
       {
+        kind: 'improved',
+        text: {
+          en: 'On a wide screen a finance book keeps its totals and accounts in a column beside the entries, with when it was saved, so they stay in view while you scroll. In Analysis that column also holds the numbers at a glance, budgets and goals, leaving the charts more room.',
+          id: 'Di layar lebar, buku keuangan menaruh total dan akunnya di kolom samping entri, beserta kapan disimpan, jadi keduanya tetap terlihat saat kamu menggulir. Di Analisis, kolom itu juga berisi angka sekilas, anggaran, dan target tabungan, sehingga grafik mendapat ruang lebih.',
+        },
+      },
+      {
         kind: 'fixed',
         text: {
           en: '“Repeat every month” on a new finance entry sits on one line with its checkbox again, beside Cancel and Save.',

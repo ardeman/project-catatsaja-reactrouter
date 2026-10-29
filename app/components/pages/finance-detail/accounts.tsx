@@ -120,7 +120,7 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
               {accounts.map((account, index) => (
                 <li
                   key={account.id}
-                  className="motion-enter grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-start gap-1.5 [&_input]:h-8 [&_input]:text-sm"
+                  className="motion-enter grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)_auto] items-start gap-1.5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] [&_input]:h-8 [&_input]:text-sm"
                 >
                   <Input<TFinanceForm>
                     name={`accounts.${index}.name`}
@@ -162,10 +162,11 @@ export const Accounts = ({ book, balance, isReadOnly }: TProperties) => {
             {/* The same columns as the rows above (without the remove
               button), so totals line up under the balances. Amounts stay
               on one line; their column widens only when one doesn't fit
-              (large text on a phone). */}
+              (large text on a phone). In the narrow side column of wide
+              screens, names and balances share the width evenly. */}
             <dl
               className={cn(
-                'grid grid-cols-[minmax(0,3fr)_minmax(max-content,2fr)] items-center gap-x-1.5 gap-y-1',
+                'grid grid-cols-[minmax(0,3fr)_minmax(max-content,2fr)] items-center gap-x-1.5 gap-y-1 xl:grid-cols-[minmax(0,1fr)_minmax(max-content,1fr)]',
                 !isReadOnly && 'pr-9.5',
               )}
             >

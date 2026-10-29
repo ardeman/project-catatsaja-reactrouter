@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
 import { Segmented } from '~/components/base/segmented'
@@ -79,6 +80,9 @@ type TProperties = {
   // The person's other books, to copy the analysis setup from.
   books: TFinanceResponse[]
   currencies: TCurrency[]
+  // The side column of wide screens: the numbers at a glance, budgets and
+  // goals go there instead of around the charts.
+  side?: HTMLElement | null
 }
 
 // The breakdowns show one type, or both one after the other.
@@ -180,6 +184,7 @@ export const Analysis = ({
   hasPlus,
   books,
   currencies,
+  side,
 }: TProperties) => {
   const { t, i18n } = useTranslation()
   const { range } = options
@@ -368,6 +373,70 @@ export const Analysis = ({
         })
       : title
 
+  const tiles = (
+    <dl className="grid grid-cols-2 gap-2">
+      {savingsRate !== undefined && (
+        <Tile
+          label={t('finances.analysis.insights.savingsRate')}
+          value={share.format(savingsRate)}
+          detail={t(
+            savingsRate < 0
+              ? 'finances.analysis.insights.overspent'
+              : 'finances.analysis.insights.ofIncome',
+          )}
+          tone={savingsRate < 0 ? 'bad' : 'good'}
+        />
+      )}
+      {expense > 0 && (
+        <Tile
+          label={t('finances.analysis.insights.dailySpending')}
+          value={money(expense / Math.max(days, 1), book)}
+          detail={t('finances.analysis.insights.overDays', { count: days })}
+        />
+      )}
+      {topExpense && (
+        <Tile
+          label={t('finances.analysis.insights.topCategory')}
+          value={categoryLabel(topExpense.category)}
+          detail={t('finances.analysis.insights.shareOfExpenses', {
+            share: share.format(topExpense.share),
+          })}
+        />
+      )}
+      {largest && (
+        <Tile
+          label={t('finances.analysis.insights.largestExpense')}
+          value={money(entryBookTotal(largest), book)}
+          detail={largest.description || categoryLabel(largest.category)}
+        />
+      )}
+      {change !== undefined && (
+        <Tile
+          label={t(`finances.analysis.insights.change.${groupBy}`)}
+          value={percent.format(change)}
+          detail={t(`finances.analysis.insights.versus.${groupBy}`)}
+          tone={change > 0 ? 'bad' : 'good'}
+        />
+      )}
+    </dl>
+  )
+  const budgets = (
+    <Budgets
+      entries={entries}
+      book={book}
+      isReadOnly={isReadOnly}
+      hasPlus={hasPlus}
+    />
+  )
+  const goals = (
+    <Goals
+      entries={entries}
+      book={book}
+      isReadOnly={isReadOnly}
+      hasPlus={hasPlus}
+    />
+  )
+
   const flowSummary = t('finances.analysis.summary.cashFlow', {
     income: money(income, book),
     expense: money(expense, book),
@@ -379,51 +448,7 @@ export const Analysis = ({
     // wide as they were drawn when the window got narrower.
     <div className="grid grid-cols-1 gap-4">
       {controls}
-      <dl className="grid grid-cols-2 gap-2">
-        {savingsRate !== undefined && (
-          <Tile
-            label={t('finances.analysis.insights.savingsRate')}
-            value={share.format(savingsRate)}
-            detail={t(
-              savingsRate < 0
-                ? 'finances.analysis.insights.overspent'
-                : 'finances.analysis.insights.ofIncome',
-            )}
-            tone={savingsRate < 0 ? 'bad' : 'good'}
-          />
-        )}
-        {expense > 0 && (
-          <Tile
-            label={t('finances.analysis.insights.dailySpending')}
-            value={money(expense / Math.max(days, 1), book)}
-            detail={t('finances.analysis.insights.overDays', { count: days })}
-          />
-        )}
-        {topExpense && (
-          <Tile
-            label={t('finances.analysis.insights.topCategory')}
-            value={categoryLabel(topExpense.category)}
-            detail={t('finances.analysis.insights.shareOfExpenses', {
-              share: share.format(topExpense.share),
-            })}
-          />
-        )}
-        {largest && (
-          <Tile
-            label={t('finances.analysis.insights.largestExpense')}
-            value={money(entryBookTotal(largest), book)}
-            detail={largest.description || categoryLabel(largest.category)}
-          />
-        )}
-        {change !== undefined && (
-          <Tile
-            label={t(`finances.analysis.insights.change.${groupBy}`)}
-            value={percent.format(change)}
-            detail={t(`finances.analysis.insights.versus.${groupBy}`)}
-            tone={change > 0 ? 'bad' : 'good'}
-          />
-        )}
-      </dl>
+      {!side && tiles}
 
       {granularity && (
         <div className="flex justify-end">
@@ -718,19 +743,12 @@ export const Analysis = ({
         hasPlus={hasPlus}
       />
 
-      <Budgets
-        entries={entries}
-        book={book}
-        isReadOnly={isReadOnly}
-        hasPlus={hasPlus}
-      />
-
-      <Goals
-        entries={entries}
-        book={book}
-        isReadOnly={isReadOnly}
-        hasPlus={hasPlus}
-      />
+      {!side && (
+        <>
+          {budgets}
+          {goals}
+        </>
+      )}
 
       {groupBy !== 'item' && (
         <CategoryGroups
@@ -748,6 +766,16 @@ export const Analysis = ({
         isReadOnly={isReadOnly}
         hasPlus={hasPlus}
       />
+
+      {side &&
+        createPortal(
+          <>
+            {tiles}
+            {budgets}
+            {goals}
+          </>,
+          side,
+        )}
     </div>
   )
 }
