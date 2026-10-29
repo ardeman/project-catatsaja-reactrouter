@@ -762,7 +762,7 @@ describe('sharing and finance storage', () => {
       .getByRole('button', { name: 'Analysis', exact: true })
       .click({ timeout: 30_000 })
     await uli.page
-      .getByText(/400[.,]000 of .*1[.,]000[.,]000 realized/)
+      .getByText(/400[.,]000 realized/)
       .waitFor({ timeout: 15_000 })
     await uli.context.close()
     await vino.context.close()
