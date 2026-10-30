@@ -60,6 +60,35 @@ describe('scheduled doses', () => {
     assert.equal(lastDay(weekly), undefined)
   })
 
+  test('a skipped day every few days moves the cycle to the next day', () => {
+    const everyOther = {
+      id: 'e',
+      times: ['17:00'],
+      everyDays: 2,
+      start: '2026-10-28',
+      course: { kind: 'ongoing' },
+    }
+    const friday = '2026-10-30'
+    const skipped = [mark('e', friday, '17:00', 'skipped')]
+    assert.equal(dosesOn(everyOther, [], '2026-11-01').length, 1)
+    assert.equal(dosesOn(everyOther, skipped, '2026-10-31').length, 1)
+    assert.equal(dosesOn(everyOther, skipped, '2026-11-01').length, 0)
+    assert.equal(dosesOn(everyOther, skipped, '2026-11-02').length, 1)
+    assert.equal(
+      nextDose({
+        medication: everyOther,
+        doses: skipped,
+        today: friday,
+        now: '18:00',
+      })?.date,
+      '2026-10-31',
+    )
+    // Taking one of two times that day keeps the cycle.
+    const twice = { ...everyOther, times: ['08:00', '17:00'] }
+    const partly = [mark('e', friday, '08:00'), ...skipped]
+    assert.equal(dosesOn(twice, partly, '2026-10-31').length, 0)
+  })
+
   test('marks show on their dose', () => {
     const doses = [mark('a', today, '08:00', 'skipped')]
     assert.equal(dosesOn(antibiotic, doses, today)[0].status, 'skipped')

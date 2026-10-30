@@ -44,6 +44,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'A medicine taken every few days that you skip is due again the next day, and the count goes on from there.',
+          id: 'Obat yang diminum setiap beberapa hari dan kamu lewati akan dijadwalkan lagi keesokan harinya, lalu hitungannya berlanjut dari sana.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'On a wide screen a note gets more room, with a panel beside it showing when it was saved and an outline of its headings that you can click to jump to.',
           id: 'Di layar lebar, catatan mendapat ruang lebih, dengan panel di sampingnya yang menunjukkan kapan disimpan dan kerangka judul bagiannya yang bisa diklik untuk langsung menuju ke sana.',
         },

@@ -70,18 +70,69 @@ export const lastDay = (medication: TMedication) =>
     medication.stopped,
   )
 
-const isScheduledOn = (medication: TMedication, date: string) => {
-  const since = daysBetween(medication.start, date)
-  const end = lastDay(medication)
-  return (
-    since >= 0 &&
-    (!end || date <= end) &&
-    since % Math.max(1, Math.round(medication.everyDays)) === 0
-  )
-}
-
 const marksOf = (medicationId: string, doses: TDose[]) =>
   doses.filter((dose) => dose.medicationId === medicationId)
+
+const stepOf = (medication: TMedication) =>
+  Math.max(1, Math.round(medication.everyDays))
+
+// The days the cycle counts from: the start, and the day after each
+// scheduled day whose doses were all skipped (a medicine every few days
+// skipped on Friday is due again on Saturday, not Sunday).
+const cycleStarts = (medication: TMedication, doses: TDose[]) => {
+  const starts = [medication.start]
+  const step = stepOf(medication)
+  if (step === 1) return starts
+  const times = sortedTimes(medication)
+  const marks = marksOf(medication.id, doses)
+  const skippedDays = [
+    ...new Set(
+      marks
+        .filter((dose) => dose.status === 'skipped')
+        .map((dose) => dose.date),
+    ),
+  ].toSorted((a, b) => a.localeCompare(b))
+  for (const date of skippedDays) {
+    const from = starts.at(-1) ?? medication.start
+    const since = daysBetween(from, date)
+    const allSkipped = times.every((time) =>
+      marks.some(
+        (dose) =>
+          dose.date === date && dose.time === time && dose.status === 'skipped',
+      ),
+    )
+    if (allSkipped && since >= 0 && since % step === 0)
+      starts.push(addDays(date, 1))
+  }
+  return starts
+}
+
+const isScheduledOn = (
+  medication: TMedication,
+  doses: TDose[],
+  date: string,
+) => {
+  const end = lastDay(medication)
+  if (date < medication.start || (end && date > end)) return false
+  const from =
+    cycleStarts(medication, doses).findLast((start) => start <= date) ??
+    medication.start
+  return daysBetween(from, date) % stepOf(medication) === 0
+}
+
+// The first scheduled day on or after `from`.
+const firstScheduledFrom = (
+  medication: TMedication,
+  doses: TDose[],
+  from: string,
+) => {
+  const start = latest(medication.start, from)
+  for (let index = 0; index < stepOf(medication); index++) {
+    const date = addDays(start, index)
+    if (isScheduledOn(medication, doses, date)) return date
+  }
+  return addDays(start, stepOf(medication))
+}
 
 const takenCount = (medicationId: string, doses: TDose[]) =>
   marksOf(medicationId, doses).filter((dose) => dose.status === 'taken').length
@@ -117,7 +168,7 @@ export const dosesOn = (
   const marks = marksOf(medication.id, doses).filter(
     (dose) => dose.date === date,
   )
-  const scheduled = isScheduledOn(medication, date)
+  const scheduled = isScheduledOn(medication, doses, date)
     ? sortedTimes(medication)
     : []
   const isDone = isComplete(medication, doses)
@@ -173,7 +224,7 @@ export const nextDose = ({
 }) => {
   if (isComplete(medication, doses)) return
   const from = latest(medication.start, today)
-  const span = Math.max(1, Math.round(medication.everyDays)) + 1
+  const span = stepOf(medication) + 1
   for (let index = 0; index < span; index++) {
     const date = addDays(from, index)
     const dose = dosesOn(medication, doses, date).find(
@@ -184,12 +235,15 @@ export const nextDose = ({
 }
 
 // Scheduled doses from `from` to `end`.
-const countScheduled = (medication: TMedication, from: string, end: string) => {
+const countScheduled = (
+  medication: TMedication,
+  doses: TDose[],
+  from: string,
+  end: string,
+) => {
   let count = 0
-  const step = Math.max(1, Math.round(medication.everyDays))
-  const since = Math.max(0, daysBetween(medication.start, from))
-  // The first scheduled day on or after `from`.
-  let date = addDays(medication.start, Math.ceil(since / step) * step)
+  const step = stepOf(medication)
+  let date = firstScheduledFrom(medication, doses, from)
   while (date <= end) {
     count += sortedTimes(medication).length
     date = addDays(date, step)
@@ -215,7 +269,7 @@ export const dosesLeft = (
   const marked = marksOf(medication.id, doses).filter(
     (dose) => dose.date >= today,
   ).length
-  return Math.max(0, countScheduled(medication, today, end) - marked)
+  return Math.max(0, countScheduled(medication, doses, today, end) - marked)
 }
 
 // The day the course is expected to end: its last day, or for a course of
@@ -230,10 +284,8 @@ export const expectedEnd = (
   const left = dosesLeft(medication, doses, today) ?? 0
   if (left === 0) return
   const perDay = Math.max(1, sortedTimes(medication).length)
-  const step = Math.max(1, Math.round(medication.everyDays))
-  const from = latest(medication.start, today)
-  const since = Math.max(0, daysBetween(medication.start, from))
-  const first = addDays(medication.start, Math.ceil(since / step) * step)
+  const step = stepOf(medication)
+  const first = firstScheduledFrom(medication, doses, today)
   // Today's doses already marked don't count against what is left.
   const markedToday = marksOf(medication.id, doses).filter(
     (dose) => dose.date === first,
