@@ -323,7 +323,7 @@ export const Notifications = (properties: {
         side={side}
         align="end"
         collisionPadding={16}
-        className="glass-surface grid max-h-[min(32rem,calc(100dvh-5rem))] w-[min(26rem,calc(100vw-2rem))] gap-4 overflow-y-auto rounded-xl p-4"
+        className="glass-surface grid max-h-[min(32rem,calc(100dvh-5rem))] w-[min(26rem,calc(100vw-2rem))] gap-4 overflow-y-auto overscroll-contain rounded-xl p-4"
       >
         <NotificationList
           notifications={notifications}

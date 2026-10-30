@@ -169,7 +169,7 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
       >
         {result && (
           <div className="grid gap-3">
-            <div className="max-h-[50dvh] overflow-y-auto rounded-lg border p-3">
+            <div className="max-h-[50dvh] overflow-y-auto overscroll-contain rounded-lg border p-3">
               {result.helper === 'checklist' ? (
                 <div className="grid gap-2">
                   {result.answer.title.trim() && (

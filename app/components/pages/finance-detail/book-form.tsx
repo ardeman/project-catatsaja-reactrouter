@@ -891,7 +891,7 @@ export const Form = (properties: TFormProperties) => {
           </div>
         </form>
 
-        <aside className="grid gap-6 xl:sticky xl:top-4 xl:col-start-2 xl:row-span-4 xl:row-start-1 xl:-m-4 xl:max-h-[calc(100dvh-2rem)] xl:overflow-y-auto xl:p-4">
+        <aside className="grid gap-6 xl:sticky xl:top-4 xl:col-start-2 xl:row-span-4 xl:row-start-1 xl:-m-4 xl:max-h-[calc(100dvh-2rem)] xl:overflow-y-auto xl:overscroll-contain xl:p-4">
           {finance && (
             <div className="glass-surface hidden gap-1 rounded-xl border p-4 text-xs text-muted-foreground xl:grid">
               {isTitleHidden && (

@@ -104,6 +104,13 @@ export const releases: TRelease[] = [
           id: 'Teks yang bergulir di bawah tombol mengambang (bilah di atas catatan, tugas, buku, atau log, tab di bawah, dan tombol Baru) kini sedikit diburamkan di sekitarnya, sehingga tombol lebih mudah dibaca.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'On a phone, the Gemini panel in a book scrolls on its own instead of moving the entries behind it, and its buttons no longer hide under the bottom tabs. Menus, dialogs and other panels that scroll keep the page behind them still too.',
+          id: 'Di ponsel, panel Gemini di buku kini bergulir sendiri tanpa ikut menggeser entri di belakangnya, dan tombolnya tidak lagi tertutup tab bawah. Menu, dialog, dan panel lain yang bergulir juga tidak lagi ikut menggeser halaman di belakangnya.',
+        },
+      },
     ],
   },
   {

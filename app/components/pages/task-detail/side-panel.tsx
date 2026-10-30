@@ -12,7 +12,7 @@ export const SidePanel = (properties: TSidePanelProperties) => {
   const progress = t('tasks.progress', { done, total })
 
   return (
-    <aside className="glass-surface sticky top-8 hidden max-h-[calc(100dvh-4rem)] flex-col gap-4 overflow-y-auto rounded-xl border p-4 xl:flex">
+    <aside className="glass-surface sticky top-8 hidden max-h-[calc(100dvh-4rem)] flex-col gap-4 overflow-y-auto overscroll-contain rounded-xl border p-4 xl:flex">
       {dateLabel && (
         <div className="grid gap-1 text-xs text-muted-foreground">
           <span>{dateLabel}</span>

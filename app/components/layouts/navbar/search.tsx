@@ -505,7 +505,7 @@ const Results = (properties: TResultsProperties) => {
       // phones the list opens upward from the search box in the bottom row.
       onMouseDown={(event) => event.preventDefault()}
       className={cn(
-        'overflow-y-auto p-2 text-popover-foreground',
+        'overflow-y-auto overscroll-contain p-2 text-popover-foreground',
         isPalette
           ? 'max-h-[min(60vh,32rem)] border-t'
           : 'glass-surface fixed inset-x-4 z-50 max-h-[min(70vh,calc(var(--keyboard-height)-6rem-var(--top-inset)))] rounded-xl border max-md:bottom-[calc(var(--row-bottom)+4.5rem+2px)] md:absolute md:inset-x-0 md:top-full md:mt-2',

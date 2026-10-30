@@ -111,7 +111,7 @@ export const SideMenu = (properties: TSideMenuProperties) => {
         isPalette
         isCompact={isCollapsed}
       />
-      <div className="-mx-3 min-h-0 flex-1 overflow-y-auto px-3 py-1">
+      <div className="-mx-3 min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-1">
         <Navigation
           variant="side"
           isCollapsed={isCollapsed}

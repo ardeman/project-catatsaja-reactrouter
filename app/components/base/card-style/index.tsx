@@ -123,7 +123,7 @@ export const CardStylePicker = (properties: {
             <legend className="mb-2 text-xs text-muted-foreground">
               {t('cardStyle.emoji')}
             </legend>
-            <div className="-m-1 grid max-h-52 grid-cols-8 gap-1 overflow-y-auto p-1">
+            <div className="-m-1 grid max-h-52 grid-cols-8 gap-1 overflow-y-auto overscroll-contain p-1">
               <button
                 type="button"
                 aria-label={t('cardStyle.none')}

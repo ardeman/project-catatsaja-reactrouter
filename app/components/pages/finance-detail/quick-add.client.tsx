@@ -149,7 +149,10 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
       {isOpen ? (
         <section
           aria-labelledby="quick-add-title"
-          className="motion-enter glass-surface glass-float order-last grid max-h-[calc(100dvh-14rem-var(--summary-height,0px))] basis-full gap-3 overflow-y-auto rounded-xl border p-3 shadow-lg sm:p-4 md:max-h-[calc(100dvh-14rem-var(--summary-height,0px))] [&_[role=combobox]]:bg-background [&_input]:bg-background [&_textarea]:bg-background"
+          // Starts under the totals and the Add button (6.75rem below the top
+          // inset on phones, 7.75rem from md) and stops clear of the bottom
+          // menu (5.5rem above --nav-bottom), so its buttons stay reachable.
+          className="motion-enter glass-surface glass-float order-last grid max-h-[calc(100dvh-12.25rem-var(--top-inset)-var(--summary-height,0px)-var(--nav-bottom))] basis-full gap-3 overflow-y-auto rounded-xl border p-3 shadow-lg sm:p-4 md:max-h-[calc(100dvh-8.75rem-var(--summary-height,0px))] [&_[role=combobox]]:bg-background [&_input]:bg-background [&_textarea]:bg-background"
         >
           <h2
             id="quick-add-title"

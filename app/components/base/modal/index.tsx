@@ -107,7 +107,7 @@ const Dialog = (parameters: TParameters) => {
         if (!isOpen) handleClose() // Trigger handleClose when closing
       }}
     >
-      <DialogContent className="glass-surface glass-thick max-h-dvh overflow-y-auto rounded-lg">
+      <DialogContent className="glass-surface glass-thick max-h-dvh overflow-y-auto overscroll-contain rounded-lg">
         <DialogHeader className={title || description ? '' : 'hidden'}>
           <DialogTitle className={title ? '' : 'hidden'}>{title}</DialogTitle>
           <DialogDescription className={description ? '' : 'hidden'}>

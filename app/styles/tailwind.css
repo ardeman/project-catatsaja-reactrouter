@@ -137,8 +137,11 @@
   }
 
   /* A floating panel (with .glass-surface) that lets what scrolls under it
-     show through, lightly blurred. */
+     show through, lightly blurred. A swipe that reaches its end stays in it,
+     so the page under it doesn't scroll instead (iOS chains it otherwise). */
   .glass-float {
+    overscroll-behavior: contain;
+
     @supports (backdrop-filter: blur(1px)) or
       (-webkit-backdrop-filter: blur(1px)) {
       background-color: var(--glass-float-tint);

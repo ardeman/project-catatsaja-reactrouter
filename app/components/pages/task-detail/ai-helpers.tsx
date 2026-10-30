@@ -222,7 +222,7 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
       >
         {result && (
           <div className="grid gap-3">
-            <div className="grid max-h-[50dvh] gap-2 overflow-y-auto rounded-lg border p-3">
+            <div className="grid max-h-[50dvh] gap-2 overflow-y-auto overscroll-contain rounded-lg border p-3">
               {(result.helper === 'translate' ||
                 result.helper === 'fromText') &&
                 result.list.title && (
