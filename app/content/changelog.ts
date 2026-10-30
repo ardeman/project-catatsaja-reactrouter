@@ -97,6 +97,13 @@ export const releases: TRelease[] = [
           id: '“Ulangi tiap bulan” pada entri keuangan baru kembali sebaris dengan kotak centangnya, di samping Batal dan Simpan.',
         },
       },
+      {
+        kind: 'improved',
+        text: {
+          en: 'Text scrolling under the floating buttons (the bar at the top of a note, task, book or log, the tabs at the bottom, and the New button) is softly blurred around them, so the buttons are easier to read.',
+          id: 'Teks yang bergulir di bawah tombol mengambang (bilah di atas catatan, tugas, buku, atau log, tab di bawah, dan tombol Baru) kini sedikit diburamkan di sekitarnya, sehingga tombol lebih mudah dibaca.',
+        },
+      },
     ],
   },
   {

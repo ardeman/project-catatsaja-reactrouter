@@ -166,7 +166,7 @@ export const Collection = <T extends TCollectionItem>(
       <Button
         // Sticky in the page column from md up, so it centers over the
         // cards beside the side menu rather than on the whole window.
-        containerClassName="flex fixed bottom-[calc(4.5rem+var(--nav-bottom))] md:sticky md:bottom-auto md:top-0 md:-my-8 z-40 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8"
+        containerClassName="glass-halo [--halo-inset:0.25rem] md:[--halo-inset:1.25rem_0.25rem] flex fixed bottom-[calc(4.5rem+var(--nav-bottom))] md:sticky md:bottom-auto md:top-0 md:-my-8 z-40 sm:max-w-xs mx-auto left-0 right-0 w-full p-4 md:py-8"
         className="glass-surface glass-primary w-full border hover:bg-primary"
         // Toasts keep clear of it (app/styles/tailwind.css).
         data-floating-create

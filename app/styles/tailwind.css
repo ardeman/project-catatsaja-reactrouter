@@ -147,6 +147,31 @@
     }
   }
 
+  /* A floating bar or button: blurs what scrolls around it and between its
+     buttons, fading out past its edges like a shadow. Set --halo-inset when
+     the element pads its content, so the halo still hugs the content. */
+  .glass-halo {
+    &::before {
+      content: '';
+      position: absolute;
+      inset: var(--halo-inset, -0.75rem);
+      z-index: -1;
+      pointer-events: none;
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      --halo-fade:
+        transparent, #000 0.75rem, #000 calc(100% - 0.75rem), transparent;
+      -webkit-mask-image:
+        linear-gradient(to bottom, var(--halo-fade)),
+        linear-gradient(to right, var(--halo-fade));
+      -webkit-mask-composite: source-in;
+      mask-image:
+        linear-gradient(to bottom, var(--halo-fade)),
+        linear-gradient(to right, var(--halo-fade));
+      mask-composite: intersect;
+    }
+  }
+
   .glass-primary {
     background-color: hsl(var(--primary));
     border-color: hsl(var(--primary) / 0.5);

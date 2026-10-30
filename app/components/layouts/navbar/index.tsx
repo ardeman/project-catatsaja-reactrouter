@@ -79,7 +79,7 @@ export const Navbar = (properties: TProperties) => {
       )}
       {!isDesktop && (
         <div
-          className="fixed inset-x-4 bottom-(--row-bottom) z-50 flex gap-1.5"
+          className="glass-halo fixed inset-x-4 bottom-(--row-bottom) z-50 flex gap-1.5"
           style={rowStyle}
         >
           <Navigation
