@@ -1001,6 +1001,73 @@
       "email": "rina@example.com"
     }
   },
+  "guide": {
+    "start": "Page guide",
+    "showInApp": "Show me in the app",
+    "progress": "{{current}} of {{total}}",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "done": "Done",
+    "notes": {
+      "title": "Notes",
+      "create": "Choose New note to start writing. Everything saves itself as you type.",
+      "search": "Search finds anything you wrote, across notes, tasks, finances and health logs. You can also press Ctrl K (⌘ K on a Mac) or / on any page.",
+      "account": "Settings and more are in your account menu. Choose Page guide there to see this again."
+    },
+    "note": {
+      "title": "Your note",
+      "format": "Format opens a bar for bold text, headings and lists. Right-clicking the text works too.",
+      "ai": "Gemini can take dictation, summarise, tidy up or translate the note, or turn it into a task list. You see the result before anything changes.",
+      "undo": "Undo and redo your changes.",
+      "share": "Share the note with other people by their email, with read-only or edit access.",
+      "delete": "Delete the note, or archive it instead to tidy your list."
+    },
+    "tasks": {
+      "title": "Tasks",
+      "create": "Choose New task to start a checklist for shopping, packing, chores or anything with steps.",
+      "search": "Search finds anything you wrote, across notes, tasks, finances and health logs. You can also press Ctrl K (⌘ K on a Mac) or / on any page.",
+      "account": "Settings and more are in your account menu. Choose Page guide there to see this again."
+    },
+    "task": {
+      "title": "Your task list",
+      "add-item": "Type an item and press Enter. Paste several lines to add one item per line.",
+      "check-all": "Check or uncheck every item at once. Checked items move to Completed at the bottom.",
+      "ai": "Gemini can take dictation, break the list into steps, suggest more items or translate it. You see the result before anything changes.",
+      "share": "Share the list with other people by their email, with read-only or edit access."
+    },
+    "finances": {
+      "title": "Finances",
+      "create": "Choose New book for a month, a trip or a project, then pick its currency.",
+      "search": "Search finds anything you wrote, across notes, tasks, finances and health logs. You can also press Ctrl K (⌘ K on a Mac) or / on any page.",
+      "account": "Settings and more are in your account menu. Choose Page guide there to see this again."
+    },
+    "finance": {
+      "title": "Your book",
+      "add-entry": "Add each income or expense here. Amount fields accept sums such as 25000+12000.",
+      "quick-add": "Gemini reads a receipt photo, or typed text like \"lunch 45rb\", into entries. You check them before they are added.",
+      "view": "Switch between the entries and the analysis: cash flow, balance and spending by category.",
+      "share": "Share the book with other people by their email, with read-only or edit access."
+    },
+    "health": {
+      "title": "Health",
+      "create": "Choose New health log for yourself, a child or a parent.",
+      "search": "Search finds anything you wrote, across notes, tasks, finances and health logs. You can also press Ctrl K (⌘ K on a Mac) or / on any page.",
+      "account": "Settings and more are in your account menu. Choose Page guide there to see this again."
+    },
+    "healthLog": {
+      "title": "Your health log",
+      "sections": "Each kind of measurement has its own tab. Overview shows the latest of each.",
+      "reminders": "Set a reminder to measure every few days, or before an expected period.",
+      "medications": "Keep a list of medicines and tick off each dose.",
+      "share": "Share the log with other people by their email, with read-only or edit access."
+    },
+    "settings": {
+      "title": "Settings",
+      "settings-sections": "Settings has four parts: General (name, theme, language, menu), Account (email, encryption, AI features), Currency and Health.",
+      "account": "Settings and more are in your account menu. Choose Page guide there to see this again."
+    }
+  },
   "privacyPolicy": {
     "updated": "Last updated: 26 October 2026",
     "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books, health logs and settings you create. A health log can hold sensitive details, such as periods, sex (and whether it was protected) and medicines; turn on end-to-end encryption to keep them unreadable to us.",

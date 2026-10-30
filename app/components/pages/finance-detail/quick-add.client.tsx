@@ -331,6 +331,7 @@ export const QuickAdd = (properties: TReceiptScanProperties) => {
           variant="outline"
           onClick={() => setIsOpen(true)}
           aria-label={t('finances.quickAdd.gemini')}
+          data-guide="quick-add"
           title={t('finances.quickAdd.methods')}
         >
           <Sparkles className="size-4" />

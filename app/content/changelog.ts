@@ -21,6 +21,13 @@ export const releases: TRelease[] = [
     },
     changes: [
       {
+        kind: 'new',
+        text: {
+          en: 'The first time you open a page, a short guide points out its main buttons one by one. See it again any time with Page guide, which replaces How to use in the account menu.',
+          id: 'Saat pertama kali membuka sebuah halaman, panduan singkat menunjukkan tombol-tombol utamanya satu per satu. Lihat lagi kapan saja lewat Panduan halaman, yang menggantikan Cara pakai di menu akun.',
+        },
+      },
+      {
         kind: 'improved',
         text: {
           en: 'On a computer the menu now runs down the left side, so your notes, tasks, finances and health get the full height of the screen. Your account, notifications and the Settings sections are in it too. You can fold it to icons, and move it to the right side in Settings.',

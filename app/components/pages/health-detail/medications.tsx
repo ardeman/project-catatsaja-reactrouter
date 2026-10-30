@@ -313,6 +313,7 @@ export const Medications = (properties: TMedicationsProperties) => {
   return (
     <section
       aria-labelledby="health-medications-title"
+      data-guide="medications"
       className="glass-surface grid gap-3 rounded-xl border p-4"
     >
       <div className="flex items-center justify-between gap-2">

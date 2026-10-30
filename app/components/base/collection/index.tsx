@@ -170,6 +170,7 @@ export const Collection = <T extends TCollectionItem>(
         className="glass-surface glass-primary w-full border hover:bg-primary"
         // Toasts keep clear of it (app/styles/tailwind.css).
         data-floating-create
+        data-guide="create"
         onClick={onCreate}
       >
         {createLabel}

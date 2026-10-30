@@ -1,4 +1,10 @@
-import { CircleUser, ExternalLink, Lock, LogOut } from 'lucide-react'
+import {
+  CircleUser,
+  ExternalLink,
+  Lock,
+  LogOut,
+  CircleQuestionMark,
+} from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -7,6 +13,7 @@ import { DrawerScroll } from '~/components/base/drawer-scroll'
 import { InstallApp } from '~/components/base/install-app'
 import { PlanBadge } from '~/components/base/plan-badge'
 import { PlusInfo } from '~/components/base/plus-info'
+import { useStartScreenGuide } from '~/components/base/screen-guide'
 import {
   NotificationCount,
   NotificationList,
@@ -42,6 +49,7 @@ export const AccountSheet = (properties: {
   const { t } = useTranslation()
   const { data: userData } = useUserData()
   const encryption = useEncryptionSession()
+  const guide = useStartScreenGuide()
   const [open, setOpen] = useState(false)
   const close = () => setOpen(false)
   // Outside the sheet, which closes as it opens.
@@ -87,6 +95,7 @@ export const AccountSheet = (properties: {
             type="button"
             aria-label={label}
             title={label}
+            data-guide="account"
             draggable={false}
             className="relative flex h-14 min-w-0 flex-1 basis-0 flex-col items-center justify-center gap-0.5 rounded-full text-[0.625rem] tracking-tight text-muted-foreground transition-colors [-webkit-touch-callout:none] hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
           >
@@ -177,7 +186,25 @@ export const AccountSheet = (properties: {
               className="grid gap-1 border-t pt-4"
             >
               <p className="px-3 text-xs text-muted-foreground">{appName}</p>
-              {aboutMenus(t).map((menu) => menuLink(menu))}
+              {aboutMenus(t).map((menu) =>
+                // Signed in, the page's own guide takes How to use's place.
+                menu.href === '/help' && guide.canStart ? (
+                  <Button
+                    key={menu.href}
+                    variant="ghost"
+                    onClick={() => {
+                      close()
+                      guide.start?.()
+                    }}
+                    className={rowClassName}
+                  >
+                    {t('guide.start')}
+                    <CircleQuestionMark className="ml-auto text-muted-foreground" />
+                  </Button>
+                ) : (
+                  menuLink(menu)
+                ),
+              )}
             </nav>
           </DrawerScroll>
         </DrawerContent>

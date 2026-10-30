@@ -143,6 +143,28 @@ export const newDevice = async (browser, options = {}) => {
     viewport: { width: 1100, height: 900 },
     ...options,
   })
+  // The screen guides (app/lib/constants/screen-guide.ts) would cover the
+  // page the first time each one opens.
+  await context.addInitScript(() => {
+    try {
+      localStorage.setItem(
+        'screen-guide-seen',
+        JSON.stringify([
+          'notes',
+          'note',
+          'tasks',
+          'task',
+          'finances',
+          'finance',
+          'health',
+          'healthLog',
+          'settings',
+        ]),
+      )
+    } catch {
+      // A blank page has no storage.
+    }
+  })
   const page = await context.newPage()
   return { context, page }
 }

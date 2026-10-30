@@ -13,6 +13,7 @@ import {
   TEditorFormat,
 } from '~/components/base/milkdown-editor'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
+import { useScreenGuide } from '~/components/base/screen-guide'
 import { Textarea } from '~/components/base/textarea'
 import { useNote } from '~/components/pages/notes'
 import { auth } from '~/lib/configs/firebase'
@@ -229,6 +230,8 @@ export const Form = (properties: TFormProperties) => {
       triggerClassName={buttonClassName}
     />
   )
+
+  useScreenGuide('note', !!note)
 
   useAutosave({
     save,

@@ -1001,6 +1001,73 @@
       "email": "rina@example.com"
     }
   },
+  "guide": {
+    "start": "Panduan halaman",
+    "showInApp": "Tunjukkan di aplikasi",
+    "progress": "{{current}} dari {{total}}",
+    "next": "Lanjut",
+    "back": "Kembali",
+    "skip": "Lewati",
+    "done": "Selesai",
+    "notes": {
+      "title": "Catatan",
+      "create": "Pilih Catatan baru untuk mulai menulis. Semuanya tersimpan sendiri saat kamu mengetik.",
+      "search": "Cari menemukan apa pun yang kamu tulis, di catatan, tugas, keuangan, dan catatan kesehatan. Kamu juga bisa menekan Ctrl K (⌘ K di Mac) atau / di halaman mana pun.",
+      "account": "Pengaturan dan lainnya ada di menu akunmu. Pilih Panduan halaman di sana untuk melihat ini lagi."
+    },
+    "note": {
+      "title": "Catatanmu",
+      "format": "Format membuka bilah untuk teks tebal, judul, dan daftar. Klik kanan pada teks juga bisa.",
+      "ai": "Gemini bisa mendikte, meringkas, merapikan, atau menerjemahkan catatan, atau mengubahnya menjadi daftar tugas. Kamu melihat hasilnya sebelum ada yang berubah.",
+      "undo": "Urungkan dan ulangi perubahanmu.",
+      "share": "Bagikan catatan ke orang lain lewat email mereka, dengan akses hanya baca atau boleh ubah.",
+      "delete": "Hapus catatan, atau arsipkan saja agar daftarmu rapi."
+    },
+    "tasks": {
+      "title": "Tugas",
+      "create": "Pilih Tugas baru untuk membuat daftar periksa belanja, barang bawaan, pekerjaan rumah, atau apa pun yang punya langkah.",
+      "search": "Cari menemukan apa pun yang kamu tulis, di catatan, tugas, keuangan, dan catatan kesehatan. Kamu juga bisa menekan Ctrl K (⌘ K di Mac) atau / di halaman mana pun.",
+      "account": "Pengaturan dan lainnya ada di menu akunmu. Pilih Panduan halaman di sana untuk melihat ini lagi."
+    },
+    "task": {
+      "title": "Daftar tugasmu",
+      "add-item": "Ketik item lalu tekan Enter. Tempel beberapa baris untuk menambah satu item per baris.",
+      "check-all": "Centang atau hapus centang semua item sekaligus. Item yang dicentang pindah ke Selesai di bawah.",
+      "ai": "Gemini bisa mendikte, memecah daftar menjadi langkah, menyarankan item lain, atau menerjemahkannya. Kamu melihat hasilnya sebelum ada yang berubah.",
+      "share": "Bagikan daftar ke orang lain lewat email mereka, dengan akses hanya baca atau boleh ubah."
+    },
+    "finances": {
+      "title": "Keuangan",
+      "create": "Pilih Buku baru untuk sebulan, perjalanan, atau proyek, lalu pilih mata uangnya.",
+      "search": "Cari menemukan apa pun yang kamu tulis, di catatan, tugas, keuangan, dan catatan kesehatan. Kamu juga bisa menekan Ctrl K (⌘ K di Mac) atau / di halaman mana pun.",
+      "account": "Pengaturan dan lainnya ada di menu akunmu. Pilih Panduan halaman di sana untuk melihat ini lagi."
+    },
+    "finance": {
+      "title": "Bukumu",
+      "add-entry": "Tambahkan setiap pemasukan atau pengeluaran di sini. Kolom jumlah menerima penjumlahan seperti 25000+12000.",
+      "quick-add": "Gemini membaca foto struk, atau teks seperti \"makan siang 45rb\", menjadi entri. Kamu memeriksanya sebelum ditambahkan.",
+      "view": "Beralih antara entri dan analisis: arus kas, saldo, dan pengeluaran per kategori.",
+      "share": "Bagikan buku ke orang lain lewat email mereka, dengan akses hanya baca atau boleh ubah."
+    },
+    "health": {
+      "title": "Kesehatan",
+      "create": "Pilih Catatan kesehatan baru untuk dirimu, anak, atau orang tua.",
+      "search": "Cari menemukan apa pun yang kamu tulis, di catatan, tugas, keuangan, dan catatan kesehatan. Kamu juga bisa menekan Ctrl K (⌘ K di Mac) atau / di halaman mana pun.",
+      "account": "Pengaturan dan lainnya ada di menu akunmu. Pilih Panduan halaman di sana untuk melihat ini lagi."
+    },
+    "healthLog": {
+      "title": "Catatan kesehatanmu",
+      "sections": "Setiap jenis pengukuran punya tabnya sendiri. Ringkasan menampilkan yang terbaru dari masing-masing.",
+      "reminders": "Pasang pengingat untuk mengukur setiap beberapa hari, atau sebelum perkiraan menstruasi.",
+      "medications": "Simpan daftar obat dan centang setiap dosis.",
+      "share": "Bagikan catatan ke orang lain lewat email mereka, dengan akses hanya baca atau boleh ubah."
+    },
+    "settings": {
+      "title": "Pengaturan",
+      "settings-sections": "Pengaturan punya empat bagian: Umum (nama, tema, bahasa, menu), Akun (email, enkripsi, fitur AI), Mata uang, dan Kesehatan.",
+      "account": "Pengaturan dan lainnya ada di menu akunmu. Pilih Panduan halaman di sana untuk melihat ini lagi."
+    }
+  },
   "privacyPolicy": {
     "updated": "Terakhir diperbarui: 26 Oktober 2026",
     "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat. Catatan kesehatan bisa berisi hal yang sensitif, seperti menstruasi, hubungan seks (dan apakah memakai pengaman), serta obat; nyalakan enkripsi end-to-end agar kami tidak bisa membacanya.",

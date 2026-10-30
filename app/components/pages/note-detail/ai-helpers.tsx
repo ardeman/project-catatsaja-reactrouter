@@ -116,6 +116,7 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
             className={triggerClassName}
             disabled={!!pending || (!hasContent && !isEditable)}
             aria-label={t(pending ? 'notes.ai.working' : 'notes.ai.menu')}
+            data-guide="ai"
             title={t(
               hasContent || isEditable ? 'notes.ai.menu' : 'notes.ai.empty',
             )}

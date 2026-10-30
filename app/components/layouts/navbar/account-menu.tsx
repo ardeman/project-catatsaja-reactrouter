@@ -1,9 +1,16 @@
-import { CircleUser, ExternalLink, Lock, LogOut } from 'lucide-react'
+import {
+  CircleUser,
+  ExternalLink,
+  Lock,
+  LogOut,
+  CircleQuestionMark,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
 import { InstallApp } from '~/components/base/install-app'
 import { PlanBadge } from '~/components/base/plan-badge'
+import { useStartScreenGuide } from '~/components/base/screen-guide'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import {
   DropdownMenu,
@@ -60,12 +67,14 @@ export const AccountMenu = (properties: TAccountMenuProperties) => {
   const { t } = useTranslation()
   const { data: userData } = useUserData()
   const encryption = useEncryptionSession()
+  const guide = useStartScreenGuide()
   const label = t('navigation.userMenu')
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label={label}
+        data-guide="account"
         title={label}
         className={cn(
           'flex w-full min-w-0 items-center gap-3 rounded-md p-1 text-left transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden data-[state=open]:bg-accent',
@@ -138,12 +147,24 @@ export const AccountMenu = (properties: TAccountMenuProperties) => {
         <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
           {appName}
         </DropdownMenuLabel>
-        {aboutMenus(t).map((menu) => (
-          <MenuLink
-            key={menu.href}
-            menu={menu}
-          />
-        ))}
+        {aboutMenus(t).map((menu) =>
+          // Signed in, the page's own guide takes How to use's place.
+          menu.href === '/help' && guide.canStart ? (
+            <DropdownMenuItem
+              key={menu.href}
+              onSelect={guide.start}
+              className="cursor-pointer gap-2"
+            >
+              {t('guide.start')}
+              <CircleQuestionMark className="ml-auto size-3.5 text-muted-foreground" />
+            </DropdownMenuItem>
+          ) : (
+            <MenuLink
+              key={menu.href}
+              menu={menu}
+            />
+          ),
+        )}
         <DropdownMenuSeparator />
         {userData?.publicKey && encryption.status === 'unlocked' && (
           <DropdownMenuItem

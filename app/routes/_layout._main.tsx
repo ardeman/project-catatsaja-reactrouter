@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Outlet } from 'react-router'
 
 import { fetchUserData } from '~/apis/firestore/user'
+import { ScreenGuideProvider } from '~/components/base/screen-guide'
 import { EncryptionGate } from '~/components/layouts/encryption-gate'
 import { MaintenanceGate } from '~/components/layouts/maintenance-gate'
 import { Navbar } from '~/components/layouts/navbar'
@@ -51,19 +52,21 @@ const Main = () => {
   }, [savedStartPage])
 
   return (
-    <main className="app-background isolate flex min-h-dvh w-full flex-col pt-(--top-inset) pb-[calc(5rem+var(--nav-bottom))] md:flex-row md:pt-0 md:pb-0">
-      <Navbar />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <PullToRefresh />
-        <MaintenanceGate>
-          <EncryptionGate>
-            <PushPrompt>
-              <Outlet />
-            </PushPrompt>
-          </EncryptionGate>
-        </MaintenanceGate>
-      </div>
-    </main>
+    <ScreenGuideProvider>
+      <main className="app-background isolate flex min-h-dvh w-full flex-col pt-(--top-inset) pb-[calc(5rem+var(--nav-bottom))] md:flex-row md:pt-0 md:pb-0">
+        <Navbar />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <PullToRefresh />
+          <MaintenanceGate>
+            <EncryptionGate>
+              <PushPrompt>
+                <Outlet />
+              </PushPrompt>
+            </EncryptionGate>
+          </MaintenanceGate>
+        </div>
+      </main>
+    </ScreenGuideProvider>
   )
 }
 

@@ -1,5 +1,9 @@
+import { CircleQuestionMark } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 
+import { Button } from '~/components/ui/button'
+import { forgetGuideSeen, helpGuides } from '~/lib/constants/screen-guide'
 import { useDocumentTitle } from '~/lib/hooks/use-document-title'
 
 import { HelpContents } from './contents'
@@ -18,6 +22,7 @@ export const HelpPage = () => {
       <HelpContents />
       {sections.map((key) => {
         const Figure = figures[key]
+        const inApp = helpGuides[key]
         return (
           <section
             key={key}
@@ -41,6 +46,22 @@ export const HelpPage = () => {
                 <li key={step}>{step}</li>
               ))}
             </ul>
+            {inApp && (
+              // Opens the page with its guide, even if it was seen before.
+              <Button
+                asChild
+                variant="outline"
+                className="justify-self-start"
+              >
+                <Link
+                  to={inApp.href}
+                  onClick={() => forgetGuideSeen(inApp.guide)}
+                >
+                  <CircleQuestionMark />
+                  {t('guide.showInApp')}
+                </Link>
+              </Button>
+            )}
           </section>
         )
       })}

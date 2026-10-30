@@ -137,6 +137,7 @@ export const SideMenu = (properties: TSideMenuProperties) => {
               </Link>
               {isSettings && (
                 <div
+                  data-guide="settings-sections"
                   className={cn(
                     'grid gap-1',
                     !isCollapsed && 'ml-5 border-l pl-2',

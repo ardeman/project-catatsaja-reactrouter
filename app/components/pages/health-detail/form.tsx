@@ -8,6 +8,7 @@ import { Button } from '~/components/base/button'
 import { CardStyleLayer } from '~/components/base/card-style'
 import { DatePicker } from '~/components/base/date-picker'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
+import { useScreenGuide } from '~/components/base/screen-guide'
 import { Segmented } from '~/components/base/segmented'
 import { SexIcon } from '~/components/base/sex-icon'
 import { Textarea } from '~/components/base/textarea'
@@ -241,6 +242,8 @@ export const Form = (properties: TFormProperties) => {
     const reference = await save()
     if (reference) navigate(`/health/${reference.id}`, { replace: true })
   }
+
+  useScreenGuide('healthLog', !!healthLog)
 
   useAutosave({
     save,
@@ -572,6 +575,7 @@ export const Form = (properties: TFormProperties) => {
         <div className="-mx-4 overflow-x-auto px-4 xl:col-start-1">
           <Segmented
             label={t('health.sections')}
+            guide="sections"
             value={tab}
             options={tabs.map((value) => ({
               value,

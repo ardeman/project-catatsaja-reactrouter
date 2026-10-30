@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 
+import { useScreenGuide } from '~/components/base/screen-guide'
 import { cn } from '~/lib/utils/shadcn'
 
 import { settings } from './constant'
@@ -11,9 +12,11 @@ export { settings } from './constant'
 export const Sidebar = () => {
   const { pathname } = useLocation()
   const { t } = useTranslation()
+  useScreenGuide('settings')
   return (
     <nav
       aria-label={t('navigation.settings')}
+      data-guide="settings-sections"
       className="glass-surface sticky top-[calc(1rem+var(--top-inset))] z-30 grid grid-cols-4 gap-1 rounded-lg border p-1 select-none md:hidden"
     >
       {settings(t).map((setting) => {

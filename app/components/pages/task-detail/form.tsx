@@ -19,6 +19,7 @@ import { Action } from '~/components/base/action'
 import { CardStyleLayer } from '~/components/base/card-style'
 import { Checkbox } from '~/components/base/checkbox'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
+import { useScreenGuide } from '~/components/base/screen-guide'
 import { Textarea } from '~/components/base/textarea'
 import { useTask } from '~/components/pages/tasks'
 import { Button } from '~/components/ui/button'
@@ -258,6 +259,8 @@ export const Form = (properties: TFormProperties) => {
     const reference = await save()
     if (reference) navigate(`/tasks/${reference.id}`, { replace: true })
   }
+
+  useScreenGuide('task', !!task)
 
   useAutosave({
     save,
@@ -1042,7 +1045,10 @@ export const Form = (properties: TFormProperties) => {
           </div>
           {!isReadOnly && (
             <div className="pl-15 sm:pl-16">
-              <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+              <div
+                data-guide="add-item"
+                className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center"
+              >
                 <Textarea
                   name="item"
                   aria-label={t('tasks.form.placeholder.label')}

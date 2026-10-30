@@ -101,6 +101,7 @@ export const Navbar = (properties: TProperties) => {
             aria-label={searchLabel}
             title={searchLabel}
             aria-pressed={isSearching}
+            data-guide="search"
             // Keep focus in the box, so a tap closes search instead of
             // blurring it and opening it again.
             onMouseDown={(event) => event.preventDefault()}

@@ -16,6 +16,7 @@ import { Action } from '~/components/base/action'
 import { CardStyleLayer } from '~/components/base/card-style'
 import { CategoryIcon } from '~/components/base/category-icon'
 import { SaveStatus, TSaveStatus } from '~/components/base/save-status'
+import { useScreenGuide } from '~/components/base/screen-guide'
 import { Segmented } from '~/components/base/segmented'
 import {
   Select,
@@ -544,6 +545,8 @@ export const Form = (properties: TFormProperties) => {
     if (reference) navigate(`/finances/${reference.id}`, { replace: true })
   }
 
+  useScreenGuide('finance', !!finance)
+
   useAutosave({
     save,
     watch: [
@@ -954,6 +957,7 @@ export const Form = (properties: TFormProperties) => {
           <div className="flex justify-center xl:col-start-1">
             <Segmented
               label={t('finances.view.label')}
+              guide="view"
               value={view}
               options={[
                 { value: 'entries', label: t('finances.view.entries') },
@@ -1042,6 +1046,7 @@ export const Form = (properties: TFormProperties) => {
                     <Button
                       type="button"
                       className="min-w-0 flex-1 gap-2"
+                      data-guide="add-entry"
                       onClick={() => openEntry()}
                     >
                       <Plus className="size-4" />

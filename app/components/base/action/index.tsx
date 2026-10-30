@@ -88,6 +88,7 @@ export const Action = (properties: TActionProperties) => {
         <Button
           variant="outline"
           aria-label={t('actions.delete')}
+          data-guide="delete"
           title={t('actions.delete')}
           onClick={(event) => {
             event.stopPropagation()
@@ -123,6 +124,7 @@ export const Action = (properties: TActionProperties) => {
       {isOwner && isEditable && handleShare && (
         <Button
           variant="outline"
+          data-guide="share"
           aria-label={
             sharedCount
               ? t('actions.sharedWith', { count: sharedCount })
@@ -154,6 +156,7 @@ export const Action = (properties: TActionProperties) => {
         <Button
           variant="outline"
           aria-label={t(checkedAll ? 'actions.uncheckAll' : 'actions.checkAll')}
+          data-guide="check-all"
           title={t(checkedAll ? 'actions.uncheckAll' : 'actions.checkAll')}
           onClick={(event) => {
             event.stopPropagation()
@@ -190,6 +193,7 @@ export const Action = (properties: TActionProperties) => {
         <Button
           variant="outline"
           aria-label={t('actions.undo')}
+          data-guide="undo"
           title={t('actions.undo')}
           onClick={(event) => {
             event.stopPropagation()
@@ -222,6 +226,7 @@ export const Action = (properties: TActionProperties) => {
         <Button
           variant="outline"
           aria-label={t('notes.formatting.toggle')}
+          data-guide="format"
           title={t('notes.formatting.toggle')}
           aria-pressed={isFormatting}
           onMouseDown={(event) => event.preventDefault()}

@@ -200,6 +200,7 @@ export const Search = (properties: TSearchProperties) => {
           type="button"
           aria-label={label}
           title={label}
+          data-guide="search"
           onClick={() => setIsPaletteOpen(true)}
           className={cn(
             'flex h-9 w-full items-center gap-3 rounded-md border bg-background/60 px-3 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden dark:bg-input/30',
@@ -242,7 +243,10 @@ export const Search = (properties: TSearchProperties) => {
   }
 
   return (
-    <div className="relative ml-auto flex-1">
+    <div
+      data-guide="search"
+      className="relative ml-auto flex-1"
+    >
       {form}
       {results}
     </div>

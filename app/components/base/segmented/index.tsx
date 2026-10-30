@@ -10,6 +10,7 @@ export const Segmented = <TValue extends string>({
   options,
   onChange,
   className,
+  guide,
 }: {
   label: string
   value: TValue
@@ -17,9 +18,12 @@ export const Segmented = <TValue extends string>({
   options: { value: TValue; label: string; icon?: ReactNode }[]
   onChange: (value: TValue) => void
   className?: string
+  // Marks it for a page's screen guide.
+  guide?: string
 }) => (
   <div
     role="group"
+    data-guide={guide}
     aria-label={label}
     className={cn(
       'inline-flex rounded-full border bg-muted/60 p-0.5 text-xs',

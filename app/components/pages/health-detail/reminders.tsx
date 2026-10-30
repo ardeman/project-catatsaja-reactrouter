@@ -187,6 +187,7 @@ export const Reminders = (properties: TRemindersProperties) => {
   return (
     <section
       aria-labelledby="health-reminders-title"
+      data-guide="reminders"
       className="glass-surface grid gap-3 rounded-xl border p-4"
     >
       <div className="flex items-center justify-between gap-2">
