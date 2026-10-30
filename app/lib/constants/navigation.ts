@@ -62,6 +62,20 @@ export const navs = (t: TFunction, order?: readonly string[]): TMenu[] =>
     icon: navIcons[page],
   }))
 
+// Whether someone is signed in on this browser, so the inline script in
+// ThemeHead can leave the landing page before Firebase Auth restores the
+// session. A stale hint only means a protected page sends them to sign in.
+export const signedInStorageKey = 'signed-in'
+
+export const rememberSignedIn = (isSignedIn: boolean) => {
+  try {
+    if (isSignedIn) localStorage.setItem(signedInStorageKey, '1')
+    else localStorage.removeItem(signedInStorageKey)
+  } catch {
+    // Storage blocked: the landing page shows until the session loads.
+  }
+}
+
 // The installed app's last page, kept while it runs in the background. A
 // phone may unload a backgrounded app and relaunch it at the manifest's
 // start_url; if that happens within `resumeWindow`, the inline script in

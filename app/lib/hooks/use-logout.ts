@@ -5,6 +5,7 @@ import { clearOfflineData } from '~/apis/firestore/cache'
 import { deletePushToken } from '~/apis/firestore/push-token'
 import { readSavedPushToken, unsubscribeFromPush } from '~/apis/push'
 import { auth } from '~/lib/configs/firebase'
+import { rememberSignedIn } from '~/lib/constants/navigation'
 import { clearAllDrafts } from '~/lib/utils/drafts'
 import { endSession } from '~/lib/utils/encryption-session'
 import { getErrorMessage } from '~/lib/utils/firebase-error'
@@ -58,6 +59,7 @@ export const useLogout = () => {
       await clearOfflineData()
       await signOut(auth)
       clearAllDrafts()
+      rememberSignedIn(false)
       // The Firestore connection is closed: start the page again.
       location.assign('/auth/sign-in')
     } catch (error: unknown) {

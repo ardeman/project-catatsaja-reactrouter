@@ -13,6 +13,7 @@ import { LoadingSpinner } from '~/components/base/loading-spinner'
 import { Toaster } from '~/components/base/toaster'
 import { ThemeHead } from '~/components/layouts/theme-head'
 import { publicPages } from '~/lib/configs/page'
+import { rememberSignedIn } from '~/lib/constants/navigation'
 import { useFirebase } from '~/lib/contexts/firebase'
 import { useAuthUser } from '~/lib/hooks/use-auth-user'
 import { useIsStandalone } from '~/lib/hooks/use-install-app'
@@ -28,12 +29,14 @@ export const Rootlayout = (properties: PropsWithChildren) => {
   const { i18n } = useTranslation()
   const isStandalone = useIsStandalone()
   const path = location.pathname.replace(/(.)\/+$/, '$1')
-  // The installed app never shows the landing page; it redirects from it.
-  const isLeavingLanding = isStandalone && path === '/'
+  // The installed app and signed-in people never see the landing page; they
+  // are redirected from it.
+  const isLeavingLanding = path === '/' && (isStandalone || !!user)
   useRememberLastVisit(isStandalone && !!user)
 
   useEffect(() => {
     if (userIsLoading) return
+    rememberSignedIn(!!user)
     middleware({ user, navigate, location, isStandalone })
   }, [user, userIsLoading, navigate, location, isStandalone])
 

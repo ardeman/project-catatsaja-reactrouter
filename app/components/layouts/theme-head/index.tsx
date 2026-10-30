@@ -6,23 +6,30 @@ import {
   lastVisitStorageKey,
   navPages,
   resumeWindow,
+  signedInStorageKey,
   startPageStorageKey,
 } from '~/lib/constants/navigation'
 
-// Runs before the first paint: the installed app skips the landing page, and
-// the saved theme and text size are applied so pages rendered at build time
-// (the landing page) don't flash the wrong theme.
+// Runs before the first paint: the installed app and signed-in visitors skip
+// the landing page, and the saved theme and text size are applied so pages
+// rendered at build time (the landing page) don't flash the wrong theme.
 const themeScript = `(() => {
   try {
+    const pages = ${JSON.stringify(navPages)}
+    const saved = localStorage.getItem('${startPageStorageKey}')
+    let start = '/' + (pages.includes(saved) ? saved : pages[0])
+    const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true
+    // Signed in on this browser: go to the start page rather than wait for
+    // Firebase Auth to restore the session over the landing page.
+    if (!installed && location.pathname === '/' && localStorage.getItem('${signedInStorageKey}')) {
+      location.replace(start)
+      return
+    }
     // The installed app has no landing page, and opens on the person's
     // start page: leave before painting. It launches at the manifest's
     // start_url (/notes), so the first page of a session moves too, back to
     // the last page when the phone unloaded the app in the background.
-    const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true
     if (installed) {
-      const pages = ${JSON.stringify(navPages)}
-      const saved = localStorage.getItem('${startPageStorageKey}')
-      let start = '/' + (pages.includes(saved) ? saved : pages[0])
       try {
         const last = JSON.parse(localStorage.getItem('${lastVisitStorageKey}') || 'null')
         const resumable = ${JSON.stringify([...protectedPages])}
