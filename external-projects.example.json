@@ -1,7 +1,7 @@
 {
   "video_marketing": {
-    "folder": "../project-pamer-node/catatsaja",
-    "readme": "../project-pamer-node/README.md",
-    "rules": "../project-pamer-node/AGENTS.md"
+    "folder": "../project-pamerstudio-node/catatsaja",
+    "readme": "../project-pamerstudio-node/README.md",
+    "rules": "../project-pamerstudio-node/AGENTS.md"
   }
 }
