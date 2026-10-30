@@ -426,7 +426,10 @@ describe('AI features and reminders', () => {
     await page.getByRole('button', { name: 'Replace open items' }).click()
     await item('Book the venue').waitFor({ timeout: 30_000 })
     await item('Plan the party').waitFor({ state: 'hidden' })
-    assert.ok(await item('Send invitations').isVisible())
+    // Completed items are plain text, not editable buttons.
+    assert.ok(
+      await page.getByText('Send invitations', { exact: true }).isVisible(),
+    )
     // One step back from the bar.
     await page.getByRole('button', { name: 'Undo', exact: true }).click()
     await item('Plan the party').waitFor()
@@ -438,7 +441,9 @@ describe('AI features and reminders', () => {
       .getByRole('menuitem', { name: 'Translate (English ↔ Indonesian)' })
       .click()
     await page.getByRole('button', { name: 'Replace list' }).click()
-    await item('Kirim undangan').waitFor({ timeout: 30_000 })
+    await page
+      .getByText('Kirim undangan', { exact: true })
+      .waitFor({ timeout: 30_000 })
     assert.equal(
       await page.locator('textarea[name=title]').inputValue(),
       'Persiapan pesta',
@@ -535,7 +540,11 @@ describe('AI features and reminders', () => {
     await shows(page, /next /)
     // Stored before the next test reloads, or the entry is lost on a slow
     // runner and the reminder looks due today.
-    await page.getByText('Saved', { exact: true }).waitFor()
+    // Each layout has its own copy; only one is visible.
+    await page
+      .getByText('Saved', { exact: true })
+      .filter({ visible: true })
+      .waitFor()
   })
 
   test('a medicine dose waits until it is marked, and stays encrypted', async () => {
