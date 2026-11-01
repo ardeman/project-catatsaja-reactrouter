@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-11-01',
+    title: {
+      en: 'Clearer floating buttons',
+      id: 'Tombol mengambang lebih jelas',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'Text scrolling under the floating buttons now fades into the page’s colour around them instead of blurring, so the buttons stand out while the text stays readable.',
+          id: 'Teks yang bergulir di bawah tombol mengambang kini memudar ke warna halaman di sekitarnya, bukan diburamkan, sehingga tombol lebih menonjol dan teks tetap terbaca.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-10-30',
     title: {
       en: 'A side menu on computers',

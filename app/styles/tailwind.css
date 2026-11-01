@@ -150,18 +150,22 @@
     }
   }
 
-  /* A floating bar or button: blurs what scrolls around it and between its
-     buttons, fading out past its edges like a shadow. Set --halo-inset when
-     the element pads its content, so the halo still hugs the content. */
+  /* A floating bar or button: what scrolls around it and between its buttons
+     fades into the page's own colour, lightly blurred so it stays
+     recognisable, and the tint fades out past its edges like a shadow. Set
+     --halo-inset when the element pads its content, so the halo still hugs
+     the content, and --halo-radius when it isn't pill-shaped. */
   .glass-halo {
     &::before {
       content: '';
       position: absolute;
       inset: var(--halo-inset, -0.75rem);
+      border-radius: var(--halo-radius, 9999px);
       z-index: -1;
       pointer-events: none;
-      -webkit-backdrop-filter: blur(3px);
-      backdrop-filter: blur(3px);
+      background-color: var(--glass-halo-tint);
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
       --halo-fade:
         transparent, #000 0.75rem, #000 calc(100% - 0.75rem), transparent;
       -webkit-mask-image:
@@ -195,6 +199,12 @@
 
     .glass-primary {
       background-color: hsl(var(--primary));
+    }
+
+    .glass-halo::before {
+      background-color: var(--page);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
     }
   }
 
@@ -264,6 +274,8 @@
     --glass-tint: hsl(var(--background) / 0.62);
     /* The colour of app pages (.app-background), also around them. */
     --page: color-mix(in srgb, hsl(var(--muted)) 40%, hsl(var(--background)));
+    /* Around floating bars and buttons (.glass-halo). */
+    --glass-halo-tint: color-mix(in srgb, var(--page) 85%, transparent);
     /* Where content starts below the installed app's see-through status bar
        on iPhone: iOS blurs the page's top edge under it, about a quarter as
        far again below, so content stays clear of that at rest. 0 wherever
