@@ -16,15 +16,15 @@ export const releases: TRelease[] = [
   {
     date: '2026-11-01',
     title: {
-      en: 'Clearer floating buttons',
-      id: 'Tombol mengambang lebih jelas',
+      en: 'No blur around floating buttons',
+      id: 'Tanpa buram di sekitar tombol mengambang',
     },
     changes: [
       {
         kind: 'improved',
         text: {
-          en: 'Text scrolling under the floating buttons now fades into the page’s colour around them instead of blurring, so the buttons stand out while the text stays readable.',
-          id: 'Teks yang bergulir di bawah tombol mengambang kini memudar ke warna halaman di sekitarnya, bukan diburamkan, sehingga tombol lebih menonjol dan teks tetap terbaca.',
+          en: 'Text scrolling past the floating buttons is no longer blurred around them.',
+          id: 'Teks yang bergulir di sekitar tombol mengambang tidak lagi diburamkan.',
         },
       },
     ],
