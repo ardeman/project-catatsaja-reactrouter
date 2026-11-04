@@ -41,5 +41,7 @@
   ],
   "IDX.aI.enableInlineCompletion": true,
   "IDX.aI.enableCodebaseIndexing": true,
-  "files.autoSave": "off"
+  "files.autoSave": "off",
+  "chat.useAgentsMdFile": true,
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true
 }

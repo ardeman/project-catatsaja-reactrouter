@@ -49,4 +49,4 @@ Read the guide for the area you work on before changing it:
 
 - When you change a command, the layout, the setup or deployment, update `README.md`. When you change a convention or rule, update this file or the `docs/` guide that owns it.
 - Never copy content between docs. Link to the owning file instead (see the documentation map in `README.md`).
-- `CLAUDE.md` and `GEMINI.md` must contain only the import of this file.
+- `CLAUDE.md` and `GEMINI.md` must contain only the import of this file, and `.github/copilot-instructions.md` only a pointer to it.
