@@ -11,7 +11,15 @@ import {
   updateProfile as updateProfileAuth,
   type User,
 } from 'firebase/auth'
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import {
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocFromCache,
+  getDocFromServer,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore'
 
 import { auth } from '~/lib/configs/firebase'
 import { firestore } from '~/lib/configs/firestore'
@@ -70,6 +78,24 @@ const syncEmailLookup = async (user: User, lookupEmail?: string) => {
   }
 }
 
+// The profile as last loaded, to tell whether the server's copy differs.
+const loaded: { profile?: string } = {}
+
+// The app waits for the profile before it shows anything, so a copy this
+// browser kept is used when there is one: the server's copy is then checked
+// in the background (`refreshUserData`). Only a copy with encryption keys is
+// trusted: one without could be from before keys were made on another
+// device, and setting up again would replace them.
+const readCachedProfile = async (uid: string) => {
+  if (!firestore) return
+  try {
+    const snap = await getDocFromCache(doc(firestore, 'users', uid))
+    if (snap.exists() && snap.data().publicKey) return snap
+  } catch {
+    // Not kept in this browser.
+  }
+}
+
 export const fetchUserData = async () => {
   if (!auth) {
     throw new Error('Firebase Auth is not initialized.')
@@ -82,13 +108,33 @@ export const fetchUserData = async () => {
     throw new Error('No authenticated user found.')
   }
 
-  const snap = await ensureUserProfile(user)
+  const cached = await readCachedProfile(user.uid)
+  const snap = cached ?? (await ensureUserProfile(user))
   const data = snap.data()
-  await syncEmailLookup(user, data?.lookupEmail as string | undefined)
+  const lookup = syncEmailLookup(user, data?.lookupEmail as string | undefined)
+  if (!cached) await lookup
+  loaded.profile = cached ? JSON.stringify(data) : undefined
   return {
     ...data,
     uid: snap.id,
   } as TUserResponse
+}
+
+// After the profile came from this browser's copy: fetches the server's,
+// which also updates that copy. True when it differs, so the app loads it
+// again.
+export const refreshUserData = async () => {
+  const uid = auth?.currentUser?.uid
+  const profile = loaded.profile
+  loaded.profile = undefined
+  if (!firestore || !uid || profile === undefined) return false
+  try {
+    const snap = await getDocFromServer(doc(firestore, 'users', uid))
+    return JSON.stringify(snap.data()) !== profile
+  } catch {
+    // Offline: the kept copy stands.
+    return false
+  }
 }
 
 // Finding someone by email goes through `userLookup/{email}`, which only

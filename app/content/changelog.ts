@@ -14,6 +14,29 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-11-06',
+    title: {
+      en: 'Opens faster',
+      id: 'Terbuka lebih cepat',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'The app opens faster, using your settings saved on this device while it checks for newer ones.',
+          id: 'Aplikasi terbuka lebih cepat, memakai pengaturan yang tersimpan di perangkat ini sambil memeriksa yang lebih baru.',
+        },
+      },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'When you are signed in, the home page no longer flashes before the app opens.',
+          id: 'Saat Anda sudah masuk, halaman beranda tidak lagi muncul sekilas sebelum aplikasi terbuka.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-11-01',
     title: {
       en: 'No blur around floating buttons',

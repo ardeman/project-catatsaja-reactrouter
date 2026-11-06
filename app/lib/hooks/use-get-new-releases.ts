@@ -1,4 +1,6 @@
-import { releases } from '~/content/changelog'
+import { useEffect, useState } from 'react'
+
+import type { TRelease } from '~/content/changelog'
 
 import { useUserData } from './use-get-user'
 
@@ -21,6 +23,21 @@ export const useGetNewReleases = () => {
   const since =
     user?.seenRelease ??
     (user?.createdAt ? toReleaseDate(user.createdAt.seconds) : undefined)
+  const [releases, setReleases] = useState<TRelease[]>([])
+
+  // The release notes are read after the app has opened, not downloaded
+  // with it.
+  useEffect(() => {
+    if (!since) return
+    let isCurrent = true
+    void import('~/content/changelog').then((module) => {
+      if (isCurrent) setReleases(module.releases)
+    })
+    return () => {
+      isCurrent = false
+    }
+  }, [since])
+
   const unseen = since ? releases.filter((release) => release.date > since) : []
   return {
     releases: unseen.slice(0, MAX_SHOWN),

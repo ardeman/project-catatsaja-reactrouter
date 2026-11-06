@@ -12,6 +12,7 @@ import { PushPrompt } from '~/components/layouts/push-prompt'
 import { rememberStartPage } from '~/lib/constants/navigation'
 import { useTheme } from '~/lib/contexts/theme'
 import { useUserData } from '~/lib/hooks/use-get-user'
+import { useRefreshUserData } from '~/lib/hooks/use-refresh-user-data'
 
 export const clientLoader = async () => {
   try {
@@ -28,6 +29,7 @@ const Main = () => {
   const savedSize = userData?.size
   const savedLanguage = userData?.language
   const savedStartPage = userData?.startPage
+  useRefreshUserData()
 
   // Apply the saved appearance only when it changes (sign-in, saving). It
   // must not run on every render: the settings page previews other values,

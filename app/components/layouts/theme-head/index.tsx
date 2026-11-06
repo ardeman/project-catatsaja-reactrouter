@@ -18,31 +18,6 @@ const themeScript = `(() => {
     const pages = ${JSON.stringify(navPages)}
     const saved = localStorage.getItem('${startPageStorageKey}')
     let start = '/' + (pages.includes(saved) ? saved : pages[0])
-    const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true
-    // Signed in on this browser: go to the start page rather than wait for
-    // Firebase Auth to restore the session over the landing page.
-    if (!installed && location.pathname === '/' && localStorage.getItem('${signedInStorageKey}')) {
-      location.replace(start)
-      return
-    }
-    // The installed app has no landing page, and opens on the person's
-    // start page: leave before painting. It launches at the manifest's
-    // start_url (/notes), so the first page of a session moves too, back to
-    // the last page when the phone unloaded the app in the background.
-    if (installed) {
-      try {
-        const last = JSON.parse(localStorage.getItem('${lastVisitStorageKey}') || 'null')
-        const resumable = ${JSON.stringify([...protectedPages])}
-        if (last && typeof last.path === 'string' && resumable.includes('/' + last.path.split('/')[1]) && Date.now() - last.at < ${resumeWindow}) start = last.path
-      } catch {}
-      const launching = !sessionStorage.getItem('launched')
-      sessionStorage.setItem('launched', '1')
-      const path = location.pathname
-      if (path === '/' || (launching && path === '/${navPages[0]}' && start !== path)) {
-        location.replace(start)
-        return
-      }
-    }
     const theme = localStorage.getItem('vite-ui-theme') || 'system'
     const dark = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
     document.documentElement.classList.add(dark ? 'dark' : 'light')
@@ -63,6 +38,40 @@ const themeScript = `(() => {
     const size = localStorage.getItem('tailwind-size')
     const sizes = { small: '87.5%', large: '112.5%' }
     if (sizes[size]) document.documentElement.style.setProperty('--base-size', sizes[size])
+    // Theme first, so the page left behind shows only its background in
+    // the right colour: the browser keeps rendering it until the next page
+    // arrives, so its content is hidden rather than flashing past.
+    const leave = (path) => {
+      const hide = document.createElement('style')
+      hide.textContent = 'body > * { visibility: hidden !important }'
+      document.head.append(hide)
+      location.replace(path)
+    }
+    const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true
+    // Signed in on this browser: go to the start page rather than wait for
+    // Firebase Auth to restore the session over the landing page.
+    if (!installed && location.pathname === '/' && localStorage.getItem('${signedInStorageKey}')) {
+      leave(start)
+      return
+    }
+    // The installed app has no landing page, and opens on the person's
+    // start page: leave before painting. It launches at the manifest's
+    // start_url (/notes), so the first page of a session moves too, back to
+    // the last page when the phone unloaded the app in the background.
+    if (installed) {
+      try {
+        const last = JSON.parse(localStorage.getItem('${lastVisitStorageKey}') || 'null')
+        const resumable = ${JSON.stringify([...protectedPages])}
+        if (last && typeof last.path === 'string' && resumable.includes('/' + last.path.split('/')[1]) && Date.now() - last.at < ${resumeWindow}) start = last.path
+      } catch {}
+      const launching = !sessionStorage.getItem('launched')
+      sessionStorage.setItem('launched', '1')
+      const path = location.pathname
+      if (path === '/' || (launching && path === '/${navPages[0]}' && start !== path)) {
+        leave(start)
+        return
+      }
+    }
   } catch {}
 })()`
 
