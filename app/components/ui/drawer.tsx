@@ -3,12 +3,18 @@ import { Drawer as DrawerPrimitive } from 'vaul'
 
 import { cn } from '~/lib/utils/shadcn'
 
+// noBodyStyles: on iOS vaul pins the body at -scrollY while a sheet is open.
+// On a scrolled page Safari then keeps a stale map of where the sheet can be
+// tapped, and taps go nowhere. The page stays locked without it (Radix's
+// scroll lock), so every sheet leaves the body alone.
 const Drawer = ({
   shouldScaleBackground = true,
+  noBodyStyles = true,
   ...properties
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
     shouldScaleBackground={shouldScaleBackground}
+    noBodyStyles={noBodyStyles}
     {...properties}
   />
 )

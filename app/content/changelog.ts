@@ -48,6 +48,13 @@ export const releases: TRelease[] = [
           id: 'Saat Anda sudah masuk, halaman beranda tidak lagi muncul sekilas sebelum aplikasi terbuka.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'On iPhone, the account menu and other sheets respond to taps again when you open them on a scrolled page.',
+          id: 'Di iPhone, menu akun dan lembar lainnya kembali bisa diketuk saat dibuka di halaman yang sedang digulir.',
+        },
+      },
     ],
   },
   {
