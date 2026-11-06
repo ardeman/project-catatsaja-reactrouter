@@ -2,6 +2,7 @@ import {
   TFinanceCurrency,
   TFinanceEntry,
   TFinanceResponse,
+  TReceipt,
 } from '~/lib/types/finance'
 import { TCurrency } from '~/lib/types/settings'
 import { TEntryFilter } from '~/lib/utils/entry-filter'
@@ -40,19 +41,25 @@ export type TEntryFormProperties = {
   onRepeat?: (entry: TFinanceEntry) => void
 }
 
-export type TReceiptScanProperties = {
+export type TQuickAddProperties = {
   book: TFinanceCurrency
   currencies: TCurrency[]
   // Past entries from every book, newest first, for category suggestions.
   history: TFinanceEntry[]
   onAdd: (entries: TFinanceEntry[]) => void
-  // Receipt scanning temporarily replaces the typed input in the shared card.
-  onActiveChange?: (isActive: boolean) => void
   // Quick add's unsaved text (lib/utils/drafts); none, no draft.
   draftKey?: string
   isPrivate?: boolean
   // The book's savings goals, to link the expenses to.
   goals?: TGoalChoice[]
+}
+
+export type TReceiptReviewProperties = Pick<
+  TQuickAddProperties,
+  'book' | 'currencies' | 'history' | 'onAdd' | 'goals'
+> & {
+  receipt: TReceipt
+  onCancel: () => void
 }
 
 // A savings goal an expense can be linked to.

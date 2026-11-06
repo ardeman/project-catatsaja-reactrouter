@@ -30,6 +30,13 @@ export const releases: TRelease[] = [
       {
         kind: 'improved',
         text: {
+          en: 'In a finance book, the Gemini button now opens a menu like in notes and tasks: choose Scan receipt to pick a photo straight away, or Type entries to write them out.',
+          id: 'Di buku keuangan, tombol Gemini kini membuka menu seperti di catatan dan tugas: pilih Pindai struk untuk langsung memilih foto, atau Ketik entri untuk menuliskannya.',
+        },
+      },
+      {
+        kind: 'improved',
+        text: {
           en: 'The app opens faster, using your settings saved on this device while it checks for newer ones.',
           id: 'Aplikasi terbuka lebih cepat, memakai pengaturan yang tersimpan di perangkat ini sambil memeriksa yang lebih baru.',
         },

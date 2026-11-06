@@ -245,12 +245,8 @@ const FinancesFigure = () => {
         label={t('finances.entry.add')}
       />
       <MockButton
-        icon={ScanText}
-        label={t('finances.receipt.scan')}
-      />
-      <MockButton
-        icon={Keyboard}
-        label={t('finances.quickAdd.title')}
+        icon={Sparkles}
+        label={t('finances.quickAdd.gemini')}
       />
       <FinancePreview />
     </Frame>
@@ -358,16 +354,19 @@ const GeminiFigure = () => {
           { icon: ListChecks, label: t('notes.ai.checklist.action') },
         ]}
       />
-      <div className="flex flex-wrap gap-2">
-        <MockButton
-          icon={ScanText}
-          label={t('finances.receipt.scan')}
-        />
-        <MockButton
-          icon={Keyboard}
-          label={t('finances.quickAdd.title')}
-        />
-      </div>
+      {/* `pages/finance-detail/quick-add` */}
+      <MockMenu
+        label={
+          <span className="flex items-center gap-2">
+            <Sparkles className="size-4" />
+            {t('finances.quickAdd.gemini')}
+          </span>
+        }
+        items={[
+          { icon: ScanText, label: t('finances.receipt.scan') },
+          { icon: Keyboard, label: t('finances.quickAdd.type') },
+        ]}
+      />
     </Frame>
   )
 }

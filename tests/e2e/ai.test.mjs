@@ -234,7 +234,7 @@ describe('AI features and reminders', () => {
       0,
     )
     await page.getByRole('button', { name: 'Gemini', exact: true }).click()
-    await page.getByRole('button', { name: 'Scan receipt' }).click()
+    await page.getByRole('menuitem', { name: 'Scan receipt' }).click()
     await shows(page, 'Use Gemini?')
     const chooser = page.waitForEvent('filechooser')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -264,6 +264,7 @@ describe('AI features and reminders', () => {
   test('quick add reads typed text into entries to check', async () => {
     const { page } = device
     await page.getByRole('button', { name: 'Gemini', exact: true }).click()
+    await page.getByRole('menuitem', { name: 'Type entries' }).click()
     await page.locator('textarea[name=text]').fill('makan siang 45rb, gaji 8jt')
     await page.getByRole('button', { name: 'Read', exact: true }).click()
     await shows(page, 'Makan siang')
@@ -533,7 +534,7 @@ describe('AI features and reminders', () => {
       0,
     )
     await page.getByRole('button', { name: 'Gemini', exact: true }).click()
-    await page.getByRole('button', { name: 'Scan receipt' }).click()
+    await page.getByRole('menuitem', { name: 'Scan receipt' }).click()
     await shows(page, 'Use Gemini?')
     assert.equal(calls.length, sent, 'nothing sent before agreeing')
   })
@@ -690,6 +691,7 @@ describe('AI features and reminders', () => {
     const { page } = device
     await page.goto(bookUrl)
     await page.getByRole('button', { name: 'Gemini', exact: true }).click()
+    await page.getByRole('menuitem', { name: 'Type entries' }).click()
     await page.locator('textarea[name=text]').fill('kopi 20rb')
     await page.waitForTimeout(500)
     const before = await page.evaluate(async () => ({
