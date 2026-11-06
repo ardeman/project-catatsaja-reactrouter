@@ -1,4 +1,5 @@
 import {
+  Camera,
   ClipboardPaste,
   Languages,
   ListPlus,
@@ -14,6 +15,7 @@ import { AiNotice } from '~/components/base/ai-notice'
 import { Button } from '~/components/base/button'
 import { Dictation } from '~/components/base/dictation'
 import { Modal } from '~/components/base/modal'
+import { PhotoText } from '~/components/base/photo-text'
 import { Button as UIButton } from '~/components/ui/button'
 import {
   DropdownMenu,
@@ -39,12 +41,14 @@ const helpers: { key: TTaskHelper; icon: typeof Sparkles }[] = [
 const toItems = (items: string[]) =>
   items.map((item) => ({ checked: false, item }))
 
-// Gemini helpers for a task list: dictate items, turn pasted text into items
+// Gemini helpers for a task list: dictate items, read items from a photo, turn
+// pasted text into items
 // (and a title), break the open items into steps, suggest what is missing and
 // translate. The list goes to Google only
 // when a helper is picked, after agreeing once to `AiNotice`, and the new
 // list is previewed before it replaces the one on screen. Dictating sends
-// only the recording, and pasting only the pasted text. Only people who can edit the list get the menu.
+// only the recording, a photo only the photo, and pasting only the pasted
+// text. Only people who can edit the list get the menu.
 export const AiHelpers = (properties: TAiHelpersProperties) => {
   const { getList, hasOpenItems, hasItems, onApply, triggerClassName } =
     properties
@@ -52,6 +56,7 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
   const { run, notice } = useAiConsent()
   const { mutate: runHelper, pending } = useTaskHelper()
   const [isDictating, setIsDictating] = useState(false)
+  const [isReadingPhoto, setIsReadingPhoto] = useState(false)
   const [pasted, setPasted] = useState<string>()
   const pastedId = useId()
   const [result, setResult] = useState<{
@@ -101,6 +106,8 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
 
   const handleDictate = () => run(() => setIsDictating(true))
 
+  const handlePhoto = () => run(() => setIsReadingPhoto(true))
+
   const handlePaste = () => run(() => setPasted(''))
 
   const handleConvert = () => {
@@ -146,6 +153,10 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
           <DropdownMenuItem onSelect={handleDictate}>
             <Mic className="size-4" />
             {t('tasks.ai.dictate')}
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handlePhoto}>
+            <Camera className="size-4" />
+            {t('tasks.ai.photo')}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={handlePaste}>
             <ClipboardPaste className="size-4" />
@@ -256,6 +267,13 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
         setOpen={setIsDictating}
         onInsert={handleInsert}
         hint={t('tasks.ai.dictateHint')}
+        kind="list"
+      />
+      <PhotoText
+        open={isReadingPhoto}
+        setOpen={setIsReadingPhoto}
+        onInsert={handleInsert}
+        hint={t('tasks.ai.photoHint')}
         kind="list"
       />
       <AiNotice {...notice} />

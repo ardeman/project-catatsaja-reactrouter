@@ -223,7 +223,9 @@
       },
       "empty": "Tulis sesuatu dulu untuk diproses Gemini",
       "dictate": "Dikte",
-      "dictateHint": "Ditambahkan di akhir catatan. Kamu bisa mengurungkannya dari bilah."
+      "dictateHint": "Ditambahkan di akhir catatan. Kamu bisa mengurungkannya dari bilah.",
+      "photo": "Dari foto",
+      "photoHint": "Ditambahkan di akhir catatan. Kamu bisa mengurungkannya dari bilah."
     }
   },
   "tasks": {
@@ -299,7 +301,9 @@
         "hint": "Ditambahkan di akhir daftar, beserta judulnya jika daftar belum punya judul. Bisa diurungkan dari bilah di atas.",
         "apply": "Tambahkan ke daftar",
         "working": "Gemini sedang membuat item dari teksmu…"
-      }
+      },
+      "photo": "Item dari foto",
+      "photoHint": "Setiap baris menjadi item di akhir daftar. Kamu bisa mengurungkannya dari bilah."
     }
   },
   "finances": {
@@ -979,7 +983,7 @@
     },
     "gemini": {
       "title": "Bantuan Gemini",
-      "description": "Bantuan opsional yang memakai Gemini dari Google: pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas.",
+      "description": "Bantuan opsional yang memakai Gemini dari Google: pindai struk, tambah cepat, dikte, membaca teks dari foto, serta bantuan catatan dan daftar tugas.",
       "steps": [
         "Saat pertama kali memakainya, pemberitahuan menjelaskan apa yang dikirim. Tidak ada yang dikirim sampai kamu memilih foto, menekan tombol, atau menghentikan rekaman.",
         "Kamu selalu melihat hasilnya dulu, dan tidak ada yang ditambahkan atau diubah sampai kamu menyetujuinya. Perubahan dari Gemini bisa diurungkan.",
@@ -1069,12 +1073,12 @@
     }
   },
   "privacyPolicy": {
-    "updated": "Terakhir diperbarui: 26 Oktober 2026",
+    "updated": "Terakhir diperbarui: 6 November 2026",
     "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat. Catatan kesehatan bisa berisi hal yang sensitif, seperti menstruasi, hubungan seks (dan apakah memakai pengaman), serta obat; nyalakan enkripsi end-to-end agar kami tidak bisa membacanya.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
     "encryption": "Dengan enkripsi end-to-end (ditawarkan saat mendaftar, dan tersedia untuk semua di Pengaturan), isi catatan, tugas, buku keuangan, dan catatan kesehatanmu dienkripsi di perangkatmu sebelum disimpan, dengan kunci yang hanya dimiliki olehmu dan orang yang kamu ajak berbagi. Kami dan Google tidak bisa membacanya. Yang dibutuhkan aplikasi untuk berjalan tetap terbaca: pemilik item, dengan siapa item dibagikan, kapan item berubah, dan berapa bulan yang dicakup entri sebuah buku keuangan (tanpa bulan apa saja). Jika kamu kehilangan frasa sandi sekaligus kode pemulihan, tidak ada yang bisa memulihkan data terenkripsimu.",
-    "ai": "Pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk, teks yang kamu ketik atau tempel, rekaman suara yang kamu buat, atau judul dan isi catatan atau daftar tugas, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
+    "ai": "Pindai struk, tambah cepat, dikte, membaca teks dari foto, serta bantuan catatan dan daftar tugas bersifat opsional. Hanya saat kamu memakainya, yang kamu pilih dikirim ke Gemini milik Google (melalui Firebase AI Logic): foto struk atau foto lain yang kamu pilih, teks yang kamu ketik atau tempel, rekaman suara yang kamu buat, atau judul dan isi catatan atau daftar tugas, termasuk untuk item yang terenkripsi end-to-end. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya. Kami tidak menyimpan apa yang dikirim; yang kamu tambahkan atau ubah disimpan seperti data lainnya. Kamu menyetujuinya sekali, sebelum pemakaian pertama, dan bisa membatalkannya di Pengaturan → Akun.",
     "sharing": "Saat kamu membagikan catatan, tugas, buku, atau catatan kesehatan, orang yang kamu undang bisa melihat isinya (undangan mereka menampilkan judulnya), dan item baru masuk ke daftar mereka jika mereka menerimanya. Orang lain bisa menemukanmu dengan alamat email yang persis untuk berbagi denganmu; mereka lalu melihat nama dan fotomu. Tidak ada yang bisa melihat daftar pengguna. Jika kamu memblokir seseorang, mereka tidak bisa mengundangmu lagi; daftar orang yang kamu blokir bersifat pribadi dan mereka tidak diberi tahu.",
     "push": "Notifikasi push mati sampai kamu menyalakannya untuk sebuah perangkat di Pengaturan. Layanan push browsermu (Google, Apple, atau Mozilla) lalu memberi perangkat itu sebuah alamat, yang kami simpan di akunmu bersama kunci yang dibuat di perangkat tersebut. Saat seseorang mengundangmu, atau pengingat kesehatan atau dosis obat jatuh tempo, server kami (Google Cloud Functions) mengirim notifikasi ke perangkatmu dan ke orang yang diajak berbagi catatan kesehatan tersebut (pengingat masa subur hanya dikirim ke pemilik catatan, kecuali pemilik memilih untuk mengikutsertakan mereka). Teksnya, seperti judul item atau nama obat, dienkripsi di perangkat pengirim untuk setiap perangkat penerima, sehingga kami dan layanan push tidak bisa membacanya. Yang terlihat oleh server adalah waktu setiap pengingat yang akan datang dan kepada siapa pengingat itu dikirim. Mematikan notifikasi untuk sebuah perangkat menghapus alamat dan kuncinya.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
@@ -1323,7 +1327,7 @@
     },
     "ai": {
       "title": "Fitur AI",
-      "description": "Pindai struk, tambah cepat, dikte, serta bantuan catatan dan daftar tugas memakai Gemini milik Google. Hanya yang kamu proses yang dikirim, dan hanya saat kamu memakainya.",
+      "description": "Pindai struk, tambah cepat, dikte, membaca teks dari foto, serta bantuan catatan dan daftar tugas memakai Gemini milik Google. Hanya yang kamu proses yang dikirim, dan hanya saat kamu memakainya.",
       "agreed": "Kamu sudah setuju mengirim isi ke Gemini saat memakai fitur AI.",
       "notAgreed": "Kamu akan ditanya sebelum fitur AI pertama kali mengirim sesuatu.",
       "withdraw": "Batalkan persetujuan"
@@ -1408,7 +1412,8 @@
     "noteUnreadable": "Jawaban Gemini tidak bisa dipakai. Coba lagi.",
     "dictationEmpty": "Tidak ada suara yang terdengar. Coba lagi lebih dekat ke mikrofon.",
     "microphone": "Mikrofon tidak bisa dipakai. Izinkan akses mikrofon untuk situs ini di pengaturan browser.",
-    "dictationUnsupported": "Browser ini tidak bisa merekam suara. Coba Chrome, Edge, Firefox atau Safari versi terbaru."
+    "dictationUnsupported": "Browser ini tidak bisa merekam suara. Coba Chrome, Edge, Firefox atau Safari versi terbaru.",
+    "photoEmpty": "Gemini tidak menemukan teks di foto ini. Coba foto yang lebih tajam dan lebih dekat ke teksnya."
   },
   "dictation": {
     "title": "Dikte",
@@ -1420,6 +1425,16 @@
     "working": "Gemini sedang menuliskan ucapanmu…",
     "transcript": "Ucapanmu",
     "again": "Rekam ulang",
+    "insert": "Sisipkan"
+  },
+  "photoText": {
+    "title": "Teks dari foto",
+    "description": "Ambil atau pilih foto halaman, papan tulis atau daftar tulisan tangan. Gemini menuliskan teksnya untuk kamu periksa.",
+    "choose": "Ambil atau pilih foto",
+    "ready": "Cetak atau tulisan tangan, dalam bahasa apa pun.",
+    "working": "Gemini sedang membaca foto…",
+    "result": "Teks di foto",
+    "again": "Foto lain",
     "insert": "Sisipkan"
   },
   "actions": {
@@ -2060,7 +2075,7 @@
   "ai": {
     "notice": {
       "title": "Pakai Gemini?",
-      "send": "Yang kamu proses (foto struk, teks yang kamu ketik atau tempel, rekaman suara, catatan, atau daftar tugas) dikirim ke Gemini milik Google untuk dibaca, dituliskan, atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
+      "send": "Yang kamu proses (foto struk atau foto lain, teks yang kamu ketik atau tempel, rekaman suara, catatan, atau daftar tugas) dikirim ke Gemini milik Google untuk dibaca, dituliskan, atau ditulis ulang. Google dapat menyimpannya dan memakainya untuk meningkatkan layanannya, jadi jangan sertakan hal yang tidak ingin kamu bagikan.",
       "encryption": "Ini berlaku juga untuk item yang terenkripsi end-to-end: isinya keluar dari perangkatmu, sedangkan yang kamu simpan tetap dienkripsi seperti biasa. Catat Saja tidak menyimpan apa yang dikirim.",
       "check": "Tidak ada yang dikirim sampai kamu memakai salah satu fitur ini, dan kamu memeriksa hasilnya sebelum ada yang ditambahkan atau diubah. Persetujuan ini bisa dibatalkan di Pengaturan → Akun.",
       "confirm": "Lanjutkan"

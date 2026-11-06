@@ -16,10 +16,17 @@ export const releases: TRelease[] = [
   {
     date: '2026-11-06',
     title: {
-      en: 'Opens faster',
-      id: 'Terbuka lebih cepat',
+      en: 'Text from photos, and opens faster',
+      id: 'Teks dari foto, dan terbuka lebih cepat',
     },
     changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Add text from a photo: in a note or task list, open the Gemini menu and take or choose a photo of a page, a whiteboard or a handwritten list. Gemini writes out the text (or the list items) for you to check before it is added.',
+          id: 'Tambahkan teks dari foto: di catatan atau daftar tugas, buka menu Gemini lalu ambil atau pilih foto halaman, papan tulis atau daftar tulisan tangan. Gemini menuliskan teksnya (atau item daftarnya) untuk Anda periksa sebelum ditambahkan.',
+        },
+      },
       {
         kind: 'improved',
         text: {

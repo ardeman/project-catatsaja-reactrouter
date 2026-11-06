@@ -1,4 +1,5 @@
 import {
+  Camera,
   Languages,
   ListChecks,
   ListCollapse,
@@ -16,6 +17,7 @@ import { Button } from '~/components/base/button'
 import { Dictation } from '~/components/base/dictation'
 import { Markdown } from '~/components/base/markdown'
 import { Modal } from '~/components/base/modal'
+import { PhotoText } from '~/components/base/photo-text'
 import { Button as UIButton } from '~/components/ui/button'
 import {
   DropdownMenu,
@@ -37,12 +39,13 @@ const helpers: { key: TNoteHelper; icon: typeof Sparkles }[] = [
   { key: 'checklist', icon: ListChecks },
 ]
 
-// Gemini helpers for a note: dictate, summarise, tidy up, translate and turn
+// Gemini helpers for a note: dictate, read a photo, summarise, tidy up,
+// translate and turn
 // into a checklist. The note goes to Google only when a helper is picked, after
 // agreeing once to `AiNotice`, and the result is previewed before it is
 // applied. Changing the note needs write access; a checklist is a new task
 // list, so readers can make one too. Dictating needs no content (it adds
-// some), and sends only the recording.
+// some), and sends only the recording; reading a photo sends only the photo.
 export const AiHelpers = (properties: TAiHelpersProperties) => {
   const { getNote, isEditable, hasContent, onApply, triggerClassName } =
     properties
@@ -52,6 +55,7 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
   const { mutate: runHelper, pending } = useNoteHelper()
   const { mutate: createTask, isPending: isCreating } = useCreateTask()
   const [isDictating, setIsDictating] = useState(false)
+  const [isReadingPhoto, setIsReadingPhoto] = useState(false)
   const [result, setResult] = useState<{
     helper: TNoteHelper
     answer: TNoteHelperResult
@@ -94,6 +98,8 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
 
   const handleDictate = () => run(() => setIsDictating(true))
 
+  const handlePhoto = () => run(() => setIsReadingPhoto(true))
+
   const handleInsert = (text: string) => {
     const { title, content } = getNote()
     onApply({
@@ -130,10 +136,16 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
           className="glass-surface"
         >
           {isEditable && (
-            <DropdownMenuItem onSelect={handleDictate}>
-              <Mic className="size-4" />
-              {t('notes.ai.dictate')}
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem onSelect={handleDictate}>
+                <Mic className="size-4" />
+                {t('notes.ai.dictate')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={handlePhoto}>
+                <Camera className="size-4" />
+                {t('notes.ai.photo')}
+              </DropdownMenuItem>
+            </>
           )}
           {available.map(({ key, icon: Icon }) => (
             <DropdownMenuItem
@@ -221,6 +233,12 @@ export const AiHelpers = (properties: TAiHelpersProperties) => {
         setOpen={setIsDictating}
         onInsert={handleInsert}
         hint={t('notes.ai.dictateHint')}
+      />
+      <PhotoText
+        open={isReadingPhoto}
+        setOpen={setIsReadingPhoto}
+        onInsert={handleInsert}
+        hint={t('notes.ai.photoHint')}
       />
       <AiNotice {...notice} />
     </>

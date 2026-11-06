@@ -46,6 +46,8 @@ const errorKeys: Record<string, string> = {
   'dictation/empty': 'errors.dictationEmpty',
   'dictation/microphone': 'errors.microphone',
   'dictation/unsupported': 'errors.dictationUnsupported',
+  'photo/unreadable': 'errors.noteUnreadable',
+  'photo/empty': 'errors.photoEmpty',
   // A passkey prompt dismissed or timed out.
   NotAllowedError: 'errors.passkeyCancelled',
 }
@@ -59,6 +61,7 @@ const appCodes = [
   'note/',
   'task/',
   'dictation/',
+  'photo/',
 ]
 
 const codeOf = (error: unknown) => {

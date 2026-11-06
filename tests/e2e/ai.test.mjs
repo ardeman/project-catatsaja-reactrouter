@@ -101,6 +101,11 @@ const answers = [
     { text: 'Buy stamps\nPost the letter' },
   ],
   ['Transcribe this voice recording', { text: 'Call the dentist on Monday.' }],
+  ['Read all the text in this photo', { text: '## Recipe\n\n2 cups of flour' }],
+  [
+    'Read this photo as a to-do or shopping list',
+    { text: 'Buy eggs\nBuy sugar' },
+  ],
   [
     'Break down the open items of this task list',
     { title: '', items: ['Pick a date', 'Book the venue'] },
@@ -194,7 +199,7 @@ before(async () => {
   await resetEmulators()
   device = await newDevice(browser)
   calls = await fakeGemini(device.context)
-  // A receipt photo to choose (its content doesn't matter: Gemini is fake).
+  // A photo to choose (its content doesn't matter: Gemini is fake).
   const directory = await mkdtemp(path.join(tmpdir(), 'catatsaja-e2e-'))
   receiptPhoto = path.join(directory, 'receipt.jpg')
   const photo = await device.page.screenshot({ type: 'jpeg' })
@@ -349,7 +354,7 @@ describe('AI features and reminders', () => {
     assert.ok(tasks[0].fields.encrypted, 'the new task list is encrypted')
   })
 
-  test('dictation records, is checked and edited, then added to the note', async () => {
+  test('dictation and a photo are read, checked and edited, then added to the note', async () => {
     const { page } = device
     await createNote(page, 'Errands')
     await page.waitForTimeout(2000)
@@ -379,9 +384,23 @@ describe('AI features and reminders', () => {
     )
     assert.ok(notes.length > 1)
     assert.equal(stored, undefined, 'the note stays encrypted')
+
+    // Text from a photo is checked, then added after what was there.
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    await page.getByRole('menuitem', { name: 'From a photo' }).click()
+    const chooser = page.waitForEvent('filechooser')
+    await page.getByRole('button', { name: 'Take or choose a photo' }).click()
+    await (await chooser).setFiles(receiptPhoto)
+    const photoText = page.getByLabel('Text in the photo')
+    await photoText.waitFor({ timeout: 30_000 })
+    assert.equal(calls.at(-1), 'Read all the text in this photo')
+    assert.equal(await photoText.inputValue(), '## Recipe\n\n2 cups of flour')
+    await page.getByRole('button', { name: 'Insert' }).click()
+    await shows(page, '2 cups of flour')
+    assert.ok(await page.getByText('Call the dentist on Tuesday.').isVisible())
   })
 
-  test('task list helpers make items from pasted text, break items into steps, translate, and dictate items', async () => {
+  test('task list helpers make items from pasted text, break items into steps, translate, and add items by voice and from a photo', async () => {
     const { page } = device
     const item = (text) => page.getByRole('button', { name: text, exact: true })
     // Pasted text fills an empty list, title included.
@@ -476,6 +495,17 @@ describe('AI features and reminders', () => {
     await page.getByRole('button', { name: 'Insert' }).click()
     await item('Post the letter').waitFor({ timeout: 30_000 })
     assert.ok(await item('Buy stamps').isVisible())
+
+    await page.getByRole('button', { name: 'Gemini' }).click()
+    await page.getByRole('menuitem', { name: 'Items from a photo' }).click()
+    const chooser = page.waitForEvent('filechooser')
+    await page.getByRole('button', { name: 'Take or choose a photo' }).click()
+    await (await chooser).setFiles(receiptPhoto)
+    await page.getByLabel('Text in the photo').waitFor({ timeout: 30_000 })
+    assert.equal(calls.at(-1), 'Read this photo as a to-do or shopping list')
+    await page.getByRole('button', { name: 'Insert' }).click()
+    await item('Buy sugar').waitFor({ timeout: 30_000 })
+    assert.ok(await item('Buy eggs').isVisible())
     await page.waitForTimeout(3000)
     const tasks = await dbList('tasks')
     assert.equal(
