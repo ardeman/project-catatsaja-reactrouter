@@ -561,8 +561,8 @@ describe('AI features and reminders', () => {
     assert.ok(log.encrypted && !log.reminders, 'reminders are encrypted')
 
     await page.goto(`${APP}/health/${logId}`)
+    // "Log now" opens the section with its add form already open.
     await page.getByRole('button', { name: 'Log now' }).click()
-    await page.getByRole('button', { name: 'Add measurement' }).click()
     await page.locator('input[name=weight]').fill('20')
     await page.getByRole('button', { name: 'Save', exact: true }).last().click()
     await page
