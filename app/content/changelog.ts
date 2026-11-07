@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-11-07',
+    title: {
+      en: 'Log from a reminder in one tap',
+      id: 'Catat dari pengingat dengan sekali ketuk',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'In a health log, Log now on a due reminder opens its section with the form to add an entry already open.',
+          id: 'Di log kesehatan, Catat sekarang pada pengingat yang jatuh tempo membuka bagiannya dengan formulir tambah entri yang sudah terbuka.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-11-06',
     title: {
       en: 'Text from photos, and opens faster',

@@ -23,6 +23,10 @@ export type TSectionProperties = {
   bmiStandard: TBmiStandard
   onSaveEntry: (entry: THealthEntry) => void
   onDeleteEntry: (id: string) => void
+  // A kind whose add form shows open ("Log now" on a reminder) until it
+  // closes and `onAddClosed` clears it.
+  addingKind?: THealthKind
+  onAddClosed?: () => void
 }
 
 // One row of an entry list.
@@ -40,7 +44,7 @@ export type TRemindersProperties = {
   // Period reminders only where period tracking shows.
   showPeriod: boolean
   onChange: (reminders: THealthReminder[]) => void
-  // Opens the section to log a due measurement in.
+  // Opens the section to log a due measurement in, with its add form open.
   onOpen: (kind: THealthKind) => void
 }
 

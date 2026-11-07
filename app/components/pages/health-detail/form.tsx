@@ -356,7 +356,13 @@ export const Form = (properties: TFormProperties) => {
   const requested = searchParameters.get('section') as TTab | null
   const tab: TTab =
     requested && tabs.includes(requested) ? requested : 'overview'
-  const openTab = (next: TTab) =>
+  // The kind whose add form opens once its section shows ("Log now").
+  const [addingKind, setAddingKind] = useState<THealthKind>()
+  const clearAddingKind = () => setAddingKind(undefined)
+
+  // Leaving a section drops a "Log now" request (it sets one after this).
+  const openTab = (next: TTab) => {
+    setAddingKind(undefined)
     setSearchParameters(
       (current) => {
         if (next === 'overview') current.delete('section')
@@ -365,6 +371,7 @@ export const Form = (properties: TFormProperties) => {
       },
       { replace: true },
     )
+  }
 
   const labKind = (['glucose', 'uricAcid', 'cholesterol'] as const).find(
     (kind) => kind === tab,
@@ -377,6 +384,8 @@ export const Form = (properties: TFormProperties) => {
     bmiStandard,
     onSaveEntry: handleSaveEntry,
     onDeleteEntry: handleDeleteEntry,
+    addingKind,
+    onAddClosed: clearAddingKind,
   }
 
   const sexOptions = (
@@ -557,7 +566,10 @@ export const Form = (properties: TFormProperties) => {
             onChange={(reminders) =>
               setValue('reminders', reminders, { shouldDirty: true })
             }
-            onOpen={openTab}
+            onOpen={(kind) => {
+              openTab(kind)
+              setAddingKind(kind)
+            }}
           />
 
           <Medications

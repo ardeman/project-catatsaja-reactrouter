@@ -12,7 +12,12 @@ import { TEntryRow, TSectionProperties } from './type'
 
 type TProperties<TEntry extends THealthEntry> = Pick<
   TSectionProperties,
-  'isReadOnly' | 'units' | 'onSaveEntry' | 'onDeleteEntry'
+  | 'isReadOnly'
+  | 'units'
+  | 'onSaveEntry'
+  | 'onDeleteEntry'
+  | 'addingKind'
+  | 'onAddClosed'
 > & {
   // The kind added; an entry opens in the form of its own kind (the period
   // list also holds sex logged on the calendar).
@@ -49,12 +54,27 @@ export const EntryList = <TEntry extends THealthEntry>({
   units,
   onSaveEntry,
   onDeleteEntry,
+  addingKind,
+  onAddClosed,
 }: TProperties<TEntry>) => {
   const { i18n } = useTranslation()
-  const [isAdding, setIsAdding] = useState(false)
+  const [isAddOpen, setIsAddOpen] = useState(false)
+  // Also open when asked from a reminder's "Log now", until it closes.
+  const isRequested = addingKind === kind
+  const isAdding = isAddOpen || isRequested
+  const setIsAdding = (isOpen: boolean) => {
+    setIsAddOpen(isOpen)
+    if (!isOpen && isRequested) onAddClosed?.()
+  }
   const [editingId, setEditingId] = useState<string>()
   const [shownCount, setShownCount] = useState(PAGE_SIZE)
   const scrollReference = useRef<HTMLDivElement>(null)
+  const listReference = useRef<HTMLDivElement>(null)
+  // Brings the form opened by "Log now" into view (the reminders sit above
+  // the sections on narrow screens).
+  useEffect(() => {
+    if (isRequested) listReference.current?.scrollIntoView({ block: 'nearest' })
+  }, [isRequested])
   const moreReference = useRef<HTMLLIElement>(null)
   const hasMore = entries.length > shownCount
   useEffect(() => {
@@ -162,7 +182,10 @@ export const EntryList = <TEntry extends THealthEntry>({
     )
 
   return (
-    <div className="grid gap-4">
+    <div
+      ref={listReference}
+      className="grid scroll-mt-4 gap-4"
+    >
       {!isReadOnly &&
         addLabel &&
         (isAdding ? (
