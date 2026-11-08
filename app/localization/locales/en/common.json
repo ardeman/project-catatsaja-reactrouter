@@ -387,7 +387,11 @@
         },
         "health": {
           "label": "Health",
-          "description": "Exercise, doctor, medicine, self-care"
+          "description": "Exercise, doctor, medicine"
+        },
+        "personalCare": {
+          "label": "Personal care",
+          "description": "Salon, barbershop, beauty clinic, spa"
         },
         "social": {
           "label": "Social",

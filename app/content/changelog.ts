@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-11-09',
+    title: {
+      en: 'A category for personal care',
+      id: 'Kategori untuk perawatan diri',
+    },
+    changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'Finance has a new Personal care category for barbershops, salons, beauty clinics and spas, and suggests it when you type words like salon or haircut.',
+          id: 'Keuangan punya kategori baru Perawatan Diri untuk barbershop, salon, klinik kecantikan, dan spa, dan menyarankannya saat Anda mengetik kata seperti salon atau cukur.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-11-07',
     title: {
       en: 'Log from a reminder in one tap',

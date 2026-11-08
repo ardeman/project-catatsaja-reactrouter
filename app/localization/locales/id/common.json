@@ -387,7 +387,11 @@
         },
         "health": {
           "label": "Kesehatan",
-          "description": "Olahraga, dokter, obat-obatan, perawatan diri"
+          "description": "Olahraga, dokter, obat-obatan"
+        },
+        "personalCare": {
+          "label": "Perawatan Diri",
+          "description": "Salon, barbershop, klinik kecantikan, spa"
         },
         "social": {
           "label": "Sosial",
