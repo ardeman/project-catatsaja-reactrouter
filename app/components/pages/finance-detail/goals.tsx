@@ -150,7 +150,7 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
             )}
           </div>
 
-          <ol className="grid gap-3">
+          <ol className="grid grid-cols-1 gap-3">
             {plan.months.map(
               ({
                 due,
@@ -162,7 +162,7 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
               }) => (
                 <li
                   key={due}
-                  className="grid gap-1 border-t pt-3 text-sm"
+                  className="grid grid-cols-1 gap-1 border-t pt-3 text-sm"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <h3 className="font-medium">
@@ -172,7 +172,7 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
                       {money(total, book)}
                     </span>
                   </div>
-                  <ul className="grid gap-0.5 text-muted-foreground">
+                  <ul className="grid grid-cols-1 gap-0.5 text-muted-foreground">
                     {monthGoals.map((goal) => (
                       <li key={goal.id}>
                         <div className="flex justify-between gap-2">
@@ -240,7 +240,7 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
               count: plan.done.length,
             })}
           </summary>
-          <ul className="mt-2 grid gap-0.5">
+          <ul className="mt-2 grid grid-cols-1 gap-0.5">
             {plan.done.map((goal) => (
               <li
                 key={goal.id}
