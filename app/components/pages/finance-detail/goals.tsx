@@ -195,33 +195,47 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
                       </li>
                     ))}
                   </ul>
-                  <p
-                    className={cn(
-                      'text-xs',
-                      shortfall === 0
-                        ? 'text-income'
-                        : paydays === 0
+                  {shortfall > 0 ? (
+                    <div
+                      className={cn(
+                        'grid grid-cols-1 gap-0.5 text-xs',
+                        paydays === 0
                           ? 'text-destructive-text'
                           : 'text-expense',
-                    )}
-                  >
-                    {shortfall > 0
-                      ? [
-                          t('finances.analysis.goals.short', {
-                            amount: money(shortfall, book),
-                          }),
-                          paydays === 0 &&
-                            t('finances.analysis.goals.noPaydays'),
-                          perPayday !== undefined &&
-                            t('finances.analysis.goals.paydays', {
-                              count: paydays,
-                              amount: money(perPayday, book),
-                            }),
-                        ]
-                          .filter(Boolean)
-                          .join(' · ')
-                      : t('finances.analysis.goals.ready')}
-                  </p>
+                      )}
+                    >
+                      <div className="flex justify-between gap-2">
+                        <span>{t('finances.analysis.goals.short')}</span>
+                        <span className="shrink-0 whitespace-nowrap tabular-nums">
+                          {money(shortfall, book)}
+                        </span>
+                      </div>
+                      {paydays === 0 ? (
+                        <div>
+                          <span>{t('finances.analysis.goals.noPaydays')}</span>
+                        </div>
+                      ) : (
+                        perPayday !== undefined && (
+                          <div className="flex justify-between gap-2">
+                            <span>
+                              {t('finances.analysis.goals.paydays', {
+                                count: paydays,
+                              })}
+                            </span>
+                            <span className="shrink-0 whitespace-nowrap tabular-nums">
+                              {t('finances.analysis.goals.each', {
+                                amount: money(perPayday, book),
+                              })}
+                            </span>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-income">
+                      {t('finances.analysis.goals.ready')}
+                    </p>
+                  )}
                 </li>
               ),
             )}
