@@ -673,7 +673,7 @@
         "ready": "Covered",
         "paydays_one": "{{count}} payday left",
         "paydays_other": "{{count}} paydays left",
-        "each": "{{amount}} each",
+        "each": "each {{amount}}",
         "noPaydays": "No payday left",
         "doneTitle": "Done ({{count}})",
         "realized": "{{spent}} realized",

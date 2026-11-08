@@ -673,7 +673,7 @@
         "ready": "Cukup",
         "paydays_one": "{{count}} kali gajian lagi",
         "paydays_other": "{{count}} kali gajian lagi",
-        "each": "{{amount}} tiap kali",
+        "each": "tiap kali {{amount}}",
         "noPaydays": "Tidak ada gajian lagi",
         "doneTitle": "Selesai ({{count}})",
         "realized": "{{spent}} terealisasi",
