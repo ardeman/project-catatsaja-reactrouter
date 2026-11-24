@@ -41,6 +41,13 @@ export const releases: TRelease[] = [
           id: 'Di iPhone, membuka menu atau formulir dari bawah layar tidak lagi menggulir halaman di belakangnya, sehingga tombol seperti Tutup langsung berfungsi saat diketuk.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'Editing a body measurement on a phone shows the whole form again, including the Save button.',
+          id: 'Mengubah pengukuran tubuh di ponsel kembali menampilkan seluruh formulir, termasuk tombol Simpan.',
+        },
+      },
     ],
   },
   {

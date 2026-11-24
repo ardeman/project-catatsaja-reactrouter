@@ -150,7 +150,11 @@ export const EntryList = <TEntry extends THealthEntry>({
         {emptyLabel}
       </p>
     ) : (
-      <div className={cn(columns && 'overflow-x-auto overscroll-contain')}>
+      <div
+        className={cn(
+          columns && '@container overflow-x-auto overscroll-contain',
+        )}
+      >
         <ul
           className={cn(
             'grid divide-y',
@@ -182,11 +186,17 @@ export const EntryList = <TEntry extends THealthEntry>({
           {shown.map((entry, index) => {
             if (!isReadOnly && editingId === entry.id)
               return (
-                <li
-                  key={entry.id}
-                  className="p-1"
-                >
-                  {form(entry)}
+                <li key={entry.id}>
+                  {/* As wide as what shows of a list that scrolls sideways
+                      (less its borders), and in view wherever it is. */}
+                  <div
+                    className={cn(
+                      'p-1',
+                      columns && 'sticky left-0 w-[calc(100cqw-2px)]',
+                    )}
+                  >
+                    {form(entry)}
+                  </div>
                 </li>
               )
             const row = rows[index]
