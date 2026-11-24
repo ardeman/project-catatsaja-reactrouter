@@ -34,6 +34,13 @@ export const releases: TRelease[] = [
           id: 'Pengukuran tubuh ditampilkan dalam kolom yang sejajar (berat, tinggi, kepala, IMT) dengan perubahan dari pengukuran sebelumnya di bawah setiap angka, sehingga riwayatnya mudah dibandingkan.',
         },
       },
+      {
+        kind: 'fixed',
+        text: {
+          en: 'On iPhone, opening a menu or form from the bottom of the screen no longer scrolls the page behind it, so buttons such as Dismiss work on the first tap.',
+          id: 'Di iPhone, membuka menu atau formulir dari bawah layar tidak lagi menggulir halaman di belakangnya, sehingga tombol seperti Tutup langsung berfungsi saat diketuk.',
+        },
+      },
     ],
   },
   {

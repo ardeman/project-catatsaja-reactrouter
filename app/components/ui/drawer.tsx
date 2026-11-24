@@ -7,14 +7,20 @@ import { cn } from '~/lib/utils/shadcn'
 // On a scrolled page Safari then keeps a stale map of where the sheet can be
 // tapped, and taps go nowhere. The page stays locked without it (Radix's
 // scroll lock), so every sheet leaves the body alone.
+// disablePreventScroll: despite its name, true (vaul's default) turns on a
+// second lock on iOS that scrolls the page to the top, which only goes
+// unnoticed with the body pinned. Our smooth scrolling draws that out, and
+// Safari ignores taps on the sheet until the page stops.
 const Drawer = ({
   shouldScaleBackground = true,
   noBodyStyles = true,
+  disablePreventScroll = false,
   ...properties
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
     shouldScaleBackground={shouldScaleBackground}
     noBodyStyles={noBodyStyles}
+    disablePreventScroll={disablePreventScroll}
     {...properties}
   />
 )

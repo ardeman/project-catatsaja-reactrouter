@@ -177,6 +177,7 @@ export const NotificationList = (properties: {
               <Button
                 size="sm"
                 variant="ghost"
+                className="max-md:h-11"
                 onClick={dismissReleases}
               >
                 {t('notifications.releases.dismiss')}
@@ -185,6 +186,7 @@ export const NotificationList = (properties: {
                 asChild
                 size="sm"
                 variant="outline"
+                className="max-md:h-11"
               >
                 <Link
                   to={`/changelog#release-${latestRelease}`}
