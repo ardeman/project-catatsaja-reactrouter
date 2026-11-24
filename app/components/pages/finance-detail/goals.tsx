@@ -12,6 +12,7 @@ import {
   TFinanceForm,
 } from '~/lib/types/finance'
 import { summarize, today } from '~/lib/utils/finance'
+import { isPlusOnSale } from '~/lib/utils/plus-sale'
 import { bookSavings, savingsPlan } from '~/lib/utils/savings-goals'
 import { cn } from '~/lib/utils/shadcn'
 
@@ -74,7 +75,7 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
               aria-hidden="true"
               className="size-3"
             />
-            {t('plus.soon')}
+            {t(isPlusOnSale ? 'plus.onSale' : 'plus.soon')}
           </span>
         }
       >

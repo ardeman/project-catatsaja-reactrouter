@@ -13,6 +13,7 @@ import {
 } from '~/lib/types/finance'
 import { budgetUsage, monthOf } from '~/lib/utils/budgets'
 import { today } from '~/lib/utils/finance'
+import { isPlusOnSale } from '~/lib/utils/plus-sale'
 import { cn } from '~/lib/utils/shadcn'
 
 import { BudgetIcon, BudgetsEditor, budgetLabelKey } from './budgets-editor'
@@ -70,7 +71,7 @@ export const Budgets = ({
               aria-hidden="true"
               className="size-3"
             />
-            {t('plus.soon')}
+            {t(isPlusOnSale ? 'plus.onSale' : 'plus.soon')}
           </span>
         }
       >

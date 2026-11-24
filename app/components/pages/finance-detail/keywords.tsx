@@ -13,6 +13,7 @@ import {
 } from '~/lib/types/finance'
 import { formatShare } from '~/lib/utils/finance-analysis'
 import { combinedKeywordTotals } from '~/lib/utils/keywords'
+import { isPlusOnSale } from '~/lib/utils/plus-sale'
 import { cn } from '~/lib/utils/shadcn'
 
 import { KeywordsEditor } from './keywords-editor'
@@ -89,7 +90,7 @@ export const Keywords = ({
               aria-hidden="true"
               className="size-3"
             />
-            {t('plus.soon')}
+            {t(isPlusOnSale ? 'plus.onSale' : 'plus.soon')}
           </span>
         }
       >

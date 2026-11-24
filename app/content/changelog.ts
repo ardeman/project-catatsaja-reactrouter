@@ -16,10 +16,17 @@ export const releases: TRelease[] = [
   {
     date: '2026-11-24',
     title: {
-      en: 'Body history that is easier to compare',
-      id: 'Riwayat tubuh yang lebih mudah dibandingkan',
+      en: 'Catat Saja Plus, and body history that is easier to compare',
+      id: 'Catat Saja Plus, dan riwayat tubuh yang lebih mudah dibandingkan',
     },
     changes: [
+      {
+        kind: 'new',
+        text: {
+          en: 'You can now buy Catat Saja Plus for 1, 3 or 12 months: tap your plan in the account menu. It is prepaid and never renews by itself, you can ask for a refund within 7 days, and everything free stays free.',
+          id: 'Catat Saja Plus kini bisa dibeli untuk 1, 3, atau 12 bulan: ketuk paketmu di menu akun. Plus dibayar di muka dan tidak pernah diperpanjang otomatis, uang bisa dikembalikan dalam 7 hari, dan semua yang gratis tetap gratis.',
+        },
+      },
       {
         kind: 'improved',
         text: {

@@ -13,6 +13,7 @@ const paragraphs = [
   'push',
   'analytics',
   'security',
+  'plus',
   'video',
 ]
 

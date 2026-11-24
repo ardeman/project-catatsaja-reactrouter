@@ -13,6 +13,7 @@ import {
 } from '~/lib/types/finance'
 import { groupTotals, ungrouped } from '~/lib/utils/category-groups'
 import { formatShare } from '~/lib/utils/finance-analysis'
+import { isPlusOnSale } from '~/lib/utils/plus-sale'
 import { cn } from '~/lib/utils/shadcn'
 
 import { CategoryGroupsEditor } from './category-groups-editor'
@@ -70,7 +71,7 @@ export const CategoryGroups = ({
               aria-hidden="true"
               className="size-3"
             />
-            {t('plus.soon')}
+            {t(isPlusOnSale ? 'plus.onSale' : 'plus.soon')}
           </span>
         }
       >

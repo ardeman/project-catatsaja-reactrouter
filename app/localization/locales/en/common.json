@@ -1078,7 +1078,7 @@
     }
   },
   "privacyPolicy": {
-    "updated": "Last updated: 6 November 2026",
+    "updated": "Last updated: 24 November 2026",
     "collect": "When you create an account, we store your email address and display name. If you sign in with Google, we also store your Google profile photo. We store the notes, tasks, finance books, health logs and settings you create. A health log can hold sensitive details, such as periods, sex (and whether it was protected) and medicines; turn on end-to-end encryption to keep them unreadable to us.",
     "use": "We use this only to run the app: to sign you in, keep your data and let you share it. We don't sell your data or use it for advertising.",
     "storage": "Everything is stored with Google Firebase (Authentication and Cloud Firestore) and is covered by Google's security and privacy practices. So the app works offline, each browser you use also keeps a copy of your items (encrypted items stay encrypted) and of an entry you were typing and hadn't saved; for an encrypted book, that draft is kept only until the tab closes. Signing out deletes them from that browser.",
@@ -1088,12 +1088,14 @@
     "push": "Push notifications are off until you turn them on for a device in Settings. Your browser's push service (Google, Apple or Mozilla) then gives that device an address, which we store on your account with a key made on the device. When someone invites you, or a health reminder or medicine dose is due, our server (Google Cloud Functions) sends a notification to your devices and to the people a health log is shared with (a fertile window reminder goes only to the log's owner, unless they choose to include them). The text, such as an item's title or a medicine's name, is encrypted on the sender's device for each receiving device, so we and the push service can't read it. What the server does see is the time of each upcoming reminder and who it goes to. Turning notifications off for a device deletes its address and key.",
     "analytics": "We use Google Analytics for Firebase to understand how the app is used, for example which pages are opened. It collects usage and device information, never the content of your items.",
     "security": "To keep out abuse, the app uses Firebase App Check with Google reCAPTCHA, which checks that requests come from this app using signals from your browser.",
+    "plus": "If you buy Catat Saja Plus, we give your account ID and email address to Dahlunas, the shop run by the same owner, when you continue to payment. Dahlunas stores them with your order and takes the payment through Midtrans; we never see your card or bank details. Once you have paid, Dahlunas sends us your account ID, the order number, the months bought and the order time, which we keep so the same payment never counts twice, along with the date your Plus ends. Dahlunas has its own privacy policy at dahlunas.ardeman.com/privacy.",
     "video": "The home page has videos hosted on YouTube. They load only when you press play or choose a story, from YouTube's privacy-enhanced mode (youtube-nocookie.com); YouTube's own privacy policy then applies to them.",
     "contact": "To get a copy of your data, or to delete your account and everything in it, email <a>{{email}}</a>."
   },
   "termsOfService": {
     "paragraph1": "By accessing <span>{{appName}}</span> you agree to use the application legally and responsibly.",
     "paragraph2": "The service is provided as is, without warranties, and we may suspend accounts for misuse or security issues.",
+    "plus": "Catat Saja Plus is optional prepaid access for 1, 3 or 12 months. It does not renew by itself, and new time is added after any you already have. When it ends, what you wrote stays and the core of the app stays free. You pay through Dahlunas, the shop run by the same owner, under its terms. You can ask for a full refund within 7 days of paying; Plus from that purchase then ends.",
     "paragraph3": "We may change these terms at any time; continuing to use the app means you accept the changes."
   },
   "settings": {
@@ -2186,6 +2188,7 @@
   },
   "plus": {
     "soon": "Plus · coming soon",
+    "onSale": "Plus",
     "free": "Free",
     "until": "Plus · until {{date}}",
     "info": {

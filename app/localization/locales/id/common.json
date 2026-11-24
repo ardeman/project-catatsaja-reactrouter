@@ -1078,7 +1078,7 @@
     }
   },
   "privacyPolicy": {
-    "updated": "Terakhir diperbarui: 6 November 2026",
+    "updated": "Terakhir diperbarui: 24 November 2026",
     "collect": "Saat kamu membuat akun, kami menyimpan alamat email dan nama tampilanmu. Jika kamu masuk dengan Google, kami juga menyimpan foto profil Google-mu. Kami menyimpan catatan, tugas, buku keuangan, catatan kesehatan, dan pengaturan yang kamu buat. Catatan kesehatan bisa berisi hal yang sensitif, seperti menstruasi, hubungan seks (dan apakah memakai pengaman), serta obat; nyalakan enkripsi end-to-end agar kami tidak bisa membacanya.",
     "use": "Kami memakai data ini hanya untuk menjalankan aplikasi: untuk memasukkanmu ke akun, menyimpan datamu, dan memungkinkanmu berbagi. Kami tidak menjual datamu atau memakainya untuk iklan.",
     "storage": "Semua data disimpan di Google Firebase (Authentication dan Cloud Firestore) dan tunduk pada praktik keamanan dan privasi Google. Agar aplikasi bisa dipakai offline, setiap browser yang kamu pakai juga menyimpan salinan item-mu (item terenkripsi tetap terenkripsi) dan entri yang sedang kamu ketik tapi belum disimpan; untuk buku terenkripsi, draf itu hanya disimpan sampai tab ditutup. Keluar dari akun menghapus semuanya dari browser itu.",
@@ -1088,12 +1088,14 @@
     "push": "Notifikasi push mati sampai kamu menyalakannya untuk sebuah perangkat di Pengaturan. Layanan push browsermu (Google, Apple, atau Mozilla) lalu memberi perangkat itu sebuah alamat, yang kami simpan di akunmu bersama kunci yang dibuat di perangkat tersebut. Saat seseorang mengundangmu, atau pengingat kesehatan atau dosis obat jatuh tempo, server kami (Google Cloud Functions) mengirim notifikasi ke perangkatmu dan ke orang yang diajak berbagi catatan kesehatan tersebut (pengingat masa subur hanya dikirim ke pemilik catatan, kecuali pemilik memilih untuk mengikutsertakan mereka). Teksnya, seperti judul item atau nama obat, dienkripsi di perangkat pengirim untuk setiap perangkat penerima, sehingga kami dan layanan push tidak bisa membacanya. Yang terlihat oleh server adalah waktu setiap pengingat yang akan datang dan kepada siapa pengingat itu dikirim. Mematikan notifikasi untuk sebuah perangkat menghapus alamat dan kuncinya.",
     "analytics": "Kami memakai Google Analytics for Firebase untuk memahami cara aplikasi dipakai, misalnya halaman mana yang dibuka. Yang dikumpulkan adalah informasi penggunaan dan perangkat, tidak pernah isi item-mu.",
     "security": "Untuk mencegah penyalahgunaan, aplikasi ini memakai Firebase App Check dengan Google reCAPTCHA, yang memeriksa bahwa permintaan berasal dari aplikasi ini menggunakan sinyal dari browsermu.",
+    "plus": "Jika kamu membeli Catat Saja Plus, kami memberikan ID akun dan alamat emailmu kepada Dahlunas, toko milik pemilik yang sama, saat kamu melanjutkan ke pembayaran. Dahlunas menyimpannya bersama pesananmu dan menerima pembayaran lewat Midtrans; kami tidak pernah melihat data kartu atau rekeningmu. Setelah kamu membayar, Dahlunas mengirimi kami ID akunmu, nomor pesanan, jumlah bulan yang dibeli, dan waktu pesanan, yang kami simpan agar pembayaran yang sama tidak terhitung dua kali, beserta tanggal Plus-mu berakhir. Dahlunas punya kebijakan privasi sendiri di dahlunas.ardeman.com/privacy.",
     "video": "Halaman utama memuat video yang di-hosting di YouTube. Video baru dimuat saat kamu menekan putar atau memilih sebuah cerita, melalui mode privasi YouTube (youtube-nocookie.com); setelah itu kebijakan privasi YouTube berlaku untuknya.",
     "contact": "Untuk meminta salinan datamu, atau menghapus akun beserta semua isinya, kirim email ke <a>{{email}}</a>."
   },
   "termsOfService": {
     "paragraph1": "Dengan mengakses <span>{{appName}}</span>, kamu setuju untuk menggunakan aplikasi ini secara legal dan bertanggung jawab.",
     "paragraph2": "Layanan diberikan apa adanya tanpa jaminan, dan kami dapat menangguhkan akun jika disalahgunakan atau terjadi masalah keamanan.",
+    "plus": "Catat Saja Plus adalah akses prabayar opsional selama 1, 3, atau 12 bulan. Plus tidak diperpanjang otomatis, dan waktu baru ditambahkan setelah waktu yang sudah kamu punya. Setelah berakhir, yang sudah kamu tulis tetap ada dan fitur inti tetap gratis. Pembayaran dilakukan lewat Dahlunas, toko milik pemilik yang sama, dengan ketentuannya. Kamu bisa meminta pengembalian dana penuh dalam 7 hari setelah membayar; Plus dari pembelian itu kemudian berakhir.",
     "paragraph3": "Kami dapat mengubah syarat ini kapan saja; dengan tetap memakai aplikasi, kamu menerima perubahan tersebut."
   },
   "settings": {
@@ -2186,6 +2188,7 @@
   },
   "plus": {
     "soon": "Plus · segera hadir",
+    "onSale": "Plus",
     "free": "Gratis",
     "until": "Plus · sampai {{date}}",
     "info": {

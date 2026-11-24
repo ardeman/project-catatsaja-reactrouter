@@ -25,6 +25,7 @@ export const TermsOfServicePage = () => {
           components={{ span: <span className="text-primary" /> }}
         />
       </p>
+      <p>{t('termsOfService.plus')}</p>
       <p>
         <Trans
           i18nKey="termsOfService.paragraph3"
