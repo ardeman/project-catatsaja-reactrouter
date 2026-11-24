@@ -228,6 +228,10 @@ describe('AI features and reminders', () => {
     await page.waitForURL(/\/finances\/(?!create)/, { timeout: 30_000 })
     bookUrl = page.url()
 
+    // A day before the receipt's misread date, so that date is in the future
+    // and taken back as 11 October whatever day the tests run.
+    await page.clock.setFixedTime(new Date('2026-10-20T12:00:00'))
+
     // The first time: the notice, then the file picker from its button.
     assert.equal(
       await page.getByRole('button', { name: 'Scan receipt' }).count(),
@@ -255,6 +259,8 @@ describe('AI features and reminders', () => {
     await shows(page, 'Sunday, October 11, 2026')
     assert.equal(await page.getByText('AQUA 600ML').count(), 0)
     await page.waitForTimeout(4000)
+    // Back to the real time for the tests that follow.
+    await page.clock.setSystemTime(new Date())
 
     // Stored encrypted, like any other entry.
     const book = await dbGet(`finances/${bookUrl.split('/').pop()}`)
