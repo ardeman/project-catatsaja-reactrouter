@@ -233,6 +233,8 @@ jobs:
           VITE_GRAVATAR_API_KEY: ${{ secrets.VITE_GRAVATAR_API_KEY }}
           VITE_FCM_VAPID_KEY: ${{ secrets.VITE_FCM_VAPID_KEY }}
           VITE_APP_CHECK_SITE_KEY: ${{ secrets.VITE_APP_CHECK_SITE_KEY }}
+          # Optional until Plus sales open; empty keeps Buy hidden in the app.
+          VITE_PLUS_CHECKOUT_URL: ${{ secrets.VITE_PLUS_CHECKOUT_URL }}
           # Local debug credentials must never enter a production build.
           VITE_APP_CHECK_DEBUG_TOKEN: ''
         run: pnpm exec react-router build

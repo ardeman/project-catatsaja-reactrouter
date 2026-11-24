@@ -1,5 +1,7 @@
 node_modules/
 .env
+# Local Cloud Functions secrets for the emulator (never commit).
+functions/.secret.local
 # Where separate projects are on this machine (see external-projects.example.json)
 external-projects.json
 /.cache

@@ -73,7 +73,7 @@ An optional Catat Saja Plus subscription pays for what costs money to run; the c
 - [ ] Find who pays: post the per-person stories videos, then a small paid test per person for a week; the cheapest active sign-ups pick which Plus features come first.
 - [ ] A donation link (Trakteer or Saweria) and a Plus waitlist with an early-bird price, to check that people will pay.
 - [ ] Plus: higher Gemini limits than free accounts (Gemini is now paid per use; a few uses a month stay free), health reports as PDF for the doctor or posyandu, exports and yearly finance reports, and a family plan. Already built: a book's own groups of categories, its budgets (a limit on all spending or per expense category, monthly or for the whole book, with what is left), its savings goals (what to put aside each payday so each goal is ready by its month), its keywords (what the entries whose description has them add up to), and copying them from another book, open to accounts given Plus by hand (`plan` and `planEndsAt` on the profile, set in the Firebase console) until payments start.
-- [ ] Payments through [Dahlunas](https://github.com/ardeman/project-dahlunas-go), Ardeman's own shop (Midtrans for QRIS and e-wallets, Lemon Squeezy for other countries), decided on 2026-10-26 instead of a gateway of Catat Saja's own. Plus is a real subscription written to the person's account, not an unlock code. Dahlunas needs new work for it (its README → Roadmap → Catat Saja): checkout started from a signed-in account with a short-lived signed token naming it, recurring billing (Midtrans renews only saved cards and GoPay, not QRIS, so prepaid months or years paid by QRIS with a reminder email are the fallback), and a delivery that calls Catat Saja instead of emailing a code. Here it needs the Blaze plan and a Cloud Function that checks Dahlunas's signature and writes the person's plan and end date, which the rules don't let users change. Start once Plus has a feature to sell. Update the terms, the privacy policy (Dahlunas handles the payment and keeps the account ID with the order) and the changelog at launch.
+- [ ] Payments through [Dahlunas](https://github.com/ardeman/project-dahlunas-go): prepaid Plus (1 / 3 / 12 months) is wired — signed checkout token, Midtrans Snap, HMAC delivery into `plan` / `planEndsAt` via Cloud Functions (`deliverPlus`, `mintPlusCheckout`). Buy stays off until `VITE_PLUS_CHECKOUT_URL` is set and the Function secrets are deployed. Still before opening sales: paid-test and waitlist. Later: Midtrans recurring (saved card / GoPay), Lemon Squeezy for other countries, reminder email before expiry. Update the terms, privacy policy and changelog at launch.
 
 **Technical**
 
@@ -119,14 +119,15 @@ pnpm refuses package versions published less than a day ago (its `minimumRelease
 
 `.env` is git-ignored. In CI the same names come from repository secrets.
 
-| Variable                     | Used for                                                                                                                                                       |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_FIREBASE_*`            | Firebase web app config (Project settings → Your apps)                                                                                                         |
-| `VITE_GRAVATAR_API_KEY`      | Profile avatars from Gravatar                                                                                                                                  |
-| `VITE_FCM_VAPID_KEY`         | Optional. Public key of the web push key pair (Project settings → Cloud Messaging → Web Push certificates); push notifications are off without it              |
-| `VITE_APP_CHECK_SITE_KEY`    | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it                                                                    |
-| `VITE_APP_CHECK_DEBUG_TOKEN` | Development only. A registered App Check debug token, kept in the ignored `.env`; ignored in production                                                        |
-| `VITE_USE_EMULATORS`         | Development only (not set in the workflow): `true` runs `pnpm dev` against the local Auth, Firestore and Functions emulators (`pnpm emulators`, needs Java 21) |
+| Variable                     | Used for                                                                                                                                                                                                |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_FIREBASE_*`            | Firebase web app config (Project settings → Your apps)                                                                                                                                                  |
+| `VITE_GRAVATAR_API_KEY`      | Profile avatars from Gravatar                                                                                                                                                                           |
+| `VITE_FCM_VAPID_KEY`         | Optional. Public key of the web push key pair (Project settings → Cloud Messaging → Web Push certificates); push notifications are off without it                                                       |
+| `VITE_APP_CHECK_SITE_KEY`    | Optional. reCAPTCHA Enterprise site key for Firebase App Check; App Check is off without it                                                                                                             |
+| `VITE_APP_CHECK_DEBUG_TOKEN` | Development only. A registered App Check debug token, kept in the ignored `.env`; ignored in production                                                                                                 |
+| `VITE_USE_EMULATORS`         | Development only (not set in the workflow): `true` runs `pnpm dev` against the local Auth, Firestore and Functions emulators (`pnpm emulators`, needs Java 21)                                          |
+| `VITE_PLUS_CHECKOUT_URL`     | Optional. Dahlunas project page for prepaid Plus (for example `https://dahlunas.ardeman.com/projects/catat-saja`); Buy stays hidden without it. Before delivery works, set matching secrets (see below) |
 
 Variables are read in one place, `app/lib/utils/environment.ts`.
 
@@ -149,6 +150,7 @@ When developing against Firebase with App Check enabled, create a debug token in
 | Build the Cloud Functions (`functions/src` to `functions/lib`)                                                                | `pnpm build:functions`                                    |
 | Rewrite `functions/package-lock.json` after changing `functions/package.json` (npm, releases at least a day old)              | `pnpm lock:functions`                                     |
 | Run the Auth, Firestore and Functions emulators (with `VITE_USE_EMULATORS=true`; Java 21; builds the functions first)         | `pnpm emulators`                                          |
+| Prepaid Plus delivery smoke (`deliverPlus` on Firestore + Functions emulators; Java 21)                                       | `pnpm test:plus-delivery`                                 |
 | Deploy Firestore rules and indexes (when pnpm asks which packages may build, choose none: firebase-tools doesn't need them)   | `pnpm dlx firebase-tools@15.33.0 deploy --only firestore` |
 | Deploy the Cloud Functions (checks the lockfile and builds them first)                                                        | `pnpm dlx firebase-tools@15.33.0 deploy --only functions` |
 | Maintenance mode and the oldest app allowed, with your gcloud sign-in (README → Maintenance mode)                             | `pnpm maintenance status\|on\|off`                        |
@@ -161,6 +163,10 @@ pnpm validate   # lint + typecheck + knip + unit tests
 ```
 
 **Rules tests** — `pnpm test:rules` runs `tests/firestore-rules.test.mjs` against the Firestore emulator (it needs Java 21). The deploy workflow runs them before every deploy, so they don't have to pass locally.
+
+**Plus delivery smoke** — `pnpm test:plus-delivery` builds the Functions, writes `functions/.secret.local` (git-ignored), and posts a signed `deliverPlus` body against the Firestore and Functions emulators (Java 21). It checks that `plan` / `planEndsAt` are set, bad signatures are refused, and a repeated order is a no-op.
+
+**Opening prepaid Plus sales** — keep `VITE_PLUS_CHECKOUT_URL` unset until a production payment has been checked. Then, with the same random values in both places: create Secret Manager secrets `DAHLUNAS_DELIVERY_SECRET` and `PLUS_CHECKOUT_SECRET` for the Firebase project; set Dahlunas `CATATSAJA_DELIVER_URL` (the `deliverPlus` HTTPS URL), `DAHLUNAS_DELIVERY_SECRET` and `PLUS_CHECKOUT_SECRET`; deploy Firestore rules (for `plusDeliveries`) and `deploy --only functions`; set the workflow / hosting `VITE_PLUS_CHECKOUT_URL` to the Dahlunas Catat Saja project page. Emulator runs can use `functions/.secret.local` instead of Secret Manager.
 
 **End-to-end tests** — `pnpm test:e2e` runs four suites sequentially against the Auth and Firestore emulators, using Playwright and the installed Google Chrome (needs Java 21 and port 5199 free):
 

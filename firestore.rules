@@ -274,6 +274,12 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Prepaid Plus deliveries from Dahlunas: written only by Cloud
+    // Functions (Admin SDK). Clients never read or write them.
+    match /plusDeliveries/{orderId} {
+      allow read, write: if false;
+    }
+
     match /notes/{noteId} {
       allow read: if canReadShared();
       allow create: if isValidNewShared();

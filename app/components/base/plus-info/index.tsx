@@ -3,6 +3,8 @@ import { Dispatch, SetStateAction } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Modal } from '~/components/base/modal'
+import { useMintPlusCheckout } from '~/lib/hooks/use-mint-plus-checkout'
+import { usePlan } from '~/lib/hooks/use-plan'
 
 type TProperties = {
   open: boolean
@@ -14,10 +16,13 @@ const sections = [
   { key: 'free', icon: Check },
 ] as const
 
-// What Catat Saja Plus adds, what stays free, and that it can't be bought
-// yet. Held by the caller, outside menus that close when it opens.
+// What Catat Saja Plus adds, what stays free, and how to buy (when checkout
+// is enabled via VITE_PLUS_CHECKOUT_URL). Held by the caller, outside menus
+// that close when it opens.
 export const PlusInfo = ({ open, setOpen }: TProperties) => {
   const { t } = useTranslation()
+  const { hasPlus } = usePlan()
+  const { canCheckout, loading, openCheckout } = useMintPlusCheckout()
 
   return (
     <Modal
@@ -25,6 +30,18 @@ export const PlusInfo = ({ open, setOpen }: TProperties) => {
       setOpen={setOpen}
       title={t('plus.info.title')}
       description={t('plus.info.description')}
+      confirmLabel={
+        canCheckout
+          ? t(hasPlus ? 'plus.info.renew' : 'plus.info.buy')
+          : undefined
+      }
+      handleConfirm={
+        canCheckout && !loading
+          ? () => {
+              void openCheckout()
+            }
+          : undefined
+      }
     >
       <div className="grid gap-4 text-sm">
         {sections.map(({ key, icon: Icon }) => (
@@ -51,7 +68,9 @@ export const PlusInfo = ({ open, setOpen }: TProperties) => {
             </ul>
           </section>
         ))}
-        <p className="text-muted-foreground">{t('plus.info.payments')}</p>
+        <p className="text-muted-foreground">
+          {t(canCheckout ? 'plus.info.paymentsOpen' : 'plus.info.payments')}
+        </p>
       </div>
     </Modal>
   )

@@ -1,16 +1,30 @@
 import './setup.js'
 
 import {
+  FieldValue,
   getFirestore,
   QueryDocumentSnapshot,
   Timestamp,
 } from 'firebase-admin/firestore'
 import { getMessaging } from 'firebase-admin/messaging'
 import { logger } from 'firebase-functions'
+import { defineSecret } from 'firebase-functions/params'
 import { onDocumentCreated } from 'firebase-functions/v2/firestore'
+import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https'
 import { onSchedule } from 'firebase-functions/v2/scheduler'
 
+import {
+  parseDeliverBody,
+  planEndsAtTimestamp,
+  signCheckoutToken,
+  verifyDeliverySignature,
+} from './plus.js'
 import { invitationText, reminderText, TKind, TLang } from './text.js'
+
+// Shared with Dahlunas: delivery HMAC and checkout-token HMAC. Set in
+// Secret Manager before deploying these functions.
+const deliverySecret = defineSecret('DAHLUNAS_DELIVERY_SECRET')
+const checkoutSecret = defineSecret('PLUS_CHECKOUT_SECRET')
 
 // Cloud Functions that send push notifications (invitations, health
 // reminders). They never read what an item says: an item's title or a
@@ -217,3 +231,103 @@ export const sendReminderPushes = onSchedule('every 5 minutes', async () => {
     }),
   )
 })
+
+// Dahlunas calls this after a prepaid Plus payment. Body is JSON; signature
+// is hex(HMAC-SHA256(rawBody)) in X-Dahlunas-Signature. Idempotent per order.
+export const deliverPlus = onRequest(
+  { secrets: [deliverySecret], cors: false },
+  async (request, response) => {
+    if (request.method !== 'POST') {
+      response.status(405).send('Method not allowed')
+      return
+    }
+    const raw =
+      typeof request.rawBody === 'object' && Buffer.isBuffer(request.rawBody)
+        ? request.rawBody.toString('utf8')
+        : typeof request.body === 'string'
+          ? request.body
+          : JSON.stringify(request.body ?? {})
+    const signature = String(request.get('X-Dahlunas-Signature') ?? '')
+    if (!verifyDeliverySignature(deliverySecret.value(), raw, signature)) {
+      response.status(401).send('Invalid signature')
+      return
+    }
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(raw)
+    } catch {
+      response.status(400).send('Invalid body')
+      return
+    }
+    const body = parseDeliverBody(parsed)
+    if (!body) {
+      response.status(400).send('Invalid body')
+      return
+    }
+
+    const database = getFirestore()
+    const delivery = database.doc(`plusDeliveries/${body.orderId}`)
+    const existing = await delivery.get()
+    if (existing.exists) {
+      response.status(200).json({ ok: true, duplicate: true })
+      return
+    }
+
+    const profile = database.doc(`users/${body.uid}`)
+
+    try {
+      await database.runTransaction(async (transaction) => {
+        const again = await transaction.get(delivery)
+        if (again.exists) return
+        const snapshot = await transaction.get(profile)
+        if (!snapshot.exists) {
+          throw new Error('unknown-account')
+        }
+        const endsAt = planEndsAtTimestamp(
+          new Date(),
+          snapshot.get('planEndsAt') as Timestamp | undefined,
+          body.months,
+        )
+        transaction.set(delivery, {
+          uid: body.uid,
+          months: body.months,
+          paidAt: body.paidAt,
+          planEndsAt: endsAt,
+          createdAt: FieldValue.serverTimestamp(),
+        })
+        transaction.set(
+          profile,
+          { plan: 'plus', planEndsAt: endsAt },
+          { merge: true },
+        )
+      })
+    } catch (error) {
+      if (error instanceof Error && error.message === 'unknown-account') {
+        response.status(404).send('Unknown account')
+        return
+      }
+      logger.error('deliverPlus failed', body.orderId, error)
+      response.status(503).send('Retry')
+      return
+    }
+
+    response.status(200).json({ ok: true })
+  },
+)
+
+// Signed-in app: short-lived token naming the person for Dahlunas checkout.
+export const mintPlusCheckout = onCall(
+  { secrets: [checkoutSecret] },
+  (request) => {
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Sign in required')
+    }
+    const email = request.auth.token.email
+    if (typeof email !== 'string' || !email.includes('@')) {
+      throw new HttpsError('failed-precondition', 'Account needs an email')
+    }
+    return {
+      token: signCheckoutToken(checkoutSecret.value(), request.auth.uid, email),
+    }
+  },
+)

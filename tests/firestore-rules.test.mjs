@@ -85,6 +85,16 @@ describe('users', () => {
     )
   })
 
+  test('Plus delivery records are server-only', async () => {
+    const path = 'plusDeliveries/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+    await assertFails(
+      as(OWNER).doc(path).set({ uid: OWNER, months: 1 }),
+    )
+    await seed(path, { uid: OWNER, months: 1 })
+    await assertFails(as(OWNER).doc(path).get())
+    await assertFails(as(OWNER).doc(path).delete())
+  })
+
   test('nobody gives themselves Plus or changes when it ends', async () => {
     const plan = { plan: 'plus', planEndsAt: new Date('2099-01-01') }
     await assertFails(as(OWNER).doc(`users/${OWNER}`).update(plan))

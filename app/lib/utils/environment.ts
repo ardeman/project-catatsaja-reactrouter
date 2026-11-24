@@ -33,4 +33,8 @@ export const environment = {
   // Set by `vite.config.ts` for each build (not in `.env`): compared with
   // `/version.json` to tell when a newer version is deployed.
   VITE_BUILD_ID: import.meta.env.VITE_BUILD_ID as string,
+
+  // Dahlunas prepaid Plus checkout page; Buy stays hidden without it.
+  VITE_PLUS_CHECKOUT_URL: import.meta.env.VITE_PLUS_CHECKOUT_URL as
+    string | undefined,
 }
