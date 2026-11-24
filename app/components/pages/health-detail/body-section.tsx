@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Segmented } from '~/components/base/segmented'
 import { Button } from '~/components/ui/button'
 import { useGrowthTables } from '~/lib/hooks/use-growth-tables'
+import { THealthEntryOf } from '~/lib/types/health'
 import { today } from '~/lib/utils/finance'
 import {
   growthLastDay,
@@ -22,7 +23,25 @@ import {
 import { EntryList } from './entry-list'
 import { GrowthChart } from './growth-chart'
 import { MetricChart } from './metric-chart'
-import { TSectionProperties } from './type'
+import { TEntryMetric, TSectionProperties } from './type'
+
+// Signed change from the older measurement, for the comparison column.
+// Unchanged values stay blank so the eye can find what moved.
+const metricChange = (
+  current: number | undefined,
+  previous: number | undefined,
+  format: (value: number) => string,
+  unit?: string,
+): Pick<TEntryMetric, 'change' | 'changeDirection'> => {
+  if (current === undefined || previous === undefined) return {}
+  const delta = current - previous
+  if (Math.abs(delta) < 0.05) return {}
+  const amount = `${delta > 0 ? '+' : '−'}${format(Math.abs(delta))}`
+  return {
+    change: unit ? `${amount} ${unit}` : amount,
+    changeDirection: delta > 0 ? 'up' : 'down',
+  }
+}
 
 const indicators: TGrowthIndicator[] = [
   'weightForAge',
@@ -101,6 +120,16 @@ export const BodySection = (properties: TSectionProperties) => {
     headForAge: 'cm',
     bmiForAge: 'kg/m²',
   }
+  const format = (value: number) => number.format(value)
+  // Columns that appear at least once, so every row shares the same grid.
+  const showWeight = entries.some((entry) => entry.weight !== undefined)
+  const showHeight = entries.some((entry) => entry.height !== undefined)
+  const showHead = entries.some((entry) => entry.head !== undefined)
+  const bodyBmi = (entry: THealthEntryOf<'body'>) => {
+    const height = entry.height ?? heightOn(log.content, entry.date)
+    return height && entry.weight ? bmi(entry.weight, height) : undefined
+  }
+  const showBmi = entries.some((entry) => bodyBmi(entry) !== undefined)
 
   return (
     <EntryList
@@ -118,12 +147,50 @@ export const BodySection = (properties: TSectionProperties) => {
           bmiStandard,
           tables,
         })
-        const measures = [
-          entry.weight !== undefined && `${number.format(entry.weight)} kg`,
-          entry.height !== undefined && `${number.format(entry.height)} cm`,
-          entry.head !== undefined &&
-            `${t('health.form.head')} ${number.format(entry.head)} cm`,
-        ].filter(Boolean)
+        // The next row is the older measurement (list is newest first).
+        const previous = entries[entries.indexOf(entry) + 1]
+        const previousBmi = previous ? bodyBmi(previous) : undefined
+        const metrics: TEntryMetric[] = []
+        if (showWeight) {
+          metrics.push({
+            key: 'weight',
+            label: t('health.form.weight'),
+            value:
+              entry.weight === undefined
+                ? undefined
+                : `${format(entry.weight)} kg`,
+            ...metricChange(entry.weight, previous?.weight, format, 'kg'),
+          })
+        }
+        if (showHeight) {
+          metrics.push({
+            key: 'height',
+            label: t('health.form.height'),
+            value:
+              entry.height === undefined
+                ? undefined
+                : `${format(entry.height)} cm`,
+            ...metricChange(entry.height, previous?.height, format, 'cm'),
+          })
+        }
+        if (showHead) {
+          metrics.push({
+            key: 'head',
+            label: t('health.form.head'),
+            value:
+              entry.head === undefined ? undefined : `${format(entry.head)} cm`,
+            ...metricChange(entry.head, previous?.head, format, 'cm'),
+          })
+        }
+        if (showBmi) {
+          metrics.push({
+            key: 'bmi',
+            label: t('health.growth.short.bmiForAge'),
+            value:
+              assessment.bmi === undefined ? undefined : format(assessment.bmi),
+            ...metricChange(assessment.bmi, previousBmi, format),
+          })
+        }
         const growth = assessment.growth
         // BMI for age from 5, where it is the main index.
         const percentiles = growth
@@ -148,13 +215,7 @@ export const BodySection = (properties: TSectionProperties) => {
               .join(' · ')
           : undefined
         return {
-          primary: [
-            ...measures,
-            assessment.bmi !== undefined &&
-              `BMI ${number.format(assessment.bmi)}`,
-          ]
-            .filter(Boolean)
-            .join(' · '),
+          metrics,
           status: assessment.bmiStatus ?? assessment.growthLead?.status,
           secondary: percentiles,
         }

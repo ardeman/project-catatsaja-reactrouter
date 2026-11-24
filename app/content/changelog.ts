@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-11-24',
+    title: {
+      en: 'Body history that is easier to compare',
+      id: 'Riwayat tubuh yang lebih mudah dibandingkan',
+    },
+    changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'Body measurements are listed in aligned columns (weight, height, head, BMI) with the change from the previous reading under each number, so you can scan down the history.',
+          id: 'Pengukuran tubuh ditampilkan dalam kolom yang sejajar (berat, tinggi, kepala, IMT) dengan perubahan dari pengukuran sebelumnya di bawah setiap angka, sehingga riwayatnya mudah dibandingkan.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-11-09',
     title: {
       en: 'A category for personal care',

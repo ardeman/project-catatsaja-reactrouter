@@ -1742,6 +1742,11 @@
     "chart": {
       "weight": "Berat badan dari waktu ke waktu"
     },
+    "history": {
+      "changeUp": "Naik {{value}} dari pengukuran sebelumnya",
+      "changeDown": "Turun {{value}} dari pengukuran sebelumnya",
+      "changeSame": "Sama dengan pengukuran sebelumnya"
+    },
     "ranges": {
       "glucose": "Normal: puasa atau sebelum makan 70–99 mg/dL, 2 jam setelah makan di bawah 140 (ADA). Pilih waktu di atas untuk melihat rentangnya.",
       "uricAcid": "Rentang umum dewasa: {{low}}–{{high}} {{unit}} (sedikit berbeda antar laboratorium).",
@@ -2208,7 +2213,10 @@
           "Melihat grup, anggaran, target, dan kata kunci buku yang ditambahkan orang dengan Plus"
         ]
       },
-      "payments": "Plus belum bisa dibeli. Begitu bisa, kamu akan menemukannya di sini."
+      "payments": "Plus belum bisa dibeli. Begitu bisa, kamu akan menemukannya di sini.",
+      "paymentsOpen": "Plus prabayar dibayar lewat Dahlunas (Midtrans). Pilih 1, 3, atau 12 bulan; jika kamu sudah Plus, waktu baru ditambahkan setelah yang sekarang berakhir.",
+      "buy": "Lanjut ke pembayaran",
+      "renew": "Perpanjang Plus"
     }
   }
 }

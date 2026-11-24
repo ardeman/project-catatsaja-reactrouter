@@ -29,9 +29,23 @@ export type TSectionProperties = {
   onAddClosed?: () => void
 }
 
-// One row of an entry list.
+// A value in a comparison row (body history): aligned columns, with the
+// change from the previous measurement under the number.
+export type TEntryMetric = {
+  key: string
+  label: string
+  // Formatted value; omitted when this entry has none for the column.
+  value?: string
+  // e.g. "+0.3 kg"; omitted when there is nothing to compare with.
+  change?: string
+  changeDirection?: 'up' | 'down' | 'flat'
+}
+
+// One row of an entry list. `primary` for a single line; `metrics` for
+// columns that line up across rows so values are easy to compare.
 export type TEntryRow = {
-  primary: string
+  primary?: string
+  metrics?: TEntryMetric[]
   secondary?: string
   status?: TStatus
 }

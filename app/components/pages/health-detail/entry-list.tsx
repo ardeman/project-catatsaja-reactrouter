@@ -8,7 +8,7 @@ import { THealthEntry, THealthKind } from '~/lib/types/health'
 import { cn } from '~/lib/utils/shadcn'
 
 import { HealthEntryForm } from './entry-form'
-import { TEntryRow, TSectionProperties } from './type'
+import { TEntryMetric, TEntryRow, TSectionProperties } from './type'
 
 type TProperties<TEntry extends THealthEntry> = Pick<
   TSectionProperties,
@@ -36,6 +36,28 @@ type TProperties<TEntry extends THealthEntry> = Pick<
   beside?: ReactNode
 }
 
+const changeTone = {
+  up: 'text-muted-foreground',
+  down: 'text-muted-foreground',
+  flat: 'text-muted-foreground/80',
+} as const
+
+const changeKey = {
+  up: 'health.history.changeUp',
+  down: 'health.history.changeDown',
+  flat: 'health.history.changeSame',
+} as const
+
+// Column labels from the first row that has metrics (every row shares the
+// same keys so values line up for comparison).
+const metricColumns = (rows: TEntryRow[]) => {
+  const metrics = rows.find((row) => row.metrics?.length)?.metrics
+  return metrics?.map(({ key, label }) => ({ key, label }))
+}
+
+const metricValue = (metrics: TEntryMetric[] | undefined, key: string) =>
+  metrics?.find((metric) => metric.key === key)
+
 // Entries rendered at first, and added each time the end of the list
 // scrolls into view, so a long history stays quick.
 const PAGE_SIZE = 30
@@ -57,7 +79,7 @@ export const EntryList = <TEntry extends THealthEntry>({
   addingKind,
   onAddClosed,
 }: TProperties<TEntry>) => {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [isAddOpen, setIsAddOpen] = useState(false)
   // Also open when asked from a reminder's "Log now", until it closes.
   const isRequested = addingKind === kind
@@ -113,72 +135,176 @@ export const EntryList = <TEntry extends THealthEntry>({
       }}
     />
   )
+  const shown = entries.slice(0, shownCount)
+  const rows = shown.map((entry) => renderRow(entry))
+  const columns = metricColumns(rows)
+  const metricGrid = columns
+    ? {
+        gridTemplateColumns: `repeat(${columns.length}, minmax(4.5rem, 1fr)) auto`,
+      }
+    : undefined
+
   const list =
     entries.length === 0 ? (
       <p className="py-6 text-center text-sm text-muted-foreground">
         {emptyLabel}
       </p>
     ) : (
-      <ul
-        className={cn(
-          'grid divide-y',
-          !beside && 'glass-surface rounded-xl border',
-        )}
-      >
-        {entries.slice(0, shownCount).map((entry) => {
-          if (!isReadOnly && editingId === entry.id)
+      <div className={cn(columns && 'overflow-x-auto overscroll-contain')}>
+        <ul
+          className={cn(
+            'grid divide-y',
+            columns && 'min-w-[28rem]',
+            !beside && 'glass-surface rounded-xl border',
+          )}
+        >
+          {columns && (
+            <li
+              aria-hidden
+              className="border-b bg-muted/30 px-4 py-2"
+            >
+              <div
+                className="grid items-end gap-x-3 text-xs font-medium text-muted-foreground"
+                style={metricGrid}
+              >
+                {columns.map((column) => (
+                  <span
+                    key={column.key}
+                    className="tabular-nums"
+                  >
+                    {column.label}
+                  </span>
+                ))}
+                <span className="text-right">{t('health.form.date')}</span>
+              </div>
+            </li>
+          )}
+          {shown.map((entry, index) => {
+            if (!isReadOnly && editingId === entry.id)
+              return (
+                <li
+                  key={entry.id}
+                  className="p-1"
+                >
+                  {form(entry)}
+                </li>
+              )
+            const row = rows[index]
+            const when = [
+              dateFormat.format(new Date(`${entry.date}T00:00:00Z`)),
+              entry.time,
+            ]
+              .filter(Boolean)
+              .join(' · ')
+            const label = columns
+              ? [
+                  ...(row.metrics ?? [])
+                    .filter((metric) => metric.value)
+                    .map((metric) => `${metric.label} ${metric.value}`),
+                  when,
+                ].join(', ')
+              : undefined
             return (
-              <li
-                key={entry.id}
-                className="p-1"
-              >
-                {form(entry)}
-              </li>
-            )
-          const row = renderRow(entry)
-          return (
-            <li key={entry.id}>
-              <button
-                type="button"
-                disabled={isReadOnly}
-                onClick={() => {
-                  setIsAdding(false)
-                  setEditingId(entry.id)
-                }}
-                className="motion-enter grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-0.5 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default"
-              >
-                <span className="min-w-0 font-medium wrap-break-word">
-                  {row.primary}
-                </span>
-                <span className="text-right text-xs text-muted-foreground">
-                  {dateFormat.format(new Date(`${entry.date}T00:00:00Z`))}
-                  {entry.time && ` · ${entry.time}`}
-                </span>
-                <span className="flex min-w-0 flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-                  {row.status && <HealthStatus status={row.status} />}
-                  {row.secondary && (
-                    <span className="min-w-0 wrap-break-word">
-                      {row.secondary}
+              <li key={entry.id}>
+                <button
+                  type="button"
+                  disabled={isReadOnly}
+                  aria-label={label}
+                  onClick={() => {
+                    setIsAdding(false)
+                    setEditingId(entry.id)
+                  }}
+                  className={cn(
+                    'motion-enter grid w-full gap-x-3 gap-y-0.5 px-4 py-3 text-left enabled:hover:bg-muted/50 disabled:cursor-default',
+                    columns
+                      ? 'grid-cols-1'
+                      : 'grid-cols-[minmax(0,1fr)_auto] items-start',
+                  )}
+                >
+                  {columns ? (
+                    <div
+                      className="grid w-full items-start gap-x-3"
+                      style={metricGrid}
+                    >
+                      {columns.map((column) => {
+                        const metric = metricValue(row.metrics, column.key)
+                        return (
+                          <span
+                            key={column.key}
+                            className="min-w-0"
+                          >
+                            <span className="block font-medium tabular-nums">
+                              {metric?.value ?? '—'}
+                            </span>
+                            {metric?.change && metric.changeDirection && (
+                              <span
+                                className={cn(
+                                  'block text-xs tabular-nums',
+                                  changeTone[metric.changeDirection],
+                                )}
+                                aria-label={t(
+                                  changeKey[metric.changeDirection],
+                                  { value: metric.change },
+                                )}
+                              >
+                                {metric.change}
+                              </span>
+                            )}
+                          </span>
+                        )
+                      })}
+                      <span className="pt-0.5 text-right text-xs text-muted-foreground">
+                        {when}
+                      </span>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="min-w-0 font-medium wrap-break-word">
+                        {row.primary}
+                      </span>
+                      <span className="text-right text-xs text-muted-foreground">
+                        {when}
+                      </span>
+                    </>
+                  )}
+                  {(row.status || row.secondary) && (
+                    <span
+                      className={cn(
+                        'flex min-w-0 flex-wrap items-center gap-x-2 text-xs text-muted-foreground',
+                        !columns && 'col-span-2',
+                      )}
+                    >
+                      {row.status && <HealthStatus status={row.status} />}
+                      {row.secondary && (
+                        <span className="min-w-0 wrap-break-word">
+                          {row.secondary}
+                        </span>
+                      )}
                     </span>
                   )}
-                </span>
-                {entry.note && (
-                  <span className="col-span-2 truncate text-xs text-muted-foreground">
-                    {entry.note}
-                  </span>
-                )}
-              </button>
-            </li>
-          )
-        })}
-        {hasMore && (
-          <li
-            ref={moreReference}
-            aria-hidden
-            className="h-px"
-          />
-        )}
-      </ul>
+                  {entry.note && (
+                    <span
+                      className={cn(
+                        'truncate text-xs text-muted-foreground',
+                        !columns && 'col-span-2',
+                      )}
+                    >
+                      {entry.note}
+                    </span>
+                  )}
+                </button>
+              </li>
+            )
+          })}
+          {hasMore && (
+            <li
+              ref={moreReference}
+              aria-hidden
+              className="h-px"
+            />
+          )}
+        </ul>
+      </div>
     )
 
   return (

@@ -1742,6 +1742,11 @@
     "chart": {
       "weight": "Weight over time"
     },
+    "history": {
+      "changeUp": "Up {{value}} from the previous measurement",
+      "changeDown": "Down {{value}} from the previous measurement",
+      "changeSame": "Unchanged from the previous measurement"
+    },
     "ranges": {
       "glucose": "Normal: fasting or before a meal 70–99 mg/dL, 2 h after a meal under 140 (ADA). Choose a time above to see its range.",
       "uricAcid": "Usual adult range: {{low}}–{{high}} {{unit}} (labs differ a little).",
@@ -2208,7 +2213,10 @@
           "Seeing a book's groups, budgets, goals and keywords someone with Plus added"
         ]
       },
-      "payments": "Plus can't be bought yet. When it can, you'll find it here."
+      "payments": "Plus can't be bought yet. When it can, you'll find it here.",
+      "paymentsOpen": "Prepaid Plus is paid through Dahlunas (Midtrans). Choose 1, 3 or 12 months; if you already have Plus, the new time is added on after it ends.",
+      "buy": "Continue to payment",
+      "renew": "Extend Plus"
     }
   }
 }
