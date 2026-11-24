@@ -67,7 +67,7 @@ Notes, tasks, finances, health logs, sharing, accounts and currency settings are
 
 **Revenue**
 
-An optional Catat Saja Plus subscription pays for what costs money to run; the core stays free (`docs/decisions.md`). In order:
+Optional prepaid Catat Saja Plus pays for what costs money to run; the core stays free (`docs/decisions.md`). In order:
 
 - [ ] Measure: a tracked link per promo video (`utm_campaign` per story: `rina`, `couple`, `adit`, `maya`, `nadia`, `wulan`, `hendra`) and sign-ups by source in Analytics.
 - [ ] Find who pays: post the per-person stories videos, then a small paid test per person for a week; the cheapest active sign-ups pick which Plus features come first.
