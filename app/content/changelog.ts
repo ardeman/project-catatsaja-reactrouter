@@ -14,6 +14,22 @@ export type TRelease = {
 
 export const releases: TRelease[] = [
   {
+    date: '2026-11-28',
+    title: {
+      en: 'Realized amounts match Short in savings goals',
+      id: 'Jumlah terealisasi mengikuti gaya Kurang di target tabungan',
+    },
+    changes: [
+      {
+        kind: 'fixed',
+        text: {
+          en: 'In a book’s analysis, a goal’s realized amount is shown like Short: the label on the left and the amount on the right.',
+          id: 'Di analisis buku, jumlah terealisasi suatu target ditampilkan seperti Kurang: label di kiri dan jumlah di kanan.',
+        },
+      },
+    ],
+  },
+  {
     date: '2026-11-24',
     title: {
       en: 'Catat Saja Plus, and body history that is easier to compare',

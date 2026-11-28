@@ -187,11 +187,12 @@ export const Goals = ({ entries, book, isReadOnly, hasPlus }: TProperties) => {
                           )}
                         </div>
                         {goal.realized > 0 && (
-                          <p className="text-xs text-viz-balance tabular-nums">
-                            {t('finances.analysis.goals.realized', {
-                              spent: money(goal.realized, book),
-                            })}
-                          </p>
+                          <div className="flex justify-between gap-2 text-xs text-viz-balance">
+                            <span>{t('finances.analysis.goals.spent')}</span>
+                            <span className="shrink-0 whitespace-nowrap tabular-nums">
+                              {money(goal.realized, book)}
+                            </span>
+                          </div>
                         )}
                       </li>
                     ))}

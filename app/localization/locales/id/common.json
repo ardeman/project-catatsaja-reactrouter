@@ -680,7 +680,6 @@
         "each": "tiap kali {{amount}}",
         "noPaydays": "Tidak ada gajian lagi",
         "doneTitle": "Selesai ({{count}})",
-        "realized": "{{spent}} terealisasi",
         "doneRealized": "Selesai: yang terealisasi sudah menutupinya",
         "linked": "{{amount}} dari pengeluaran yang ditautkan",
         "spentOf": "{{spent}} dari {{amount}}",

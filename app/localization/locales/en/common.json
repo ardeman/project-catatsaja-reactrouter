@@ -680,7 +680,6 @@
         "each": "each {{amount}}",
         "noPaydays": "No payday left",
         "doneTitle": "Done ({{count}})",
-        "realized": "{{spent}} realized",
         "doneRealized": "Done: what was realized covers it",
         "linked": "{{amount}} from linked expenses",
         "spentOf": "{{spent}} of {{amount}}",
