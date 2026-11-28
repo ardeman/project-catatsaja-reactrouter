@@ -761,9 +761,14 @@ describe('sharing and finance storage', () => {
     await uli.page
       .getByRole('button', { name: 'Analysis', exact: true })
       .click({ timeout: 30_000 })
-    await uli.page
-      .getByText(/400[.,]000 realized/)
+    // Realized matches Short: label on the left, amount on the right.
+    const savingsGoals = uli.page
+      .locator('section')
+      .filter({ hasText: 'Savings goals' })
+    await savingsGoals
+      .getByText('Realized', { exact: true })
       .waitFor({ timeout: 15_000 })
+    await savingsGoals.getByText(/400[.,]000/).waitFor()
     await uli.context.close()
     await vino.context.close()
   })
