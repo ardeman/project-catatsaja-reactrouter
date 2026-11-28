@@ -16,10 +16,17 @@ export const releases: TRelease[] = [
   {
     date: '2026-11-28',
     title: {
-      en: 'Realized amounts match Short in savings goals',
-      id: 'Jumlah terealisasi mengikuti gaya Kurang di target tabungan',
+      en: 'Pick what to copy, and clearer goal amounts',
+      id: 'Pilih yang disalin, dan jumlah target lebih jelas',
     },
     changes: [
+      {
+        kind: 'improved',
+        text: {
+          en: 'When copying analysis from another book, you can tick which groups, budgets, keywords, savings goals and payday to bring across, instead of taking everything.',
+          id: 'Saat menyalin analisis dari buku lain, Anda bisa mencentang kelompok, anggaran, kata kunci, target tabungan, dan tanggal gajian mana yang dibawa, bukan semuanya.',
+        },
+      },
       {
         kind: 'fixed',
         text: {
